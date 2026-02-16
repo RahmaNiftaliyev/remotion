@@ -274,6 +274,15 @@ export class MediaPlayer {
 			);
 
 			if (audioTrack && this.sharedAudioContext) {
+				const canDecode = await audioTrack.canDecode();
+				if (!canDecode) {
+					return {type: 'cannot-decode'};
+				}
+
+				if (this.input.disposed) {
+					return {type: 'disposed'};
+				}
+
 				this.audioIteratorManager = audioIteratorManager({
 					audioTrack,
 					delayPlaybackHandleIfNotPremounting:

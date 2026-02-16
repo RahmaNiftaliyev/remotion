@@ -1,10 +1,9 @@
 import {Video} from '@remotion/media';
 import {CalculateMetadataFunction, Composition} from 'remotion';
 // https://www.remotion.dev/docs/mediabunny/metadata
-import {visualControl} from '@remotion/studio';
 import {getMediaMetadata} from './get-media-metadata';
 
-const src = visualControl('video', 'https://remotion.media/video-h265.mp4');
+const src = 'https://remotion.media/video.mp4';
 
 export const calculateMetadataFn: CalculateMetadataFunction<
 	Record<string, unknown>
@@ -20,11 +19,7 @@ export const calculateMetadataFn: CalculateMetadataFunction<
 };
 
 export const Component = () => {
-	return (
-		<Video
-			src={visualControl('video', 'https://remotion.media/video-h265.mp4')}
-		/>
-	);
+	return <Video src={src} />;
 };
 
 export const NewVideoComp = () => {

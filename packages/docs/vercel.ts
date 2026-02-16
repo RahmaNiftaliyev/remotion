@@ -300,9 +300,12 @@ export const config: VercelConfig = {
 		}),
 		routes.redirect(
 			'/docs/miscellaneous/vercel-functions',
-			'/docs/miscellaneous/vercel',
+			'/docs/vercel',
 			{permanent: false},
 		),
+		routes.redirect('/docs/miscellaneous/vercel', '/docs/vercel', {
+			permanent: false,
+		}),
 		routes.redirect('/system-prompt', '/docs/ai/system-prompt', {
 			permanent: false,
 		}),

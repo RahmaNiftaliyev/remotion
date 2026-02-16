@@ -140,11 +140,12 @@ export const makeKeyframeBank = async ({
 			return true;
 		}
 
-		const duration = getDurationOfFrame(lastFrameTimestamp);
+		const duration =
+			getDurationOfFrame(lastFrameTimestamp) ??
+			(lastFrame as VideoSample).duration;
 
 		return (
-			roundTo4Digits(lastFrameTimestamp + (duration ?? 0)) >
-			roundTo4Digits(timestamp)
+			roundTo4Digits(lastFrameTimestamp + duration) >= roundTo4Digits(timestamp)
 		);
 	};
 

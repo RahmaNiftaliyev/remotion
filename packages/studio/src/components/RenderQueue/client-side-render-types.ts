@@ -9,7 +9,6 @@ import type {
 import type {LogLevel} from 'remotion';
 
 export type ClientRenderJobProgress = {
-	renderedFrames: number;
 	encodedFrames: number;
 	totalFrames: number;
 };

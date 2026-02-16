@@ -29,7 +29,9 @@ export const RenderQueueProgressMessage: React.FC<{
 	}, [job.id, setSelectedModal]);
 
 	const message = isClientJob
-		? `Rendering frame ${job.progress.renderedFrames}/${job.progress.totalFrames}`
+		? job.progress.totalFrames === 0
+			? 'Getting composition'
+			: `Encoding frame ${job.progress.encodedFrames}/${job.progress.totalFrames}`
 		: job.progress.message;
 
 	return (

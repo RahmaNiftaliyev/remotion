@@ -24,7 +24,6 @@ export type {
 } from '@remotion/studio-shared';
 
 import {AnsiDiff} from './ansi-diff';
-import {openBrowser} from './better-opn';
 import {parseAndApplyCodemod} from './codemods/duplicate-composition';
 import {installFileWatcher} from './file-watcher';
 import {getLatestRemotionVersion} from './get-latest-remotion-version';
@@ -35,7 +34,6 @@ import {
 	setMaxTimelineTracks,
 } from './max-timeline-tracks';
 import {
-	detectMultipleLockfiles,
 	getPackageManager,
 	lockFilePaths,
 } from './preview-server/get-package-manager';
@@ -49,7 +47,6 @@ export const StudioServerInternals = {
 	waitForLiveEventsListener,
 	lockFilePaths,
 	getPackageManager,
-	detectMultipleLockfiles,
 	getMaxTimelineTracks,
 	setMaxTimelineTracks,
 	getLatestRemotionVersion,
@@ -57,7 +54,6 @@ export const StudioServerInternals = {
 	AnsiDiff,
 	formatBytes,
 	parseAndApplyCodemod,
-	openBrowser,
 	getInstalledDependencies,
 	getInstallCommand,
 };

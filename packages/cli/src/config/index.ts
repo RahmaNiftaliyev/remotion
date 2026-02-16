@@ -67,7 +67,6 @@ import {setFrameRange} from './frame-range';
 import {getHeight, overrideHeight} from './height';
 import {setImageSequence} from './image-sequence';
 import {getMetadata, setMetadata} from './metadata';
-import {setNumberOfSharedAudioTags} from './number-of-shared-audio-tags';
 import {getShouldOpenBrowser, setShouldOpenBrowser} from './open-browser';
 import {setOutputLocation} from './output-location';
 import type {WebpackOverrideFn} from './override-webpack';
@@ -128,6 +127,9 @@ const {
 	publicLicenseKeyOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	forceNewStudioOption,
+	numberOfSharedAudioTagsOption,
+	ipv4Option,
 } = BrowserSafeApis.options;
 
 declare global {
@@ -553,6 +555,11 @@ type FlatConfig = RemotionConfigObject &
 		 */
 		setAudioCodec: (codec: 'pcm-16' | 'aac' | 'mp3' | 'opus') => void;
 		setOffthreadVideoCacheSizeInBytes: (size: number | null) => void;
+		/**
+		 * Forces starting a new Studio instance even if one is already running on the same port for the same project.
+		 * Default: false
+		 */
+		setForceNewStudioEnabled: (forceNew: boolean) => void;
 
 		setDeleteAfter: (day: DeleteAfter | null) => void;
 		/**
@@ -578,6 +585,11 @@ type FlatConfig = RemotionConfigObject &
 		setHardwareAcceleration: (
 			hardwareAccelerationOption: HardwareAccelerationOption,
 		) => void;
+		/**
+		 * Forces Remotion to bind to an IPv4 interface for the Studio server.
+		 * Default: false
+		 */
+		setIPv4: (ipv4: boolean) => void;
 		/**
 		 * Choose between using Chrome Headless Shell or Chrome for Testing
 		 */
@@ -643,7 +655,7 @@ export const Config: FlatConfig = {
 	setKeyboardShortcutsEnabled: keyboardShortcutsOption.setConfig,
 	setExperimentalClientSideRenderingEnabled:
 		experimentalClientSideRenderingOption.setConfig,
-	setNumberOfSharedAudioTags,
+	setNumberOfSharedAudioTags: numberOfSharedAudioTagsOption.setConfig,
 	setWebpackPollingInMilliseconds,
 	setShouldOpenBrowser,
 	setBufferStateDelayInMilliseconds,
@@ -725,6 +737,8 @@ export const Config: FlatConfig = {
 	setEnableCrossSiteIsolation: enableCrossSiteIsolationOption.setConfig,
 	setAskAIEnabled: askAIOption.setConfig,
 	setPublicLicenseKey: publicLicenseKeyOption.setConfig,
+	setForceNewStudioEnabled: forceNewStudioOption.setConfig,
+	setIPv4: ipv4Option.setConfig,
 };
 
 export const ConfigInternals = {

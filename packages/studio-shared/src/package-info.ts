@@ -1,6 +1,5 @@
 export const packages = [
 	'svg-3d-engine',
-	'ai-improvements',
 	'animation-utils',
 	'animated-emoji',
 	'astro-example',
@@ -82,6 +81,7 @@ export const packages = [
 	'media',
 	'web-renderer',
 	'design',
+	'light-leaks',
 ] as const;
 
 export type Pkgs = (typeof packages)[number];
@@ -179,7 +179,6 @@ export const descriptions: {[key in Pkgs]: string | null} = {
 	'lambda-python': null,
 	'lambda-ruby': null,
 	'player-example': null,
-	'ai-improvements': null,
 	skills: null,
 	'discord-poster': null,
 	'docusaurus-plugin': null,
@@ -197,10 +196,10 @@ export const descriptions: {[key in Pkgs]: string | null} = {
 	media: 'Experimental WebCodecs-based media tags',
 	'web-renderer': 'Render videos in the browser (not yet released)',
 	design: 'Design system',
+	'light-leaks': 'Light leak effects for Remotion',
 };
 export const installableMap: {[key in Pkgs]: boolean} = {
 	'svg-3d-engine': false,
-	'ai-improvements': false,
 	'animation-utils': true,
 	'animated-emoji': true,
 	'astro-example': false,
@@ -282,6 +281,7 @@ export const installableMap: {[key in Pkgs]: boolean} = {
 	media: true,
 	'web-renderer': false,
 	design: false,
+	'light-leaks': true,
 };
 
 export const apiDocs: {[key in Pkgs]: string | null} = {
@@ -319,7 +319,6 @@ export const apiDocs: {[key in Pkgs]: string | null} = {
 	'compositor-linux-x64-gnu': null,
 	'compositor-linux-x64-musl': null,
 	'compositor-darwin-x64': null,
-	'ai-improvements': null,
 	'discord-poster': null,
 	'docusaurus-plugin': null,
 	'animation-utils': 'https://www.remotion.dev/docs/animation-utils/',
@@ -371,4 +370,5 @@ export const apiDocs: {[key in Pkgs]: string | null} = {
 	media: 'https://remotion.dev/docs/media',
 	'web-renderer': 'https://www.remotion.dev/docs/web-renderer/',
 	design: 'https://www.remotion.dev/design',
+	'light-leaks': 'https://www.remotion.dev/docs/light-leaks',
 };

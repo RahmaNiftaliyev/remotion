@@ -26,7 +26,7 @@ export const BooleanFlags = [
 	'disable-keyboard-shortcuts',
 	'default-only',
 	'no-open',
-	'ipv4',
+	BrowserSafeApis.options.ipv4Option.cliFlag,
 	BrowserSafeApis.options.beepOnFinishOption.cliFlag,
 	BrowserSafeApis.options.disableGitSourceOption.cliFlag,
 	BrowserSafeApis.options.disallowParallelEncodingOption.cliFlag,
@@ -36,7 +36,7 @@ export const BooleanFlags = [
 	'force-path-style',
 	'onlyAllocateCpuDuringRequestProcessing',
 	BrowserSafeApis.options.isProductionOption.cliFlag,
-	'force-new',
+	BrowserSafeApis.options.forceNewStudioOption.cliFlag,
 ];
 
 export const parsedCli = minimist<CommandLineOptions>(process.argv.slice(2), {

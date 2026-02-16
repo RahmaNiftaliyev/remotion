@@ -28,6 +28,7 @@ import type {LiveEventsServer} from './preview-server/live-events';
 import {parseRequestBody} from './preview-server/parse-body';
 import {fetchFolder, getFiles} from './preview-server/public-folder';
 import {serveStatic} from './preview-server/serve-static';
+import type {RemotionConfigResponse} from './remotion-config-response';
 
 const editorGuess = guessEditor();
 
@@ -54,13 +55,12 @@ const handleRemotionConfig = (
 	response.writeHead(200, {
 		'Content-Type': 'application/json',
 	});
-	response.end(
-		JSON.stringify({
-			isRemotion: true,
-			cwd: remotionRoot,
-			version: process.env.REMOTION_VERSION ?? null,
-		}),
-	);
+	const body: RemotionConfigResponse = {
+		isRemotion: true,
+		cwd: remotionRoot,
+		version: process.env.REMOTION_VERSION ?? null,
+	};
+	response.end(JSON.stringify(body));
 	return Promise.resolve();
 };
 
@@ -102,7 +102,12 @@ const handleFallback = async ({
 		response.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
 	}
 
-	const packageManager = getPackageManager(remotionRoot, undefined, 0);
+	const packageManager = getPackageManager({
+		remotionRoot,
+		packageManager: undefined,
+		dirUp: 0,
+		logLevel,
+	});
 	fetchFolder({publicDir, staticHash: hash});
 
 	const installedDependencies = getInstalledInstallablePackages(remotionRoot);

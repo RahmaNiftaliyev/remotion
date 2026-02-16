@@ -20,10 +20,12 @@ import {enforceAudioOption} from './enforce-audio';
 import {experimentalClientSideRenderingOption} from './experimental-client-side-rendering';
 import {folderExpiryOption} from './folder-expiry';
 import {forSeamlessAacConcatenationOption} from './for-seamless-aac-concatenation';
+import {forceNewStudioOption} from './force-new-studio';
 import {glOption} from './gl';
 import {hardwareAccelerationOption} from './hardware-acceleration';
 import {headlessOption} from './headless';
 import {imageSequencePatternOption} from './image-sequence-pattern';
+import {ipv4Option} from './ipv4';
 import {isProductionOption} from './is-production';
 import {jpegQualityOption} from './jpeg-quality';
 import {keyboardShortcutsOption} from './keyboard-shortcuts';
@@ -33,6 +35,7 @@ import {logLevelOption} from './log-level';
 import {metadataOption} from './metadata';
 import {mutedOption} from './mute';
 import {numberOfGifLoopsOption} from './number-of-gif-loops';
+import {numberOfSharedAudioTagsOption} from './number-of-shared-audio-tags';
 import {offthreadVideoCacheSizeInBytesOption} from './offthreadvideo-cache-size';
 import {offthreadVideoThreadsOption} from './offthreadvideo-threads';
 import {onBrowserDownloadOption} from './on-browser-download';
@@ -107,6 +110,9 @@ export const allOptions = {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	forceNewStudioOption,
+	numberOfSharedAudioTagsOption,
+	ipv4Option,
 };
 
 export type AvailableOptions = keyof typeof allOptions;

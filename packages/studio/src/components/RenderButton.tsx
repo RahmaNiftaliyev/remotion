@@ -12,7 +12,6 @@ import type {SVGProps} from 'react';
 import React, {
 	useCallback,
 	useContext,
-	useEffect,
 	useMemo,
 	useRef,
 	useState,
@@ -127,8 +126,8 @@ export const RenderButton: React.FC<{readonly readOnlyStudio: boolean}> = ({
 }) => {
 	const {inFrame, outFrame} = useTimelineInOutFramePosition();
 	const {setSelectedModal} = useContext(ModalsContext);
-	const [renderType, setRenderType] = useState<RenderType>(() =>
-		getInitialRenderType(readOnlyStudio),
+	const [preferredRenderType, setPreferredRenderType] = useState<RenderType>(
+		() => getInitialRenderType(readOnlyStudio),
 	);
 	const [dropdownOpened, setDropdownOpened] = useState(false);
 	const dropdownRef = useRef<HTMLButtonElement>(null);
@@ -186,16 +185,17 @@ export const RenderButton: React.FC<{readonly readOnlyStudio: boolean}> = ({
 	const connectionStatus = useContext(StudioServerConnectionCtx)
 		.previewServerState.type;
 
-	// auto-fallback to client-render when server disconnects and browser rendering is available
-	useEffect(() => {
-		if (
-			connectionStatus === 'disconnected' &&
-			SHOW_BROWSER_RENDERING &&
-			renderType === 'server-render'
-		) {
-			setRenderType('client-render');
+	const renderType: RenderType = useMemo(() => {
+		if (connectionStatus === 'disconnected' && SHOW_BROWSER_RENDERING) {
+			return 'client-render';
 		}
-	}, [connectionStatus, renderType]);
+
+		if (!SHOW_BROWSER_RENDERING) {
+			return 'server-render';
+		}
+
+		return preferredRenderType;
+	}, [connectionStatus, preferredRenderType]);
 
 	const shortcut = areKeyboardShortcutsDisabled() ? '' : '(R)';
 	const tooltip =
@@ -334,7 +334,7 @@ export const RenderButton: React.FC<{readonly readOnlyStudio: boolean}> = ({
 
 	const handleRenderTypeChange = useCallback(
 		(newType: RenderType) => {
-			setRenderType(newType);
+			setPreferredRenderType(newType);
 			try {
 				localStorage.setItem(RENDER_TYPE_STORAGE_KEY, newType);
 			} catch {

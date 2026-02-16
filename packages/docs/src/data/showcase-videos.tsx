@@ -424,6 +424,27 @@ export const showcaseVideos: ShowcaseVideo[] = [
 			},
 		],
 	},
+	{
+		title: 'SuperMotion - Product Videos',
+		type: 'mux_video',
+		time: '3',
+		muxId: 'g1G2V4b7QEqzSJSUywGaq6cDZfvAtEo500Bt9ltkOrTg',
+		description:
+			'Create engaging product promo videos from screen recordings or screenshots. Add device mockups, zooms animations, annotations, and transitions. SuperMotion uses Remotion to render videos in the cloud.',
+		height: 1124,
+		width: 2000,
+		submittedOn: new Date('02-15-2026'),
+		links: [
+			{
+				type: 'website',
+				url: 'https://www.supermotion.co',
+			},
+		],
+		author: {
+			url: 'https://x.com/d__raptis',
+			name: 'Jim Raptis',
+		},
+	},
 	/*
   {
 		title: 'Clippulse - Animated social media videos',

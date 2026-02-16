@@ -185,6 +185,9 @@ export const RenderButton: React.FC<{readonly readOnlyStudio: boolean}> = ({
 	const connectionStatus = useContext(StudioServerConnectionCtx)
 		.previewServerState.type;
 
+	const canRender =
+		connectionStatus === 'connected' || SHOW_BROWSER_RENDERING;
+
 	const renderType: RenderType = useMemo(() => {
 		if (connectionStatus === 'disconnected' && SHOW_BROWSER_RENDERING) {
 			return 'client-render';
@@ -198,10 +201,9 @@ export const RenderButton: React.FC<{readonly readOnlyStudio: boolean}> = ({
 	}, [connectionStatus, preferredRenderType]);
 
 	const shortcut = areKeyboardShortcutsDisabled() ? '' : '(R)';
-	const tooltip =
-		connectionStatus === 'connected' || SHOW_BROWSER_RENDERING
-			? 'Export the current composition ' + shortcut
-			: 'Connect to the Studio server to render';
+	const tooltip = canRender
+		? 'Export the current composition ' + shortcut
+		: 'Connect to the Studio server to render';
 
 	const iconStyle: SVGProps<SVGSVGElement> = useMemo(() => {
 		return {
@@ -421,15 +423,13 @@ export const RenderButton: React.FC<{readonly readOnlyStudio: boolean}> = ({
 	}, [dropdownOpened, size, spaceToBottom, spaceToTop]);
 
 	const containerStyle = useMemo((): React.CSSProperties => {
-		const isDisabled =
-			connectionStatus !== 'connected' && !SHOW_BROWSER_RENDERING;
 		return {
 			...splitButtonContainer,
 			borderColor: INPUT_BORDER_COLOR_UNHOVERED,
-			opacity: isDisabled ? 0.7 : 1,
-			cursor: isDisabled ? 'inherit' : 'pointer',
+			opacity: canRender ? 1 : 0.7,
+			cursor: canRender ? 'pointer' : 'inherit',
 		};
-	}, [connectionStatus]);
+	}, [canRender]);
 
 	const renderLabel =
 		renderType === 'server-render' ? 'Render' : 'Render on web';
@@ -457,9 +457,7 @@ export const RenderButton: React.FC<{readonly readOnlyStudio: boolean}> = ({
 			<button
 				style={{display: 'none'}}
 				id="render-modal-button-server"
-				disabled={
-					connectionStatus !== 'connected' && renderType === 'server-render'
-				}
+				disabled={!canRender}
 				onClick={openServerRenderModal}
 				type="button"
 			/>{' '}
@@ -475,9 +473,7 @@ export const RenderButton: React.FC<{readonly readOnlyStudio: boolean}> = ({
 					style={mainButtonStyle}
 					onClick={onClick}
 					id="render-modal-button"
-					disabled={
-						connectionStatus !== 'connected' && renderType === 'server-render'
-					}
+					disabled={!canRender}
 				>
 					<Row align="center" style={mainButtonContent}>
 						<ThinRenderIcon fill="currentcolor" svgProps={iconStyle} />

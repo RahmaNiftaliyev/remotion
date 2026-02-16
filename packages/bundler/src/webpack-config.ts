@@ -173,6 +173,13 @@ export const webpackConfig = async ({
 					'esm',
 					'no-react.mjs',
 				),
+				'remotion/version': path.resolve(
+					require.resolve('remotion'),
+					'..',
+					'..',
+					'esm',
+					'version.mjs',
+				),
 				remotion: path.resolve(
 					require.resolve('remotion'),
 					'..',

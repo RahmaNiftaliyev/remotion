@@ -1,4 +1,6 @@
+import {ALL_FORMATS, BlobSource, Input} from 'mediabunny';
 import {interpolateColors, useCurrentFrame} from 'remotion';
+import {VERSION} from 'remotion/version';
 import {expect, test} from 'vitest';
 import {renderMediaOnWeb} from '../render-media-on-web';
 import '../symbol-dispose';
@@ -97,6 +99,37 @@ test('should throttle onProgress callback to 250ms', {retry: 2}, async (t) => {
 			expect(timeDiff).toBeGreaterThanOrEqual(200);
 		}
 	}
+});
+
+test('should include "Made with Remotion" metadata', async (t) => {
+	if (t.task.file.projectName === 'webkit') {
+		t.skip();
+		return;
+	}
+
+	const Component: React.FC = () => null;
+
+	const result = await renderMediaOnWeb({
+		composition: {
+			component: Component,
+			id: 'metadata-test',
+			width: 100,
+			height: 100,
+			fps: 30,
+			durationInFrames: 5,
+		},
+		inputProps: {},
+	});
+
+	const blob = await result.getBlob();
+
+	using input = new Input({
+		formats: ALL_FORMATS,
+		source: new BlobSource(blob),
+	});
+
+	const tags = await input.getMetadataTags();
+	expect(tags.comment).toBe(`Made with Remotion ${VERSION}`);
 });
 
 test('should not fire stale progress callbacks after render completes', async (t) => {

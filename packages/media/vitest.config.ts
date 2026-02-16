@@ -6,6 +6,7 @@ export default defineConfig({
 	test: {
 		maxWorkers: process.env.CI ? 1 : 5,
 		browser: {
+			enabled: true,
 			provider: playwright(),
 			instances: [
 				{

@@ -199,7 +199,7 @@ export const RenderButton: React.FC<{readonly readOnlyStudio: boolean}> = ({
 
 	const shortcut = areKeyboardShortcutsDisabled() ? '' : '(R)';
 	const tooltip =
-		connectionStatus === 'connected'
+		connectionStatus === 'connected' || SHOW_BROWSER_RENDERING
 			? 'Export the current composition ' + shortcut
 			: 'Connect to the Studio server to render';
 
@@ -421,11 +421,13 @@ export const RenderButton: React.FC<{readonly readOnlyStudio: boolean}> = ({
 	}, [dropdownOpened, size, spaceToBottom, spaceToTop]);
 
 	const containerStyle = useMemo((): React.CSSProperties => {
+		const isDisabled =
+			connectionStatus !== 'connected' && !SHOW_BROWSER_RENDERING;
 		return {
 			...splitButtonContainer,
 			borderColor: INPUT_BORDER_COLOR_UNHOVERED,
-			opacity: connectionStatus !== 'connected' ? 0.7 : 1,
-			cursor: connectionStatus !== 'connected' ? 'inherit' : 'pointer',
+			opacity: isDisabled ? 0.7 : 1,
+			cursor: isDisabled ? 'inherit' : 'pointer',
 		};
 	}, [connectionStatus]);
 

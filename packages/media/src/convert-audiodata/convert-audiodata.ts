@@ -86,8 +86,7 @@ export const convertAudioData = ({
 	const srcChannels = new Int16Array(srcNumberOfChannels * frameCount);
 
 	// https://github.com/remotion-dev/remotion/issues/6493
-	const isF32 =
-		audioData.format === 'f32' || audioData.format === 'f32-planar';
+	const isF32 = audioData.format === 'f32' || audioData.format === 'f32-planar';
 
 	if (isF32) {
 		// Firefox decodes as f32 — normalize to f32-planar first so the

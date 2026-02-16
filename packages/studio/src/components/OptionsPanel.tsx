@@ -11,6 +11,7 @@ import type {_InternalTypes} from 'remotion';
 import {Internals} from 'remotion';
 import {BACKGROUND} from '../helpers/colors';
 import {useMobileLayout} from '../helpers/mobile-layout';
+import {SHOW_BROWSER_RENDERING} from '../helpers/show-browser-rendering';
 import {VisualControlsTabActivatedContext} from '../visual-controls/VisualControls';
 import {GlobalPropsEditorUpdateButton} from './GlobalPropsEditorUpdateButton';
 import {DataEditor} from './RenderModal/DataEditor';
@@ -25,7 +26,7 @@ type OptionsSidebarPanel = 'input-props' | 'renders' | 'visual-controls';
 const localStorageKey = 'remotion.sidebarPanel';
 
 const getSelectedPanel = (readOnlyStudio: boolean): OptionsSidebarPanel => {
-	if (readOnlyStudio) {
+	if (readOnlyStudio && !SHOW_BROWSER_RENDERING) {
 		return 'input-props';
 	}
 
@@ -207,7 +208,7 @@ export const OptionsPanel: React.FC<{
 							) : null}
 						</Tab>
 					) : null}
-					{readOnlyStudio ? null : (
+					{readOnlyStudio && !SHOW_BROWSER_RENDERING ? null : (
 						<RendersTab
 							onClick={onRendersSelected}
 							selected={panel === 'renders'}
@@ -229,7 +230,7 @@ export const OptionsPanel: React.FC<{
 				/>
 			) : panel === 'visual-controls' && visualControlsTabActivated ? (
 				<VisualControlsContent />
-			) : readOnlyStudio ? null : (
+			) : readOnlyStudio && !SHOW_BROWSER_RENDERING ? null : (
 				<RenderQueue />
 			)}
 		</div>

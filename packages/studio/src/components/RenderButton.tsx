@@ -9,7 +9,14 @@ import type {
 } from '@remotion/renderer';
 import type {RenderStillOnWebImageFormat} from '@remotion/web-renderer';
 import type {SVGProps} from 'react';
-import React, {useCallback, useContext, useMemo, useRef, useState} from 'react';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 import ReactDOM from 'react-dom';
 import type {_InternalTypes} from 'remotion';
 import {Internals} from 'remotion';
@@ -178,6 +185,18 @@ export const RenderButton: React.FC<{readonly readOnlyStudio: boolean}> = ({
 
 	const connectionStatus = useContext(StudioServerConnectionCtx)
 		.previewServerState.type;
+
+	// auto-fallback to client-render when server disconnects and browser rendering is available
+	useEffect(() => {
+		if (
+			connectionStatus === 'disconnected' &&
+			SHOW_BROWSER_RENDERING &&
+			renderType === 'server-render'
+		) {
+			setRenderType('client-render');
+		}
+	}, [connectionStatus, renderType]);
+
 	const shortcut = areKeyboardShortcutsDisabled() ? '' : '(R)';
 	const tooltip =
 		connectionStatus === 'connected'

@@ -48,23 +48,19 @@ export const Templates: React.FC = () => {
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[15px]">
 					{CreateVideoInternals.FEATURED_TEMPLATES.map((template) => {
 						return (
-							<a
+							<Button
 								key={template.cliId}
 								href={`/templates/${template.cliId}`}
-								className="no-underline"
+								depth={0.5}
+								className="justify-start text-left p-3.5 flex flex-col relative cursor-pointer text-[var(--text-color)] h-full w-full items-start"
 							>
-								<Button
-									depth={0.5}
-									className="justify-start text-left p-3.5 flex flex-col relative cursor-pointer text-[var(--text-color)] no-underline h-full w-full items-start"
+								<Item
+									label={template.homePageLabel}
+									description={template.description}
 								>
-									<Item
-										label={template.homePageLabel}
-										description={template.description}
-									>
-										<IconForTemplate scale={0.7} template={template} />
-									</Item>
-								</Button>
-							</a>
+									<IconForTemplate scale={0.7} template={template} />
+								</Item>
+							</Button>
 						);
 					})}
 				</div>
@@ -72,74 +68,59 @@ export const Templates: React.FC = () => {
 				<br />
 				<h3>Paid templates</h3>
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[15px]">
-					<a
-						key={'editor-starter'}
-						className="no-underline"
-						href={`https://www.remotion.pro/editor-starter`}
+					<Button
+						href="https://www.remotion.pro/editor-starter"
+						depth={0.5}
+						className="text-left p-3.5 flex flex-col relative cursor-pointer text-[var(--text-color)] h-full w-full items-start"
 					>
-						<Button
-							depth={0.5}
-							className="text-left p-3.5 flex flex-col relative cursor-pointer text-[var(--text-color)] no-underline h-full w-full items-start"
+						<Item
+							label={'Editor Starter'}
+							description={'A boilerplate for starting your own video editor'}
 						>
-							<Item
-								label={'Editor Starter'}
-								description={'A boilerplate for starting your own video editor'}
-							>
-								<EditorIcon
-									style={{
-										height: 0.7 * 32,
-										overflow: 'visible',
-									}}
-								/>
-							</Item>
-						</Button>
-					</a>
+							<EditorIcon
+								style={{
+									height: 0.7 * 32,
+									overflow: 'visible',
+								}}
+							/>
+						</Item>
+					</Button>
 
-					<a
-						key={'watercolor-map'}
-						className="no-underline"
-						href={`https://www.remotion.pro/watercolor-map`}
+					<Button
+						href="https://www.remotion.pro/watercolor-map"
+						depth={0.5}
+						className="text-left p-3.5 flex flex-col relative cursor-pointer text-[var(--text-color)] h-full w-full items-start"
 					>
-						<Button
-							depth={0.5}
-							className="text-left p-3.5 flex flex-col relative cursor-pointer text-[var(--text-color)] no-underline h-full w-full items-start"
+						<Item
+							label={'Watercolor Map'}
+							description={'A beautiful 2D map for travel videos'}
 						>
-							<Item
-								label={'Watercolor Map'}
-								description={'A beautiful 2D map for travel videos'}
-							>
-								<SkiaIcon
-									style={{
-										height: 0.7 * 32,
-										overflow: 'visible',
-									}}
-								/>
-							</Item>
-						</Button>
-					</a>
-					<a
-						key={'timeline'}
-						className="no-underline"
-						href={`https://www.remotion.pro/timeline`}
+							<SkiaIcon
+								style={{
+									height: 0.7 * 32,
+									overflow: 'visible',
+								}}
+							/>
+						</Item>
+					</Button>
+					<Button
+						href="https://www.remotion.pro/timeline"
+						depth={0.5}
+						className="text-left p-3.5 flex flex-col relative cursor-pointer text-[var(--text-color)] h-full w-full items-start"
 					>
-						<Button
-							depth={0.5}
-							className="text-left p-3.5 flex flex-col relative cursor-pointer text-[var(--text-color)] no-underline h-full w-full items-start"
+						<Item
+							label={'<Timeline />'}
+							description={
+								'A copy pasteable component for timeline-based editing'
+							}
 						>
-							<Item
-								label={'<Timeline />'}
-								description={
-									'A copy pasteable component for timeline-based editing'
-								}
-							>
-								<TimelineIcon
-									style={{
-										height: 0.7 * 32,
-									}}
-								/>
-							</Item>
-						</Button>
-					</a>
+							<TimelineIcon
+								style={{
+									height: 0.7 * 32,
+								}}
+							/>
+						</Item>
+					</Button>
 				</div>
 
 				<br />

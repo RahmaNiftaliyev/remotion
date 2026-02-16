@@ -7,7 +7,12 @@ export default defineConfig({
 		maxWorkers: process.env.CI ? 1 : 5,
 		browser: {
 			enabled: true,
-			provider: playwright(),
+			provider: playwright({
+				launchOptions: {
+					channel: 'chrome',
+				},
+				actionTimeout: 5_000,
+			}),
 			instances: [
 				{
 					browser: 'chromium',

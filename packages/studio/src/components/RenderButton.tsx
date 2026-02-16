@@ -9,13 +9,7 @@ import type {
 } from '@remotion/renderer';
 import type {RenderStillOnWebImageFormat} from '@remotion/web-renderer';
 import type {SVGProps} from 'react';
-import React, {
-	useCallback,
-	useContext,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import React, {useCallback, useContext, useMemo, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 import type {_InternalTypes} from 'remotion';
 import {Internals} from 'remotion';
@@ -185,8 +179,7 @@ export const RenderButton: React.FC<{readonly readOnlyStudio: boolean}> = ({
 	const connectionStatus = useContext(StudioServerConnectionCtx)
 		.previewServerState.type;
 
-	const canRender =
-		connectionStatus === 'connected' || SHOW_BROWSER_RENDERING;
+	const canRender = connectionStatus === 'connected' || SHOW_BROWSER_RENDERING;
 
 	const renderType: RenderType = useMemo(() => {
 		if (connectionStatus === 'disconnected' && SHOW_BROWSER_RENDERING) {

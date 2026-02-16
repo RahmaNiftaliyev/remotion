@@ -48,7 +48,7 @@ export const showcaseVideos: ShowcaseVideo[] = [
 		},
 	},
 	{
-		title: 'MUX - Vizualise video stats',
+		title: 'MUX - Visualize video stats',
 		type: 'mux_video',
 		time: '3',
 		muxId: 'DDgXb2KfPk7xdvxEoyPkrl7GcybohNon',

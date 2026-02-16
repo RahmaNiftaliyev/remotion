@@ -5,12 +5,16 @@ import {roundTo4Digits} from '../helpers/round-to-4-digits';
 import {renderTimestampRange} from '../render-timestamp-range';
 import {getAllocationSize} from './get-allocation-size';
 
+// duration can be wrong! we shall not rely on it, but calculate it ourselves
+// https://discord.com/channels/@me/1409810025844838481/1470453477217009745 (Rebunny channel)
+export type VideoSampleWithoutDuration = Omit<VideoSample, 'duration'>;
+
 export type KeyframeBank = {
 	src: string;
 	getFrameFromTimestamp: (
 		timestamp: number,
 		fps: number,
-	) => Promise<VideoSample | null>;
+	) => Promise<VideoSampleWithoutDuration | null>;
 	prepareForDeletion: (
 		logLevel: LogLevel,
 		reason: string,
@@ -53,13 +57,27 @@ export const makeKeyframeBank = async ({
 		roundTo4Digits(initialTimestampRequest),
 	);
 
-	const frames: Record<number, VideoSample> = {};
+	const frames: Record<number, VideoSampleWithoutDuration> = {};
 	const frameTimestamps: number[] = [];
 
 	let hasReachedEndOfVideo = false;
 
 	let lastUsed = Date.now();
 	let allocationSize = 0;
+
+	const getDurationOfFrame = (timestamp: number) => {
+		const index = frameTimestamps.indexOf(timestamp);
+		if (index === -1) {
+			throw new Error(`Frame ${timestamp} not found`);
+		}
+
+		const nextTimestamp = frameTimestamps[index + 1];
+		if (!nextTimestamp) {
+			return null;
+		}
+
+		return nextTimestamp - timestamp;
+	};
 
 	const deleteFrameAtTimestamp = (timestamp: number) => {
 		allocationSize -= getAllocationSize(frames[timestamp]);
@@ -90,7 +108,9 @@ export const makeKeyframeBank = async ({
 				continue;
 			}
 
-			const {duration} = frames[frameTimestamp];
+			const duration =
+				getDurationOfFrame(frameTimestamp) ??
+				(frames[frameTimestamp] as VideoSample).duration;
 
 			if (frameTimestamp + duration < timestampInSeconds) {
 				deleteFrameAtTimestamp(frameTimestamp);
@@ -119,9 +139,12 @@ export const makeKeyframeBank = async ({
 			return true;
 		}
 
+		const duration =
+			getDurationOfFrame(lastFrameTimestamp) ??
+			(lastFrame as VideoSample).duration;
+
 		return (
-			roundTo4Digits(lastFrame.timestamp + lastFrame.duration) >
-			roundTo4Digits(timestamp)
+			roundTo4Digits(lastFrameTimestamp + duration) > roundTo4Digits(timestamp)
 		);
 	};
 
@@ -155,6 +178,7 @@ export const makeKeyframeBank = async ({
 
 			if (sample.done) {
 				hasReachedEndOfVideo = true;
+
 				break;
 			}
 
@@ -171,7 +195,7 @@ export const makeKeyframeBank = async ({
 	const getFrameFromTimestamp = async (
 		timestampInSeconds: number,
 		fps: number,
-	): Promise<VideoSample | null> => {
+	): Promise<VideoSampleWithoutDuration | null> => {
 		lastUsed = Date.now();
 
 		// If the requested timestamp is before the start of this bank, clamp it to the start.
@@ -256,9 +280,16 @@ export const makeKeyframeBank = async ({
 		const lastTimestamp = frameTimestamps[frameTimestamps.length - 1]!;
 		const lastFrame = frames[lastTimestamp];
 
+		// If we have measured it by already having the next frame, use that. Otherwise,
+		// resort to what Mediabunny gave us.
+		const lastFrameDuration =
+			getDurationOfFrame(lastTimestamp) ??
+			(lastFrame as VideoSample).duration ??
+			0;
+
 		return {
 			firstTimestamp,
-			lastTimestamp: lastTimestamp + lastFrame!.duration,
+			lastTimestamp: lastTimestamp + lastFrameDuration,
 		};
 	};
 

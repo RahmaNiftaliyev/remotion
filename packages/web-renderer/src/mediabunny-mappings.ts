@@ -13,7 +13,7 @@ import {
 
 export type WebRendererVideoCodec = 'h264' | 'h265' | 'vp8' | 'vp9' | 'av1';
 export type WebRendererContainer = 'mp4' | 'webm';
-export type WebRendererAudioCodec = 'aac' | 'opus' | 'ac3' | 'eac3';
+export type WebRendererAudioCodec = 'aac' | 'opus';
 export type WebRendererQuality =
 	| 'very-low'
 	| 'low'
@@ -128,12 +128,7 @@ export const getSupportedVideoCodecsForContainer = (
 	);
 };
 
-const WEB_RENDERER_AUDIO_CODECS: WebRendererAudioCodec[] = [
-	'aac',
-	'opus',
-	'ac3',
-	'eac3',
-];
+const WEB_RENDERER_AUDIO_CODECS: WebRendererAudioCodec[] = ['aac', 'opus'];
 
 export const getSupportedAudioCodecsForContainer = (
 	container: WebRendererContainer,

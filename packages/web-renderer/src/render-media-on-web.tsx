@@ -1,4 +1,4 @@
-import {registerAc3Encoder} from '@mediabunny/ac3';
+import {registerAc3Decoder} from '@mediabunny/ac3';
 import {BufferTarget, StreamTarget} from 'mediabunny';
 import type {CalculateMetadataFunction} from 'remotion';
 import {Internals, type LogLevel} from 'remotion';
@@ -46,7 +46,7 @@ import {validateVideoFrame, type OnFrameCallback} from './validate-video-frame';
 import {waitForReady} from './wait-for-ready';
 import {cleanupStaleOpfsFiles, createWebFsTarget} from './web-fs-target';
 
-registerAc3Encoder();
+registerAc3Decoder();
 
 export type InputPropsIfHasProps<
 	Schema extends AnyZodObject,

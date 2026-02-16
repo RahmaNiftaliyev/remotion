@@ -1,4 +1,3 @@
-import {registerAc3Decoder} from '@mediabunny/ac3';
 import {ALL_FORMATS, Input, UrlSource} from 'mediabunny';
 import type {LogLevel, useBufferState} from 'remotion';
 import {Internals} from 'remotion';
@@ -15,8 +14,6 @@ import type {Nonce, NonceManager} from './nonce-manager';
 import {makeNonceManager} from './nonce-manager';
 import type {VideoIteratorManager} from './video-iterator-manager';
 import {videoIteratorManager} from './video-iterator-manager';
-
-registerAc3Decoder();
 
 export type MediaPlayerInitResult =
 	| {type: 'success'; durationInSeconds: number}

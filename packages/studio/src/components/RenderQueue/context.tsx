@@ -333,7 +333,9 @@ export const RenderQueueContextProvider: React.FC<{
 
 	const value: RenderQueueContextType = useMemo(() => {
 		return {
-			jobs: [...serverJobs, ...clientJobs],
+			jobs: [...serverJobs, ...clientJobs].sort(
+				(a, b) => a.startedAt - b.startedAt,
+			),
 			serverJobs,
 			clientJobs,
 			addClientStillJob,

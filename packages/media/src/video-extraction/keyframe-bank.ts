@@ -144,7 +144,7 @@ export const makeKeyframeBank = async ({
 			(lastFrame as VideoSample).duration;
 
 		return (
-			roundTo4Digits(lastFrameTimestamp + duration) >= roundTo4Digits(timestamp)
+			roundTo4Digits(lastFrameTimestamp + duration) > roundTo4Digits(timestamp)
 		);
 	};
 

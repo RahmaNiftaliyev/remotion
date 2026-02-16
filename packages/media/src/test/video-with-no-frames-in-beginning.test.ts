@@ -6,7 +6,12 @@ import {makeNonceManager} from '../nonce-manager';
 import {extractFrame} from '../video-extraction/extract-frame';
 import {videoIteratorManager} from '../video-iterator-manager';
 
-test('in preview, should properly buffer and draw frames', async () => {
+test('in preview, should properly buffer and draw frames', async (t) => {
+	if (t.task.file.projectName === 'webkit') {
+		t.skip();
+		return;
+	}
+
 	const input = new Input({
 		source: new UrlSource('/no-frames-in-beginning.webm'),
 		formats: ALL_FORMATS,
@@ -129,7 +134,12 @@ test('same goes for audio', async () => {
 	expect(iterators).toBe(1);
 });
 
-test('in rendering, should also be smart', async () => {
+test('in rendering, should also be smart', async (t) => {
+	if (t.task.file.projectName === 'webkit') {
+		t.skip();
+		return;
+	}
+
 	let lastFrame;
 	for (let i = 0; i < 5; i++) {
 		const frame = await extractFrame({

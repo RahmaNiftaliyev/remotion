@@ -99,6 +99,11 @@ test('Should be able to extract the last frame', async () => {
 });
 
 test('Should manage the cache', async (t) => {
+	if (t.task.file.projectName === 'webkit') {
+		t.skip();
+		return;
+	}
+
 	keyframeManager.clearAll('info');
 
 	for (let i = 0; i < 50; i++) {

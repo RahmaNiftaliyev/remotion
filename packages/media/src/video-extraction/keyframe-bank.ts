@@ -108,10 +108,9 @@ export const makeKeyframeBank = async ({
 				continue;
 			}
 
-			const duration = getDurationOfFrame(frameTimestamp);
-			if (typeof duration !== 'number') {
-				continue;
-			}
+			const duration =
+				getDurationOfFrame(frameTimestamp) ??
+				(frames[frameTimestamp] as VideoSample).duration;
 
 			if (frameTimestamp + duration < timestampInSeconds) {
 				deleteFrameAtTimestamp(frameTimestamp);

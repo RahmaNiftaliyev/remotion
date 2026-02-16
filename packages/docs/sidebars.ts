@@ -1287,7 +1287,7 @@ const sidebars: SidebarsConfig = {
 				'miscellaneous/render-in-browser',
 				'miscellaneous/automatic-duration',
 				'miscellaneous/nextjs',
-				'miscellaneous/vercel',
+				'vercel',
 				'miscellaneous/render-on-edge',
 				'miscellaneous/embed-studio',
 				'miscellaneous/absolute-paths',

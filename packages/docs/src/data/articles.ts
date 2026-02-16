@@ -3944,15 +3944,6 @@ export const articles = [
 		slug: 'typescript-aliases',
 	},
 	{
-		id: 'miscellaneous/vercel',
-		title: 'Remotion on Vercel',
-		relativePath: 'docs/miscellaneous/vercel.mdx',
-		compId: 'articles-docs-miscellaneous-vercel',
-		crumb: 'Deployment',
-		noAi: false,
-		slug: 'miscellaneous/vercel',
-	},
-	{
 		id: 'miscellaneous/video-formats',
 		title: 'Which video formats does Remotion support?',
 		relativePath: 'docs/miscellaneous/video-formats.mdx',
@@ -6537,6 +6528,15 @@ export const articles = [
 		crumb: 'Server-side rendering',
 		noAi: false,
 		slug: 'vercel-sandbox',
+	},
+	{
+		id: 'vercel',
+		title: 'Remotion on Vercel',
+		relativePath: 'docs/vercel.mdx',
+		compId: 'articles-docs-vercel',
+		crumb: 'Deployment',
+		noAi: false,
+		slug: 'vercel',
 	},
 	{
 		id: 'version-mismatch',

@@ -20,6 +20,9 @@ export default defineConfig({
 				{
 					browser: 'firefox',
 				},
+				{
+					browser: 'webkit',
+				},
 			],
 			headless: true,
 			screenshotFailures: false,

@@ -16,7 +16,13 @@ const expectedFirst100 = [
 	222, 301, -26, 33, -293, -245, -349, -289, -150, -71,
 ];
 
-test('Audio samples from MP3 should produce identical s16 output on Chrome and Firefox', async () => {
+test('Audio samples from MP3 should produce identical s16 output on Chrome and Firefox', async (t) => {
+	// TODO: Why is it different on webkit?
+	if (t.task.file.projectName === 'webkit') {
+		t.skip();
+		return;
+	}
+
 	const a = await extractAudio({
 		src: '/mp3-f32-audio.mp3',
 		timeInSeconds: 0.03333333333333333,

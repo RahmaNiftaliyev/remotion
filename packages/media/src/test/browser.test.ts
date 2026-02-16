@@ -183,7 +183,7 @@ test('Should be apply volume correctly', async () => {
 });
 
 test('Should be able to loop', async () => {
-	await keyframeManager.clearAll('info');
+	keyframeManager.clearAll('info');
 
 	const result = await extractFrameAndAudio({
 		src: `/bigbuckbunny.mp4`,

@@ -28,5 +28,8 @@ export default defineConfig({
 			screenshotFailures: false,
 		},
 	},
+	esbuild: {
+		target: 'es2022',
+	},
 	publicDir: path.join(__dirname, '..', 'example-videos', 'videos'),
 });

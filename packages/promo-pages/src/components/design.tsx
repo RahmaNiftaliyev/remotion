@@ -140,6 +140,21 @@ export const DesignPage: React.FC = () => {
 					</svg>
 				</Button>
 				<div className="h-8" />
+				<Explainer>Link button</Explainer>
+				<Button href="/design">Link button</Button>
+				<br />
+				<Explainer>
+					Link button with <code>&lt;span&gt;</code>
+				</Explainer>
+				<Button href="/design">
+					<span>Link button with span child</span>
+				</Button>
+				<br />
+				<Explainer>External link button</Explainer>
+				<Button href="https://github.com/remotion-dev/remotion" target="_blank">
+					GitHub
+				</Button>
+				<div className="h-8" />
 				<Explainer>Remove (small)</Explainer>
 				<Button
 					className="hover:text-white hover:bg-warn transition-colors w-6 h-6 p-0 rounded-full"

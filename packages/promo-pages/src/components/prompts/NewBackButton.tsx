@@ -6,15 +6,14 @@ export const NewBackButton: React.FC<{
 	readonly link: string;
 }> = ({text, link}) => {
 	return (
-		<a
-			href={link}
-			className="justify-center items-center font-medium no-underline mb-4 block text-text"
+		<div
+			className="justify-center items-center font-medium mb-4 block text-text"
 			style={{
 				fontFamily: 'GTPlanar',
 				fontWeight: 500,
 			}}
 		>
-			<Button className="px-8 rounded-full text-sm h-10">
+			<Button href={link} className="px-8 rounded-full text-sm h-10">
 				<div className="flex row items-center justify-start font-normal">
 					<svg
 						className="h-4 mr-[8px] inline-block text-text"
@@ -29,6 +28,6 @@ export const NewBackButton: React.FC<{
 					{text}
 				</div>
 			</Button>
-		</a>
+		</div>
 	);
 };

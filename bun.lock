@@ -935,6 +935,7 @@
       "name": "@remotion/media",
       "version": "4.0.422",
       "dependencies": {
+        "@mediabunny/ac3": "catalog:",
         "mediabunny": "catalog:",
         "remotion": "workspace:*",
       },
@@ -1549,7 +1550,7 @@
         "@remotion/media": "workspace:*",
         "@remotion/media-utils": "workspace:*",
         "@remotion/zod-types": "workspace:*",
-        "mediabunny": "1.29.0",
+        "mediabunny": "1.34.2",
         "react": "19.2.3",
         "react-dom": "19.2.3",
         "remotion": "workspace:*",
@@ -1873,7 +1874,7 @@
         "connect": "3.7.0",
         "eslint": "9.19.0",
         "lucide-react": "0.516.0",
-        "mediabunny": "1.29.0",
+        "mediabunny": "1.34.2",
         "react": "19.2.3",
         "react-dom": "19.2.3",
         "remotion": "workspace:*",
@@ -2009,7 +2010,7 @@
         "@remotion/media": "workspace:*",
         "@remotion/three": "workspace:*",
         "@remotion/zod-types": "workspace:*",
-        "mediabunny": "1.29.0",
+        "mediabunny": "1.34.2",
         "react": "19.2.3",
         "react-dom": "19.2.3",
         "remotion": "workspace:*",
@@ -2222,6 +2223,7 @@
       "name": "@remotion/web-renderer",
       "version": "4.0.422",
       "dependencies": {
+        "@mediabunny/ac3": "catalog:",
         "@remotion/licensing": "workspace:*",
         "mediabunny": "catalog:",
         "remotion": "workspace:*",
@@ -2307,7 +2309,8 @@
     "@aws-sdk/lib-storage": "3.986.0",
     "@aws-sdk/middleware-flexible-checksums": "3.972.5",
     "@aws-sdk/s3-request-presigner": "3.986.0",
-    "@mediabunny/mp3-encoder": "1.29.0",
+    "@mediabunny/ac3": "1.34.2",
+    "@mediabunny/mp3-encoder": "1.34.2",
     "@react-three/fiber": "9.2.0",
     "@types/bun": "1.3.3",
     "@types/dom-webcodecs": "0.1.11",
@@ -2320,7 +2323,7 @@
     "@vitejs/plugin-react": "4.1.0",
     "@vitest/browser-playwright": "4.0.9",
     "eslint": "9.19.0",
-    "mediabunny": "1.29.0",
+    "mediabunny": "1.34.2",
     "next": "16.1.5",
     "openai": "4.67.1",
     "playwright": "1.55.1",
@@ -3245,7 +3248,9 @@
 
     "@mdx-js/react": ["@mdx-js/react@2.3.0", "", { "dependencies": { "@types/mdx": "2.0.5", "@types/react": "19.0.0" }, "peerDependencies": { "react": "19.0.0" } }, "sha512-zQH//gdOmuu7nt2oJR29vFhDv88oGPmVw6BggmrHeMI+xgEkp1B2dX9/bMBSYtK0dyLX/aOmesKS09g222K1/g=="],
 
-    "@mediabunny/mp3-encoder": ["@mediabunny/mp3-encoder@1.29.0", "", { "peerDependencies": { "mediabunny": "^1.0.0" } }, "sha512-CEgaVOG4kxjB5CImqTRLI4QvnE0K++SVegPNFzw1LGijy1UfrRqSLMkuCn+m0B6XzMIxB3SzPHTFcdsLfPVERA=="],
+    "@mediabunny/ac3": ["@mediabunny/ac3@1.34.2", "", { "peerDependencies": { "mediabunny": "^1.0.0" } }, "sha512-Ej6Ns6/NcuvtajNxiK0rrGqnTD4JQETL2Ofrdnf5lQ2vxBEXT4Od9N+RUTxQbPRX9ZlWXpwvSZgf0sdCT0P1YA=="],
+
+    "@mediabunny/mp3-encoder": ["@mediabunny/mp3-encoder@1.34.2", "", { "peerDependencies": { "mediabunny": "^1.0.0" } }, "sha512-orRlKJBlhI6DizotCdYLqPuXn3H9S+rQM3GE/UX/F7z7oPAL4YTy2OVPAFxc0OMp1fmOAaiQZ8uTRYdM/m9pAg=="],
 
     "@mediafox/core": ["@mediafox/core@1.0.4", "", { "peerDependencies": { "mediabunny": "^1.23.0", "typescript": ">=5.0.0" } }, "sha512-1j8PKp835RUVzZt1vcymrgZqhaMobfP7SswbTisusvTgIZL8y5n2QFhSCnn7dze+a53VgnWyzkHOYdtVR1Gdew=="],
 
@@ -6157,7 +6162,7 @@
 
     "media-typer": ["media-typer@0.3.0", "", {}, "sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ=="],
 
-    "mediabunny": ["mediabunny@1.29.0", "", { "dependencies": { "@types/dom-mediacapture-transform": "^0.1.11", "@types/dom-webcodecs": "0.1.13" } }, "sha512-18B8w/rhO/ph/AFsIXvzZg8RaSQZ+ZYfJ99MZlTjDmlgCT58jV3azrnWQ/OSquYDi8q0xmn64mnfTEHgww3+zw=="],
+    "mediabunny": ["mediabunny@1.34.2", "", { "dependencies": { "@types/dom-mediacapture-transform": "^0.1.11", "@types/dom-webcodecs": "0.1.13" } }, "sha512-Mr9VhiqH2RRwc3vR6rk8ca/58HhstP+c25PjtZmZvmCw21ibWSNqpinvBREfJmY+hpNGnG9dUmbJ4WqLMDWO0g=="],
 
     "memfs": ["memfs@3.4.3", "", { "dependencies": { "fs-monkey": "1.0.3" } }, "sha512-eivjfi7Ahr6eQTn44nvTnR60e4a1Fs1Via2kCR5lHo/kyNoiMWaXCNJ/GpSd0ilXas2JSOl9B5FTIhflXu0hlg=="],
 

@@ -206,15 +206,17 @@ export const stillCommand = async ({
 	const privacy = parsedLambdaCli.privacy ?? DEFAULT_OUTPUT_PRIVACY;
 	validatePrivacy(privacy, true);
 
+	const {stillImageFormatOption} = BrowserSafeApis.options;
+
 	const {format: imageFormat, source: imageFormatReason} =
 		determineFinalStillImageFormat({
 			downloadName,
 			outName: outName ?? null,
-			cliFlag: parsedCli['image-format'] ?? null,
+			configuredImageFormat: stillImageFormatOption.getValue({
+				commandLine: parsedCli,
+			}).value,
 			isLambda: true,
 			fromUi: null,
-			configImageFormat:
-				ConfigInternals.getUserPreferredStillImageFormat() ?? null,
 		});
 
 	Log.info(

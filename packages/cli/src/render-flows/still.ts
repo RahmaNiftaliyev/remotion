@@ -11,6 +11,7 @@ import type {
 	StillImageFormat,
 } from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
+import {BrowserSafeApis} from '@remotion/renderer/client';
 import type {
 	AggregateRenderProgress,
 	JobProgressCallback,
@@ -22,7 +23,6 @@ import {NoReactInternals} from 'remotion/no-react';
 import {defaultBrowserDownloadProgress} from '../browser-download-bar';
 import {chalk} from '../chalk';
 import {registerCleanupJob} from '../cleanup-before-quit';
-import {ConfigInternals} from '../config';
 import {determineFinalStillImageFormat} from '../determine-image-format';
 import {getAndValidateAbsoluteOutputFile} from '../get-cli-options';
 import {getCompositionWithDimensionOverride} from '../get-composition-with-dimension-override';
@@ -277,9 +277,10 @@ export const renderStillFlow = async ({
 		});
 
 	const {format: imageFormat, source} = determineFinalStillImageFormat({
-		cliFlag: parsedCli['image-format'] ?? null,
-		configImageFormat:
-			ConfigInternals.getUserPreferredStillImageFormat() ?? null,
+		configuredImageFormat:
+			BrowserSafeApis.options.stillImageFormatOption.getValue({
+				commandLine: parsedCli,
+			}).value,
 		downloadName: null,
 		outName: getUserPassedOutputLocation(
 			argsAfterComposition,

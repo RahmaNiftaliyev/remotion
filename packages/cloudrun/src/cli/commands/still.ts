@@ -158,15 +158,17 @@ export const stillCommand = async (
 		composition = compositionId;
 	}
 
+	const {stillImageFormatOption} = BrowserSafeApis.options;
+
 	const {format: imageFormat, source: imageFormatReason} =
 		CliInternals.determineFinalStillImageFormat({
 			downloadName,
 			outName: outName ?? null,
-			cliFlag: CliInternals.parsedCli['image-format'] ?? null,
+			configuredImageFormat: stillImageFormatOption.getValue({
+				commandLine: CliInternals.parsedCli,
+			}).value,
 			isLambda: true,
 			fromUi: null,
-			configImageFormat:
-				ConfigInternals.getUserPreferredStillImageFormat() ?? null,
 		});
 	Log.verbose(
 		{indent: false, logLevel},

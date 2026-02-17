@@ -106,6 +106,5 @@ export const getCliOptions = (options: {
 		ffmpegOverride: ConfigInternals.getFfmpegOverrideFunction(),
 		height,
 		width,
-		configFileImageFormat: ConfigInternals.getUserPreferredVideoImageFormat(),
 	};
 };

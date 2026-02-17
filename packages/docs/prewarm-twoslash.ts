@@ -301,11 +301,11 @@ async function main() {
 	const workerPromises = chunks.map((chunk, i) => runWorker(chunk, i));
 
 	const progressInterval = setInterval(() => {
-		try {
-			const cached = readdirSync(CACHE_ROOT).length;
-			const elapsed = ((performance.now() - startTime) / 1000).toFixed(0);
-			console.log(`  ${elapsed}s elapsed, ~${cached} cached`);
-		} catch {}
+		const cached = existsSync(CACHE_ROOT)
+			? readdirSync(CACHE_ROOT).length
+			: 0;
+		const elapsed = ((performance.now() - startTime) / 1000).toFixed(0);
+		console.log(`  ${elapsed}s elapsed, ~${cached} cached`);
 	}, 15000);
 
 	const results = await Promise.all(workerPromises);

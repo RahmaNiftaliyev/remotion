@@ -1,14 +1,14 @@
-import React, { useCallback } from 'react';
+import React, { useCallback } from "react";
 
 const textarea: React.CSSProperties = {
-  resize: 'none',
+  resize: "none",
   lineHeight: 1.7,
-  display: 'block',
-  width: '100%',
-  borderRadius: 'var(--geist-border-radius)',
-  backgroundColor: 'var(--background)',
-  padding: 'var(--geist-half-pad)',
-  color: 'var(--foreground)',
+  display: "block",
+  width: "100%",
+  borderRadius: "var(--geist-border-radius)",
+  backgroundColor: "var(--background)",
+  padding: "var(--geist-half-pad)",
+  color: "var(--foreground)",
   fontSize: 14,
 };
 

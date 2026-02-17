@@ -3,16 +3,16 @@ import {
   renderMediaOnLambda,
   RenderMediaOnLambdaOutput,
   speculateFunctionName,
-} from '@remotion/lambda/client';
-import { DISK, RAM, REGION, SITE_NAME, TIMEOUT } from '../../../../config.mjs';
-import { RenderRequest } from '../../../../types/schema';
-import { executeApi } from '../../../helpers/api-response';
+} from "@remotion/lambda/client";
+import { DISK, RAM, REGION, SITE_NAME, TIMEOUT } from "../../../../config.mjs";
+import { RenderRequest } from "../../../../types/schema";
+import { executeApi } from "../../../helpers/api-response";
 
 const render = executeApi<RenderMediaOnLambdaOutput, typeof RenderRequest>(
   RenderRequest,
   async (req, body) => {
-    if (req.method !== 'POST') {
-      throw new Error('Only POST requests are allowed');
+    if (req.method !== "POST") {
+      throw new Error("Only POST requests are allowed");
     }
 
     if (
@@ -20,7 +20,7 @@ const render = executeApi<RenderMediaOnLambdaOutput, typeof RenderRequest>(
       !process.env.REMOTION_AWS_ACCESS_KEY_ID
     ) {
       throw new TypeError(
-        'Set up Remotion Lambda to render videos. See the README.md for how to do so.',
+        "Set up Remotion Lambda to render videos. See the README.md for how to do so.",
       );
     }
     if (
@@ -28,12 +28,12 @@ const render = executeApi<RenderMediaOnLambdaOutput, typeof RenderRequest>(
       !process.env.REMOTION_AWS_SECRET_ACCESS_KEY
     ) {
       throw new TypeError(
-        'The environment variable REMOTION_AWS_SECRET_ACCESS_KEY is missing. Add it to your .env file.',
+        "The environment variable REMOTION_AWS_SECRET_ACCESS_KEY is missing. Add it to your .env file.",
       );
     }
 
     const result = await renderMediaOnLambda({
-      codec: 'h264',
+      codec: "h264",
       functionName: speculateFunctionName({
         diskSizeInMb: DISK,
         memorySizeInMb: RAM,
@@ -45,8 +45,8 @@ const render = executeApi<RenderMediaOnLambdaOutput, typeof RenderRequest>(
       inputProps: body.inputProps,
       framesPerLambda: 10,
       downloadBehavior: {
-        type: 'download',
-        fileName: 'video.mp4',
+        type: "download",
+        fileName: "video.mp4",
       },
     });
 

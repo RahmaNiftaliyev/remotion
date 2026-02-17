@@ -1,22 +1,22 @@
-import React from 'react';
-import styles from './styles.module.css';
+import React from "react";
+import styles from "./styles.module.css";
 
 const titlerow: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'flex-start',
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "flex-start",
 };
 
 const titlestyle: React.CSSProperties = {
-  marginBottom: '0.75em',
-  marginTop: '0.75em',
-  color: 'var(--foreground)',
+  marginBottom: "0.75em",
+  marginTop: "0.75em",
+  color: "var(--foreground)",
 };
 
 const a: React.CSSProperties = {
-  textDecoration: 'none',
-  color: 'inherit',
+  textDecoration: "none",
+  color: "inherit",
   flex: 1,
 };
 

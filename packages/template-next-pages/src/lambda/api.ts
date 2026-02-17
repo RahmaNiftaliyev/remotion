@@ -1,26 +1,26 @@
-import type { RenderMediaOnLambdaOutput } from '@remotion/lambda/client';
-import { z } from 'zod';
-import { CompositionProps } from '../../types/constants';
+import type { RenderMediaOnLambdaOutput } from "@remotion/lambda/client";
+import { z } from "zod";
+import { CompositionProps } from "../../types/constants";
 import {
   ProgressRequest,
   ProgressResponse,
   RenderRequest,
-} from '../../types/schema';
-import { ApiResponse } from '../helpers/api-response';
+} from "../../types/schema";
+import { ApiResponse } from "../helpers/api-response";
 
 const makeRequest = async <Res>(
   endpoint: string,
   body: unknown,
 ): Promise<Res> => {
   const result = await fetch(endpoint, {
-    method: 'post',
+    method: "post",
     body: JSON.stringify(body),
     headers: {
-      'content-type': 'application/json',
+      "content-type": "application/json",
     },
   });
   const json = (await result.json()) as ApiResponse<Res>;
-  if (json.type === 'error') {
+  if (json.type === "error") {
     throw new Error(json.message);
   }
 
@@ -39,7 +39,7 @@ export const renderVideo = async ({
     inputProps,
   };
 
-  return makeRequest<RenderMediaOnLambdaOutput>('/api/lambda/render', body);
+  return makeRequest<RenderMediaOnLambdaOutput>("/api/lambda/render", body);
 };
 
 export const getProgress = async ({
@@ -54,5 +54,5 @@ export const getProgress = async ({
     bucketName,
   };
 
-  return makeRequest<ProgressResponse>('/api/lambda/progress', body);
+  return makeRequest<ProgressResponse>("/api/lambda/progress", body);
 };

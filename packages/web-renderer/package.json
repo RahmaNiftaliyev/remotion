@@ -6,7 +6,6 @@
 	"version": "4.0.423",
 	"main": "dist/index.js",
 	"type": "module",
-	"sideEffects": false,
 	"scripts": {
 		"formatting": "prettier --experimental-cli src --check",
 		"lint": "eslint src",

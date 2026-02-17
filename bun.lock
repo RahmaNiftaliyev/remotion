@@ -27,6 +27,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -38,6 +39,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
       "peerDependencies": {
@@ -80,6 +82,7 @@
       "devDependencies": {
         "@remotion/bundler": "workspace:*",
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "remotion": "workspace:*",
       },
@@ -104,6 +107,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
@@ -118,6 +122,7 @@
       "version": "4.0.423",
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -152,6 +157,7 @@
         "@types/node": "catalog:",
         "@types/prettier": "^2.7.2",
         "@types/prompts": "^2.4.1",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
@@ -184,6 +190,7 @@
         "@remotion/eslint-config-internal": "workspace:*",
         "@types/minimist": "1.2.2",
         "@types/node": "catalog:",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -284,6 +291,7 @@
         "@testing-library/dom": "10.4.0",
         "@testing-library/react": "16.1.0",
         "@types/dom-webcodecs": "catalog:",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "happy-dom": "20.0.2",
         "react": "catalog:",
@@ -314,6 +322,7 @@
         "@types/minimist": "1.2.2",
         "@types/prompts": "^2.0.12",
         "@types/tar": "6.1.1",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "react": "catalog:",
       },
@@ -334,6 +343,7 @@
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
         "@tailwindcss/cli": "4.1.1",
+        "@typescript/native-preview": "catalog:",
         "bun-plugin-tailwind": "0.1.2",
         "eslint": "catalog:",
         "react": "catalog:",
@@ -475,6 +485,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -489,6 +500,7 @@
       "devDependencies": {
         "@remotion/bundler": "workspace:*",
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
       "peerDependencies": {
@@ -503,6 +515,7 @@
         "@remotion/eslint-plugin": "workspace:*",
         "@typescript-eslint/eslint-plugin": "6.21.0",
         "@typescript-eslint/parser": "6.21.0",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "eslint-plugin-react": "7.37.4",
         "eslint-plugin-react-hooks": "4.6.0",
@@ -521,6 +534,7 @@
         "@eslint/js": "9.19.0",
         "@remotion/eslint-config-internal": "workspace:*",
         "@remotion/eslint-plugin": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "eslint-plugin-react": "7.37.4",
         "eslint-plugin-react-hooks": "5.2.0",
@@ -544,6 +558,7 @@
       },
       "devDependencies": {
         "@types/eslint__eslintrc": "2.1.2",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -554,6 +569,7 @@
         "@typescript-eslint/utils": "5.19.0",
       },
       "devDependencies": {
+        "@typescript/native-preview": "catalog:",
         "eslint": "8.57.0",
         "vitest": "catalog:",
       },
@@ -650,6 +666,7 @@
       "version": "4.0.423",
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "dotenv": "9.0.2",
         "eslint": "catalog:",
       },
@@ -672,6 +689,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -683,6 +701,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "esbuild": "0.25.0",
         "eslint": "catalog:",
         "react": "catalog:",
@@ -703,6 +722,7 @@
       "devDependencies": {
         "@types/css-font-loading-module": "0.0.14",
         "@types/prettier": "^2.7.1",
+        "@typescript/native-preview": "catalog:",
         "postcss": "8.4.47",
         "prettier": "catalog:",
       },
@@ -715,6 +735,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -792,6 +813,7 @@
         "@types/minimist": "1.2.2",
         "@types/node": "catalog:",
         "@types/prompt": "^1.1.0",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "express": "4.21.0",
         "mime-types": "2.1.34",
@@ -819,6 +841,7 @@
         "@remotion/serverless-client": "workspace:*",
         "@types/express": "^5.0.0",
         "@types/mime-types": "2.1.1",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "express": "4.21.0",
         "mime-types": "2.1.34",
@@ -865,6 +888,7 @@
       "version": "4.0.423",
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -873,6 +897,7 @@
       "version": "4.0.423",
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "msw": "^2.7.1",
         "remotion": "workspace:*",
@@ -904,6 +929,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "lottie-web": "5.13.0",
         "react": "catalog:",
@@ -928,6 +954,7 @@
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
         "@types/command-line-args": "^5.2.3",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -962,6 +989,7 @@
         "@remotion/example-videos": "workspace:*",
         "@types/bun": "catalog:",
         "@types/wicg-file-system-access": "2023.10.5",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "mediabunny": "catalog:",
       },
@@ -977,6 +1005,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
       "peerDependencies": {
@@ -992,6 +1021,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
@@ -1011,6 +1041,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -1022,6 +1053,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "openai": "catalog:",
       },
@@ -1031,6 +1063,7 @@
       "version": "4.0.423",
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -1044,6 +1077,7 @@
         "@happy-dom/global-registrator": "14.5.1",
         "@remotion/eslint-config-internal": "workspace:*",
         "@testing-library/react": "16.1.0",
+        "@typescript/native-preview": "catalog:",
         "csstype": "^3.1.1",
         "eslint": "catalog:",
         "react": "catalog:",
@@ -1082,6 +1116,7 @@
       "version": "4.0.423",
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -1136,6 +1171,7 @@
         "@remotion/web-renderer": "workspace:*",
         "@types/react": "18.3.1",
         "@types/react-dom": "18.3.1",
+        "@typescript/native-preview": "catalog:",
         "@vitejs/plugin-react": "catalog:",
         "@vitest/browser-playwright": "catalog:",
         "eslint": "catalog:",
@@ -1198,6 +1234,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
@@ -1216,6 +1253,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -1230,6 +1268,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -1240,6 +1279,7 @@
         "@remotion/eslint-config-internal": "workspace:*",
         "@remotion/renderer": "workspace:*",
         "@remotion/streaming": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "remotion": "workspace:*",
       },
@@ -1254,6 +1294,7 @@
         "@happy-dom/global-registrator": "14.5.1",
         "@remotion/eslint-config-internal": "workspace:*",
         "@testing-library/react": "16.1.0",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
@@ -1274,6 +1315,7 @@
         "@remotion/eslint-config-internal": "workspace:*",
         "@shopify/react-native-skia": "2.0.0",
         "@types/react-native": "^0.69.2",
+        "@typescript/native-preview": "catalog:",
         "canvaskit-wasm": "0.40.0",
         "eslint": "catalog:",
         "react": "catalog:",
@@ -1309,6 +1351,7 @@
       "version": "4.0.423",
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -1333,6 +1376,7 @@
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
         "@types/semver": "^7.3.4",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
@@ -1362,6 +1406,7 @@
         "@remotion/eslint-config-internal": "workspace:*",
         "@types/node": "catalog:",
         "@types/semver": "^7.3.4",
+        "@typescript/native-preview": "catalog:",
         "ast-types": "0.16.1",
         "eslint": "catalog:",
         "react": "catalog:",
@@ -1376,6 +1421,7 @@
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
         "@remotion/renderer": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -1387,6 +1433,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -1405,6 +1452,7 @@
       "devDependencies": {
         "@remotion/bundler": "workspace:*",
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "autoprefixer": "10.4.20",
         "eslint": "catalog:",
       },
@@ -1427,6 +1475,7 @@
       "devDependencies": {
         "@remotion/bundler": "workspace:*",
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
       "peerDependencies": {
@@ -1995,6 +2044,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-flat": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "bun": "1.3.3",
         "eslint": "9.19.0",
         "prettier": "3.6.0",
@@ -2164,6 +2214,7 @@
       "version": "4.0.423",
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
@@ -2182,6 +2233,7 @@
         "@types/react-reconciler": "0.32.0",
         "@types/three": "catalog:",
         "@types/web": "catalog:",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
@@ -2209,6 +2261,7 @@
         "@remotion/eslint-config-internal": "workspace:*",
         "@remotion/player": "workspace:*",
         "@remotion/test-utils": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
@@ -2263,6 +2316,7 @@
         "@remotion/eslint-config-internal": "workspace:*",
         "@remotion/example-videos": "workspace:*",
         "@types/dom-webcodecs": "catalog:",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "playwright": "catalog:",
         "vite": "5.4.21",
@@ -2276,6 +2330,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
       },
     },
@@ -2287,6 +2342,7 @@
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "zod": "catalog:",
       },
@@ -2319,7 +2375,7 @@
     "@types/react-dom": "19.2.3",
     "@types/three": "0.170.0",
     "@types/web": "0.0.166",
-    "@typescript/native-preview": "7.0.0-dev.20260105.1",
+    "@typescript/native-preview": "7.0.0-dev.20260217.1",
     "@vitejs/plugin-react": "4.1.0",
     "@vitest/browser-playwright": "4.0.9",
     "eslint": "9.19.0",
@@ -4536,21 +4592,21 @@
 
     "@typescript-eslint/visitor-keys": ["@typescript-eslint/visitor-keys@6.21.0", "", { "dependencies": { "@typescript-eslint/types": "6.21.0", "eslint-visitor-keys": "3.4.3" } }, "sha512-JJtkDduxLi9bivAB+cYOVMtbkqdPOhZ+ZI5LC47MIRrDV4Yn2o+ZnW10Nkmr28xRpSpdJ6Sm42Hjf2+REYXm0A=="],
 
-    "@typescript/native-preview": ["@typescript/native-preview@7.0.0-dev.20260105.1", "", { "optionalDependencies": { "@typescript/native-preview-darwin-arm64": "7.0.0-dev.20260105.1", "@typescript/native-preview-darwin-x64": "7.0.0-dev.20260105.1", "@typescript/native-preview-linux-arm": "7.0.0-dev.20260105.1", "@typescript/native-preview-linux-arm64": "7.0.0-dev.20260105.1", "@typescript/native-preview-linux-x64": "7.0.0-dev.20260105.1", "@typescript/native-preview-win32-arm64": "7.0.0-dev.20260105.1", "@typescript/native-preview-win32-x64": "7.0.0-dev.20260105.1" }, "bin": { "tsgo": "bin/tsgo.js" } }, "sha512-PjmhqnN/jRDLxG/5EuCe8AlW1QUEOjcDJQsxarQmMbrdW5DbSDnYUvWbYbJescXefeK0v3FUQmp7HAOCFQ7I/w=="],
+    "@typescript/native-preview": ["@typescript/native-preview@7.0.0-dev.20260217.1", "", { "optionalDependencies": { "@typescript/native-preview-darwin-arm64": "7.0.0-dev.20260217.1", "@typescript/native-preview-darwin-x64": "7.0.0-dev.20260217.1", "@typescript/native-preview-linux-arm": "7.0.0-dev.20260217.1", "@typescript/native-preview-linux-arm64": "7.0.0-dev.20260217.1", "@typescript/native-preview-linux-x64": "7.0.0-dev.20260217.1", "@typescript/native-preview-win32-arm64": "7.0.0-dev.20260217.1", "@typescript/native-preview-win32-x64": "7.0.0-dev.20260217.1" }, "bin": { "tsgo": "bin/tsgo.js" } }, "sha512-czUniBl1MsempdDkeDwfKThhHkeQzyLxn2aVcsCTSk2Ys84M8yy2eRdUZQrufwLL1Etcz+bv3SvZbBMcnPk/Ig=="],
 
-    "@typescript/native-preview-darwin-arm64": ["@typescript/native-preview-darwin-arm64@7.0.0-dev.20260105.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-d+CJrdiElzHuckgsXLHlBRLbHsgzWqQuSVOZ/raF6cvBKjylnphNPx+CdtOpZrBCic0M30Q/UfTV6StMDhjIrQ=="],
+    "@typescript/native-preview-darwin-arm64": ["@typescript/native-preview-darwin-arm64@7.0.0-dev.20260217.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-Mj8Mh+aTaGWURK65VuMxyOBhy+9OfXCHCL63zJPr/PqTNKub+GgGpGYKfSlbDBkqkB8UgURlI2CDRUoyOfvufQ=="],
 
-    "@typescript/native-preview-darwin-x64": ["@typescript/native-preview-darwin-x64@7.0.0-dev.20260105.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-ntgJZDSNh7tqw2bfBuEEqhwUbuALLTLY4E/pLdCC8vaL/2QrNcTuDZX23hcLa7pQL6ML2OVvEH1MC7A1BUO/WA=="],
+    "@typescript/native-preview-darwin-x64": ["@typescript/native-preview-darwin-x64@7.0.0-dev.20260217.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-txn4CJ7/zj+WcSdDL5nshs9he7M0DF5qZBU5glWAJP+uIZmRSyuxDoWZqtjrzmX+vs5IOzyKgYcDsBYFkjybwA=="],
 
-    "@typescript/native-preview-linux-arm": ["@typescript/native-preview-linux-arm@7.0.0-dev.20260105.1", "", { "os": "linux", "cpu": "arm" }, "sha512-Pv8aEc9OKG++9dPzyWwZRXt1WEHH7saAYpGrYWKnR0mMDt8yRRPX2g9ReCSFLJ/9ji3nvBg3n/wUXDXOdMQDDg=="],
+    "@typescript/native-preview-linux-arm": ["@typescript/native-preview-linux-arm@7.0.0-dev.20260217.1", "", { "os": "linux", "cpu": "arm" }, "sha512-gw+O550PhazyzsAi/oq1xztMM1PWSXtxq38tN15e/dRh0BXOt0bDUoEgIzFD0L5OkmiOlEIknROqvAVNa4QH3g=="],
 
-    "@typescript/native-preview-linux-arm64": ["@typescript/native-preview-linux-arm64@7.0.0-dev.20260105.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-uBj+8EPCZ8bFSosovwmgF16r4NXHgq0Wc3Ddg48KDqUl9njsVjWbg6jv3H5OXm7nnLKgRzmq9B30cHuWhlKsMg=="],
+    "@typescript/native-preview-linux-arm64": ["@typescript/native-preview-linux-arm64@7.0.0-dev.20260217.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-aGCr3/g1ktJ+IRjLEWTdNmG3H2iwPWt9tBu7spRnIIvDcdlEHFf8NQ2Mwn3n54bVnXAN5nYxZmM7WEYYfNvD6w=="],
 
-    "@typescript/native-preview-linux-x64": ["@typescript/native-preview-linux-x64@7.0.0-dev.20260105.1", "", { "os": "linux", "cpu": "x64" }, "sha512-vy1IpYseSpIP6X0TKnejwKH75LO06VfI7DRV9ShqgHC6Ybd7AdrTrXlna13sFF6FuD8vd3ZefesbS4n4d0Ywzw=="],
+    "@typescript/native-preview-linux-x64": ["@typescript/native-preview-linux-x64@7.0.0-dev.20260217.1", "", { "os": "linux", "cpu": "x64" }, "sha512-KAE4W+5VVRagA+xI6AxCSMVx2zb+8t15lMcB1cH5rIU2ZpnYa8K2ZXpSRMZGKNIFzcg6tKF9RyZvh4zMwZDnkQ=="],
 
-    "@typescript/native-preview-win32-arm64": ["@typescript/native-preview-win32-arm64@7.0.0-dev.20260105.1", "", { "os": "win32", "cpu": "arm64" }, "sha512-EFSpj3zgVsYTztgeuxhOlOpx0hr2vTVxPyccEHfiseMcAjkAsbdoSeYSLZFZyW2JXqJtq6N3YWsGGKzoyP0f+Q=="],
+    "@typescript/native-preview-win32-arm64": ["@typescript/native-preview-win32-arm64@7.0.0-dev.20260217.1", "", { "os": "win32", "cpu": "arm64" }, "sha512-KUYWl+0tYShKoFKp0BAxECmLClT7qnhN5UEW9tsSih9tDka//qnQcWFx452Rw3fiQCqXjkntgwFFXrrvltQMpQ=="],
 
-    "@typescript/native-preview-win32-x64": ["@typescript/native-preview-win32-x64@7.0.0-dev.20260105.1", "", { "os": "win32", "cpu": "x64" }, "sha512-UK0+xTxu6UZA8isOThWT9LOAl6LB1WyYFLC0ijno4SWwQCIbnJi3wjnAkBxRyM8h46DUaDYpXfHVkpYwhdExhg=="],
+    "@typescript/native-preview-win32-x64": ["@typescript/native-preview-win32-x64@7.0.0-dev.20260217.1", "", { "os": "win32", "cpu": "x64" }, "sha512-bje8xm+b0q3OSCY01/MZdDBnVISURunL9rCAob8pAu8qtRMvKYGWUsYwTH+fXGUViPAmdlafFd2E82K9VJYmHA=="],
 
     "@typescript/twoslash": ["@typescript/twoslash@3.2.1", "", { "dependencies": { "@typescript/vfs": "1.4.0", "debug": "4.4.0", "lz-string": "1.5.0" } }, "sha512-tS4gLwOe1WCDspqBXhQCb2ESUqzEd1tOkmKpiZ1O+W1x+9l+9njETuXFkLErtH9is/uD1GSvClDjk/tEOJktjQ=="],
 

@@ -1,6 +1,6 @@
 import type {CompositionProps, StillProps} from 'remotion';
 import {Composition, Still} from 'remotion';
-import type {AnyZodObject} from 'zod';
+import type {AnyZodObject} from 'remotion';
 
 export const createComposition =
 	<Schema extends AnyZodObject, Props extends Record<string, unknown>>({

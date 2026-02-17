@@ -2,7 +2,7 @@ import {BufferTarget, StreamTarget} from 'mediabunny';
 import type {CalculateMetadataFunction} from 'remotion';
 import {Internals, type LogLevel} from 'remotion';
 import {VERSION} from 'remotion/version';
-import type {AnyZodObject, z} from 'zod';
+import type {AnyZodObject} from 'remotion';
 import {addAudioSample, addVideoSampleAndCloseFrame} from './add-sample';
 import {handleArtifacts, type WebRendererOnArtifact} from './artifact';
 import {onlyInlineAudio} from './audio';
@@ -53,7 +53,7 @@ export type InputPropsIfHasProps<
 	? {} extends Props
 		? {
 				// Neither props nor schema specified
-				inputProps?: z.input<Schema> & Props;
+				inputProps?: Record<string, unknown> & Props;
 			}
 		: {
 				// Only props specified
@@ -62,11 +62,11 @@ export type InputPropsIfHasProps<
 	: {} extends Props
 		? {
 				// Only schema specified
-				inputProps: z.input<Schema>;
+				inputProps: Record<string, unknown>;
 			}
 		: {
 				// Props and schema specified
-				inputProps: z.input<Schema> & Props;
+				inputProps: Record<string, unknown> & Props;
 			};
 
 type MandatoryRenderMediaOnWebOptions<

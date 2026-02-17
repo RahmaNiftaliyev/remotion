@@ -3,7 +3,7 @@ import {flushSync} from 'react-dom';
 import ReactDOM from 'react-dom/client';
 import type {Codec, DelayRenderScope, LogLevel, TRenderAsset} from 'remotion';
 import {Internals} from 'remotion';
-import type {AnyZodObject} from 'zod';
+import type {AnyZodObject} from 'remotion';
 import type {TimeUpdaterRef} from './update-time';
 import {UpdateTime} from './update-time';
 

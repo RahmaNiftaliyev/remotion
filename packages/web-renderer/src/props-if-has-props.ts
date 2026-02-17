@@ -1,6 +1,6 @@
 import type {ComponentType} from 'react';
 import type {CalculateMetadataFunction} from 'remotion';
-import type {AnyZodObject, z} from 'zod';
+import type {AnyZodObject} from 'remotion';
 
 export type InferProps<
 	Schema extends AnyZodObject,
@@ -13,9 +13,9 @@ export type InferProps<
 			Props
 	: {} extends Props
 		? // Only schema specified
-			z.input<Schema>
+			Record<string, unknown>
 		: // Props and schema specified
-			z.input<Schema> & Props;
+			Record<string, unknown> & Props;
 
 export type DefaultPropsIfHasProps<
 	Schema extends AnyZodObject,
@@ -24,7 +24,7 @@ export type DefaultPropsIfHasProps<
 	? {} extends Props
 		? {
 				// Neither props nor schema specified
-				defaultProps?: z.input<Schema> & Props;
+				defaultProps?: Record<string, unknown> & Props;
 			}
 		: {
 				// Only props specified
@@ -33,11 +33,11 @@ export type DefaultPropsIfHasProps<
 	: {} extends Props
 		? {
 				// Only schema specified
-				defaultProps: z.input<Schema>;
+				defaultProps: Record<string, unknown>;
 			}
 		: {
 				// Props and schema specified
-				defaultProps: z.input<Schema> & Props;
+				defaultProps: Record<string, unknown> & Props;
 			};
 
 type LooseComponentType<T> = ComponentType<T> | ((props: T) => React.ReactNode);

@@ -1,6 +1,6 @@
 import type {_InternalTypes} from 'remotion';
 import {Internals, getRemotionEnvironment} from 'remotion';
-import type {AnyZodObject} from 'zod';
+import type {AnyZodObject} from 'remotion';
 
 export type UpdateDefaultPropsFunction = (currentValues: {
 	schema: AnyZodObject | null;

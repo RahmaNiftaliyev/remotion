@@ -3,7 +3,7 @@ import {
 	type CalculateMetadataFunction,
 	type LogLevel,
 } from 'remotion';
-import type {AnyZodObject} from 'zod';
+import type {AnyZodObject} from 'remotion';
 import type {WebRendererOnArtifact} from './artifact';
 import {handleArtifacts} from './artifact';
 import {checkForError, createScaffold} from './create-scaffold';

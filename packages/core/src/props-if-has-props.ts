@@ -1,4 +1,4 @@
-import type {AnyZodObject, z} from 'zod';
+import type {AnyZodObject} from './any-zod-type.js';
 
 type And<A extends boolean, B extends boolean> = A extends true
 	? B extends true
@@ -34,6 +34,6 @@ export type InferProps<
 			Props
 	: {} extends Props
 		? // Only schema specified
-			z.input<Schema>
+			Record<string, unknown>
 		: // Props and schema specified
-			z.input<Schema> & Props;
+			Record<string, unknown> & Props;

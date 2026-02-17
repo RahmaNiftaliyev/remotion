@@ -38,6 +38,9 @@ const {
 	browserExecutableOption,
 	everyNthFrameOption,
 	proResProfileOption,
+	userAgentOption,
+	disableWebSecurityOption,
+	ignoreCertificateErrorsOption,
 } = BrowserSafeApis.options;
 
 export type CommandLineOptions = {
@@ -50,9 +53,13 @@ export type CommandLineOptions = {
 	[x264Option.cliFlag]: TypeOfOption<typeof x264Option>;
 	['bundle-cache']: string;
 	['env-file']: string;
-	['ignore-certificate-errors']: string;
+	[ignoreCertificateErrorsOption.cliFlag]: TypeOfOption<
+		typeof ignoreCertificateErrorsOption
+	>;
 	[darkModeOption.cliFlag]: TypeOfOption<typeof darkModeOption>;
-	['disable-web-security']: string;
+	[disableWebSecurityOption.cliFlag]: TypeOfOption<
+		typeof disableWebSecurityOption
+	>;
 	[everyNthFrameOption.cliFlag]: TypeOfOption<typeof everyNthFrameOption>;
 	[numberOfGifLoopsOption.cliFlag]: TypeOfOption<typeof numberOfGifLoopsOption>;
 	[numberOfSharedAudioTagsOption.cliFlag]: TypeOfOption<
@@ -112,7 +119,7 @@ export type CommandLineOptions = {
 	['no-open']: boolean;
 	['browser']: string;
 	['browser-args']: string;
-	['user-agent']: string;
+	[userAgentOption.cliFlag]: TypeOfOption<typeof userAgentOption>;
 	['out-dir']: string;
 	[audioLatencyHintOption.cliFlag]: AudioContextLatencyCategory;
 	[ipv4Option.cliFlag]: TypeOfOption<typeof ipv4Option>;
@@ -131,22 +138,6 @@ export type CommandLineOptions = {
 export const parseCommandLine = () => {
 	if (typeof parsedCli['bundle-cache'] !== 'undefined') {
 		Config.setCachingEnabled(parsedCli['bundle-cache'] !== 'false');
-	}
-
-	if (parsedCli['disable-web-security']) {
-		Config.setChromiumDisableWebSecurity(true);
-	}
-
-	if (parsedCli['ignore-certificate-errors']) {
-		Config.setChromiumIgnoreCertificateErrors(true);
-	}
-
-	if (parsedCli[darkModeOption.cliFlag]) {
-		Config.setChromiumDarkMode(parsedCli[darkModeOption.cliFlag]);
-	}
-
-	if (parsedCli['user-agent']) {
-		Config.setChromiumUserAgent(parsedCli['user-agent']);
 	}
 
 	if (parsedCli.concurrency) {

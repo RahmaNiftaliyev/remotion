@@ -60,6 +60,9 @@ const {
 	browserExecutableOption,
 	everyNthFrameOption,
 	proResProfileOption,
+	userAgentOption,
+	disableWebSecurityOption,
+	ignoreCertificateErrorsOption,
 } = BrowserSafeApis.options;
 
 export const renderCommand = async ({
@@ -90,20 +93,12 @@ export const renderCommand = async ({
 
 	const region = getAwsRegion();
 
-	const {
-		envVariables,
-		frameRange,
-		inputProps,
-		height,
-		width,
-		ignoreCertificateErrors,
-		userAgent,
-		disableWebSecurity,
-	} = CliInternals.getCliOptions({
-		isStill: false,
-		logLevel,
-		indent: false,
-	});
+	const {envVariables, frameRange, inputProps, height, width} =
+		CliInternals.getCliOptions({
+			isStill: false,
+			logLevel,
+			indent: false,
+		});
 
 	const pixelFormat = pixelFormatOption.getValue({
 		commandLine: CliInternals.parsedCli,
@@ -115,6 +110,15 @@ export const renderCommand = async ({
 		commandLine: CliInternals.parsedCli,
 	}).value;
 	const proResProfile = proResProfileOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
+	const userAgent = userAgentOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
+	const disableWebSecurity = disableWebSecurityOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
+	const ignoreCertificateErrors = ignoreCertificateErrorsOption.getValue({
 		commandLine: CliInternals.parsedCli,
 	}).value;
 	const x264Preset = x264Option.getValue({

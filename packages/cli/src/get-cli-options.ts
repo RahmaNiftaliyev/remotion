@@ -58,10 +58,6 @@ export const getCliOptions = (options: {
 		? true
 		: ConfigInternals.getShouldOutputImageSequence(frameRange);
 
-	const disableWebSecurity = ConfigInternals.getChromiumDisableWebSecurity();
-	const ignoreCertificateErrors = ConfigInternals.getIgnoreCertificateErrors();
-	const userAgent = ConfigInternals.getChromiumUserAgent();
-
 	const concurrency = ConfigInternals.getConcurrency();
 
 	const height = ConfigInternals.getHeight();
@@ -84,9 +80,6 @@ export const getCliOptions = (options: {
 			options.indent,
 		),
 		stillFrame: ConfigInternals.getStillFrame(),
-		userAgent,
-		disableWebSecurity,
-		ignoreCertificateErrors,
 		ffmpegOverride: ConfigInternals.getFfmpegOverrideFunction(),
 		height,
 		width,

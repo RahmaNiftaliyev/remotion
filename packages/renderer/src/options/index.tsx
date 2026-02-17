@@ -12,6 +12,7 @@ import {enableCrossSiteIsolationOption} from './cross-site-isolation';
 import {darkModeOption} from './dark-mode';
 import {deleteAfterOption} from './delete-after';
 import {disableGitSourceOption} from './disable-git-source';
+import {disableWebSecurityOption} from './disable-web-security';
 import {disallowParallelEncodingOption} from './disallow-parallel-encoding';
 import {enableLambdaInsights} from './enable-lambda-insights';
 import {enableMultiprocessOnLinuxOption} from './enable-multiprocess-on-linux';
@@ -26,6 +27,7 @@ import {forceNewStudioOption} from './force-new-studio';
 import {glOption} from './gl';
 import {hardwareAccelerationOption} from './hardware-acceleration';
 import {headlessOption} from './headless';
+import {ignoreCertificateErrorsOption} from './ignore-certificate-errors';
 import {imageSequencePatternOption} from './image-sequence-pattern';
 import {ipv4Option} from './ipv4';
 import {isProductionOption} from './is-production';
@@ -55,6 +57,7 @@ import {separateAudioOption} from './separate-audio';
 import {stillImageFormatOption} from './still-image-format';
 import {throwIfSiteExistsOption} from './throw-if-site-exists';
 import {delayRenderTimeoutInMillisecondsOption} from './timeout';
+import {userAgentOption} from './user-agent';
 import {videoBitrateOption} from './video-bitrate';
 import {mediaCacheSizeInBytesOption} from './video-cache-size';
 import {videoCodecOption} from './video-codec';
@@ -79,6 +82,7 @@ export const allOptions = {
 	webhookCustomDataOption,
 	colorSpaceOption,
 	deleteAfterOption,
+	disableWebSecurityOption,
 	disallowParallelEncodingOption,
 	folderExpiryOption,
 	enableMultiprocessOnLinuxOption,
@@ -112,6 +116,7 @@ export const allOptions = {
 	licenseKeyOption,
 	audioLatencyHintOption,
 	enableCrossSiteIsolationOption,
+	ignoreCertificateErrorsOption,
 	imageSequencePatternOption,
 	mediaCacheSizeInBytesOption,
 	darkModeOption,
@@ -124,6 +129,7 @@ export const allOptions = {
 	numberOfSharedAudioTagsOption,
 	ipv4Option,
 	stillImageFormatOption,
+	userAgentOption,
 	videoImageFormatOption,
 };
 

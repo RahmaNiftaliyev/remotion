@@ -216,7 +216,7 @@ The [command line flag](/docs/cli/render#--timeout) `--timeout` will take preced
 
 ## `setChromiumDisableWebSecurity()`<AvailableFrom v="2.6.5" />
 
-This will most notably disable CORS among other security features during rendering.
+<Options id="disable-web-security" />
 
 ```tsx twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -241,7 +241,7 @@ Config.setChromiumDarkMode(true);
 
 ## `setChromiumIgnoreCertificateErrors()`<AvailableFrom v="2.6.5" />
 
-Results in invalid SSL certificates, such as self-signed ones, being ignored during rendering.
+<Options id="ignore-certificate-errors" />
 
 ```tsx twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';

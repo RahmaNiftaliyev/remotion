@@ -64,6 +64,9 @@ const {
 	browserExecutableOption,
 	everyNthFrameOption,
 	proResProfileOption,
+	userAgentOption,
+	disableWebSecurityOption,
+	ignoreCertificateErrorsOption,
 } = BrowserSafeApis.options;
 
 const getValidConcurrency = (cliConcurrency: number | string | null) => {
@@ -209,9 +212,6 @@ export const benchmarkCommand = async (
 		height,
 		width,
 		concurrency: unparsedConcurrency,
-		disableWebSecurity,
-		userAgent,
-		ignoreCertificateErrors,
 	} = getCliOptions({
 		isStill: false,
 		logLevel,
@@ -228,6 +228,13 @@ export const benchmarkCommand = async (
 		commandLine: parsedCli,
 	}).value;
 	const proResProfile = proResProfileOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const userAgent = userAgentOption.getValue({commandLine: parsedCli}).value;
+	const disableWebSecurity = disableWebSecurityOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const ignoreCertificateErrors = ignoreCertificateErrorsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
 

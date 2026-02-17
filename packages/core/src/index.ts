@@ -263,4 +263,5 @@ export type _InternalTypes = {
 	ProResProfile: ProResProfile;
 };
 
+export type {AnyComposition};
 export type {DelayRenderScope, LoopDisplay, UseBufferState};

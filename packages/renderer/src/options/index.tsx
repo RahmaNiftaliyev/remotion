@@ -48,11 +48,13 @@ import {publicPathOption} from './public-path';
 import {reproOption} from './repro';
 import {scaleOption} from './scale';
 import {separateAudioOption} from './separate-audio';
+import {stillImageFormatOption} from './still-image-format';
 import {throwIfSiteExistsOption} from './throw-if-site-exists';
 import {delayRenderTimeoutInMillisecondsOption} from './timeout';
 import {videoBitrateOption} from './video-bitrate';
 import {mediaCacheSizeInBytesOption} from './video-cache-size';
 import {videoCodecOption} from './video-codec';
+import {videoImageFormatOption} from './video-image-format';
 import {webhookCustomDataOption} from './webhook-custom-data';
 import {x264Option} from './x264-preset';
 
@@ -113,6 +115,8 @@ export const allOptions = {
 	forceNewStudioOption,
 	numberOfSharedAudioTagsOption,
 	ipv4Option,
+	stillImageFormatOption,
+	videoImageFormatOption,
 };
 
 export type AvailableOptions = keyof typeof allOptions;

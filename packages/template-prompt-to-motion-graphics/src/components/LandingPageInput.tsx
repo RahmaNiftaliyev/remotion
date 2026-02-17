@@ -1,31 +1,31 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import {
-  ArrowUp,
-  SquareArrowOutUpRight,
-  Type,
-  MessageCircle,
-  Hash,
-  BarChart3,
-  Disc,
-  X,
-  Paperclip,
-  type LucideIcon,
-} from "lucide-react";
+import { ErrorDisplay } from '@/components/ErrorDisplay';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { ErrorDisplay } from "@/components/ErrorDisplay";
-import { examplePrompts } from "@/examples/prompts";
-import { type ModelId, MODELS } from "@/types/generation";
-import { useImageAttachments } from "@/hooks/useImageAttachments";
+} from '@/components/ui/select';
+import { examplePrompts } from '@/examples/prompts';
+import { useImageAttachments } from '@/hooks/useImageAttachments';
+import { MODELS, type ModelId } from '@/types/generation';
+import {
+  ArrowUp,
+  BarChart3,
+  Disc,
+  Hash,
+  MessageCircle,
+  Paperclip,
+  SquareArrowOutUpRight,
+  Type,
+  X,
+  type LucideIcon,
+} from 'lucide-react';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 const iconMap: Record<string, LucideIcon> = {
   Type,
@@ -36,7 +36,11 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 interface LandingPageInputProps {
-  onNavigate: (prompt: string, model: ModelId, attachedImages?: string[]) => void;
+  onNavigate: (
+    prompt: string,
+    model: ModelId,
+    attachedImages?: string[],
+  ) => void;
   isNavigating?: boolean;
   showCodeExamplesLink?: boolean;
 }
@@ -46,8 +50,8 @@ export function LandingPageInput({
   isNavigating = false,
   showCodeExamplesLink = false,
 }: LandingPageInputProps) {
-  const [prompt, setPrompt] = useState("");
-  const [model, setModel] = useState<ModelId>("gpt-5.2:low");
+  const [prompt, setPrompt] = useState('');
+  const [model, setModel] = useState<ModelId>('gpt-5.2:low');
   const {
     attachedImages,
     isDragging,
@@ -74,12 +78,16 @@ export function LandingPageInput({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!prompt.trim() || isNavigating) return;
-    onNavigate(prompt, model, attachedImages.length > 0 ? attachedImages : undefined);
+    onNavigate(
+      prompt,
+      model,
+      attachedImages.length > 0 ? attachedImages : undefined,
+    );
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // Submit on Enter (Shift+Enter for new line)
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
     }
@@ -94,7 +102,7 @@ export function LandingPageInput({
       <form onSubmit={handleSubmit} className="w-full max-w-3xl">
         <div
           className={`bg-background-elevated rounded-xl border p-4 transition-colors ${
-            isDragging ? "border-blue-500 bg-blue-500/10" : "border-border"
+            isDragging ? 'border-blue-500 bg-blue-500/10' : 'border-border'
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -139,9 +147,13 @@ export function LandingPageInput({
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={handleKeyDown}
             onPaste={handlePaste}
-            placeholder={isDragging ? "Drop images here..." : "Describe your animation... (paste or drop images)"}
+            placeholder={
+              isDragging
+                ? 'Drop images here...'
+                : 'Describe your animation... (paste or drop images)'
+            }
             className="w-full bg-transparent text-foreground placeholder:text-muted-foreground-dim focus:outline-none resize-none overflow-y-auto text-base min-h-[60px] max-h-[200px]"
-            style={{ fieldSizing: "content" }}
+            style={{ fieldSizing: 'content' }}
             disabled={isNavigating}
           />
 

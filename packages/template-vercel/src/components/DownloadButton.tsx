@@ -1,16 +1,16 @@
-import React from "react";
-import { State } from "../helpers/use-rendering";
-import { Button } from "./Button";
-import { Spacing } from "./Spacing";
+import React from 'react';
+import { State } from '../helpers/use-rendering';
+import { Button } from './Button';
+import { Spacing } from './Spacing';
 
 const Megabytes: React.FC<{
   sizeInBytes: number;
 }> = ({ sizeInBytes }) => {
-  const megabytes = Intl.NumberFormat("en", {
-    notation: "compact",
-    style: "unit",
-    unit: "byte",
-    unitDisplay: "narrow",
+  const megabytes = Intl.NumberFormat('en', {
+    notation: 'compact',
+    style: 'unit',
+    unit: 'byte',
+    unitDisplay: 'narrow',
   }).format(sizeInBytes);
   return <span className="opacity-60">{megabytes}</span>;
 };
@@ -19,8 +19,8 @@ export const DownloadButton: React.FC<{
   state: State;
   undo: () => void;
 }> = ({ state, undo }) => {
-  if (state.status !== "done") {
-    throw new Error("Download button should not be rendered when not done");
+  if (state.status !== 'done') {
+    throw new Error('Download button should not be rendered when not done');
   }
 
   return (

@@ -3,9 +3,9 @@ import {
   HeadObjectCommand,
   PutObjectCommand,
   S3Client,
-} from "@aws-sdk/client-s3";
-import { Readable } from "stream";
-import { AWS_BUCKET_NAME, AWS_REGION } from "./config";
+} from '@aws-sdk/client-s3';
+import { Readable } from 'stream';
+import { AWS_BUCKET_NAME, AWS_REGION } from './config';
 
 const client = new S3Client({
   region: AWS_REGION,

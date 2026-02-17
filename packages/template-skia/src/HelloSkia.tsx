@@ -1,12 +1,12 @@
-import { SkiaCanvas } from "@remotion/skia";
-import { useFont } from "@shopify/react-native-skia";
-import { staticFile, useVideoConfig } from "remotion";
-import { AssetManager } from "./AssetManager";
-import { Drawing } from "./Drawing";
-import { z } from "zod";
-import { zColor } from "@remotion/zod-types";
+import { SkiaCanvas } from '@remotion/skia';
+import { zColor } from '@remotion/zod-types';
+import { useFont } from '@shopify/react-native-skia';
+import { staticFile, useVideoConfig } from 'remotion';
+import { z } from 'zod';
+import { AssetManager } from './AssetManager';
+import { Drawing } from './Drawing';
 
-const roboto = staticFile("Roboto-Bold.ttf");
+const roboto = staticFile('Roboto-Bold.ttf');
 
 export const helloSkiaSchema = z.object({
   color1: zColor(),

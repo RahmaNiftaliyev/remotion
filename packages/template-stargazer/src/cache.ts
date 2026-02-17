@@ -21,7 +21,7 @@ const makeKey = ({
   count: number;
   cursor: string | null;
 }) => {
-  return ["__stargazer", repoOrg, repoName, count, cursor].join("-");
+  return ['__stargazer', repoOrg, repoName, count, cursor].join('-');
 };
 
 export const saveResult = ({
@@ -42,7 +42,7 @@ export const saveResult = ({
     window.localStorage.setItem(key, JSON.stringify(result));
   } catch (err) {
     // If quota is exceeded, don't cache
-    if (!(err as Error).message.toLowerCase().includes("quota")) {
+    if (!(err as Error).message.toLowerCase().includes('quota')) {
       throw err;
     }
   }

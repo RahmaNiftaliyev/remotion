@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { random, useVideoConfig } from "remotion";
-import { COLOR_1, COLOR_2 } from "./constants";
+import { useState } from 'react';
+import { random, useVideoConfig } from 'remotion';
+import { COLOR_1, COLOR_2 } from './constants';
 
 const getCircumferenceOfArc = (rx, ry) => {
   return Math.PI * 2 * Math.sqrt((rx * rx + ry * ry) / 2);
@@ -23,7 +23,7 @@ export const Arc = ({ progress, rotation, rotateProgress }) => {
     <svg
       viewBox={`0 0 ${width} ${height}`}
       style={{
-        position: "absolute",
+        position: 'absolute',
         transform: `rotate(${rotation * rotateProgress}deg)`,
       }}
     >

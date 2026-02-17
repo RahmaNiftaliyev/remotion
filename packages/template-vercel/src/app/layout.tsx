@@ -1,13 +1,13 @@
-import "../../styles/global.css";
-import { Metadata, Viewport } from "next";
+import { Metadata, Viewport } from 'next';
+import '../../styles/global.css';
 
 export const metadata: Metadata = {
-  title: "Remotion rendering on Vercel Sandbox",
-  description: "Remotion rendering on Vercel Sandbox",
+  title: 'Remotion rendering on Vercel Sandbox',
+  description: 'Remotion rendering on Vercel Sandbox',
 };
 
 export const viewport: Viewport = {
-  width: "device-width",
+  width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
 };

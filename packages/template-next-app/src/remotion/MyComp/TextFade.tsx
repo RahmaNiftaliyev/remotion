@@ -1,11 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useMemo } from 'react';
 import {
   AbsoluteFill,
   interpolate,
   spring,
   useCurrentFrame,
   useVideoConfig,
-} from "remotion";
+} from 'remotion';
 
 const outer: React.CSSProperties = {};
 
@@ -32,8 +32,8 @@ export const TextFade: React.FC<{
 
   const container: React.CSSProperties = useMemo(() => {
     return {
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
     };
   }, []);
 

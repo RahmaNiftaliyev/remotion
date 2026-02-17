@@ -9,11 +9,11 @@ export const formatMilliseconds = (ms: number) => {
   const timeArray = [];
 
   if (hours > 0) {
-    timeArray.push(hours.toString().padStart(2, "0"));
+    timeArray.push(hours.toString().padStart(2, '0'));
   }
 
-  timeArray.push(formattedMinutes.toString().padStart(2, "0"));
-  timeArray.push(formattedSeconds.toString().padStart(2, "0"));
+  timeArray.push(formattedMinutes.toString().padStart(2, '0'));
+  timeArray.push(formattedSeconds.toString().padStart(2, '0'));
 
-  return timeArray.join(":");
+  return timeArray.join(':');
 };

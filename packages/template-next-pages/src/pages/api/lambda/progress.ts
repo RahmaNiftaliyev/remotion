@@ -1,17 +1,17 @@
 import {
-  speculateFunctionName,
   AwsRegion,
   getRenderProgress,
-} from "@remotion/lambda/client";
-import { DISK, RAM, REGION, TIMEOUT } from "../../../../config.mjs";
-import { executeApi } from "../../../helpers/api-response";
-import { ProgressResponse, ProgressRequest } from "../../../../types/schema";
+  speculateFunctionName,
+} from '@remotion/lambda/client';
+import { DISK, RAM, REGION, TIMEOUT } from '../../../../config.mjs';
+import { ProgressRequest, ProgressResponse } from '../../../../types/schema';
+import { executeApi } from '../../../helpers/api-response';
 
 const progress = executeApi<ProgressResponse, typeof ProgressRequest>(
   ProgressRequest,
   async (req, body) => {
-    if (req.method !== "POST") {
-      throw new Error("Only POST requests are allowed");
+    if (req.method !== 'POST') {
+      throw new Error('Only POST requests are allowed');
     }
 
     const renderProgress = await getRenderProgress({
@@ -27,21 +27,21 @@ const progress = executeApi<ProgressResponse, typeof ProgressRequest>(
 
     if (renderProgress.fatalErrorEncountered) {
       return {
-        type: "error",
+        type: 'error',
         message: renderProgress.errors[0].message,
       };
     }
 
     if (renderProgress.done) {
       return {
-        type: "done",
+        type: 'done',
         url: renderProgress.outputFile as string,
         size: renderProgress.outputSizeInBytes as number,
       };
     }
 
     return {
-      type: "progress",
+      type: 'progress',
       progress: Math.max(0.03, renderProgress.overallProgress),
     };
   },

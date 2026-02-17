@@ -11,7 +11,7 @@ export const createFileStorage = async (filename: string) => {
 
   const write = async (data: Uint8Array | Blob) => {
     await writable.write({
-      type: "write",
+      type: 'write',
       position: written,
       data: data as Blob,
     });

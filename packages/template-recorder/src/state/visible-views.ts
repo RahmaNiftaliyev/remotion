@@ -1,4 +1,4 @@
-import { Prefix } from "../helpers/prefixes";
+import { Prefix } from '../helpers/prefixes';
 
 export const visibleByDefault: { [key in Prefix]: boolean } = {
   webcam: true,

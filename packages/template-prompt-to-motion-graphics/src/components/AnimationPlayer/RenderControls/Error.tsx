@@ -1,10 +1,10 @@
-import React from "react";
-import { ErrorDisplay } from "@/components/ErrorDisplay";
+import { ErrorDisplay } from '@/components/ErrorDisplay';
+import React from 'react';
 
 const isLambdaNotConfiguredError = (message: string): boolean => {
   return (
-    message.includes("Set up Remotion Lambda") ||
-    message.includes("Function not found:")
+    message.includes('Set up Remotion Lambda') ||
+    message.includes('Function not found:')
   );
 };
 
@@ -34,11 +34,6 @@ export const ErrorComp: React.FC<{
   }
 
   return (
-    <ErrorDisplay
-      error={message}
-      title="Error"
-      variant="card"
-      size="md"
-    />
+    <ErrorDisplay error={message} title="Error" variant="card" size="md" />
   );
 };

@@ -1,29 +1,29 @@
-import { bundle } from "@remotion/bundler";
+import { bundle } from '@remotion/bundler';
 import {
   ensureBrowser,
   renderStill,
   selectComposition,
-} from "@remotion/renderer";
-import dotenv from "dotenv";
-import express from "express";
-import rateLimit from "express-rate-limit";
-import fs from "fs";
-import os from "os";
-import path from "path";
-import { getFromCache, isInCache, saveToCache } from "./cache";
-import { handler } from "./handler";
-import { helpText } from "./help-text";
-import { getImageType, getMimeType } from "./image-types";
-import { getImageHash } from "./make-hash";
-import { sendFile } from "./send-file";
+} from '@remotion/renderer';
+import dotenv from 'dotenv';
+import express from 'express';
+import rateLimit from 'express-rate-limit';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import { getFromCache, isInCache, saveToCache } from './cache';
+import { handler } from './handler';
+import { helpText } from './help-text';
+import { getImageType, getMimeType } from './image-types';
+import { getImageHash } from './make-hash';
+import { sendFile } from './send-file';
 
-dotenv.config({quiet: true});
+dotenv.config({ quiet: true });
 
 const app = express();
 const port = process.env.PORT || 8000;
 
-const webpackBundling = bundle(path.join(process.cwd(), "src/index.ts"));
-const tmpDir = fs.promises.mkdtemp(path.join(os.tmpdir(), "remotion-"));
+const webpackBundling = bundle(path.join(process.cwd(), 'src/index.ts'));
+const tmpDir = fs.promises.mkdtemp(path.join(os.tmpdir(), 'remotion-'));
 
 enum Params {
   compositionname,
@@ -31,7 +31,7 @@ enum Params {
 }
 
 // This setting will reveal the real IP address of the user, so we can apply rate limiting.
-app.set("trust proxy", 1);
+app.set('trust proxy', 1);
 
 // Not more than 20 requests per minute per user
 app.use(
@@ -50,7 +50,7 @@ app.get(
     const compName = req.params[Params.compositionname];
     const imageFormat = getImageType(req.params[Params.format]);
 
-    res.set("content-type", getMimeType(imageFormat));
+    res.set('content-type', getMimeType(imageFormat));
 
     // Calculate a unique identifier for our image,
     // if it exists, return it from cache

@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server";
-import { z, ZodType } from "zod";
+import { NextResponse } from 'next/server';
+import { z, ZodType } from 'zod';
 
 export type ApiResponse<Res> =
   | {
-      type: "error";
+      type: 'error';
       message: string;
     }
   | {
-      type: "success";
+      type: 'success';
       data: Res;
     };
 
@@ -22,12 +22,12 @@ export const executeApi =
       const parsed = schema.parse(payload);
       const data = await handler(req, parsed);
       return NextResponse.json({
-        type: "success",
+        type: 'success',
         data: data,
       });
     } catch (err) {
       return NextResponse.json(
-        { type: "error", message: (err as Error).message },
+        { type: 'error', message: (err as Error).message },
         {
           status: 500,
         },

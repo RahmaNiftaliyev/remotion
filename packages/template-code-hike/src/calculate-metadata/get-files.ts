@@ -1,4 +1,4 @@
-import { getStaticFiles } from "@remotion/studio";
+import { getStaticFiles } from '@remotion/studio';
 
 export type PublicFolderFile = {
   filename: string;
@@ -7,7 +7,7 @@ export type PublicFolderFile = {
 
 export const getFiles = async () => {
   const files = getStaticFiles();
-  const codeFiles = files.filter((file) => file.name.startsWith("code"));
+  const codeFiles = files.filter((file) => file.name.startsWith('code'));
 
   const contents = codeFiles.map(async (file): Promise<PublicFolderFile> => {
     const contents = await fetch(file.src);

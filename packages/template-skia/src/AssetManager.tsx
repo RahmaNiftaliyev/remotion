@@ -1,7 +1,7 @@
-import type { SkData, SkImage, SkTypeface } from "@shopify/react-native-skia";
-import { Skia } from "@shopify/react-native-skia";
-import type { ReactNode } from "react";
-import { useContext, createContext, useState, useEffect } from "react";
+import type { SkData, SkImage, SkTypeface } from '@shopify/react-native-skia';
+import { Skia } from '@shopify/react-native-skia';
+import type { ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 type ImagesToLoad = Record<string, ReturnType<typeof require>>;
 type TypefacesToLoad = Record<string, ReturnType<typeof require>>;
@@ -24,7 +24,7 @@ interface RemotionCanvasProps {
 const useAssetManager = () => {
   const assetManager = useContext(AssetManagerContext);
   if (!assetManager) {
-    throw new Error("Could not find the asset manager");
+    throw new Error('Could not find the asset manager');
   }
   return assetManager;
 };
@@ -40,7 +40,7 @@ export const useImages = () => {
 };
 
 const resolveAsset = async <T,>(
-  type: "image" | "typeface",
+  type: 'image' | 'typeface',
   name: string,
   asset: ReturnType<typeof require>,
   factory: (data: SkData) => T,
@@ -63,13 +63,13 @@ export const AssetManager = ({
     (async () => {
       const assets = await Promise.all([
         ...Object.keys(imagesToLoad).map((name) =>
-          resolveAsset("image", name, imagesToLoad[name], (data: SkData) =>
+          resolveAsset('image', name, imagesToLoad[name], (data: SkData) =>
             Skia.Image.MakeImageFromEncoded(data),
           ),
         ),
         ...Object.keys(typefacesToLoad).map((name) =>
           resolveAsset(
-            "typeface",
+            'typeface',
             name,
             typefacesToLoad[name],
             (data: SkData) => Skia.Typeface.MakeFreeTypeFaceFromData(data),
@@ -79,7 +79,7 @@ export const AssetManager = ({
       const images: Images = {};
       const typefaces: TypeFaces = {};
       assets.forEach((asset) => {
-        if (asset.type === "image") {
+        if (asset.type === 'image') {
           images[asset.name] = asset.data as SkImage;
         } else {
           typefaces[asset.name] = asset.data as SkTypeface;

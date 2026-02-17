@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useState, useEffect, type ComponentType } from "react";
-import { ArrowUp, Camera, X, Paperclip } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ErrorDisplay } from "@/components/ErrorDisplay";
+import { ErrorDisplay } from '@/components/ErrorDisplay';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { type ModelId, MODELS } from "@/types/generation";
-import { captureFrame } from "@/helpers/capture-frame";
-import { useImageAttachments } from "@/hooks/useImageAttachments";
+} from '@/components/ui/select';
+import { captureFrame } from '@/helpers/capture-frame';
+import { useImageAttachments } from '@/hooks/useImageAttachments';
+import { MODELS, type ModelId } from '@/types/generation';
+import { ArrowUp, Camera, Paperclip, X } from 'lucide-react';
+import { useEffect, useState, type ComponentType } from 'react';
 
 interface ChatInputProps {
   prompt: string;
@@ -76,7 +76,7 @@ export function ChatInput({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // Submit on Enter (Shift+Enter for new line)
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
     }
@@ -95,7 +95,7 @@ export function ChatInput({
       });
       addImages([base64]);
     } catch (error) {
-      console.error("Failed to capture frame:", error);
+      console.error('Failed to capture frame:', error);
     } finally {
       setIsCapturing(false);
     }
@@ -108,7 +108,7 @@ export function ChatInput({
       <form onSubmit={handleSubmit}>
         <div
           className={`bg-background-elevated rounded-xl border p-3 transition-colors ${
-            isDragging ? "border-blue-500 bg-blue-500/10" : "border-border"
+            isDragging ? 'border-blue-500 bg-blue-500/10' : 'border-border'
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -161,11 +161,11 @@ export function ChatInput({
             onPaste={handlePaste}
             placeholder={
               isDragging
-                ? "Drop images here..."
-                : "Tune your animation... (paste or drop images)"
+                ? 'Drop images here...'
+                : 'Tune your animation... (paste or drop images)'
             }
             className="w-full bg-transparent text-foreground placeholder:text-muted-foreground-dim focus:outline-none resize-none text-sm min-h-[36px] max-h-[120px]"
-            style={{ fieldSizing: "content" } as React.CSSProperties}
+            style={{ fieldSizing: 'content' } as React.CSSProperties}
             disabled={isLoading}
           />
           {/* Hidden file input */}

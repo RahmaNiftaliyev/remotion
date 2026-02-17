@@ -1,14 +1,14 @@
-import { z } from "zod";
-import { AlignEnd } from "./AlignEnd";
-import { Button } from "./Button";
-import { InputContainer } from "./Container";
-import { DownloadButton } from "./DownloadButton";
-import { ErrorComp } from "./Error";
-import { Input } from "./Input";
-import { ProgressBar } from "./ProgressBar";
-import { Spacing } from "./Spacing";
-import { COMP_NAME, CompositionProps } from "../../types/constants";
-import { useRendering } from "../helpers/use-rendering";
+import { z } from 'zod';
+import { COMP_NAME, CompositionProps } from '../../types/constants';
+import { useRendering } from '../helpers/use-rendering';
+import { AlignEnd } from './AlignEnd';
+import { Button } from './Button';
+import { InputContainer } from './Container';
+import { DownloadButton } from './DownloadButton';
+import { ErrorComp } from './Error';
+import { Input } from './Input';
+import { ProgressBar } from './ProgressBar';
+import { Spacing } from './Spacing';
 
 export const RenderControls: React.FC<{
   text: string;
@@ -19,36 +19,36 @@ export const RenderControls: React.FC<{
 
   return (
     <InputContainer>
-      {state.status === "init" ||
-      state.status === "invoking" ||
-      state.status === "error" ? (
+      {state.status === 'init' ||
+      state.status === 'invoking' ||
+      state.status === 'error' ? (
         <>
           <Input
-            disabled={state.status === "invoking"}
+            disabled={state.status === 'invoking'}
             setText={setText}
             text={text}
           ></Input>
           <AlignEnd className="mt-4">
             <Button
-              disabled={state.status === "invoking"}
-              loading={state.status === "invoking"}
+              disabled={state.status === 'invoking'}
+              loading={state.status === 'invoking'}
               onClick={renderMedia}
             >
               Render video
             </Button>
           </AlignEnd>
-          {state.status === "invoking" ? (
+          {state.status === 'invoking' ? (
             <>
               <Spacing></Spacing>
               <div
                 style={{
                   fontSize: 14,
                   lineHeight: 1.5,
-                  minHeight: "2.5em",
+                  minHeight: '2.5em',
                   marginBottom: 8,
                 }}
               >
-                <div style={{ color: "#666" }}>
+                <div style={{ color: '#666' }}>
                   {state.phase}
                   {state.progress < 1
                     ? ` ${Math.max(Math.round(state.progress * 100), 1)}%`
@@ -56,23 +56,23 @@ export const RenderControls: React.FC<{
                 </div>
                 <div
                   style={{
-                    color: "#999",
+                    color: '#999',
                     fontSize: 12,
-                    visibility: state.subtitle ? "visible" : "hidden",
+                    visibility: state.subtitle ? 'visible' : 'hidden',
                   }}
                 >
-                  {state.subtitle ?? "\u00A0"}
+                  {state.subtitle ?? '\u00A0'}
                 </div>
               </div>
               <ProgressBar progress={state.progress} />
             </>
           ) : null}
-          {state.status === "error" ? (
+          {state.status === 'error' ? (
             <ErrorComp message={state.error.message}></ErrorComp>
           ) : null}
         </>
       ) : null}
-      {state.status === "done" ? (
+      {state.status === 'done' ? (
         <>
           <ProgressBar progress={1} />
           <Spacing></Spacing>

@@ -2,13 +2,13 @@ import {
   createSmoothSvgPath,
   useWindowedAudioData,
   visualizeAudioWaveform,
-} from "@remotion/media-utils";
-import React from "react";
-import { useCurrentFrame, useVideoConfig } from "remotion";
+} from '@remotion/media-utils';
+import React from 'react';
+import { useCurrentFrame, useVideoConfig } from 'remotion';
 
 const height = 120;
 const container: React.CSSProperties = {
-  overflow: "visible",
+  overflow: 'visible',
   height,
   marginTop: 40,
   marginBottom: 40,

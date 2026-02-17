@@ -1,8 +1,8 @@
-import { Skia, Text } from "@shopify/react-native-skia";
-import React from "react";
-import { useVideoConfig } from "remotion";
-import { useTypefaces } from "./AssetManager";
-import { SkiaNeon } from "./SkiaNeon";
+import { Skia, Text } from '@shopify/react-native-skia';
+import React from 'react';
+import { useVideoConfig } from 'remotion';
+import { useTypefaces } from './AssetManager';
+import { SkiaNeon } from './SkiaNeon';
 
 export const Drawing: React.FC<{
   readonly color1: string;

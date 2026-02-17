@@ -1,16 +1,16 @@
-import { useWindowedAudioData, visualizeAudio } from "@remotion/media-utils";
-import { useCurrentFrame, useVideoConfig } from "remotion";
-import { processFrequencyData } from "../helpers/process-frequency-data";
+import { useWindowedAudioData, visualizeAudio } from '@remotion/media-utils';
+import { useCurrentFrame, useVideoConfig } from 'remotion';
+import { processFrequencyData } from '../helpers/process-frequency-data';
 
 const spectrumContainer: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "row",
-  height: "30rem",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "0px",
-  overflow: "hidden",
-  width: "100%",
+  display: 'flex',
+  flexDirection: 'row',
+  height: '30rem',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '0px',
+  overflow: 'hidden',
+  width: '100%',
 };
 
 export const Spectrum: React.FC<{
@@ -45,7 +45,7 @@ export const Spectrum: React.FC<{
     frame,
     audioData,
     numberOfSamples,
-    optimizeFor: "speed",
+    optimizeFor: 'speed',
     dataOffsetInSeconds,
   });
 
@@ -68,9 +68,9 @@ export const Spectrum: React.FC<{
               flex: 1,
               backgroundColor: barColor,
               height: `${Math.min(100, 80 * v)}%`,
-              borderRadius: "8px",
-              margin: "0 0.3%",
-              minWidth: "1px",
+              borderRadius: '8px',
+              margin: '0 0.3%',
+              minWidth: '1px',
             }}
           />
         );

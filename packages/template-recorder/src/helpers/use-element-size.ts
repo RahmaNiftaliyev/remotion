@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Rect } from "../../remotion/layout/layout-types";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { Rect } from '../../remotion/layout/layout-types';
 
 // If a pane has been moved, it will cause a layout shift without
 // the window having been resized. Those UI elements can call this API to
@@ -23,7 +23,7 @@ export const useElementSize = (
   });
 
   const observer = useMemo(() => {
-    if (typeof ResizeObserver === "undefined") {
+    if (typeof ResizeObserver === 'undefined') {
       return null;
     }
 
@@ -92,10 +92,10 @@ export const useElementSize = (
   }, [observer, ref, updateSize]);
 
   useEffect(() => {
-    window.addEventListener("resize", updateSize);
+    window.addEventListener('resize', updateSize);
 
     return () => {
-      window.removeEventListener("resize", updateSize);
+      window.removeEventListener('resize', updateSize);
     };
   }, [updateSize]);
 

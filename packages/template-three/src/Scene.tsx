@@ -1,19 +1,19 @@
-import { ThreeCanvas } from "@remotion/three";
-import React, { useMemo } from "react";
-import { AbsoluteFill, useVideoConfig } from "remotion";
-import { Phone } from "./Phone";
-import { z } from "zod";
-import { zColor } from "@remotion/zod-types";
-import { MediabunnyMetadata } from "./helpers/get-media-metadata";
-import { getPhoneLayout } from "./helpers/layout";
+import { ThreeCanvas } from '@remotion/three';
+import { zColor } from '@remotion/zod-types';
+import React, { useMemo } from 'react';
+import { AbsoluteFill, useVideoConfig } from 'remotion';
+import { z } from 'zod';
+import { MediabunnyMetadata } from './helpers/get-media-metadata';
+import { getPhoneLayout } from './helpers/layout';
+import { Phone } from './Phone';
 
 const container: React.CSSProperties = {
-  backgroundColor: "white",
+  backgroundColor: 'white',
 };
 
 export const myCompSchema = z.object({
   phoneColor: zColor(),
-  deviceType: z.enum(["phone", "tablet"]),
+  deviceType: z.enum(['phone', 'tablet']),
 });
 
 type MyCompSchemaType = z.infer<typeof myCompSchema>;
@@ -28,10 +28,10 @@ export const Scene: React.FC<
   const { width, height } = useVideoConfig();
 
   if (!mediaMetadata) {
-    throw new Error("Media metadata is not available");
+    throw new Error('Media metadata is not available');
   }
   if (!videoSrc) {
-    throw new Error("Video source is not available");
+    throw new Error('Video source is not available');
   }
 
   const aspectRatio = useMemo(

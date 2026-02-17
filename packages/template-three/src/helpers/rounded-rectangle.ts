@@ -1,4 +1,4 @@
-import { Shape } from "three";
+import { Shape } from 'three';
 
 export function roundedRect({
   width,

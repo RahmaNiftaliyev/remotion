@@ -1,14 +1,14 @@
-import { z } from "zod";
-import { mySchema } from "../HelloWorld";
-import { voices } from "../server/TextToSpeech/constants";
+import { z } from 'zod';
+import { mySchema } from '../HelloWorld';
+import { voices } from '../server/TextToSpeech/constants';
 
 export type ServerResponse =
   | {
-      type: "success";
+      type: 'success';
       url: string;
     }
   | {
-      type: "error";
+      type: 'error';
       error: string;
     };
 export type VoiceType = keyof typeof voices;

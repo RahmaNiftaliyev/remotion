@@ -1,16 +1,16 @@
-import { spring } from "remotion";
+import { zColor } from '@remotion/zod-types';
 import {
   AbsoluteFill,
   interpolate,
   Sequence,
+  spring,
   useCurrentFrame,
   useVideoConfig,
-} from "remotion";
-import { Logo } from "./HelloWorld/Logo";
-import { Subtitle } from "./HelloWorld/Subtitle";
-import { Title } from "./HelloWorld/Title";
-import { z } from "zod";
-import { zColor } from "@remotion/zod-types";
+} from 'remotion';
+import { z } from 'zod';
+import { Logo } from './HelloWorld/Logo';
+import { Subtitle } from './HelloWorld/Subtitle';
+import { Title } from './HelloWorld/Title';
 
 export const myCompSchema = z.object({
   titleText: z.string(),
@@ -50,14 +50,14 @@ export const HelloWorld: React.FC<z.infer<typeof myCompSchema>> = ({
     [durationInFrames - 25, durationInFrames - 15],
     [1, 0],
     {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
     },
   );
 
   // A <AbsoluteFill> is just a absolutely positioned <div>!
   return (
-    <AbsoluteFill style={{ backgroundColor: "white" }}>
+    <AbsoluteFill style={{ backgroundColor: 'white' }}>
       <AbsoluteFill style={{ opacity }}>
         <AbsoluteFill style={{ transform: `translateY(${logoTranslation}px)` }}>
           <Logo logoColor1={logoColor1} logoColor2={logoColor2} />

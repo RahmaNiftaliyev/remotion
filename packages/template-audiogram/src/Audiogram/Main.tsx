@@ -1,19 +1,19 @@
-import React from "react";
-import { AbsoluteFill, Img, Sequence, useVideoConfig } from "remotion";
-import { Audio } from "@remotion/media";
-import { PaginatedCaptions } from "./Captions";
-import { Spectrum } from "./Spectrum";
+import { Audio } from '@remotion/media';
+import React from 'react';
+import { AbsoluteFill, Img, Sequence, useVideoConfig } from 'remotion';
+import { PaginatedCaptions } from './Captions';
+import { Oscilloscope } from './Oscilloscope';
+import { Spectrum } from './Spectrum';
+import { WaitForFonts } from './WaitForFonts';
 import {
   BASE_SIZE,
   CAPTIONS_FONT_SIZE,
   CAPTIONS_FONT_WEIGHT,
   LINE_HEIGHT,
   LINES_PER_PAGE,
-} from "./constants";
-import { Oscilloscope } from "./Oscilloscope";
-import { FONT_FAMILY } from "./font";
-import { WaitForFonts } from "./WaitForFonts";
-import { AudiogramCompositionSchemaType } from "./schema";
+} from './constants';
+import { FONT_FAMILY } from './font';
+import { AudiogramCompositionSchemaType } from './schema';
 
 export const Audiogram: React.FC<AudiogramCompositionSchemaType> = ({
   visualizer,
@@ -30,7 +30,7 @@ export const Audiogram: React.FC<AudiogramCompositionSchemaType> = ({
 
   if (!captions) {
     throw new Error(
-      "subtitles should have been provided through calculateMetadata",
+      'subtitles should have been provided through calculateMetadata',
     );
   }
 
@@ -45,44 +45,44 @@ export const Audiogram: React.FC<AudiogramCompositionSchemaType> = ({
         <Audio src={audioFileUrl} />
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            height: "100%",
-            color: "white",
-            padding: "48px",
-            backgroundColor: "black",
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            height: '100%',
+            color: 'white',
+            padding: '48px',
+            backgroundColor: 'black',
             fontFamily: FONT_FAMILY,
           }}
         >
           <div
             style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
             }}
           >
             <Img
               style={{
-                borderRadius: "6px",
-                maxHeight: "250px",
+                borderRadius: '6px',
+                maxHeight: '250px',
               }}
               src={coverImageUrl}
             />
             <div
               style={{
-                marginLeft: "48px",
-                lineHeight: "1.25",
+                marginLeft: '48px',
+                lineHeight: '1.25',
                 fontWeight: 800,
                 color: titleColor,
-                fontSize: "48px",
+                fontSize: '48px',
               }}
             >
               {titleText}
             </div>
           </div>
           <div>
-            {visualizer.type === "oscilloscope" ? (
+            {visualizer.type === 'oscilloscope' ? (
               <Oscilloscope
                 waveColor={visualizer.color}
                 padding={visualizer.padding}
@@ -93,7 +93,7 @@ export const Audiogram: React.FC<AudiogramCompositionSchemaType> = ({
                 posterization={visualizer.posterization}
                 amplitude={visualizer.amplitude}
               />
-            ) : visualizer.type === "spectrum" ? (
+            ) : visualizer.type === 'spectrum' ? (
               <Spectrum
                 barColor={visualizer.color}
                 audioSrc={audioFileUrl}

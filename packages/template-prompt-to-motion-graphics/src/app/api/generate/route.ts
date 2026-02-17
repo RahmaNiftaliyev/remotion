@@ -1,12 +1,12 @@
-import { streamText, generateObject } from "ai";
-import { createOpenAI } from "@ai-sdk/openai";
-import { z } from "zod";
 import {
   getCombinedSkillContent,
   SKILL_DETECTION_PROMPT,
   SKILL_NAMES,
   type SkillName,
-} from "@/skills";
+} from '@/skills';
+import { createOpenAI } from '@ai-sdk/openai';
+import { generateObject, streamText } from 'ai';
+import { z } from 'zod';
 
 const VALIDATION_PROMPT = `You are a prompt classifier for a motion graphics generation tool.
 
@@ -144,12 +144,14 @@ If the user has made manual edits, preserve them unless explicitly asked to chan
 // Note: Using a flat object schema because OpenAI doesn't support discriminated unions
 const FollowUpResponseSchema = z.object({
   type: z
-    .enum(["edit", "full"])
-    .describe('Use "edit" for small targeted changes, "full" for major restructuring'),
+    .enum(['edit', 'full'])
+    .describe(
+      'Use "edit" for small targeted changes, "full" for major restructuring',
+    ),
   summary: z
     .string()
     .describe(
-      "A brief 1-sentence summary of what changes were made, e.g. 'Changed background color to blue and increased font size'"
+      "A brief 1-sentence summary of what changes were made, e.g. 'Changed background color to blue and increased font size'",
     ),
   edits: z
     .array(
@@ -157,21 +159,23 @@ const FollowUpResponseSchema = z.object({
         description: z
           .string()
           .describe(
-            "Brief description of this edit, e.g. 'Update background color', 'Increase animation duration'"
+            "Brief description of this edit, e.g. 'Update background color', 'Increase animation duration'",
           ),
         old_string: z
           .string()
-          .describe("The exact string to find (must match exactly)"),
-        new_string: z.string().describe("The replacement string"),
-      })
+          .describe('The exact string to find (must match exactly)'),
+        new_string: z.string().describe('The replacement string'),
+      }),
     )
     .optional()
-    .describe("Required when type is 'edit': array of search-replace operations"),
+    .describe(
+      "Required when type is 'edit': array of search-replace operations",
+    ),
   code: z
     .string()
     .optional()
     .describe(
-      "Required when type is 'full': the complete replacement code starting with imports"
+      "Required when type is 'full': the complete replacement code starting with imports",
     ),
 });
 
@@ -186,13 +190,13 @@ type EditOperation = {
 function getLineNumber(code: string, searchString: string): number {
   const index = code.indexOf(searchString);
   if (index === -1) return -1;
-  return code.substring(0, index).split("\n").length;
+  return code.substring(0, index).split('\n').length;
 }
 
 // Apply edit operations to code and enrich with line numbers
 function applyEdits(
   code: string,
-  edits: EditOperation[]
+  edits: EditOperation[],
 ): {
   success: boolean;
   result: string;
@@ -247,7 +251,7 @@ function applyEdits(
 }
 
 interface ConversationContextMessage {
-  role: "user" | "assistant";
+  role: 'user' | 'assistant';
   content: string;
   /** For user messages, attached images as base64 data URLs */
   attachedImages?: string[];
@@ -284,7 +288,7 @@ interface GenerateResponse {
   summary: string;
   metadata: {
     skills: string[];
-    editType: "tool_edit" | "full_replacement";
+    editType: 'tool_edit' | 'full_replacement';
     edits?: EditOperation[];
     model: string;
   };
@@ -293,7 +297,7 @@ interface GenerateResponse {
 export async function POST(req: Request) {
   const {
     prompt,
-    model = "gpt-5.2",
+    model = 'gpt-5.2',
     currentCode,
     conversationHistory = [],
     isFollowUp = false,
@@ -313,13 +317,13 @@ export async function POST(req: Request) {
       }),
       {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       },
     );
   }
 
   // Parse model ID - format can be "model-name" or "model-name:reasoning_effort"
-  const [modelName, reasoningEffort] = model.split(":");
+  const [modelName, reasoningEffort] = model.split(':');
 
   const openai = createOpenAI({ apiKey });
 
@@ -327,7 +331,7 @@ export async function POST(req: Request) {
   if (!isFollowUp) {
     try {
       const validationResult = await generateObject({
-        model: openai("gpt-5.2"),
+        model: openai('gpt-5.2'),
         system: VALIDATION_PROMPT,
         prompt: `User prompt: "${prompt}"`,
         schema: z.object({ valid: z.boolean() }),
@@ -338,14 +342,14 @@ export async function POST(req: Request) {
           JSON.stringify({
             error:
               "No valid motion graphics prompt. Please describe an animation or visual content you'd like to create.",
-            type: "validation",
+            type: 'validation',
           }),
-          { status: 400, headers: { "Content-Type": "application/json" } },
+          { status: 400, headers: { 'Content-Type': 'application/json' } },
         );
       }
     } catch (validationError) {
       // On validation error, allow through rather than blocking
-      console.error("Validation error:", validationError);
+      console.error('Validation error:', validationError);
     }
   }
 
@@ -353,7 +357,7 @@ export async function POST(req: Request) {
   let detectedSkills: SkillName[] = [];
   try {
     const skillResult = await generateObject({
-      model: openai("gpt-5.2"),
+      model: openai('gpt-5.2'),
       system: SKILL_DETECTION_PROMPT,
       prompt: `User prompt: "${prompt}"`,
       schema: z.object({
@@ -361,16 +365,19 @@ export async function POST(req: Request) {
       }),
     });
     detectedSkills = skillResult.object.skills;
-    console.log("Detected skills:", detectedSkills);
+    console.log('Detected skills:', detectedSkills);
   } catch (skillError) {
-    console.error("Skill detection error:", skillError);
+    console.error('Skill detection error:', skillError);
   }
 
   // Filter out skills that were already used in the conversation to avoid redundant context
   const newSkills = detectedSkills.filter(
     (skill) => !previouslyUsedSkills.includes(skill),
   );
-  if (previouslyUsedSkills.length > 0 && newSkills.length < detectedSkills.length) {
+  if (
+    previouslyUsedSkills.length > 0 &&
+    newSkills.length < detectedSkills.length
+  ) {
     console.log(
       `Skipping ${detectedSkills.length - newSkills.length} previously used skills:`,
       detectedSkills.filter((s) => previouslyUsedSkills.includes(s)),
@@ -388,27 +395,27 @@ export async function POST(req: Request) {
     try {
       // Build context for the edit request
       const contextMessages = conversationHistory.slice(-6);
-      let conversationContext = "";
+      let conversationContext = '';
       if (contextMessages.length > 0) {
         conversationContext =
-          "\n\n## RECENT CONVERSATION:\n" +
+          '\n\n## RECENT CONVERSATION:\n' +
           contextMessages
             .map((m) => {
               const imageNote =
                 m.attachedImages && m.attachedImages.length > 0
-                  ? ` [with ${m.attachedImages.length} attached image${m.attachedImages.length > 1 ? "s" : ""}]`
-                  : "";
+                  ? ` [with ${m.attachedImages.length} attached image${m.attachedImages.length > 1 ? 's' : ''}]`
+                  : '';
               return `${m.role.toUpperCase()}: ${m.content}${imageNote}`;
             })
-            .join("\n");
+            .join('\n');
       }
 
       const manualEditNotice = hasManualEdits
-        ? "\n\nNOTE: The user has made manual edits to the code. Preserve these changes."
-        : "";
+        ? '\n\nNOTE: The user has made manual edits to the code. Preserve these changes.'
+        : '';
 
       // Error correction context for self-healing
-      let errorCorrectionNotice = "";
+      let errorCorrectionNotice = '';
       if (errorCorrection) {
         const failedEditInfo = errorCorrection.failedEdit
           ? `
@@ -419,9 +426,11 @@ The previous edit attempt failed. Here's what was tried:
 - Wanted to replace with: \`${errorCorrection.failedEdit.new_string}\`
 
 The old_string was either not found or matched multiple locations. You MUST include more surrounding context to make the match unique.`
-          : "";
+          : '';
 
-        const isEditFailure = errorCorrection.error.includes("Edit") && errorCorrection.error.includes("failed");
+        const isEditFailure =
+          errorCorrection.error.includes('Edit') &&
+          errorCorrection.error.includes('failed');
 
         if (isEditFailure) {
           errorCorrectionNotice = `
@@ -463,35 +472,39 @@ ${errorCorrectionNotice}
 
 ## USER REQUEST:
 ${prompt}
-${frameImages && frameImages.length > 0 ? `\n(See the attached ${frameImages.length === 1 ? "image" : "images"} for visual reference)` : ""}
+${frameImages && frameImages.length > 0 ? `\n(See the attached ${frameImages.length === 1 ? 'image' : 'images'} for visual reference)` : ''}
 
 Analyze the request and decide: use targeted edits (type: "edit") for small changes, or full replacement (type: "full") for major restructuring.`;
 
       console.log(
-        "Follow-up edit with prompt:",
+        'Follow-up edit with prompt:',
         prompt,
-        "model:",
+        'model:',
         modelName,
-        "skills:",
-        detectedSkills.length > 0 ? detectedSkills.join(", ") : "general",
-        frameImages && frameImages.length > 0 ? `(with ${frameImages.length} image(s))` : ""
+        'skills:',
+        detectedSkills.length > 0 ? detectedSkills.join(', ') : 'general',
+        frameImages && frameImages.length > 0
+          ? `(with ${frameImages.length} image(s))`
+          : '',
       );
 
       // Build messages array - include images if provided
-      const editMessageContent: Array<{ type: "text"; text: string } | { type: "image"; image: string }> = [
-        { type: "text" as const, text: editPromptText },
-      ];
+      const editMessageContent: Array<
+        { type: 'text'; text: string } | { type: 'image'; image: string }
+      > = [{ type: 'text' as const, text: editPromptText }];
       if (frameImages && frameImages.length > 0) {
         for (const img of frameImages) {
-          editMessageContent.push({ type: "image" as const, image: img });
+          editMessageContent.push({ type: 'image' as const, image: img });
         }
       }
       const editMessages: Array<{
-        role: "user";
-        content: Array<{ type: "text"; text: string } | { type: "image"; image: string }>;
+        role: 'user';
+        content: Array<
+          { type: 'text'; text: string } | { type: 'image'; image: string }
+        >;
       }> = [
         {
-          role: "user" as const,
+          role: 'user' as const,
           content: editMessageContent,
         },
       ];
@@ -505,10 +518,10 @@ Analyze the request and decide: use targeted edits (type: "edit") for small chan
 
       const response = editResult.object;
       let finalCode: string;
-      let editType: "tool_edit" | "full_replacement";
+      let editType: 'tool_edit' | 'full_replacement';
       let appliedEdits: EditOperation[] | undefined;
 
-      if (response.type === "edit" && response.edits) {
+      if (response.type === 'edit' && response.edits) {
         // Apply the edits to the current code
         const result = applyEdits(currentCode, response.edits);
         if (!result.success) {
@@ -516,30 +529,30 @@ Analyze the request and decide: use targeted edits (type: "edit") for small chan
           return new Response(
             JSON.stringify({
               error: result.error,
-              type: "edit_failed",
+              type: 'edit_failed',
               failedEdit: result.failedEdit,
             }),
-            { status: 400, headers: { "Content-Type": "application/json" } }
+            { status: 400, headers: { 'Content-Type': 'application/json' } },
           );
         }
         finalCode = result.result;
-        editType = "tool_edit";
+        editType = 'tool_edit';
         // Use enriched edits with line numbers
         appliedEdits = result.enrichedEdits;
         console.log(`Applied ${response.edits.length} edit(s) successfully`);
-      } else if (response.type === "full" && response.code) {
+      } else if (response.type === 'full' && response.code) {
         // Full replacement
         finalCode = response.code;
-        editType = "full_replacement";
-        console.log("Using full code replacement");
+        editType = 'full_replacement';
+        console.log('Using full code replacement');
       } else {
         // Invalid response - missing required fields
         return new Response(
           JSON.stringify({
-            error: "Invalid AI response: missing required fields",
-            type: "edit_failed",
+            error: 'Invalid AI response: missing required fields',
+            type: 'edit_failed',
           }),
-          { status: 400, headers: { "Content-Type": "application/json" } }
+          { status: 400, headers: { 'Content-Type': 'application/json' } },
         );
       }
 
@@ -557,15 +570,15 @@ Analyze the request and decide: use targeted edits (type: "edit") for small chan
 
       return new Response(JSON.stringify(responseData), {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     } catch (error) {
-      console.error("Error in follow-up edit:", error);
+      console.error('Error in follow-up edit:', error);
       return new Response(
         JSON.stringify({
-          error: "Something went wrong while processing the edit request.",
+          error: 'Something went wrong while processing the edit request.',
         }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
+        { status: 500, headers: { 'Content-Type': 'application/json' } },
       );
     }
   }
@@ -575,24 +588,26 @@ Analyze the request and decide: use targeted edits (type: "edit") for small chan
     // Build messages for initial generation (supports image references)
     const hasImages = frameImages && frameImages.length > 0;
     const initialPromptText = hasImages
-      ? `${prompt}\n\n(See the attached ${frameImages.length === 1 ? "image" : "images"} for visual reference)`
+      ? `${prompt}\n\n(See the attached ${frameImages.length === 1 ? 'image' : 'images'} for visual reference)`
       : prompt;
 
-    const initialMessageContent: Array<{ type: "text"; text: string } | { type: "image"; image: string }> = [
-      { type: "text" as const, text: initialPromptText },
-    ];
+    const initialMessageContent: Array<
+      { type: 'text'; text: string } | { type: 'image'; image: string }
+    > = [{ type: 'text' as const, text: initialPromptText }];
     if (hasImages) {
       for (const img of frameImages) {
-        initialMessageContent.push({ type: "image" as const, image: img });
+        initialMessageContent.push({ type: 'image' as const, image: img });
       }
     }
 
     const initialMessages: Array<{
-      role: "user";
-      content: Array<{ type: "text"; text: string } | { type: "image"; image: string }>;
+      role: 'user';
+      content: Array<
+        { type: 'text'; text: string } | { type: 'image'; image: string }
+      >;
     }> = [
       {
-        role: "user" as const,
+        role: 'user' as const,
         content: initialMessageContent,
       },
     ];
@@ -611,14 +626,14 @@ Analyze the request and decide: use targeted edits (type: "edit") for small chan
     });
 
     console.log(
-      "Generating React component with prompt:",
+      'Generating React component with prompt:',
       prompt,
-      "model:",
+      'model:',
       modelName,
-      "skills:",
-      detectedSkills.length > 0 ? detectedSkills.join(", ") : "general",
-      reasoningEffort ? `reasoning_effort: ${reasoningEffort}` : "",
-      hasImages ? `(with ${frameImages.length} image(s))` : ""
+      'skills:',
+      detectedSkills.length > 0 ? detectedSkills.join(', ') : 'general',
+      reasoningEffort ? `reasoning_effort: ${reasoningEffort}` : '',
+      hasImages ? `(with ${frameImages.length} image(s))` : '',
     );
 
     // Get the original stream response
@@ -628,7 +643,7 @@ Analyze the request and decide: use targeted edits (type: "edit") for small chan
 
     // Create metadata event to prepend
     const metadataEvent = `data: ${JSON.stringify({
-      type: "metadata",
+      type: 'metadata',
       skills: detectedSkills,
     })}\n\n`;
 
@@ -660,12 +675,12 @@ Analyze the request and decide: use targeted edits (type: "edit") for small chan
       headers: originalResponse.headers,
     });
   } catch (error) {
-    console.error("Error generating code:", error);
+    console.error('Error generating code:', error);
     return new Response(
       JSON.stringify({
-        error: "Something went wrong while trying to reach OpenAI APIs.",
+        error: 'Something went wrong while trying to reach OpenAI APIs.',
       }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
   }
 }

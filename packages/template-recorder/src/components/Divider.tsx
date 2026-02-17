@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export const Divider: React.FC = () => {
   return (
@@ -6,7 +6,7 @@ export const Divider: React.FC = () => {
       style={{
         width: 1,
         height: 36,
-        backgroundColor: "#444",
+        backgroundColor: '#444',
       }}
     ></div>
   );

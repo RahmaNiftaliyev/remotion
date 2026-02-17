@@ -1,4 +1,4 @@
-import { SizeConstraint } from "./helpers/get-selected-video-source";
+import { SizeConstraint } from './helpers/get-selected-video-source';
 
 export const setPreferredResolutionForDevice = (
   deviceId: string,
@@ -25,7 +25,7 @@ export const getPreferredResolutionForDevice = (
   }
 
   const stored = localStorage.getItem(`preferred-constraint-${deviceId}`);
-  if (stored === null || stored === "null") {
+  if (stored === null || stored === 'null') {
     return {
       maxSize: null,
       minimumFps: null,

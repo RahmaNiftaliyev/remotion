@@ -1,12 +1,12 @@
-import { DEFAULT_MINIMUM_FPS } from "../preferred-resolution";
-import { SelectedSource } from "./get-selected-video-source";
+import { DEFAULT_MINIMUM_FPS } from '../preferred-resolution';
+import { SelectedSource } from './get-selected-video-source';
 
 const getDisplayStream = async (selectedVideoSource: SelectedSource) => {
   if (
-    selectedVideoSource.type !== "display-without-audio" &&
-    selectedVideoSource.type !== "display-with-audio"
+    selectedVideoSource.type !== 'display-without-audio' &&
+    selectedVideoSource.type !== 'display-with-audio'
   ) {
-    throw new Error("Unknown video source type");
+    throw new Error('Unknown video source type');
   }
 
   const stream = await window.navigator.mediaDevices
@@ -17,7 +17,7 @@ const getDisplayStream = async (selectedVideoSource: SelectedSource) => {
           ideal: 1080,
         },
       },
-      audio: selectedVideoSource.type === "display-with-audio",
+      audio: selectedVideoSource.type === 'display-with-audio',
     });
 
   return stream;
@@ -27,7 +27,7 @@ export const getCameraStreamConstraints = (
   selectedVideoSource: SelectedSource,
   preferPortrait: boolean,
 ) => {
-  if (selectedVideoSource.type !== "camera") {
+  if (selectedVideoSource.type !== 'camera') {
     return null;
   }
   const video: MediaTrackConstraints = {
@@ -60,8 +60,8 @@ const getCameraStram = ({
   recordAudio: boolean;
   selectedAudioSource: ConstrainDOMString | null;
 }): Promise<MediaStream> => {
-  if (selectedVideoSource.type !== "camera") {
-    throw new Error("Unknown video source type");
+  if (selectedVideoSource.type !== 'camera') {
+    throw new Error('Unknown video source type');
   }
   const video = getCameraStreamConstraints(selectedVideoSource, preferPortrait);
 
@@ -87,13 +87,13 @@ export const getVideoStream = async ({
   recordAudio: boolean;
   selectedAudioSource: ConstrainDOMString | null;
 }): Promise<MediaStream> => {
-  if (selectedVideoSource.type === "display-with-audio") {
+  if (selectedVideoSource.type === 'display-with-audio') {
     return getDisplayStream(selectedVideoSource);
   }
-  if (selectedVideoSource.type === "display-without-audio") {
+  if (selectedVideoSource.type === 'display-without-audio') {
     return getDisplayStream(selectedVideoSource);
   }
-  if (selectedVideoSource.type === "camera") {
+  if (selectedVideoSource.type === 'camera') {
     return getCameraStram({
       selectedVideoSource,
       preferPortrait,
@@ -102,5 +102,5 @@ export const getVideoStream = async ({
     });
   }
 
-  throw new Error("Unknown video source type");
+  throw new Error('Unknown video source type');
 };

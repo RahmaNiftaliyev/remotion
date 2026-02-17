@@ -1,8 +1,8 @@
-import { useCallback } from "react";
-import { CalculateMetadataFunction, Composition } from "remotion";
-import { Main, MainProps, mainSchema } from "./Main";
-import { fetchStargazers } from "./fetch/fetch-data";
-import { waitForNoInput } from "./wait-for-no-input";
+import { useCallback } from 'react';
+import { CalculateMetadataFunction, Composition } from 'remotion';
+import { Main, MainProps, mainSchema } from './Main';
+import { fetchStargazers } from './fetch/fetch-data';
+import { waitForNoInput } from './wait-for-no-input';
 
 const FPS = 30;
 
@@ -43,8 +43,8 @@ export const RemotionRoot = () => {
       schema={mainSchema}
       calculateMetadata={calculateMetadata}
       defaultProps={{
-        repoOrg: "code-hike",
-        repoName: "codehike",
+        repoOrg: 'code-hike',
+        repoName: 'codehike',
         starCount: 100,
         duration: 15,
         stargazers: null,

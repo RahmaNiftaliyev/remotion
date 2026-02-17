@@ -1,4 +1,4 @@
-import { Stargazer } from "../cache";
+import { Stargazer } from '../cache';
 
 export const REST_PER_PAGE = 100;
 
@@ -24,7 +24,7 @@ export const fetchPageViaRest = async ({
   const url = `https://api.github.com/repos/${repoOrg}/${repoName}/stargazers?per_page=${REST_PER_PAGE}&page=${page}`;
   const res = await fetch(url, {
     headers: {
-      Accept: "application/vnd.github.v3.star+json",
+      Accept: 'application/vnd.github.v3.star+json',
       ...(process.env.REMOTION_GITHUB_TOKEN && {
         Authorization: `Bearer ${process.env.REMOTION_GITHUB_TOKEN}`,
       }),
@@ -33,7 +33,7 @@ export const fetchPageViaRest = async ({
   });
   const rateLimitHit = res.status === 403 || res.status === 429;
   if (rateLimitHit) {
-    console.error("GitHub REST API rate limit hit. Waiting 1 minute...");
+    console.error('GitHub REST API rate limit hit. Waiting 1 minute...');
     await new Promise((resolve) => {
       setTimeout(resolve, 60 * 1000);
     });

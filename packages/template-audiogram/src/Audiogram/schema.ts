@@ -1,28 +1,28 @@
-import { zColor } from "@remotion/zod-types";
-import { z } from "zod";
-import { Caption } from "@remotion/captions";
+import { Caption } from '@remotion/captions';
+import { zColor } from '@remotion/zod-types';
+import { z } from 'zod';
 
 const baseVisualizerSchema = z.object({
   color: zColor(),
-  numberOfSamples: z.enum(["32", "64", "128", "256", "512"]),
+  numberOfSamples: z.enum(['32', '64', '128', '256', '512']),
 });
 
 const spectrumVisualizerSchema = baseVisualizerSchema.extend({
-  type: z.literal("spectrum"),
+  type: z.literal('spectrum'),
   linesToDisplay: z.number().int().min(0).default(65),
   freqRangeStartIndex: z.number().int().min(0).default(0),
   mirrorWave: z.boolean(),
 });
 
 const oscilloscopeVisualizerSchema = baseVisualizerSchema.extend({
-  type: z.literal("oscilloscope"),
+  type: z.literal('oscilloscope'),
   windowInSeconds: z.number().min(0.1).default(0.1),
   posterization: z.number().int().min(0.1).default(3),
   amplitude: z.number().int().min(0.1).default(4),
   padding: z.number().int().min(0).default(50),
 });
 
-const visualizerSchema = z.discriminatedUnion("type", [
+const visualizerSchema = z.discriminatedUnion('type', [
   spectrumVisualizerSchema,
   oscilloscopeVisualizerSchema,
 ]);
@@ -37,8 +37,8 @@ export const audiogramSchema = z.object({
   // captions settings
   captionsFileName: z
     .string()
-    .refine((s) => s.endsWith(".srt") || s.endsWith(".json"), {
-      message: "Subtitles file must be a .srt or .json file",
+    .refine((s) => s.endsWith('.srt') || s.endsWith('.json'), {
+      message: 'Subtitles file must be a .srt or .json file',
     }),
   captionsTextColor: zColor(),
   onlyDisplayCurrentSentence: z.boolean(),

@@ -1,33 +1,33 @@
-import React, { useMemo } from "react";
-import { AbsoluteFill } from "remotion";
-import { DeviceItem } from "../DeviceItem";
-import { useDevices } from "../WaitingForDevices";
-import { Label, formatDeviceLabel } from "../helpers/format-device-label";
-import { RescanDevices } from "./RescanDevices";
+import React, { useMemo } from 'react';
+import { AbsoluteFill } from 'remotion';
+import { DeviceItem } from '../DeviceItem';
+import { useDevices } from '../WaitingForDevices';
+import { Label, formatDeviceLabel } from '../helpers/format-device-label';
+import { RescanDevices } from './RescanDevices';
 
 const title: React.CSSProperties = {
-  fontWeight: "bold",
+  fontWeight: 'bold',
 };
 
 const container: React.CSSProperties = {
-  display: "flex",
-  backgroundColor: "rgba(0, 0, 0, 0.9)",
+  display: 'flex',
+  backgroundColor: 'rgba(0, 0, 0, 0.9)',
   padding: 20,
   gap: 20,
-  overflowY: "auto",
+  overflowY: 'auto',
 };
 
 const clearStyle: React.CSSProperties = {
-  borderBottom: "1px solid",
-  color: "rgba(255, 255, 255, 0.5)",
+  borderBottom: '1px solid',
+  color: 'rgba(255, 255, 255, 0.5)',
   fontSize: 14,
   marginTop: 10,
-  display: "inline-block",
-  cursor: "pointer",
+  display: 'inline-block',
+  cursor: 'pointer',
 };
 
 export const getDeviceLabel = (device: MediaDeviceInfo): string => {
-  const labels: Label[] = JSON.parse(localStorage.getItem("labels") ?? "[]");
+  const labels: Label[] = JSON.parse(localStorage.getItem('labels') ?? '[]');
   const found = labels.find((l) => l.id === device.deviceId);
   if (found) {
     return found.label;
@@ -61,10 +61,10 @@ export const StreamPicker: React.FC<{
 }) => {
   const devices = useDevices();
   const videoInputs = useMemo(() => {
-    return devices.filter((d) => d.kind === "videoinput");
+    return devices.filter((d) => d.kind === 'videoinput');
   }, [devices]);
   const audioInputs = useMemo(() => {
-    return devices.filter((d) => d.kind === "audioinput");
+    return devices.filter((d) => d.kind === 'audioinput');
   }, [devices]);
 
   return (
@@ -85,9 +85,9 @@ export const StreamPicker: React.FC<{
               handleClick={() => {
                 onPickScreenWithoutAudio();
               }}
-              deviceLabel={"Screen capture"}
+              deviceLabel={'Screen capture'}
               type="screen"
-              selected={selectedVideoDevice === "display-without-audio"}
+              selected={selectedVideoDevice === 'display-without-audio'}
             />
           ) : null}
           {canSelectScreen ? (
@@ -95,9 +95,9 @@ export const StreamPicker: React.FC<{
               handleClick={() => {
                 onPickScreenWithAudio();
               }}
-              deviceLabel={"Screen capture with audio"}
+              deviceLabel={'Screen capture with audio'}
               type="screen"
-              selected={selectedVideoDevice === "display-with-audio"}
+              selected={selectedVideoDevice === 'display-with-audio'}
             />
           ) : null}
           {videoInputs.map((d) => {

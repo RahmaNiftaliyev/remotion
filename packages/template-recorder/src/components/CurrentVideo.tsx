@@ -1,17 +1,17 @@
-import { CameraIcon } from "lucide-react";
-import React, { useCallback, useMemo } from "react";
-import { DisplayIcon } from "../DeviceItem";
-import { Resolution } from "../PrefixAndResolution";
-import { ResolutionAndFps } from "../Stream";
+import { CameraIcon } from 'lucide-react';
+import React, { useCallback, useMemo } from 'react';
+import { DisplayIcon } from '../DeviceItem';
+import { Resolution } from '../PrefixAndResolution';
+import { ResolutionAndFps } from '../Stream';
 
 const spacer: React.CSSProperties = {
   width: 12,
 };
 
 const buttonStyle: React.CSSProperties = {
-  display: "inline",
-  color: "rgba(255, 255, 255, 0.5)",
-  borderBottom: "1px solid",
+  display: 'inline',
+  color: 'rgba(255, 255, 255, 0.5)',
+  borderBottom: '1px solid',
 };
 
 export const CurrentVideo: React.FC<{
@@ -41,13 +41,13 @@ export const CurrentVideo: React.FC<{
 
   const container: React.CSSProperties = useMemo(() => {
     return {
-      display: "flex",
-      flexDirection: "row",
+      display: 'flex',
+      flexDirection: 'row',
       fontSize: 13,
-      alignItems: "center",
+      alignItems: 'center',
       flex: 1,
       lineHeight: 1.4,
-      cursor: "pointer",
+      cursor: 'pointer',
       paddingTop: 4,
       paddingBottom: 4,
       paddingLeft: 10,
@@ -68,9 +68,9 @@ export const CurrentVideo: React.FC<{
         <div>{label}</div>
         <span
           style={{
-            whiteSpace: "nowrap",
-            display: "flex",
-            flexDirection: "row",
+            whiteSpace: 'nowrap',
+            display: 'flex',
+            flexDirection: 'row',
           }}
         >
           {resolution ? (

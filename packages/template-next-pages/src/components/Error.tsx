@@ -1,15 +1,15 @@
-import React from "react";
+import React from 'react';
 
 const container: React.CSSProperties = {
-  color: "var(--geist-error)",
-  fontFamily: "var(--geist-font)",
-  paddingTop: "var(--geist-half-pad)",
-  paddingBottom: "var(--geist-half-pad)",
+  color: 'var(--geist-error)',
+  fontFamily: 'var(--geist-font)',
+  paddingTop: 'var(--geist-half-pad)',
+  paddingBottom: 'var(--geist-half-pad)',
 };
 
 const icon: React.CSSProperties = {
   height: 20,
-  verticalAlign: "text-bottom",
+  verticalAlign: 'text-bottom',
   marginRight: 6,
 };
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 
 export const useKeyPress = ({
   keys,
@@ -28,8 +28,8 @@ export const useKeyPress = ({
   );
 
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyPress);
+    document.addEventListener('keydown', handleKeyPress);
 
-    return () => document.removeEventListener("keydown", handleKeyPress);
+    return () => document.removeEventListener('keydown', handleKeyPress);
   }, [handleKeyPress]);
 };

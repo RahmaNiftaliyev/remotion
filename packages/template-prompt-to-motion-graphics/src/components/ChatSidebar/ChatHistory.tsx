@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useRef, useEffect } from "react";
-import { AlertTriangle, FileCode, PenLine, BookOpen } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import type { ConversationMessage } from "@/types/conversation";
+} from '@/components/ui/tooltip';
+import type { ConversationMessage } from '@/types/conversation';
+import { AlertTriangle, BookOpen, FileCode, PenLine } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 
 interface ChatHistoryProps {
   messages: ConversationMessage[];
@@ -17,15 +17,12 @@ interface ChatHistoryProps {
   };
 }
 
-export function ChatHistory({
-  messages,
-  pendingMessage,
-}: ChatHistoryProps) {
+export function ChatHistory({ messages, pendingMessage }: ChatHistoryProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   return (
@@ -40,13 +37,13 @@ export function ChatHistory({
 }
 
 function ChatMessage({ message }: { message: ConversationMessage }) {
-  const isUser = message.role === "user";
-  const isError = message.role === "error";
+  const isUser = message.role === 'user';
+  const isError = message.role === 'error';
   const metadata = message.metadata;
 
   const time = new Date(message.timestamp).toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
+    hour: 'numeric',
+    minute: '2-digit',
   });
 
   if (isUser) {
@@ -78,11 +75,11 @@ function ChatMessage({ message }: { message: ConversationMessage }) {
 
   if (isError) {
     const errorLabel =
-      message.errorType === "api"
-        ? "API Error"
-        : message.errorType === "validation"
-          ? "Validation Error"
-          : "Edit Failed";
+      message.errorType === 'api'
+        ? 'API Error'
+        : message.errorType === 'validation'
+          ? 'Validation Error'
+          : 'Edit Failed';
 
     return (
       <div className="space-y-2">
@@ -115,13 +112,13 @@ function ChatMessage({ message }: { message: ConversationMessage }) {
               </span>
             </TooltipTrigger>
             <TooltipContent side="right" sideOffset={4}>
-              Skills used: {metadata.skills.join(", ")}
+              Skills used: {metadata.skills.join(', ')}
             </TooltipContent>
           </Tooltip>
         )}
       </div>
 
-      {metadata?.editType === "tool_edit" && metadata.edits && (
+      {metadata?.editType === 'tool_edit' && metadata.edits && (
         <div className="space-y-1.5 pl-1 mt-2">
           {metadata.edits.map((edit, i) => (
             <div key={i} className="flex items-center gap-2">
@@ -141,7 +138,7 @@ function ChatMessage({ message }: { message: ConversationMessage }) {
         </div>
       )}
 
-      {metadata?.editType === "full_replacement" && (
+      {metadata?.editType === 'full_replacement' && (
         <div className="flex items-center gap-2 text-muted-foreground">
           <FileCode className="w-3.5 h-3.5" />
           <span className="text-xs">Full code rewrite</span>
@@ -170,7 +167,7 @@ function PendingMessage({ skills }: { skills?: string[] }) {
               </span>
             </TooltipTrigger>
             <TooltipContent side="right" sideOffset={4}>
-              Skills used: {skills.join(", ")}
+              Skills used: {skills.join(', ')}
             </TooltipContent>
           </Tooltip>
         )}

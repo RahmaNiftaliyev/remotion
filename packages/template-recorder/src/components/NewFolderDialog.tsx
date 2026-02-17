@@ -1,14 +1,14 @@
-import type { ChangeEvent, SetStateAction } from "react";
+import type { ChangeEvent, SetStateAction } from 'react';
 import React, {
   createRef,
   useCallback,
   useImperativeHandle,
   useMemo,
   useState,
-} from "react";
-import { createFolder } from "../actions/create-folder";
-import { useKeyPress } from "../helpers/use-key-press";
-import { Button } from "./ui/button";
+} from 'react';
+import { createFolder } from '../actions/create-folder';
+import { useKeyPress } from '../helpers/use-key-press';
+import { Button } from './ui/button';
 import {
   Dialog,
   DialogContent,
@@ -16,9 +16,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+} from './ui/dialog';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
 
 export const createNewFolderRef = createRef<{
   openDialog: () => void;
@@ -28,7 +28,7 @@ export const NewFolderDialog: React.FC<{
   setSelectedFolder: React.Dispatch<SetStateAction<string | null>>;
   refreshFoldersList: () => Promise<void>;
 }> = ({ refreshFoldersList, setSelectedFolder }) => {
-  const [newProject, setNewProject] = useState<string>("");
+  const [newProject, setNewProject] = useState<string>('');
   const [open, setOpen] = useState<boolean>(false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +62,7 @@ export const NewFolderDialog: React.FC<{
       }
 
       setSelectedFolder(newProject);
-      setNewProject("");
+      setNewProject('');
       refreshFoldersList();
       setOpen(false);
     } catch (e) {
@@ -84,7 +84,7 @@ export const NewFolderDialog: React.FC<{
     }
   }, [disabled, handleSubmit]);
 
-  useKeyPress({ keys: ["Enter"], callback: handlePressEnter, metaKey: false });
+  useKeyPress({ keys: ['Enter'], callback: handlePressEnter, metaKey: false });
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

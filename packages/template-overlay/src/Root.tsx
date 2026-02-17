@@ -1,5 +1,5 @@
-import { Composition } from "remotion";
-import { Overlay } from "./Overlay";
+import { Composition } from 'remotion';
+import { Overlay } from './Overlay';
 
 export const RemotionRoot: React.FC = () => {
   return (

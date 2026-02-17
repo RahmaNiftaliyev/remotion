@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { Code, Play } from "lucide-react";
+import { cn } from '@/lib/utils';
+import { Code, Play } from 'lucide-react';
+import { useState } from 'react';
 
-export type TabId = "code" | "preview";
+export type TabId = 'code' | 'preview';
 
 interface TabPanelProps {
   codeContent: React.ReactNode;
@@ -15,13 +15,13 @@ interface TabPanelProps {
 export function TabPanel({
   codeContent,
   previewContent,
-  defaultTab = "preview",
+  defaultTab = 'preview',
 }: TabPanelProps) {
   const [activeTab, setActiveTab] = useState<TabId>(defaultTab);
 
   const tabs = [
-    { id: "code" as const, label: "Remotion Code", icon: Code },
-    { id: "preview" as const, label: "Video Preview", icon: Play },
+    { id: 'code' as const, label: 'Remotion Code', icon: Code },
+    { id: 'preview' as const, label: 'Video Preview', icon: Play },
   ];
 
   return (
@@ -32,11 +32,11 @@ export function TabPanel({
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
-              index > 0 && "border-l border-border",
+              'flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors',
+              index > 0 && 'border-l border-border',
               activeTab === tab.id
-                ? "bg-accent text-foreground"
-                : "bg-transparent text-muted-foreground hover:text-foreground hover:bg-accent/30"
+                ? 'bg-accent text-foreground'
+                : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-accent/30',
             )}
           >
             <tab.icon className="w-4 h-4" />
@@ -45,7 +45,7 @@ export function TabPanel({
         ))}
       </div>
       <div className="flex-1 min-h-0">
-        {activeTab === "code" ? codeContent : previewContent}
+        {activeTab === 'code' ? codeContent : previewContent}
       </div>
     </div>
   );

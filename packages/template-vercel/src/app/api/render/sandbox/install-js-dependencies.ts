@@ -1,5 +1,5 @@
-import { Sandbox } from "@vercel/sandbox";
-import { VERSION } from "remotion/version";
+import { Sandbox } from '@vercel/sandbox';
+import { VERSION } from 'remotion/version';
 
 export async function installJsDependencies({
   sandbox,
@@ -7,7 +7,7 @@ export async function installJsDependencies({
   sandbox: Sandbox;
 }): Promise<void> {
   const installCmd = await sandbox.runCommand({
-    cmd: "pnpm",
+    cmd: 'pnpm',
     args: [
       `i`,
       `@remotion/renderer@${VERSION}`,

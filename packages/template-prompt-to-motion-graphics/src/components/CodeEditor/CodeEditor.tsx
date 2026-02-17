@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import React, { useRef, useEffect } from "react";
-import dynamic from "next/dynamic";
-import type { Monaco } from "@monaco-editor/react";
-import type { editor } from "monaco-editor";
+import type { Monaco } from '@monaco-editor/react';
+import type { editor } from 'monaco-editor';
 import {
   MonacoJsxSyntaxHighlight,
   getWorker,
-} from "monaco-jsx-syntax-highlight";
+} from 'monaco-jsx-syntax-highlight';
+import dynamic from 'next/dynamic';
+import React, { useEffect, useRef } from 'react';
 
-import { EditorHeader } from "./EditorHeader";
-import { StreamingOverlay } from "./StreamingOverlay";
+import { EditorHeader } from './EditorHeader';
+import { StreamingOverlay } from './StreamingOverlay';
 
 // Monaco must be loaded client-side only
-const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
+const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   ssr: false,
   loading: () => (
     <div className="w-[600px] h-full flex justify-center items-center bg-background-editor">
@@ -22,7 +22,7 @@ const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ),
 });
 
-type StreamPhase = "idle" | "reasoning" | "generating";
+type StreamPhase = 'idle' | 'reasoning' | 'generating';
 
 interface CodeEditorProps {
   code: string;
@@ -35,7 +35,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
   code,
   onChange,
   isStreaming = false,
-  streamPhase = "idle",
+  streamPhase = 'idle',
 }) => {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -47,7 +47,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
   }, [isStreaming]);
 
   // Use typescript for semantic checking, plaintext during streaming
-  const editorLanguage = isStreaming ? "plaintext" : "typescript";
+  const editorLanguage = isStreaming ? 'plaintext' : 'typescript';
 
   // Continuously clear markers while streaming
   useEffect(() => {
@@ -55,9 +55,9 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
 
     const clearAllMarkers = () => {
       monacoRef.current?.editor.getModels().forEach((model) => {
-        monacoRef.current?.editor.setModelMarkers(model, "javascript", []);
-        monacoRef.current?.editor.setModelMarkers(model, "typescript", []);
-        monacoRef.current?.editor.setModelMarkers(model, "owner", []);
+        monacoRef.current?.editor.setModelMarkers(model, 'javascript', []);
+        monacoRef.current?.editor.setModelMarkers(model, 'typescript', []);
+        monacoRef.current?.editor.setModelMarkers(model, 'owner', []);
       });
     };
 
@@ -158,7 +158,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
         }
       }
       `,
-      "react.d.ts",
+      'react.d.ts',
     );
 
     // Add module declaration for 'react' to allow imports
@@ -171,7 +171,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
         export const useRef: typeof React.useRef;
         export default React;
       }`,
-      "react-module.d.ts",
+      'react-module.d.ts',
     );
 
     // Add type declarations for all whitelisted libraries
@@ -184,7 +184,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
         export function spring(options: { frame: number; fps: number; config?: any; durationInFrames?: number }): number;
         export const Sequence: React.FC<{ from?: number; durationInFrames?: number; children: React.ReactNode }>;
       }`,
-      "remotion.d.ts",
+      'remotion.d.ts',
     );
 
     ts?.typescriptDefaults?.addExtraLib(
@@ -202,14 +202,14 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
         export const Polygon: React.FC<ShapeProps & { radius: number; points: number }>;
         export const Ellipse: React.FC<ShapeProps & { rx: number; ry: number }>;
       }`,
-      "remotion-shapes.d.ts",
+      'remotion-shapes.d.ts',
     );
 
     ts?.typescriptDefaults?.addExtraLib(
       `declare module '@remotion/lottie' {
         export const Lottie: React.FC<{ animationData?: any; src?: string; playbackRate?: number; style?: React.CSSProperties }>;
       }`,
-      "remotion-lottie.d.ts",
+      'remotion-lottie.d.ts',
     );
 
     ts?.typescriptDefaults?.addExtraLib(
@@ -224,7 +224,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
           [key: string]: any;
         }>;
       }`,
-      "remotion-three.d.ts",
+      'remotion-three.d.ts',
     );
 
     ts?.typescriptDefaults?.addExtraLib(
@@ -237,7 +237,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
         export class Mesh { constructor(geometry?: any, material?: any); position: Vector3; rotation: Vector3; }
         export const DoubleSide: number;
       }`,
-      "three.d.ts",
+      'three.d.ts',
     );
 
     // Override marker setting to suppress during streaming
@@ -265,7 +265,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
 
   // Simple pass-through: code is displayed and edited as-is
   const handleChange = (value: string | undefined) => {
-    onChange(value || "");
+    onChange(value || '');
   };
 
   return (
@@ -276,7 +276,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
           <StreamingOverlay
             visible={isStreaming}
             message={
-              streamPhase === "reasoning" ? "Thinking..." : "Generating code..."
+              streamPhase === 'reasoning' ? 'Thinking...' : 'Generating code...'
             }
           />
           <MonacoEditor
@@ -290,11 +290,11 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
             options={{
               minimap: { enabled: false },
               fontSize: 14,
-              lineNumbers: "on",
+              lineNumbers: 'on',
               scrollBeyondLastLine: false,
               automaticLayout: true,
               tabSize: 2,
-              wordWrap: "on",
+              wordWrap: 'on',
               padding: { top: 16 },
               glyphMargin: false,
               lineNumbersMinChars: 3,

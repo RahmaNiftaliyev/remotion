@@ -1,15 +1,15 @@
-import React from "react";
-import styles from "./deviceitem.module.css";
+import React from 'react';
+import styles from './deviceitem.module.css';
 
 const deviceRow: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "center",
-  width: "100%",
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  width: '100%',
   paddingTop: 10,
   paddingBottom: 10,
-  borderBottom: "1px solid #333",
-  cursor: "pointer",
+  borderBottom: '1px solid #333',
+  cursor: 'pointer',
   paddingRight: 10,
 };
 
@@ -72,7 +72,7 @@ const CheckIcon: React.FC = () => {
 
 export const DeviceItem: React.FC<{
   deviceLabel: string;
-  type: "camera" | "microphone" | "screen";
+  type: 'camera' | 'microphone' | 'screen';
   handleClick: () => void;
   selected: boolean;
 }> = ({ deviceLabel, type, handleClick, selected }) => {
@@ -81,16 +81,16 @@ export const DeviceItem: React.FC<{
       <div
         style={{
           width: 36,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         {selected && <CheckIcon></CheckIcon>}
       </div>
-      {type === "camera" ? <CameraIcon></CameraIcon> : null}
-      {type === "microphone" ? <MicIcon></MicIcon> : null}
-      {type === "screen" ? <DisplayIcon></DisplayIcon> : null}
+      {type === 'camera' ? <CameraIcon></CameraIcon> : null}
+      {type === 'microphone' ? <MicIcon></MicIcon> : null}
+      {type === 'screen' ? <DisplayIcon></DisplayIcon> : null}
       <div style={spacer}></div> <span style={label}>{deviceLabel}</span>
       <div style={{ flex: 1 }}></div>
     </div>

@@ -1,20 +1,20 @@
-import { z } from "zod";
+import { fontFamily, loadFont } from '@remotion/google-fonts/Inter';
 import {
   AbsoluteFill,
   Sequence,
   spring,
   useCurrentFrame,
   useVideoConfig,
-} from "remotion";
-import { CompositionProps } from "../../../types/constants";
-import { NextLogo } from "./NextLogo";
-import { loadFont, fontFamily } from "@remotion/google-fonts/Inter";
-import { Rings } from "./Rings";
-import { TextFade } from "./TextFade";
+} from 'remotion';
+import { z } from 'zod';
+import { CompositionProps } from '../../../types/constants';
+import { NextLogo } from './NextLogo';
+import { Rings } from './Rings';
+import { TextFade } from './TextFade';
 
-loadFont("normal", {
-  subsets: ["latin"],
-  weights: ["400", "700"],
+loadFont('normal', {
+  subsets: ['latin'],
+  weights: ['400', '700'],
 });
 export const Main = ({ title }: z.infer<typeof CompositionProps>) => {
   const frame = useCurrentFrame();

@@ -9,8 +9,8 @@ export interface ValidationResult {
  */
 export function stripMarkdownFences(code: string): string {
   let result = code;
-  result = result.replace(/^```(?:tsx?|jsx?)?\n?/, "");
-  result = result.replace(/\n?```\s*$/, "");
+  result = result.replace(/^```(?:tsx?|jsx?)?\n?/, '');
+  result = result.replace(/\n?```\s*$/, '');
   return result.trim();
 }
 
@@ -28,7 +28,7 @@ export function validateGptResponse(response: string): ValidationResult {
     return {
       isValid: false,
       error:
-        "The response was not a valid motion graphics component. Please try a different prompt.",
+        'The response was not a valid motion graphics component. Please try a different prompt.',
     };
   }
 
@@ -58,9 +58,9 @@ export function extractComponentCode(code: string): string {
 
     for (let i = bodyStart; i < code.length; i++) {
       const char = code[i];
-      if (char === "{") {
+      if (char === '{') {
         braceCount++;
-      } else if (char === "}") {
+      } else if (char === '}') {
         braceCount--;
         if (braceCount === 0) {
           endIndex = i;
@@ -73,8 +73,8 @@ export function extractComponentCode(code: string): string {
       // Return everything from start of code to end of component (including closing brace and semicolon)
       let result = code.slice(0, endIndex + 1);
       // Add semicolon if not present
-      if (!result.trim().endsWith(";")) {
-        result = result.trimEnd() + ";";
+      if (!result.trim().endsWith(';')) {
+        result = result.trimEnd() + ';';
       }
       return result.trim();
     }

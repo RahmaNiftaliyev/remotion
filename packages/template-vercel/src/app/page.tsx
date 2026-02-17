@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { Player } from "@remotion/player";
-import type { NextPage } from "next";
-import { useMemo, useState } from "react";
-import { z } from "zod";
+import { Player } from '@remotion/player';
+import type { NextPage } from 'next';
+import { useMemo, useState } from 'react';
+import { z } from 'zod';
 import {
-  defaultMyCompProps,
   CompositionProps,
+  defaultMyCompProps,
   DURATION_IN_FRAMES,
   VIDEO_FPS,
   VIDEO_HEIGHT,
   VIDEO_WIDTH,
-} from "../../types/constants";
-import { RenderControls } from "../components/RenderControls";
-import { Tips } from "../components/Tips";
-import { Main } from "../remotion/MyComp/Main";
+} from '../../types/constants';
+import { RenderControls } from '../components/RenderControls';
+import { Tips } from '../components/Tips';
+import { Main } from '../remotion/MyComp/Main';
 
 const Home: NextPage = () => {
   const [text, setText] = useState<string>(defaultMyCompProps.title);
@@ -37,7 +37,7 @@ const Home: NextPage = () => {
             compositionHeight={VIDEO_HEIGHT}
             compositionWidth={VIDEO_WIDTH}
             style={{
-              width: "100%",
+              width: '100%',
             }}
             controls
             autoPlay

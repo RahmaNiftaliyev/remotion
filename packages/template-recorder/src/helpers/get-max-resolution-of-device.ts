@@ -7,7 +7,7 @@ export type MaxResolution = {
 export const getMaxResolutionOfDevice = (
   device: MediaDeviceInfo,
 ): MaxResolution | null => {
-  if (typeof InputDeviceInfo === "undefined") {
+  if (typeof InputDeviceInfo === 'undefined') {
     return null;
   }
 

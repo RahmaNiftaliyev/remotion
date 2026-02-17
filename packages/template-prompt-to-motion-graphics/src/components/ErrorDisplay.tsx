@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { AlertCircle, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { AlertCircle, X } from 'lucide-react';
+import React from 'react';
 
-export type ErrorVariant = "inline" | "card" | "fullscreen";
-export type ErrorSize = "sm" | "md" | "lg";
+export type ErrorVariant = 'inline' | 'card' | 'fullscreen';
+export type ErrorSize = 'sm' | 'md' | 'lg';
 
 interface ErrorDisplayProps {
   error: string;
@@ -19,24 +19,35 @@ interface ErrorDisplayProps {
   className?: string;
 }
 
-const sizeStyles: Record<ErrorSize, { icon: string; title: string; description: string }> = {
-  sm: { icon: "h-3 w-3", title: "text-xs", description: "text-xs" },
-  md: { icon: "h-4 w-4", title: "text-sm font-semibold", description: "text-sm" },
-  lg: { icon: "h-5 w-5", title: "text-base font-semibold", description: "text-base" },
+const sizeStyles: Record<
+  ErrorSize,
+  { icon: string; title: string; description: string }
+> = {
+  sm: { icon: 'h-3 w-3', title: 'text-xs', description: 'text-xs' },
+  md: {
+    icon: 'h-4 w-4',
+    title: 'text-sm font-semibold',
+    description: 'text-sm',
+  },
+  lg: {
+    icon: 'h-5 w-5',
+    title: 'text-base font-semibold',
+    description: 'text-base',
+  },
 };
 
 export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
   error,
   title,
-  variant = "card",
-  size = "md",
+  variant = 'card',
+  size = 'md',
   onDismiss,
   children,
   className,
 }) => {
   const styles = sizeStyles[size];
 
-  if (variant === "fullscreen") {
+  if (variant === 'fullscreen') {
     return (
       <div className="w-full aspect-video max-h-[calc(100%-80px)] flex flex-col justify-center items-center bg-background-elevated rounded-lg overflow-hidden shadow-[0_0_60px_rgba(0,0,0,0.5)]">
         <div className="flex flex-col items-center gap-4 max-w-[80%] p-8">
@@ -57,10 +68,15 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
     );
   }
 
-  if (variant === "inline") {
+  if (variant === 'inline') {
     return (
-      <Alert variant="destructive" className={cn("flex items-center justify-between", className)}>
-        <AlertDescription className={styles.description}>{error}</AlertDescription>
+      <Alert
+        variant="destructive"
+        className={cn('flex items-center justify-between', className)}
+      >
+        <AlertDescription className={styles.description}>
+          {error}
+        </AlertDescription>
         {onDismiss && (
           <Button
             type="button"
@@ -68,8 +84,8 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
             size="icon-sm"
             onClick={onDismiss}
             className={cn(
-              "text-destructive hover:text-destructive hover:bg-destructive/20",
-              size === "sm" ? "h-5 w-5" : "h-6 w-6"
+              'text-destructive hover:text-destructive hover:bg-destructive/20',
+              size === 'sm' ? 'h-5 w-5' : 'h-6 w-6',
             )}
           >
             <X className={styles.icon} />
@@ -81,10 +97,15 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
 
   // card variant (default)
   return (
-    <Alert variant="destructive" className={cn("my-2", className)}>
+    <Alert variant="destructive" className={cn('my-2', className)}>
       <AlertCircle className={styles.icon} />
       {title && <AlertTitle className={styles.title}>{title}</AlertTitle>}
-      <AlertDescription className={cn(styles.description, "font-mono whitespace-pre-wrap break-words")}>
+      <AlertDescription
+        className={cn(
+          styles.description,
+          'font-mono whitespace-pre-wrap break-words',
+        )}
+      >
         {error}
       </AlertDescription>
       {children}
@@ -93,4 +114,4 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
 };
 
 // ErrorType is still used by AnimationPlayer for its interface
-export type ErrorType = "compilation" | "api" | "validation";
+export type ErrorType = 'compilation' | 'api' | 'validation';

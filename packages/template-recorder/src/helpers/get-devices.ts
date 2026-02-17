@@ -1,22 +1,22 @@
-import { enumerateDevicesOrTimeOut } from "./enumerate-devices-or-time-out";
-import { Label, formatDeviceLabel } from "./format-device-label";
+import { enumerateDevicesOrTimeOut } from './enumerate-devices-or-time-out';
+import { Label, formatDeviceLabel } from './format-device-label';
 
 export const storeLabelsToLS = (devices: MediaDeviceInfo[]) => {
-  const labels: Label[] = JSON.parse(localStorage.getItem("labels") ?? "[]");
+  const labels: Label[] = JSON.parse(localStorage.getItem('labels') ?? '[]');
   devices.forEach((device) => {
     const id = device.deviceId;
     const cleanLabel = formatDeviceLabel(device.label);
 
-    if (!labels.some((l) => l.id === id) && cleanLabel !== "") {
+    if (!labels.some((l) => l.id === id) && cleanLabel !== '') {
       labels.push({ id, label: cleanLabel });
     }
   });
 
-  localStorage.setItem("labels", JSON.stringify(labels));
+  localStorage.setItem('labels', JSON.stringify(labels));
 };
 
 export const hasNewDevices = (devices: MediaDeviceInfo[]): boolean => {
-  const labels: Label[] = JSON.parse(localStorage.getItem("labels") || "[]");
+  const labels: Label[] = JSON.parse(localStorage.getItem('labels') || '[]');
 
   const hasNew = !devices.every((device) => {
     return labels.some((l) => l.id === device.deviceId);
@@ -28,7 +28,7 @@ export const hasNewDevices = (devices: MediaDeviceInfo[]): boolean => {
 export const getDevices = async () => {
   const fetchedDevices = await enumerateDevicesOrTimeOut();
 
-  const hasEmptyLabels = fetchedDevices.some((device) => device.label === "");
+  const hasEmptyLabels = fetchedDevices.some((device) => device.label === '');
   const hasNew = hasNewDevices(fetchedDevices);
   if (hasNew && hasEmptyLabels) {
     const stream = await navigator.mediaDevices.getUserMedia({

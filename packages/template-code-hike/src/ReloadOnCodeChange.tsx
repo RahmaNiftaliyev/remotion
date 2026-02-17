@@ -1,14 +1,16 @@
-import { getStaticFiles, reevaluateComposition } from "@remotion/studio";
-import { useState } from "react";
-import React, { useEffect } from "react";
-import { watchPublicFolder } from "@remotion/studio";
-import { useRemotionEnvironment } from "remotion";
+import {
+  getStaticFiles,
+  reevaluateComposition,
+  watchPublicFolder,
+} from '@remotion/studio';
+import React, { useEffect, useState } from 'react';
+import { useRemotionEnvironment } from 'remotion';
 
 const getCurrentHash = () => {
   const files = getStaticFiles();
-  const codeFiles = files.filter((file) => file.name.startsWith("code"));
+  const codeFiles = files.filter((file) => file.name.startsWith('code'));
   const contents = codeFiles.map((file) => file.src + file.lastModified);
-  return contents.join("");
+  return contents.join('');
 };
 
 export const RefreshOnCodeChange: React.FC = () => {

@@ -1,38 +1,38 @@
-import type { ReactNode } from "react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { PermissionError } from "./PermissionError";
-import { CircleSpinner } from "./components/Spinner";
+import type { ReactNode } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { PermissionError } from './PermissionError';
+import { CircleSpinner } from './components/Spinner';
 
-type PermissionState = "granted" | "denied" | "prompt" | "initial";
+type PermissionState = 'granted' | 'denied' | 'prompt' | 'initial';
 
 const BORDERRADIUS = 10;
 const largeContainer: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  flexDirection: "column",
-  justifyContent: "center",
-  height: "100%",
+  display: 'flex',
+  alignItems: 'center',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  height: '100%',
 };
 
 const explanationWrapper: React.CSSProperties = {
-  display: "flex",
-  textAlign: "start",
+  display: 'flex',
+  textAlign: 'start',
   paddingLeft: 10,
 };
 
 const explanationContainer: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "flex-start",
-  flexDirection: "column",
+  display: 'flex',
+  justifyContent: 'flex-start',
+  flexDirection: 'column',
   maxWidth: 800,
   lineHeight: 2,
 };
 
 const innerContainer: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  flexDirection: "row",
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexDirection: 'row',
 };
 const container: React.CSSProperties = {
   borderRadius: BORDERRADIUS,
@@ -41,9 +41,9 @@ const container: React.CSSProperties = {
 };
 
 const title: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "center",
-  fontSize: "1rem",
+  display: 'flex',
+  justifyContent: 'center',
+  fontSize: '1rem',
 };
 
 const textContainer: React.CSSProperties = {
@@ -55,9 +55,9 @@ const textContainer: React.CSSProperties = {
 };
 
 const peripheralContainer: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  backgroundColor: "#242424",
+  display: 'flex',
+  flexDirection: 'column',
+  backgroundColor: '#242424',
   borderRadius: BORDERRADIUS,
   margin: 10,
   padding: 16,
@@ -66,7 +66,7 @@ const peripheralContainer: React.CSSProperties = {
 };
 
 const Permission: React.FC<{
-  type: "audio" | "video";
+  type: 'audio' | 'video';
   deviceState: PermissionState;
   setDeviceState: (newState: PermissionState) => void;
   isInitialState: boolean;
@@ -80,10 +80,10 @@ const Permission: React.FC<{
 }) => {
   const dynamicStyle: React.CSSProperties = useMemo(() => {
     return {
-      display: "flex",
-      justifyContent: "flex-end",
-      alignItems: "center",
-      color: deviceState === "denied" ? "red" : "white",
+      display: 'flex',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      color: deviceState === 'denied' ? 'red' : 'white',
     };
   }, [deviceState]);
 
@@ -116,23 +116,23 @@ const Permission: React.FC<{
   const handleError = useCallback(
     (error: Error) => {
       if (
-        error.message.includes("Requested device not found") ||
-        error.message.includes("The object can not be found here")
+        error.message.includes('Requested device not found') ||
+        error.message.includes('The object can not be found here')
       ) {
         onNoDevicesFound();
         return;
       }
 
-      setDeviceState("denied");
+      setDeviceState('denied');
     },
     [onNoDevicesFound, setDeviceState],
   );
 
   const run = useCallback(async () => {
     const name =
-      type === "audio"
-        ? ("microphone" as PermissionName)
-        : ("camera" as PermissionName);
+      type === 'audio'
+        ? ('microphone' as PermissionName)
+        : ('camera' as PermissionName);
     const result = await navigator.permissions
       .query({ name })
       .then((res) => res)
@@ -146,23 +146,23 @@ const Permission: React.FC<{
         return null;
       });
     // firefox case
-    if (!result && deviceState === "initial") {
+    if (!result && deviceState === 'initial') {
       // probe for permission
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
           video: true,
         });
-        setDeviceState("prompt");
+        setDeviceState('prompt');
         stream.getVideoTracks().forEach((track) => track.stop());
         stream.getAudioTracks().forEach((track) => track.stop());
       } catch (err) {
-        console.log("Error on getUserMedia(", err);
+        console.log('Error on getUserMedia(', err);
         handleError(err as Error);
         return;
       }
 
-      setDeviceState("granted");
+      setDeviceState('granted');
       return;
     }
 
@@ -172,23 +172,23 @@ const Permission: React.FC<{
 
     setDeviceState(result.state);
 
-    if (result.state === "prompt" && type === "audio") {
+    if (result.state === 'prompt' && type === 'audio') {
       try {
         await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: true,
         });
       } catch (err) {
-        console.log("Error on getUserMedia()", err);
+        console.log('Error on getUserMedia()', err);
         handleError(err as Error);
         return;
       }
     }
 
-    if (result.state === "granted") {
-      setDeviceState("granted");
-    } else if (result.state === "denied") {
-      setDeviceState("denied");
+    if (result.state === 'granted') {
+      setDeviceState('granted');
+    } else if (result.state === 'denied') {
+      setDeviceState('denied');
     }
   }, [deviceState, handleError, setDeviceState, type]);
 
@@ -197,9 +197,9 @@ const Permission: React.FC<{
   }, [run]);
 
   const accessInformation = useMemo(() => {
-    if (deviceState === "prompt") return "Access requested";
-    if (deviceState === "denied") return "Access denied";
-    if (deviceState === "granted") return "Access granted";
+    if (deviceState === 'prompt') return 'Access requested';
+    if (deviceState === 'denied') return 'Access denied';
+    if (deviceState === 'granted') return 'Access granted';
   }, [deviceState]);
 
   if (isInitialState) return null;
@@ -207,26 +207,26 @@ const Permission: React.FC<{
     <div style={peripheralContainer}>
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
           flex: 1,
         }}
       >
-        {type === "audio" ? microphoneIcon : cameraIcon}
+        {type === 'audio' ? microphoneIcon : cameraIcon}
       </div>
 
       <div
         style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         <div style={{ width: 16 }} />
         <div style={dynamicStyle}>{accessInformation} </div>
-        {deviceState === "prompt" ? (
+        {deviceState === 'prompt' ? (
           <CircleSpinner />
         ) : (
           <div style={{ width: 16 }} />
@@ -240,17 +240,17 @@ export const DevicePermission: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [noDeviceFound, setNoDeviceFound] = useState(false);
-  const [audioState, setAudioState] = useState<PermissionState>("initial");
-  const [videoState, setVideoState] = useState<PermissionState>("initial");
+  const [audioState, setAudioState] = useState<PermissionState>('initial');
+  const [videoState, setVideoState] = useState<PermissionState>('initial');
 
   const isInitialState = useMemo(() => {
-    return audioState === "initial" || videoState === "initial";
+    return audioState === 'initial' || videoState === 'initial';
   }, [audioState, videoState]);
 
   const dynamicContainer: React.CSSProperties = useMemo(() => {
     return {
       ...container,
-      borderColor: isInitialState ? "black" : "white",
+      borderColor: isInitialState ? 'black' : 'white',
     };
   }, [isInitialState]);
 
@@ -262,7 +262,7 @@ export const DevicePermission: React.FC<{ children: ReactNode }> = ({
     return <PermissionError />;
   }
 
-  if (audioState === "granted" && videoState === "granted") {
+  if (audioState === 'granted' && videoState === 'granted') {
     return <>{children}</>;
   }
 

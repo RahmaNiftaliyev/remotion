@@ -1,10 +1,10 @@
-import { CharacterAlignmentResponseModel } from "@elevenlabs/elevenlabs-js/api";
-import { z } from "zod";
+import { CharacterAlignmentResponseModel } from '@elevenlabs/elevenlabs-js/api';
+import { z } from 'zod';
 
 const BackgroundTransitionTypeSchema = z.union([
-  z.literal("fade"),
-  z.literal("blur"),
-  z.literal("none"),
+  z.literal('fade'),
+  z.literal('blur'),
+  z.literal('none'),
 ]);
 
 const TimelineElementSchema = z.object({
@@ -13,7 +13,7 @@ const TimelineElementSchema = z.object({
 });
 
 const ElementAnimationSchema = TimelineElementSchema.extend({
-  type: z.literal("scale"),
+  type: z.literal('scale'),
   from: z.number(),
   to: z.number(),
 });
@@ -28,9 +28,9 @@ const BackgroundElementSchema = TimelineElementSchema.extend({
 const TextElementSchema = TimelineElementSchema.extend({
   text: z.string(),
   position: z.union([
-    z.literal("top"),
-    z.literal("bottom"),
-    z.literal("center"),
+    z.literal('top'),
+    z.literal('bottom'),
+    z.literal('center'),
   ]),
   animations: z.array(ElementAnimationSchema).optional(),
 });
@@ -58,12 +58,12 @@ export type AudioElement = z.infer<typeof AudioElementSchema>;
 export type Timeline = z.infer<typeof TimelineSchema>;
 
 export {
-  BackgroundTransitionTypeSchema,
-  TimelineElementSchema,
-  ElementAnimationSchema,
-  BackgroundElementSchema,
-  TextElementSchema,
   AudioElementSchema,
+  BackgroundElementSchema,
+  BackgroundTransitionTypeSchema,
+  ElementAnimationSchema,
+  TextElementSchema,
+  TimelineElementSchema,
   TimelineSchema,
 };
 

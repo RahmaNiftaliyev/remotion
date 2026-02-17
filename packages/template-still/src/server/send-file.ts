@@ -1,5 +1,5 @@
-import { Response } from "express";
-import { Readable } from "stream";
+import { Response } from 'express';
+import { Readable } from 'stream';
 
 export const sendFile = async (
   res: Response,
@@ -8,11 +8,11 @@ export const sendFile = async (
   return new Promise<void>((resolve, reject) => {
     data
       .pipe(res)
-      .on("close", () => {
+      .on('close', () => {
         res.end();
         resolve();
       })
-      .on("error", (err) => {
+      .on('error', (err) => {
         reject(err);
       });
   });

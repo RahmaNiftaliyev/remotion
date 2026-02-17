@@ -1,19 +1,19 @@
-import md5 from "md5";
+import textToSpeech from '@google-cloud/text-to-speech';
+import md5 from 'md5';
 import {
-  checkIfAudioHasAlreadyBeenSynthesized as isAudioAlreadySynthesized,
   createFirebaseUrl,
+  checkIfAudioHasAlreadyBeenSynthesized as isAudioAlreadySynthesized,
   uploadFileToFirebase,
-} from "../../lib/firebase/utils";
-import { audioDirectoryInBucket, voices } from "./constants";
-import textToSpeech from "@google-cloud/text-to-speech";
-import { RequestMetadata } from "../../lib/interfaces";
+} from '../../lib/firebase/utils';
+import { RequestMetadata } from '../../lib/interfaces';
+import { audioDirectoryInBucket, voices } from './constants';
 
 const client = new textToSpeech.TextToSpeechClient();
 
 export const createTextToSpeechAudio = async (
   props: RequestMetadata,
 ): Promise<string> => {
-  if (!voices[props.voice]) throw new Error("Voice not found");
+  if (!voices[props.voice]) throw new Error('Voice not found');
   const selectedVoice = voices[props.voice];
 
   const ssml = `
@@ -45,8 +45,8 @@ export const createTextToSpeechAudio = async (
       languageCode: selectedVoice.languageCode,
     },
     audioConfig: {
-      audioEncoding: "LINEAR16", // Higher quality than 'MP3'
-      effectsProfileId: ["large-home-entertainment-class-device"], // Sounds better than small-devices
+      audioEncoding: 'LINEAR16', // Higher quality than 'MP3'
+      effectsProfileId: ['large-home-entertainment-class-device'], // Sounds better than small-devices
       speakingRate: props.speakingRate,
       pitch: props.pitch,
     },

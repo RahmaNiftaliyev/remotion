@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import React, { useRef, useEffect } from "react";
-import { Player, type ErrorFallback, type PlayerRef } from "@remotion/player";
-import { ErrorDisplay, type ErrorType } from "../ErrorDisplay";
-import { RenderControls } from "./RenderControls";
-import { SettingsModal } from "./SettingsModal";
+import { Player, type ErrorFallback, type PlayerRef } from '@remotion/player';
+import React, { useEffect, useRef } from 'react';
+import { ErrorDisplay, type ErrorType } from '../ErrorDisplay';
+import { RenderControls } from './RenderControls';
+import { SettingsModal } from './SettingsModal';
 
 const errorTitles: Record<ErrorType, string> = {
-  validation: "Invalid Prompt",
-  api: "API Error",
-  compilation: "Compilation Error",
+  validation: 'Invalid Prompt',
+  api: 'API Error',
+  compilation: 'Compilation Error',
 };
 
 const renderErrorFallback: ErrorFallback = ({ error }) => {
   return (
     <ErrorDisplay
-      error={error.message || "An error occurred while rendering"}
+      error={error.message || 'An error occurred while rendering'}
       title="Runtime Error"
       variant="fullscreen"
       size="lg"
@@ -47,7 +47,7 @@ export const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
   isCompiling,
   isStreaming,
   error,
-  errorType = "compilation",
+  errorType = 'compilation',
   code,
   onRuntimeError,
   onFrameChange,
@@ -64,9 +64,9 @@ export const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
       onRuntimeError(e.detail.error.message);
     };
 
-    player.addEventListener("error", handleError);
+    player.addEventListener('error', handleError);
     return () => {
-      player.removeEventListener("error", handleError);
+      player.removeEventListener('error', handleError);
     };
   }, [onRuntimeError, Component]);
 
@@ -76,15 +76,13 @@ export const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
     const player = playerRef.current;
     if (!player || !onFrameChange) return;
 
-    const handleFrameUpdate = (e: {
-      detail: { frame: number };
-    }) => {
+    const handleFrameUpdate = (e: { detail: { frame: number } }) => {
       onFrameChange(e.detail.frame);
     };
 
-    player.addEventListener("frameupdate", handleFrameUpdate);
+    player.addEventListener('frameupdate', handleFrameUpdate);
     return () => {
-      player.removeEventListener("frameupdate", handleFrameUpdate);
+      player.removeEventListener('frameupdate', handleFrameUpdate);
     };
   }, [onFrameChange, Component]);
 
@@ -139,9 +137,9 @@ export const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
             compositionHeight={1080}
             compositionWidth={1920}
             style={{
-              width: "100%",
-              height: "100%",
-              backgroundColor: "transparent",
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'transparent',
             }}
             controls
             autoPlay
@@ -152,7 +150,11 @@ export const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
           />
         </div>
         <div className="flex items-center justify-between gap-6 mt-4">
-          <RenderControls code={code} durationInFrames={durationInFrames} fps={fps} />
+          <RenderControls
+            code={code}
+            durationInFrames={durationInFrames}
+            fps={fps}
+          />
           <SettingsModal
             durationInFrames={durationInFrames}
             onDurationChange={onDurationChange}
@@ -166,9 +168,7 @@ export const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
 
   return (
     <div className="flex flex-col bg-background min-w-0 h-full">
-      <div className="w-full h-full flex flex-col">
-        {renderContent()}
-      </div>
+      <div className="w-full h-full flex flex-col">{renderContent()}</div>
     </div>
   );
 };

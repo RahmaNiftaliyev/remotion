@@ -1,5 +1,5 @@
-import { renderStillOnWeb } from "@remotion/web-renderer";
-import type { ComponentType } from "react";
+import { renderStillOnWeb } from '@remotion/web-renderer';
+import type { ComponentType } from 'react';
 
 interface CaptureConfig {
   width: number;
@@ -19,14 +19,14 @@ export async function captureFrame(
   const { blob } = await renderStillOnWeb({
     composition: {
       component: Component,
-      id: "frame-capture",
+      id: 'frame-capture',
       width: config.width,
       height: config.height,
       fps: config.fps,
       durationInFrames: config.durationInFrames,
     },
     frame,
-    imageFormat: "jpeg",
+    imageFormat: 'jpeg',
     scale: 0.5, // 960x540 - good enough for AI context
     inputProps: {},
   });
@@ -34,7 +34,7 @@ export async function captureFrame(
   // Convert blob to base64 data URL
   const buffer = await blob.arrayBuffer();
   const bytes = new Uint8Array(buffer);
-  let binary = "";
+  let binary = '';
   for (let i = 0; i < bytes.length; i++) {
     binary += String.fromCharCode(bytes[i]);
   }

@@ -1,7 +1,7 @@
-import React, { forwardRef } from "react";
-import { Spacing } from "../Spacing";
-import { Spinner } from "../Spinner/Spinner";
-import styles from "./styles.module.css";
+import React, { forwardRef } from 'react';
+import { Spacing } from '../Spacing';
+import { Spinner } from '../Spinner/Spinner';
+import styles from './styles.module.css';
 
 const ButtonForward: React.ForwardRefRenderFunction<
   HTMLButtonElement,
@@ -19,7 +19,7 @@ const ButtonForward: React.ForwardRefRenderFunction<
       className={[
         styles.button,
         secondary ? styles.secondarybutton : undefined,
-      ].join(" ")}
+      ].join(' ')}
       onClick={onClick}
       disabled={disabled}
     >

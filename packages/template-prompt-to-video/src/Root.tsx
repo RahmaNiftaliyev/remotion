@@ -1,13 +1,13 @@
-import { Composition, getStaticFiles } from "remotion";
-import { AIVideo, aiVideoSchema } from "./components/AIVideo";
-import { FPS, INTRO_DURATION } from "./lib/constants";
-import { getTimelinePath, loadTimelineFromFile } from "./lib/utils";
+import { Composition, getStaticFiles } from 'remotion';
+import { AIVideo, aiVideoSchema } from './components/AIVideo';
+import { FPS, INTRO_DURATION } from './lib/constants';
+import { getTimelinePath, loadTimelineFromFile } from './lib/utils';
 
 export const RemotionRoot: React.FC = () => {
   const staticFiles = getStaticFiles();
   const timelines = staticFiles
-    .filter((file) => file.name.endsWith("timeline.json"))
-    .map((file) => file.name.split("/")[1]);
+    .filter((file) => file.name.endsWith('timeline.json'))
+    .map((file) => file.name.split('/')[1]);
 
   return (
     <>

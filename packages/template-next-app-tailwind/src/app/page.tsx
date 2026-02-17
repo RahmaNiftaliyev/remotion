@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { Player } from "@remotion/player";
-import type { NextPage } from "next";
-import { useMemo, useState } from "react";
-import { z } from "zod";
+import { Player } from '@remotion/player';
+import type { NextPage } from 'next';
+import { useMemo, useState } from 'react';
+import { z } from 'zod';
 import {
-  defaultMyCompProps,
   CompositionProps,
+  defaultMyCompProps,
   DURATION_IN_FRAMES,
   VIDEO_FPS,
   VIDEO_HEIGHT,
   VIDEO_WIDTH,
-} from "../../types/constants";
-import { RenderControls } from "../components/RenderControls";
-import { Spacing } from "../components/Spacing";
-import { Tips } from "../components/Tips";
-import { Main } from "../remotion/MyComp/Main";
+} from '../../types/constants';
+import { RenderControls } from '../components/RenderControls';
+import { Spacing } from '../components/Spacing';
+import { Tips } from '../components/Tips';
+import { Main } from '../remotion/MyComp/Main';
 
 const Home: NextPage = () => {
   const [text, setText] = useState<string>(defaultMyCompProps.title);
@@ -40,7 +40,7 @@ const Home: NextPage = () => {
             style={{
               // Can't use tailwind class for width since player's default styles take presedence over tailwind's,
               // but not over inline styles
-              width: "100%",
+              width: '100%',
             }}
             controls
             autoPlay

@@ -1,32 +1,32 @@
-import { useEffect, useState } from "react";
-import { canUseWebFsWriter } from "../helpers/browser-support";
+import { useEffect, useState } from 'react';
+import { canUseWebFsWriter } from '../helpers/browser-support';
 
-type WebFsState = "loading" | "yes" | "no" | "security-error";
+type WebFsState = 'loading' | 'yes' | 'no' | 'security-error';
 
 export const EnsureBrowserSupport: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const [canUseWebFs, setCanUseWebFs] = useState<WebFsState>("loading");
+  const [canUseWebFs, setCanUseWebFs] = useState<WebFsState>('loading');
   useEffect(() => {
     canUseWebFsWriter()
       .then((result) => {
-        setCanUseWebFs(result ? "yes" : "no");
+        setCanUseWebFs(result ? 'yes' : 'no');
       })
       .catch((err) => {
-        if ((err as Error).message.includes("Security")) {
-          setCanUseWebFs("security-error");
+        if ((err as Error).message.includes('Security')) {
+          setCanUseWebFs('security-error');
         } else {
-          setCanUseWebFs("no");
+          setCanUseWebFs('no');
           console.log(err);
         }
       });
   }, []);
 
-  if (canUseWebFs === "loading") {
+  if (canUseWebFs === 'loading') {
     return null;
   }
 
-  if (canUseWebFs === "no") {
+  if (canUseWebFs === 'no') {
     return (
       <div className="justify-center text-white flex items-center flex-col absolute inset-0  text-sm">
         <strong>Browser not supported</strong>
@@ -38,7 +38,7 @@ export const EnsureBrowserSupport: React.FC<{
     );
   }
 
-  if (canUseWebFs === "security-error") {
+  if (canUseWebFs === 'security-error') {
     return (
       <div className="justify-center text-white flex items-center flex-col absolute inset-0  text-sm">
         <strong>Security error</strong>

@@ -1,35 +1,35 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { BlinkingCircle } from "./BlinkingCircle";
-import { Logo } from "./Logo";
-import type { RecordingStatus } from "./RecordButton";
-import { RecordButton } from "./RecordButton";
-import { Timer } from "./Timer";
-import { fetchProjectFolders } from "./actions/fetch-project-folders";
-import { NewFolderDialog } from "./components/NewFolderDialog";
-import { ProcessStatus, ProcessingStatus } from "./components/ProcessingStatus";
-import { SelectedFolder } from "./components/SelectedFolder";
-import { UseThisTake } from "./components/UseThisTake";
-import { Button } from "./components/ui/button";
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { BlinkingCircle } from './BlinkingCircle';
+import { Logo } from './Logo';
+import type { RecordingStatus } from './RecordButton';
+import { RecordButton } from './RecordButton';
+import { Timer } from './Timer';
+import { fetchProjectFolders } from './actions/fetch-project-folders';
+import { NewFolderDialog } from './components/NewFolderDialog';
+import { ProcessStatus, ProcessingStatus } from './components/ProcessingStatus';
+import { SelectedFolder } from './components/SelectedFolder';
+import { UseThisTake } from './components/UseThisTake';
+import { Button } from './components/ui/button';
 import {
   loadFolderFromUrl,
   loadSelectedFolder,
   persistSelectedFolder,
-} from "./helpers/get-folders";
+} from './helpers/get-folders';
 
 const topBarContainer: React.CSSProperties = {
-  display: "flex",
+  display: 'flex',
   gap: 10,
   margin: 10,
-  alignItems: "center",
-  flexDirection: "row",
-  justifyContent: "center",
+  alignItems: 'center',
+  flexDirection: 'row',
+  justifyContent: 'center',
 };
 
 const recordWrapper: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "center",
-  alignItems: "center",
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: 'center',
   gap: 10,
 };
 
@@ -72,7 +72,7 @@ export const TopBar: React.FC<{
       return;
     }
 
-    persistSelectedFolder(selectedFolder ?? "");
+    persistSelectedFolder(selectedFolder ?? '');
   }, [selectedFolder]);
 
   return (
@@ -85,13 +85,13 @@ export const TopBar: React.FC<{
           setRecordingStatus={setRecordingStatus}
           showAllViews={showAllViews}
         />
-        {recordingStatus.type === "recording" ? (
+        {recordingStatus.type === 'recording' ? (
           <>
             <BlinkingCircle />
             <Timer startDate={recordingStatus.ongoing.startDate} />
           </>
         ) : null}
-        {recordingStatus.type === "recording-finished" ? (
+        {recordingStatus.type === 'recording-finished' ? (
           <UseThisTake
             selectedFolder={selectedFolder}
             recordingStatus={recordingStatus}

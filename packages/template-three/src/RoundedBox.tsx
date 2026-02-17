@@ -1,5 +1,5 @@
-import React, { JSX, useMemo } from "react";
-import { roundedRect } from "./helpers/rounded-rectangle";
+import React, { JSX, useMemo } from 'react';
+import { roundedRect } from './helpers/rounded-rectangle';
 
 type Props = {
   readonly width: number;
@@ -7,7 +7,7 @@ type Props = {
   readonly radius: number;
   readonly curveSegments: number;
   readonly depth: number;
-} & Omit<JSX.IntrinsicElements["mesh"], "args">;
+} & Omit<JSX.IntrinsicElements['mesh'], 'args'>;
 
 export const RoundedBox: React.FC<Props> = ({
   width,

@@ -1,5 +1,5 @@
-import { TokenTransition } from "codehike/utils/token-transitions";
-import { interpolate, interpolateColors } from "remotion";
+import { TokenTransition } from 'codehike/utils/token-transitions';
+import { interpolate, interpolateColors } from 'remotion';
 
 export function applyStyle({
   element,
@@ -8,7 +8,7 @@ export function applyStyle({
   linearProgress,
 }: {
   element: HTMLElement;
-  keyframes: TokenTransition["keyframes"];
+  keyframes: TokenTransition['keyframes'];
   progress: number;
   linearProgress: number;
 }) {

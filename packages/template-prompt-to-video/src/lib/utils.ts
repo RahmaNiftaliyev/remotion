@@ -1,6 +1,6 @@
-import { staticFile } from "remotion";
-import { BackgroundElement, Timeline } from "./types";
-import { FPS, INTRO_DURATION } from "./constants";
+import { staticFile } from 'remotion';
+import { FPS, INTRO_DURATION } from './constants';
+import { BackgroundElement, Timeline } from './types';
 
 export const loadTimelineFromFile = async (filename: string) => {
   const res = await fetch(staticFile(filename));
@@ -48,11 +48,11 @@ export const calculateBlur = ({
   const { enterTransition } = item;
   const { exitTransition } = item;
 
-  if (enterTransition === "blur" && localMs < fadeMs) {
+  if (enterTransition === 'blur' && localMs < fadeMs) {
     return (1 - localMs / fadeMs) * maxBlur;
   }
 
-  if (exitTransition === "blur" && localMs > endMs - startMs - fadeMs) {
+  if (exitTransition === 'blur' && localMs > endMs - startMs - fadeMs) {
     return (1 - (endMs - startMs - localMs) / fadeMs) * maxBlur;
   }
 

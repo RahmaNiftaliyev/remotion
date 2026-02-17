@@ -4,15 +4,15 @@ import {
   spring,
   useCurrentFrame,
   useVideoConfig,
-} from "remotion";
-import { RequestMetadata } from "../lib/interfaces";
+} from 'remotion';
+import { RequestMetadata } from '../lib/interfaces';
 
 export const Text: React.FC<RequestMetadata> = (props) => {
   const { titleText, titleColor, subtitleText } = props;
   const videoConfig = useVideoConfig();
   const realFrame = useCurrentFrame();
   const frameAdjustedForSpeakingRate = realFrame * props.speakingRate;
-  const titleTextForAnimation = titleText.split(" ").map((t) => ` ${t} `);
+  const titleTextForAnimation = titleText.split(' ').map((t) => ` ${t} `);
 
   return (
     <>
@@ -22,13 +22,13 @@ export const Text: React.FC<RequestMetadata> = (props) => {
 
       <h1
         style={{
-          fontFamily: "SF Pro Text, Helvetica, Arial",
-          fontWeight: "bold",
+          fontFamily: 'SF Pro Text, Helvetica, Arial',
+          fontWeight: 'bold',
           fontSize: 110,
-          textAlign: "center",
-          position: "absolute",
+          textAlign: 'center',
+          position: 'absolute',
           top: 160,
-          width: "100%",
+          width: '100%',
         }}
       >
         {titleTextForAnimation.map((t, i) => {
@@ -48,7 +48,7 @@ export const Text: React.FC<RequestMetadata> = (props) => {
                     mass: 0.5,
                   },
                 })})`,
-                display: "inline-block",
+                display: 'inline-block',
               }}
             >
               {t}
@@ -69,16 +69,16 @@ export const Text: React.FC<RequestMetadata> = (props) => {
             [95, 100],
             [0.9, 1],
             {
-              extrapolateRight: "clamp",
+              extrapolateRight: 'clamp',
             },
           )})`,
-          fontFamily: "SF Pro Text, Helvetica, Arial",
-          fontWeight: "bold",
+          fontFamily: 'SF Pro Text, Helvetica, Arial',
+          fontWeight: 'bold',
           fontSize: 70,
-          textAlign: "center",
-          position: "absolute",
+          textAlign: 'center',
+          position: 'absolute',
           bottom: 160,
-          width: "100%",
+          width: '100%',
           color: titleColor,
         }}
       >

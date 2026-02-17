@@ -1,14 +1,14 @@
-import React from "react";
+import React from 'react';
 
 const outer: React.CSSProperties = {
-  width: "100%",
-  position: "absolute",
-  height: "100%",
-  justifyContent: "center",
-  alignItems: "center",
-  display: "flex",
-  fontSize: "0.9em",
-  color: "#ddd",
+  width: '100%',
+  position: 'absolute',
+  height: '100%',
+  justifyContent: 'center',
+  alignItems: 'center',
+  display: 'flex',
+  fontSize: '0.9em',
+  color: '#ddd',
 };
 
 export const PermissionError: React.FC = () => {

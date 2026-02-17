@@ -4,9 +4,9 @@ import {
   spring,
   useCurrentFrame,
   useVideoConfig,
-} from "remotion";
-import { Arc } from "./Arc";
-import { Atom } from "./Atom";
+} from 'remotion';
+import { Arc } from './Arc';
+import { Atom } from './Atom';
 
 export const Logo = () => {
   const videoConfig = useVideoConfig();

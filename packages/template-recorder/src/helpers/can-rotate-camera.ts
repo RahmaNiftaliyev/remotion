@@ -1,5 +1,5 @@
-import type { Dimensions } from "../../config/layout";
-import type { SelectedSource } from "./get-selected-video-source";
+import type { Dimensions } from '../../config/layout';
+import type { SelectedSource } from './get-selected-video-source';
 
 export const canRotateCamera = ({
   selectedSource,
@@ -14,7 +14,7 @@ export const canRotateCamera = ({
     return false;
   }
 
-  if (selectedSource.type !== "camera") {
+  if (selectedSource.type !== 'camera') {
     return false;
   }
 

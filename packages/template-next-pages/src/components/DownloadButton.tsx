@@ -1,30 +1,30 @@
-import Link from "next/link";
-import React from "react";
-import { State } from "../helpers/use-rendering";
-import { Button } from "./Button/Button";
-import { Spacing } from "./Spacing";
+import Link from 'next/link';
+import React from 'react';
+import { State } from '../helpers/use-rendering';
+import { Button } from './Button/Button';
+import { Spacing } from './Spacing';
 
 const light: React.CSSProperties = {
   opacity: 0.6,
 };
 
 const link: React.CSSProperties = {
-  textDecoration: "none",
+  textDecoration: 'none',
 };
 
 const row: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "row",
+  display: 'flex',
+  flexDirection: 'row',
 };
 
 const Megabytes: React.FC<{
   sizeInBytes: number;
 }> = ({ sizeInBytes }) => {
-  const megabytes = Intl.NumberFormat("en", {
-    notation: "compact",
-    style: "unit",
-    unit: "byte",
-    unitDisplay: "narrow",
+  const megabytes = Intl.NumberFormat('en', {
+    notation: 'compact',
+    style: 'unit',
+    unit: 'byte',
+    unitDisplay: 'narrow',
   }).format(sizeInBytes);
   return <span style={light}>{megabytes}</span>;
 };
@@ -33,12 +33,12 @@ export const DownloadButton: React.FC<{
   state: State;
   undo: () => void;
 }> = ({ state, undo }) => {
-  if (state.status === "rendering") {
+  if (state.status === 'rendering') {
     return <Button disabled>Download video</Button>;
   }
 
-  if (state.status !== "done") {
-    throw new Error("Download button should not be rendered when not done");
+  if (state.status !== 'done') {
+    throw new Error('Download button should not be rendered when not done');
   }
 
   return (

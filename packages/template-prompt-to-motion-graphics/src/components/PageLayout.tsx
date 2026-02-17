@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Header } from "./Header";
+import { Header } from './Header';
 
 interface PageLayoutProps {
   children: React.ReactNode;

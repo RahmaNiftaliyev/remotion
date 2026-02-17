@@ -1,18 +1,18 @@
-import { CameraIcon, MicIcon } from "lucide-react";
-import React, { useCallback, useEffect, useMemo } from "react";
-import { FPS } from "../config/fps";
-import { truthy } from "../remotion/helpers/truthy";
-import { RecordCircle } from "./BlinkingCircle";
-import { ProcessStatus } from "./components/ProcessingStatus";
-import { Button } from "./components/ui/button";
-import { Prefix } from "./helpers/prefixes";
+import { CameraIcon, MicIcon } from 'lucide-react';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { FPS } from '../config/fps';
+import { truthy } from '../remotion/helpers/truthy';
+import { RecordCircle } from './BlinkingCircle';
+import { ProcessStatus } from './components/ProcessingStatus';
+import { Button } from './components/ui/button';
+import { Prefix } from './helpers/prefixes';
 import {
   FinishedRecording,
   startMediaRecorder,
-} from "./helpers/start-media-recorder";
-import { useKeyPress } from "./helpers/use-key-press";
-import { useMediaSources } from "./state/media-sources";
-import { visibleByDefault } from "./state/visible-views";
+} from './helpers/start-media-recorder';
+import { useKeyPress } from './helpers/use-key-press';
+import { useMediaSources } from './state/media-sources';
+import { visibleByDefault } from './state/visible-views';
 
 export type CurrentRecorder = {
   recorder: MediaRecorder;
@@ -22,14 +22,14 @@ export type CurrentRecorder = {
 
 export type RecordingStatus =
   | {
-      type: "idle";
+      type: 'idle';
     }
   | {
-      type: "recording";
+      type: 'recording';
       ongoing: OngoingRecording;
     }
   | {
-      type: "recording-finished";
+      type: 'recording-finished';
       blobs: FinishedRecording[];
       expectedFrames: number;
       endDate: number;
@@ -52,14 +52,14 @@ export const RecordButton: React.FC<{
   processingStatus,
 }) => {
   const discardVideos = useCallback(async () => {
-    if (recordingStatus.type !== "recording-finished") {
-      throw new Error("Recording not finished");
+    if (recordingStatus.type !== 'recording-finished') {
+      throw new Error('Recording not finished');
     }
     for (const blob of recordingStatus.blobs) {
       await blob.releaseData();
     }
 
-    setRecordingStatus({ type: "idle" });
+    setRecordingStatus({ type: 'idle' });
   }, [recordingStatus, setRecordingStatus]);
 
   const mediaSources = useMediaSources().mediaSources;
@@ -68,7 +68,7 @@ export const RecordButton: React.FC<{
     return Object.entries(mediaSources).filter(([prefix, source]) => {
       return (
         (showAllViews || visibleByDefault[prefix as Prefix]) &&
-        source.streamState.type === "loaded"
+        source.streamState.type === 'loaded'
       );
     });
   }, [mediaSources, showAllViews]);
@@ -101,13 +101,13 @@ export const RecordButton: React.FC<{
     ).filter(truthy);
 
     return setRecordingStatus({
-      type: "recording",
+      type: 'recording',
       ongoing: { recorders: recorders, startDate },
     });
   }, [activeSources, setRecordingStatus]);
 
   const onStop = useCallback(async () => {
-    if (recordingStatus.type !== "recording") {
+    if (recordingStatus.type !== 'recording') {
       return;
     }
 
@@ -120,7 +120,7 @@ export const RecordButton: React.FC<{
       ((endDate - recordingStatus.ongoing.startDate) / 1000) * FPS;
 
     setRecordingStatus({
-      type: "recording-finished",
+      type: 'recording-finished',
       blobs,
       expectedFrames,
       endDate,
@@ -129,7 +129,7 @@ export const RecordButton: React.FC<{
 
   useEffect(() => {
     return () => {
-      if (recordingStatus.type === "recording") {
+      if (recordingStatus.type === 'recording') {
         recordingStatus.ongoing.recorders.forEach((r) => {
           r.recorder.stop();
         });
@@ -138,7 +138,7 @@ export const RecordButton: React.FC<{
   }, [recordingStatus]);
 
   const disabled =
-    mediaSources.webcam.streamState.type !== "loaded" ||
+    mediaSources.webcam.streamState.type !== 'loaded' ||
     mediaSources.webcam.streamState.stream.getAudioTracks().length === 0 ||
     processingStatus !== null;
 
@@ -150,15 +150,15 @@ export const RecordButton: React.FC<{
     const dialog = document.querySelector('[role="dialog"]');
 
     if (
-      (document.activeElement && document.activeElement.tagName === "input") ||
+      (document.activeElement && document.activeElement.tagName === 'input') ||
       dialog
     ) {
       return;
     }
 
-    if (recordingStatus.type === "recording") {
+    if (recordingStatus.type === 'recording') {
       onStop();
-    } else if (recordingStatus.type === "idle") {
+    } else if (recordingStatus.type === 'idle') {
       start();
     }
   }, [onStop, disabled, recordingStatus.type, start]);
@@ -168,15 +168,15 @@ export const RecordButton: React.FC<{
     start();
   }, [discardVideos, start]);
 
-  useKeyPress({ keys: ["r"], callback: onPressR, metaKey: false });
+  useKeyPress({ keys: ['r'], callback: onPressR, metaKey: false });
 
-  if (recordingStatus.type === "recording") {
+  if (recordingStatus.type === 'recording') {
     return (
       <>
         <Button
           variant="outline"
           type="button"
-          style={{ display: "flex", alignItems: "center", gap: 10 }}
+          style={{ display: 'flex', alignItems: 'center', gap: 10 }}
           title="Press R to stop recording"
           onClick={onStop}
         >
@@ -190,7 +190,7 @@ export const RecordButton: React.FC<{
     <div
       title={
         disabled
-          ? "A webcam and an audio source have to be selected to start the recording"
+          ? 'A webcam and an audio source have to be selected to start the recording'
           : undefined
       }
     >
@@ -201,7 +201,7 @@ export const RecordButton: React.FC<{
         title="Press R to start recording"
         className="flex flex-row items-center pl-3 pr-0 py-0"
         onClick={
-          recordingStatus.type === "recording-finished"
+          recordingStatus.type === 'recording-finished'
             ? onDiscardAndRetake
             : start
         }
@@ -210,10 +210,10 @@ export const RecordButton: React.FC<{
         <div className="w-2"></div>
         <div>
           {disabled
-            ? "Select audio+video to record"
-            : recordingStatus.type === "recording-finished"
-              ? "Discard and retake"
-              : "Start recording"}
+            ? 'Select audio+video to record'
+            : recordingStatus.type === 'recording-finished'
+              ? 'Discard and retake'
+              : 'Start recording'}
         </div>
         <div className="w-3"></div>
         {videoDeviceCount > 0 && !disabled && (

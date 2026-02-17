@@ -1,14 +1,14 @@
-import { spring } from "remotion";
 import {
   AbsoluteFill,
   interpolate,
   Sequence,
+  spring,
   useCurrentFrame,
   useVideoConfig,
-} from "remotion";
-import { Logo } from "./Logo";
-import { Subtitle } from "./Subtitle";
-import { Title } from "./Title";
+} from 'remotion';
+import { Logo } from './Logo';
+import { Subtitle } from './Subtitle';
+import { Title } from './Title';
 
 export const HelloWorld = ({ titleText, titleColor }) => {
   const frame = useCurrentFrame();
@@ -36,14 +36,14 @@ export const HelloWorld = ({ titleText, titleColor }) => {
     [durationInFrames - 25, durationInFrames - 15],
     [1, 0],
     {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
     },
   );
 
   // A <AbsoluteFill> is just a absolutely positioned <div>!
   return (
-    <AbsoluteFill style={{ backgroundColor: "white" }}>
+    <AbsoluteFill style={{ backgroundColor: 'white' }}>
       <AbsoluteFill style={{ opacity }}>
         <AbsoluteFill style={{ transform: `translateY(${logoTranslation}px)` }}>
           <Logo />

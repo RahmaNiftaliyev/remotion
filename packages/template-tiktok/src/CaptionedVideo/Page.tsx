@@ -1,27 +1,27 @@
-import React from "react";
+import { makeTransform, scale, translateY } from '@remotion/animation-utils';
+import { TikTokPage } from '@remotion/captions';
+import { fitText } from '@remotion/layout-utils';
+import React from 'react';
 import {
   AbsoluteFill,
   interpolate,
   useCurrentFrame,
   useVideoConfig,
-} from "remotion";
-import { TheBoldFont } from "../load-font";
-import { fitText } from "@remotion/layout-utils";
-import { makeTransform, scale, translateY } from "@remotion/animation-utils";
-import { TikTokPage } from "@remotion/captions";
+} from 'remotion';
+import { TheBoldFont } from '../load-font';
 
 const fontFamily = TheBoldFont;
 
 const container: React.CSSProperties = {
-  justifyContent: "center",
-  alignItems: "center",
+  justifyContent: 'center',
+  alignItems: 'center',
   top: undefined,
   bottom: 350,
   height: 150,
 };
 
 const DESIRED_FONT_SIZE = 120;
-const HIGHLIGHT_COLOR = "#39E508";
+const HIGHLIGHT_COLOR = '#39E508';
 
 export const Page: React.FC<{
   readonly enterProgress: number;
@@ -35,7 +35,7 @@ export const Page: React.FC<{
     fontFamily,
     text: page.text,
     withinWidth: width * 0.9,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   });
 
   const fontSize = Math.min(DESIRED_FONT_SIZE, fittedText.fontSize);
@@ -45,15 +45,15 @@ export const Page: React.FC<{
       <div
         style={{
           fontSize,
-          color: "white",
-          WebkitTextStroke: "20px black",
-          paintOrder: "stroke",
+          color: 'white',
+          WebkitTextStroke: '20px black',
+          paintOrder: 'stroke',
           transform: makeTransform([
             scale(interpolate(enterProgress, [0, 1], [0.8, 1])),
             translateY(interpolate(enterProgress, [0, 1], [50, 0])),
           ]),
           fontFamily,
-          textTransform: "uppercase",
+          textTransform: 'uppercase',
         }}
       >
         <span
@@ -76,9 +76,9 @@ export const Page: React.FC<{
               <span
                 key={t.fromMs}
                 style={{
-                  display: "inline",
-                  whiteSpace: "pre",
-                  color: active ? HIGHLIGHT_COLOR : "white",
+                  display: 'inline',
+                  whiteSpace: 'pre',
+                  color: active ? HIGHLIGHT_COLOR : 'white',
                 }}
               >
                 {t.text}

@@ -1,7 +1,7 @@
-import { Caption } from "@remotion/captions";
-import { fillTextBox } from "@remotion/layout-utils";
-import { msToFrame } from "../helpers/ms-to-frame";
-import { LINES_PER_PAGE } from "./constants";
+import { Caption } from '@remotion/captions';
+import { fillTextBox } from '@remotion/layout-utils';
+import { msToFrame } from '../helpers/ms-to-frame';
+import { LINES_PER_PAGE } from './constants';
 
 export const layoutText = ({
   captions,
@@ -37,7 +37,7 @@ export const layoutText = ({
     if (newLine || isFirstCaption) {
       newCaption.text = newCaption.text.trimStart();
       box.add({
-        text: " ".repeat(caption.text.length - newCaption.text.length),
+        text: ' '.repeat(caption.text.length - newCaption.text.length),
         fontFamily,
         fontSize,
       });

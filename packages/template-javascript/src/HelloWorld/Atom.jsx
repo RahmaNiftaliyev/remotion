@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { random, useVideoConfig } from "remotion";
-import { COLOR_1, COLOR_2 } from "./constants";
+import { useState } from 'react';
+import { random, useVideoConfig } from 'remotion';
+import { COLOR_1, COLOR_2 } from './constants';
 
 export const Atom = ({ scale }) => {
   const config = useVideoConfig();
@@ -12,7 +12,7 @@ export const Atom = ({ scale }) => {
     <svg
       viewBox={`0 0 ${config.width} ${config.height}`}
       style={{
-        position: "absolute",
+        position: 'absolute',
         transform: `scale(${scale})`,
       }}
     >

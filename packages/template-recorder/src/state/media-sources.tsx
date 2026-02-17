@@ -1,13 +1,13 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { useDevices } from "../WaitingForDevices";
-import { Prefix } from "../helpers/prefixes";
-import { getPreferredDeviceIfExists } from "../preferred-device-localstorage";
+import React, { useCallback, useMemo, useState } from 'react';
+import { useDevices } from '../WaitingForDevices';
+import { Prefix } from '../helpers/prefixes';
+import { getPreferredDeviceIfExists } from '../preferred-device-localstorage';
 
 export type StreamState =
-  | { type: "initial" }
-  | { type: "loading" }
-  | { type: "loaded"; stream: MediaStream }
-  | { type: "error"; error: string };
+  | { type: 'initial' }
+  | { type: 'loading' }
+  | { type: 'loaded'; stream: MediaStream }
+  | { type: 'error'; error: string };
 
 type PrefixState = {
   streamState: StreamState;
@@ -35,9 +35,9 @@ const makeInitialState = (
   devices: MediaDeviceInfo[],
 ): PrefixState => {
   return {
-    streamState: { type: "initial" },
-    audioDevice: getPreferredDeviceIfExists(prefix, "audio", devices),
-    videoDevice: getPreferredDeviceIfExists(prefix, "video", devices),
+    streamState: { type: 'initial' },
+    audioDevice: getPreferredDeviceIfExists(prefix, 'audio', devices),
+    videoDevice: getPreferredDeviceIfExists(prefix, 'video', devices),
   };
 };
 
@@ -46,10 +46,10 @@ export const MediaSourcesProvider: React.FC<{
 }> = ({ children }) => {
   const devices = useDevices();
   const [mediaSources, setMediaSources] = useState<MediaSources>({
-    alternative1: makeInitialState("alternative1", devices),
-    alternative2: makeInitialState("alternative2", devices),
-    display: makeInitialState("display", devices),
-    webcam: makeInitialState("webcam", devices),
+    alternative1: makeInitialState('alternative1', devices),
+    alternative2: makeInitialState('alternative2', devices),
+    display: makeInitialState('display', devices),
+    webcam: makeInitialState('webcam', devices),
   });
 
   const setMediaStream = useCallback((prefix: Prefix, source: StreamState) => {
@@ -95,7 +95,7 @@ export const useMediaSources = () => {
   const context = React.useContext(MediaSourcesContext);
   if (!context) {
     throw new Error(
-      "useMediaSources must be used within a MediaSourcesProvider",
+      'useMediaSources must be used within a MediaSourcesProvider',
     );
   }
 

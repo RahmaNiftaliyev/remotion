@@ -1,4 +1,4 @@
-import { Caption, parseSrt } from "@remotion/captions";
+import { Caption, parseSrt } from '@remotion/captions';
 
 export const getSubtitlesFromSrt = async (src: string) => {
   const res = await fetch(src);
@@ -24,12 +24,12 @@ export const getSubtitlesFromJson = async (src: string) => {
 };
 
 export const getSubtitles = (src: string) => {
-  if (src.endsWith(".json")) {
+  if (src.endsWith('.json')) {
     return getSubtitlesFromJson(src);
   }
-  if (src.endsWith(".srt")) {
+  if (src.endsWith('.srt')) {
     return getSubtitlesFromSrt(src);
   }
 
-  throw new Error("subtitles must be either a .srt or a .json");
+  throw new Error('subtitles must be either a .srt or a .json');
 };

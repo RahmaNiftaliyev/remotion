@@ -1,15 +1,19 @@
-import { useState, useCallback } from "react";
-import type {
-  ConversationContextMessage,
-  AssistantMetadata,
-  ErrorCorrectionContext,
-} from "@/types/conversation";
-import type { StreamPhase, GenerationErrorType, ModelId } from "@/types/generation";
 import {
-  validateGptResponse,
   extractComponentCode,
   stripMarkdownFences,
-} from "@/helpers/sanitize-response";
+  validateGptResponse,
+} from '@/helpers/sanitize-response';
+import type {
+  AssistantMetadata,
+  ConversationContextMessage,
+  ErrorCorrectionContext,
+} from '@/types/conversation';
+import type {
+  GenerationErrorType,
+  ModelId,
+  StreamPhase,
+} from '@/types/generation';
+import { useCallback, useState } from 'react';
 
 interface FailedEditInfo {
   description: string;
@@ -21,7 +25,11 @@ interface GenerationCallbacks {
   onCodeGenerated?: (code: string) => void;
   onStreamingChange?: (isStreaming: boolean) => void;
   onStreamPhaseChange?: (phase: StreamPhase) => void;
-  onError?: (error: string, type: GenerationErrorType, failedEdit?: FailedEditInfo) => void;
+  onError?: (
+    error: string,
+    type: GenerationErrorType,
+    failedEdit?: FailedEditInfo,
+  ) => void;
   onMessageSent?: (prompt: string, attachedImages?: string[]) => void;
   onGenerationComplete?: (
     code: string,
@@ -30,7 +38,7 @@ interface GenerationCallbacks {
   ) => void;
   onErrorMessage?: (
     message: string,
-    errorType: "edit_failed" | "api" | "validation",
+    errorType: 'edit_failed' | 'api' | 'validation',
     failedEdit?: FailedEditInfo,
   ) => void;
   onPendingMessage?: (skills?: string[]) => void;
@@ -95,7 +103,7 @@ export function useGenerationApi(): UseGenerationApiReturn {
 
       setIsLoading(true);
       onStreamingChange?.(true);
-      onStreamPhaseChange?.("reasoning");
+      onStreamPhaseChange?.('reasoning');
 
       // Only add user message if not a silent retry
       if (!options?.silent) {
@@ -103,9 +111,9 @@ export function useGenerationApi(): UseGenerationApiReturn {
       }
 
       try {
-        const response = await fetch("/api/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const response = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             prompt,
             model,
@@ -123,41 +131,41 @@ export function useGenerationApi(): UseGenerationApiReturn {
           const errorData = await response.json().catch(() => ({}));
           const errorMessage =
             errorData.error || `API error: ${response.status}`;
-          if (errorData.type === "edit_failed") {
-            onError?.(errorMessage, "validation", errorData.failedEdit);
-            onErrorMessage?.(errorMessage, "edit_failed", errorData.failedEdit);
+          if (errorData.type === 'edit_failed') {
+            onError?.(errorMessage, 'validation', errorData.failedEdit);
+            onErrorMessage?.(errorMessage, 'edit_failed', errorData.failedEdit);
             return;
           }
-          if (errorData.type === "validation") {
-            onError?.(errorMessage, "validation");
-            onErrorMessage?.(errorMessage, "validation");
+          if (errorData.type === 'validation') {
+            onError?.(errorMessage, 'validation');
+            onErrorMessage?.(errorMessage, 'validation');
             return;
           }
           throw new Error(errorMessage);
         }
 
-        const contentType = response.headers.get("content-type") || "";
+        const contentType = response.headers.get('content-type') || '';
 
         // Handle JSON response (non-streaming, for follow-up edits)
-        if (contentType.includes("application/json")) {
+        if (contentType.includes('application/json')) {
           const data = await response.json();
           const { code, summary, metadata } = data;
           onCodeGenerated?.(code);
           onGenerationComplete?.(code, summary, metadata);
           const validation = validateGptResponse(code);
           if (!validation.isValid && validation.error) {
-            onError?.(validation.error, "validation");
+            onError?.(validation.error, 'validation');
           }
           return;
         }
 
         // Handle SSE stream response
         const reader = response.body?.getReader();
-        if (!reader) throw new Error("No response body");
+        if (!reader) throw new Error('No response body');
 
         const decoder = new TextDecoder();
-        let accumulatedText = "";
-        let buffer = "";
+        let accumulatedText = '';
+        let buffer = '';
         let streamMetadata: AssistantMetadata = {};
 
         while (true) {
@@ -165,37 +173,37 @@ export function useGenerationApi(): UseGenerationApiReturn {
           if (done) break;
 
           buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() || "";
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
 
           for (const line of lines) {
-            if (!line.startsWith("data: ")) continue;
+            if (!line.startsWith('data: ')) continue;
             const data = line.slice(6);
-            if (data === "[DONE]") continue;
+            if (data === '[DONE]') continue;
 
             try {
               const event = JSON.parse(data);
-              if (event.type === "metadata") {
+              if (event.type === 'metadata') {
                 streamMetadata = {
                   ...streamMetadata,
                   skills: event.skills,
                 };
                 onPendingMessage?.(event.skills);
-              } else if (event.type === "reasoning-start") {
-                onStreamPhaseChange?.("reasoning");
-              } else if (event.type === "text-start") {
-                onStreamPhaseChange?.("generating");
-              } else if (event.type === "text-delta") {
+              } else if (event.type === 'reasoning-start') {
+                onStreamPhaseChange?.('reasoning');
+              } else if (event.type === 'text-start') {
+                onStreamPhaseChange?.('generating');
+              } else if (event.type === 'text-delta') {
                 accumulatedText += event.delta;
                 const codeToShow = stripMarkdownFences(accumulatedText);
                 onCodeGenerated?.(codeToShow);
-              } else if (event.type === "error") {
+              } else if (event.type === 'error') {
                 throw new Error(event.error);
               }
             } catch (parseError) {
               if (
                 parseError instanceof Error &&
-                parseError.message !== "Unexpected token"
+                parseError.message !== 'Unexpected token'
               ) {
                 throw parseError;
               }
@@ -215,19 +223,19 @@ export function useGenerationApi(): UseGenerationApiReturn {
 
         const validation = validateGptResponse(finalCode);
         if (!validation.isValid && validation.error) {
-          onError?.(validation.error, "validation");
+          onError?.(validation.error, 'validation');
         }
       } catch (error) {
-        console.error("Error generating code:", error);
+        console.error('Error generating code:', error);
         const errorMessage =
           error instanceof Error
             ? error.message
-            : "An unexpected error occurred";
-        onError?.(errorMessage, "api");
+            : 'An unexpected error occurred';
+        onError?.(errorMessage, 'api');
       } finally {
         setIsLoading(false);
         onStreamingChange?.(false);
-        onStreamPhaseChange?.("idle");
+        onStreamPhaseChange?.('idle');
         onClearPendingMessage?.();
       }
     },

@@ -1,7 +1,7 @@
-import React, { useMemo } from "react";
-import { makeRect } from "@remotion/shapes";
-import { translatePath } from "@remotion/paths";
-import styles from "./styles.module.css";
+import { translatePath } from '@remotion/paths';
+import { makeRect } from '@remotion/shapes';
+import React, { useMemo } from 'react';
+import styles from './styles.module.css';
 
 const viewBox = 100;
 const lines = 12;
@@ -33,7 +33,7 @@ export const Spinner: React.FC<{
             className={styles.line}
             style={{
               rotate: `${(index * Math.PI * 2) / lines}rad`,
-              transformOrigin: "center center",
+              transformOrigin: 'center center',
               animationDelay: `${index * 0.1 - lines * 0.1}s`,
             }}
             key={index}

@@ -1,6 +1,6 @@
-import type { SetStateAction } from "react";
-import React, { useCallback } from "react";
-import { createNewFolderRef } from "./NewFolderDialog";
+import type { SetStateAction } from 'react';
+import React, { useCallback } from 'react';
+import { createNewFolderRef } from './NewFolderDialog';
 import {
   Select,
   SelectContent,
@@ -8,9 +8,9 @@ import {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from './ui/select';
 
-const NEW_FOLDER_TOKEN = "__remotion_new_folder";
+const NEW_FOLDER_TOKEN = '__remotion_new_folder';
 
 export const SelectedFolder: React.FC<{
   readonly folders: string[];
@@ -45,13 +45,13 @@ export const SelectedFolder: React.FC<{
   return (
     <div
       style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
         gap: 10,
       }}
     >
-      <div style={{ whiteSpace: "nowrap" }}>Save to:</div>
+      <div style={{ whiteSpace: 'nowrap' }}>Save to:</div>
       <Select
         value={selectedProject ?? undefined}
         onValueChange={onValueChange}
@@ -61,7 +61,7 @@ export const SelectedFolder: React.FC<{
             <span
               style={{
                 marginRight: 10,
-                display: "inline-block",
+                display: 'inline-block',
               }}
             >
               {selectedProject ? (

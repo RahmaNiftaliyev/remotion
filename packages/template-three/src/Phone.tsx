@@ -1,17 +1,17 @@
-import { useThree } from "@react-three/fiber";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
-import { Video } from "@remotion/media";
-import { CanvasTexture, Texture } from "three";
+import { useThree } from '@react-three/fiber';
+import { Video } from '@remotion/media';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
+import { CanvasTexture, Texture } from 'three';
+import { MediabunnyMetadata } from './helpers/get-media-metadata';
 import {
   CAMERA_DISTANCE,
   PHONE_CURVE_SEGMENTS,
   PHONE_SHININESS,
   PhoneLayout,
-} from "./helpers/layout";
-import { roundedRect } from "./helpers/rounded-rectangle";
-import { RoundedBox } from "./RoundedBox";
-import { MediabunnyMetadata } from "./helpers/get-media-metadata";
+} from './helpers/layout';
+import { roundedRect } from './helpers/rounded-rectangle';
+import { RoundedBox } from './RoundedBox';
 
 export const Phone: React.FC<{
   readonly phoneColor: string;
@@ -87,9 +87,9 @@ export const Phone: React.FC<{
   });
 
   const [context] = useState(() => {
-    const context = canvasTexture.getContext("2d");
+    const context = canvasTexture.getContext('2d');
     if (!context) {
-      throw new Error("Failed to get context");
+      throw new Error('Failed to get context');
     }
     return context;
   });

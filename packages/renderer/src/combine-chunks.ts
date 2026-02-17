@@ -246,6 +246,7 @@ export const internalCombineChunks = async ({
 			cancelSignal,
 			addFaststart: codecSupportsFastStart[codec],
 			metadata,
+			numberOfGifLoops,
 		});
 		onProgress({totalProgress: 1, frames: numberOfFrames});
 		rmSync(filelistDir, {recursive: true});

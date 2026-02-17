@@ -1,11 +1,15 @@
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
+import {BrowserSafeApis} from '@remotion/renderer/client';
 import fs from 'node:fs';
 import path from 'node:path';
 import {ConfigInternals} from './config';
 import {getEnvironmentVariables} from './get-env';
 import {getInputProps} from './get-input-props';
 import {Log} from './log';
+import {parsedCli} from './parsed-cli';
+
+const {pixelFormatOption} = BrowserSafeApis.options;
 
 const getAndValidateFrameRange = (logLevel: LogLevel, indent: boolean) => {
 	const frameRange = ConfigInternals.getRange();
@@ -64,7 +68,9 @@ export const getCliOptions = (options: {
 		? true
 		: ConfigInternals.getShouldOutputImageSequence(frameRange);
 
-	const pixelFormat = ConfigInternals.getPixelFormat();
+	const pixelFormat = pixelFormatOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	const proResProfile = getProResProfile();
 	const browserExecutable = ConfigInternals.getBrowserExecutable();
 

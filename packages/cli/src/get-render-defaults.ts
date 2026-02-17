@@ -31,6 +31,7 @@ const {
 	chromeModeOption,
 	mediaCacheSizeInBytesOption,
 	darkModeOption,
+	pixelFormatOption,
 	publicLicenseKeyOption,
 	stillImageFormatOption,
 	videoImageFormatOption,
@@ -45,7 +46,9 @@ export const getRenderDefaults = (): RenderDefaults => {
 	const concurrency = RenderInternals.resolveConcurrency(
 		ConfigInternals.getConcurrency(),
 	);
-	const pixelFormat = ConfigInternals.getPixelFormat();
+	const pixelFormat = pixelFormatOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	const proResProfile = ConfigInternals.getProResProfile() ?? null;
 
 	const x264Preset = x264Option.getValue({

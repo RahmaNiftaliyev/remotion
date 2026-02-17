@@ -41,6 +41,7 @@ import {offthreadVideoThreadsOption} from './offthreadvideo-threads';
 import {onBrowserDownloadOption} from './on-browser-download';
 import type {AnyRemotionOption} from './option';
 import {overwriteOption} from './overwrite';
+import {pixelFormatOption} from './pixel-format';
 import {preferLosslessAudioOption} from './prefer-lossless';
 import {publicDirOption} from './public-dir';
 import {publicLicenseKeyOption} from './public-license-key';
@@ -83,6 +84,7 @@ export const allOptions = {
 	beepOnFinishOption,
 	numberOfGifLoopsOption,
 	reproOption,
+	pixelFormatOption,
 	preferLosslessOption: preferLosslessAudioOption,
 	x264Option,
 	logLevelOption,

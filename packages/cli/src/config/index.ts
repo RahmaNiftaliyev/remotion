@@ -13,7 +13,6 @@ import {
 	defaultOverrideFunction,
 	getWebpackOverrideFn,
 } from './override-webpack';
-import {getPixelFormat} from './pixel-format';
 import {
 	getRendererPortFromConfigFile,
 	getRendererPortFromConfigFileAndCliFlag,
@@ -65,7 +64,6 @@ import {getShouldOpenBrowser, setShouldOpenBrowser} from './open-browser';
 import {setOutputLocation} from './output-location';
 import type {WebpackOverrideFn} from './override-webpack';
 import {overrideWebpackConfig} from './override-webpack';
-import {setPixelFormat} from './pixel-format';
 import {setPort, setRendererPort, setStudioPort} from './preview-server';
 import {setProResProfile} from './prores-profile';
 import {getChromiumUserAgent, setChromiumUserAgent} from './user-agent';
@@ -124,6 +122,7 @@ const {
 	forceNewStudioOption,
 	numberOfSharedAudioTagsOption,
 	ipv4Option,
+	pixelFormatOption,
 	stillImageFormatOption,
 	videoImageFormatOption,
 } = BrowserSafeApis.options;
@@ -701,7 +700,7 @@ export const Config: FlatConfig = {
 	setOutputLocation,
 	setOverwriteOutput: overwriteOption.setConfig,
 	setChromeMode: chromeModeOption.setConfig,
-	setPixelFormat,
+	setPixelFormat: pixelFormatOption.setConfig,
 	setCodec: videoCodecOption.setConfig,
 	setCrf: crfOption.setConfig,
 	setImageSequence,
@@ -740,7 +739,6 @@ export const Config: FlatConfig = {
 export const ConfigInternals = {
 	getRange,
 	getBrowser,
-	getPixelFormat,
 	getProResProfile,
 	getBrowserExecutable,
 	getStudioPort,

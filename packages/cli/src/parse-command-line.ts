@@ -3,7 +3,6 @@ import type {
 	BrowserExecutable,
 	Codec,
 	OpenGlRenderer,
-	PixelFormat,
 	StillImageFormat,
 	VideoImageFormat,
 } from '@remotion/renderer';
@@ -38,11 +37,12 @@ const {
 	forceNewStudioOption,
 	numberOfSharedAudioTagsOption,
 	ipv4Option,
+	pixelFormatOption,
 } = BrowserSafeApis.options;
 
 export type CommandLineOptions = {
 	['browser-executable']: BrowserExecutable;
-	['pixel-format']: PixelFormat;
+	[pixelFormatOption.cliFlag]: TypeOfOption<typeof pixelFormatOption>;
 	['image-format']: VideoImageFormat | StillImageFormat;
 	['prores-profile']: _InternalTypes['ProResProfile'];
 	[x264Option.cliFlag]: TypeOfOption<typeof x264Option>;
@@ -127,10 +127,6 @@ export type CommandLineOptions = {
 };
 
 export const parseCommandLine = () => {
-	if (parsedCli['pixel-format']) {
-		Config.setPixelFormat(parsedCli['pixel-format']);
-	}
-
 	if (parsedCli['browser-executable']) {
 		Config.setBrowserExecutable(parsedCli['browser-executable']);
 	}

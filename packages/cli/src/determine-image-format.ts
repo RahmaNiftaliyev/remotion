@@ -1,7 +1,7 @@
 import type {StillImageFormat} from '@remotion/renderer';
 import {BrowserSafeApis} from '@remotion/renderer/client';
 
-const cliFlag = BrowserSafeApis.options.stillImageFormatOption.cliFlag;
+const {cliFlag} = BrowserSafeApis.options.stillImageFormatOption;
 
 const deriveExtensionFromFilename = (
 	filename: string | null,

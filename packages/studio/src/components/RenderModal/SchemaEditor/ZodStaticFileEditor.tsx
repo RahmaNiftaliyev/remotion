@@ -1,9 +1,7 @@
 import React, {useCallback, useMemo} from 'react';
-import type {z} from 'zod';
 import {Checkmark} from '../../../icons/Checkmark';
 import type {ComboboxValue} from '../../NewComposition/ComboBox';
 import {Combobox} from '../../NewComposition/ComboBox';
-import {useZodIfPossible} from '../../get-zod-if-possible';
 import {useStaticFiles} from '../../use-static-files';
 import {Fieldset} from './Fieldset';
 import {SchemaLabel} from './SchemaLabel';
@@ -16,8 +14,9 @@ const container: React.CSSProperties = {
 	width: '100%',
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodStaticFileEditor: React.FC<{
-	readonly schema: z.ZodTypeAny;
+	readonly schema: any;
 	readonly jsonPath: JSONPath;
 	readonly value: string;
 	readonly defaultValue: string;
@@ -41,11 +40,6 @@ export const ZodStaticFileEditor: React.FC<{
 	saveDisabledByParent,
 	mayPad,
 }) => {
-	const z = useZodIfPossible();
-	if (!z) {
-		throw new Error('expected zod');
-	}
-
 	const {
 		localValue,
 		onChange: setLocalValue,
@@ -56,13 +50,6 @@ export const ZodStaticFileEditor: React.FC<{
 		unsavedValue: value,
 		savedValue: defaultValue,
 	});
-
-	const def = schema._def;
-
-	const typeName = def.typeName as z.ZodFirstPartyTypeKind;
-	if (typeName !== z.ZodFirstPartyTypeKind.ZodString) {
-		throw new Error('expected enum');
-	}
 
 	const isRoot = jsonPath.length === 0;
 	const staticFiles = useStaticFiles();

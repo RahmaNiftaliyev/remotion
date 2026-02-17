@@ -1,5 +1,4 @@
 import {useCallback, useMemo} from 'react';
-import type {ZodDiscriminatedUnionOption, z} from 'zod';
 import {Checkmark} from '../../../icons/Checkmark';
 import type {ComboboxValue} from '../../NewComposition/ComboBox';
 import {Combobox} from '../../NewComposition/ComboBox';
@@ -15,9 +14,15 @@ import type {UpdaterFunction} from './ZodSwitch';
 import {createZodValues} from './create-zod-values';
 import {useLocalState} from './local-state';
 import type {JSONPath} from './zod-types';
+import {
+	getDiscriminator,
+	getDiscriminatedOptionKeys,
+	getDiscriminatedOption,
+} from './zod-schema-type';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodDiscriminatedUnionEditor: React.FC<{
-	schema: z.ZodTypeAny;
+	schema: any;
 	setValue: UpdaterFunction<Record<string, unknown>>;
 	value: Record<string, unknown>;
 	defaultValue: Record<string, unknown>;
@@ -48,10 +53,10 @@ export const ZodDiscriminatedUnionEditor: React.FC<{
 
 	const zodTypes = useZodTypesIfPossible();
 
-	const typedSchema = schema._def as z.ZodDiscriminatedUnionDef<string>;
+	const discriminator = getDiscriminator(schema);
 	const options = useMemo(
-		() => [...typedSchema.optionsMap.keys()],
-		[typedSchema.optionsMap],
+		() => getDiscriminatedOptionKeys(schema),
+		[schema],
 	) as string[];
 
 	const {
@@ -73,12 +78,11 @@ export const ZodDiscriminatedUnionEditor: React.FC<{
 				id: option,
 				keyHint: null,
 				leftItem:
-					option === value[typedSchema.discriminator] ? <Checkmark /> : null,
+					option === value[discriminator] ? <Checkmark /> : null,
 				onClick: () => {
+					const optionSchema = getDiscriminatedOption(schema, option);
 					const val = createZodValues(
-						typedSchema.optionsMap.get(
-							option,
-						) as ZodDiscriminatedUnionOption<never>,
+						optionSchema,
 						z,
 						zodTypes,
 					) as Record<string, unknown>;
@@ -92,8 +96,8 @@ export const ZodDiscriminatedUnionEditor: React.FC<{
 	}, [
 		options,
 		setLocalValue,
-		typedSchema.discriminator,
-		typedSchema.optionsMap,
+		discriminator,
+		schema,
 		value,
 		z,
 		zodTypes,
@@ -106,16 +110,16 @@ export const ZodDiscriminatedUnionEditor: React.FC<{
 	const discriminatedUnionReplacement: ObjectDiscrimatedUnionReplacement =
 		useMemo(() => {
 			return {
-				discriminator: typedSchema.discriminator,
+				discriminator,
 				markup: (
 					<Fieldset key={'replacement'} shouldPad={mayPad} success>
 						<SchemaLabel
 							handleClick={null}
 							isDefaultValue={
-								localValue.value[typedSchema.discriminator] ===
-								defaultValue[typedSchema.discriminator]
+								localValue.value[discriminator] ===
+								defaultValue[discriminator]
 							}
-							jsonPath={[...jsonPath, typedSchema.discriminator]}
+							jsonPath={[...jsonPath, discriminator]}
 							onRemove={onRemove}
 							onReset={reset}
 							onSave={save}
@@ -128,7 +132,7 @@ export const ZodDiscriminatedUnionEditor: React.FC<{
 						<Combobox
 							title="Select type"
 							values={comboBoxValues}
-							selectedId={value[typedSchema.discriminator] as string}
+							selectedId={value[discriminator] as string}
 						/>
 					</Fieldset>
 				),
@@ -146,14 +150,19 @@ export const ZodDiscriminatedUnionEditor: React.FC<{
 			saveDisabledByParent,
 			saving,
 			showSaveButton,
-			typedSchema.discriminator,
+			discriminator,
 			value,
 		]);
+
+	const currentOptionSchema = getDiscriminatedOption(
+		schema,
+		value[discriminator] as string,
+	);
 
 	return (
 		<ZodObjectEditor
 			// Re-render the object editor when the discriminator changes
-			key={value[typedSchema.discriminator] as string}
+			key={value[discriminator] as string}
 			jsonPath={jsonPath}
 			mayPad={mayPad}
 			savedValue={defaultValue}
@@ -161,11 +170,7 @@ export const ZodDiscriminatedUnionEditor: React.FC<{
 			onSave={onSave as UpdaterFunction<Record<string, unknown>>}
 			saveDisabledByParent={saveDisabledByParent}
 			saving={saving}
-			schema={
-				typedSchema.optionsMap.get(
-					value[typedSchema.discriminator] as string,
-				) as ZodDiscriminatedUnionOption<never>
-			}
+			schema={currentOptionSchema}
 			setValue={setLocalValue}
 			showSaveButton={showSaveButton}
 			unsavedValue={value}

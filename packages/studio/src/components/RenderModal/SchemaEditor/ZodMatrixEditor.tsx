@@ -1,9 +1,9 @@
 import React, {useMemo, useState} from 'react';
-import type {z} from 'zod';
 import {
 	useZodIfPossible,
 	useZodTypesIfPossible,
 } from '../../get-zod-if-possible';
+import {getArrayElement} from './zod-schema-type';
 import {Fieldset} from './Fieldset';
 import {SchemaLabel} from './SchemaLabel';
 import {SchemaArrayItemSeparationLine} from './SchemaSeparationLine';
@@ -22,8 +22,9 @@ const rowStyle: React.CSSProperties = {
 	width: '100%',
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodMatrixEditor: React.FC<{
-	readonly schema: z.ZodTypeAny;
+	readonly schema: any;
 	readonly jsonPath: JSONPath;
 	readonly value: unknown[];
 	readonly defaultValue: unknown[];
@@ -56,7 +57,7 @@ export const ZodMatrixEditor: React.FC<{
 
 	const [expanded, setExpanded] = useState(true);
 
-	const def = schema._def as z.ZodArrayDef;
+	const arrayElement = getArrayElement(schema);
 
 	const suffix = useMemo(() => {
 		return expanded ? ' [' : ' [...] ';
@@ -128,12 +129,12 @@ export const ZodMatrixEditor: React.FC<{
 													<ZodArrayItemEditor
 														onChange={onChange}
 														value={item}
-														def={def}
+														elementSchema={arrayElement}
 														index={actualIndex}
 														jsonPath={jsonPath}
 														defaultValue={
 															defaultValue?.[actualIndex] ??
-															createZodValues(def.type, z, zodTypes)
+															createZodValues(arrayElement, z, zodTypes)
 														}
 														onSave={onSave}
 														showSaveButton={showSaveButton}

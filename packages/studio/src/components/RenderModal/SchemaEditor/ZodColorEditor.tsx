@@ -1,5 +1,4 @@
 import React, {useCallback, useMemo} from 'react';
-import type {z} from 'zod';
 import {colorWithNewOpacity} from '../../../helpers/color-math';
 import {InputDragger} from '../../NewComposition/InputDragger';
 import {RemotionInput} from '../../NewComposition/RemInput';
@@ -21,7 +20,8 @@ const fullWidth: React.CSSProperties = {
 };
 
 export const ZodColorEditor: React.FC<{
-	readonly schema: z.ZodTypeAny;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	readonly schema: any;
 	readonly jsonPath: JSONPath;
 	readonly value: string;
 	readonly defaultValue: string;

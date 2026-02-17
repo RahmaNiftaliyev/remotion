@@ -1,6 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import type {z} from 'zod';
-import {useZodIfPossible} from '../../get-zod-if-possible';
+import {isZodV3Schema, getZodSchemaType} from './zod-schema-type';
 import {fieldsetLabel} from '../layout';
 import {Fieldset} from './Fieldset';
 import {SchemaLabel} from './SchemaLabel';
@@ -17,8 +16,9 @@ export type ObjectDiscrimatedUnionReplacement = {
 	markup: React.ReactNode;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodObjectEditor: React.FC<{
-	readonly schema: z.ZodTypeAny;
+	readonly schema: any;
 	readonly jsonPath: JSONPath;
 	readonly unsavedValue: Record<string, unknown>;
 	readonly savedValue: Record<string, unknown>;
@@ -44,11 +44,6 @@ export const ZodObjectEditor: React.FC<{
 	mayPad,
 	discriminatedUnionReplacement,
 }) => {
-	const z = useZodIfPossible();
-	if (!z) {
-		throw new Error('expected zod');
-	}
-
 	const [expanded, setExpanded] = useState(true);
 	const {localValue, onChange, RevisionContextProvider, reset} = useLocalState({
 		schema,
@@ -59,12 +54,16 @@ export const ZodObjectEditor: React.FC<{
 
 	const def = schema._def;
 
-	const typeName = def.typeName as z.ZodFirstPartyTypeKind;
-	if (typeName !== z.ZodFirstPartyTypeKind.ZodObject) {
+	const typeName = getZodSchemaType(schema);
+	if (typeName !== 'object') {
 		throw new Error('expected object');
 	}
 
-	const shape = def.shape();
+	// v3: _def.shape() is a function, v4: _def.shape is an object
+	const shape =
+		isZodV3Schema(schema) && typeof def.shape === 'function'
+			? def.shape()
+			: def.shape;
 	const keys = Object.keys(shape);
 
 	const isRoot = jsonPath.length === 0;

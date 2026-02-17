@@ -1,5 +1,4 @@
 import React, {useMemo, useState} from 'react';
-import type {z} from 'zod';
 import {
 	useZodIfPossible,
 	useZodTypesIfPossible,
@@ -16,8 +15,9 @@ import {ZodFieldValidation} from './ZodFieldValidation';
 import type {UpdaterFunction} from './ZodSwitch';
 import {ZodTupleItemEditor} from './ZodTupleItemEditor';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodTupleEditor: React.FC<{
-	readonly schema: z.ZodTypeAny;
+	readonly schema: any;
 	readonly jsonPath: JSONPath;
 	readonly value: unknown[];
 	readonly defaultValue: unknown[];
@@ -49,7 +49,7 @@ export const ZodTupleEditor: React.FC<{
 	});
 	const [expanded, setExpanded] = useState(true);
 
-	const def = schema._def as z.ZodTupleDef;
+	const def = schema._def;
 
 	const suffix = useMemo(() => {
 		return expanded ? ' [' : ' [...] ';
@@ -60,11 +60,6 @@ export const ZodTupleEditor: React.FC<{
 	}
 
 	const zodTypes = useZodTypesIfPossible();
-
-	const typeName = def.typeName as z.ZodFirstPartyTypeKind;
-	if (typeName !== z.ZodFirstPartyTypeKind.ZodTuple) {
-		throw new Error('expected object');
-	}
 
 	const isDefaultValue = useMemo(() => {
 		return deepEqual(localValue.value, defaultValue);

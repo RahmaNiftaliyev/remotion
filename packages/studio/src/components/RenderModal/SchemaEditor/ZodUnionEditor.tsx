@@ -1,33 +1,27 @@
-import type {z} from 'zod';
-import type {ZodType} from '../../get-zod-if-possible';
-import {useZodIfPossible} from '../../get-zod-if-possible';
 import {ZonNonEditableValue} from './ZodNonEditableValue';
 import {ZodOrNullishEditor} from './ZodOrNullishEditor';
 import type {UpdaterFunction} from './ZodSwitch';
 import type {JSONPath} from './zod-types';
-const findNull = (
-	value: readonly [z.ZodTypeAny, z.ZodTypeAny, ...z.ZodTypeAny[]],
-	zodType: ZodType,
-) => {
-	const nullIndex = value.findIndex(
-		(v) =>
-			v._def.typeName === zodType.ZodFirstPartyTypeKind.ZodNull ||
-			v._def.typeName === zodType.ZodFirstPartyTypeKind.ZodUndefined,
-	);
+import {getZodSchemaType} from './zod-schema-type';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const findNull = (value: readonly any[]) => {
+	const nullIndex = value.findIndex((v) => {
+		const type = getZodSchemaType(v);
+		return type === 'null' || type === 'undefined';
+	});
 	if (nullIndex === -1) {
 		return null;
 	}
 
 	const nullishValue =
-		value[nullIndex]._def.typeName === zodType.ZodFirstPartyTypeKind.ZodNull
-			? null
-			: undefined;
+		getZodSchemaType(value[nullIndex]) === 'null' ? null : undefined;
 
 	const otherSchema = value[nullIndex === 0 ? 1 : 0];
 
+	const otherType = getZodSchemaType(otherSchema);
 	const otherSchemaIsAlsoNullish =
-		otherSchema._def.typeName === zodType.ZodFirstPartyTypeKind.ZodNull ||
-		otherSchema._def.typeName === zodType.ZodFirstPartyTypeKind.ZodUndefined;
+		otherType === 'null' || otherType === 'undefined';
 
 	return {
 		nullIndex,
@@ -37,12 +31,13 @@ const findNull = (
 	};
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodUnionEditor: React.FC<{
 	showSaveButton: boolean;
 	jsonPath: JSONPath;
 	value: unknown;
 	defaultValue: unknown;
-	schema: z.ZodTypeAny;
+	schema: any;
 	setValue: UpdaterFunction<unknown>;
 	onSave: UpdaterFunction<unknown>;
 	onRemove: null | (() => void);
@@ -62,12 +57,7 @@ export const ZodUnionEditor: React.FC<{
 	saveDisabledByParent,
 	mayPad,
 }) => {
-	const {options} = schema._def as z.ZodUnionDef;
-
-	const z = useZodIfPossible();
-	if (!z) {
-		throw new Error('expected zod');
-	}
+	const {options} = schema._def;
 
 	if (options.length > 2) {
 		return (
@@ -93,7 +83,7 @@ export const ZodUnionEditor: React.FC<{
 		);
 	}
 
-	const nullResult = findNull(options, z);
+	const nullResult = findNull(options);
 
 	if (!nullResult) {
 		return (

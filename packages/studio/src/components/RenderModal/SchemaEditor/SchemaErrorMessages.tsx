@@ -1,4 +1,4 @@
-import type {z} from 'zod';
+// Schema error messages for studio editor
 import {BACKGROUND, BLUE, LIGHT_TEXT} from '../../../helpers/colors';
 import {Button} from '../../Button';
 import {inlineCodeSnippet} from '../../Menu/styles';
@@ -86,7 +86,8 @@ export const NoDefaultProps = () => {
 };
 
 export const InvalidDefaultProps: React.FC<{
-	zodValidationResult: z.SafeParseReturnType<unknown, unknown>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	zodValidationResult: {success: boolean; error?: any};
 }> = ({zodValidationResult}) => {
 	return (
 		<div style={errorContainer}>
@@ -111,7 +112,8 @@ export const InvalidDefaultProps: React.FC<{
 };
 
 export const InvalidSchema: React.FC<{
-	zodValidationResult: z.SafeParseReturnType<unknown, unknown>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	zodValidationResult: {success: boolean; error?: any};
 	reset: () => void;
 }> = ({zodValidationResult, reset}) => {
 	return (

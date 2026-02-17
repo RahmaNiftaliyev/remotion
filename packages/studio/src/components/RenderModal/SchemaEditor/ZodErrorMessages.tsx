@@ -1,5 +1,4 @@
 import React, {useMemo} from 'react';
-import type {z} from 'zod';
 import {FAIL_COLOR, LIGHT_TEXT} from '../../../helpers/colors';
 import {WarningTriangle} from '../../NewComposition/ValidationMessage';
 import {Spacing} from '../../layout';
@@ -25,7 +24,8 @@ const triangleStyle: React.CSSProperties = {
 };
 
 export const ZodErrorMessages: React.FC<{
-	readonly zodValidationResult: z.SafeParseReturnType<unknown, unknown>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	readonly zodValidationResult: {success: boolean; error?: any};
 	readonly viewTab: 'schema' | 'json';
 }> = ({zodValidationResult, viewTab}) => {
 	if (zodValidationResult.success) {
@@ -46,7 +46,7 @@ export const ZodErrorMessages: React.FC<{
 	if (viewTab === 'json') {
 		return (
 			<div>
-				{zodValidationResult.error.errors.map((error) => {
+				{zodValidationResult.error.errors.map((error: {path: (string | number)[]; message: string}) => {
 					return (
 						<div key={error.path.join('.')} style={style}>
 							<WarningTriangle style={triangleStyle} />
@@ -62,7 +62,7 @@ export const ZodErrorMessages: React.FC<{
 
 	return (
 		<div>
-			{zodValidationResult.error.errors.map((error) => {
+			{zodValidationResult.error.errors.map((error: {path: (string | number)[]; message: string}) => {
 				return (
 					<div key={error.path.join('.')} style={style}>
 						-{' '}

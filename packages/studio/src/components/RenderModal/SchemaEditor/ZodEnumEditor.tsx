@@ -1,22 +1,22 @@
 import React, {useCallback, useMemo} from 'react';
-import type {z} from 'zod';
 import {Checkmark} from '../../../icons/Checkmark';
 import type {ComboboxValue} from '../../NewComposition/ComboBox';
 import {Combobox} from '../../NewComposition/ComboBox';
-import {useZodIfPossible} from '../../get-zod-if-possible';
 import {Fieldset} from './Fieldset';
 import {SchemaLabel} from './SchemaLabel';
 import {ZodFieldValidation} from './ZodFieldValidation';
 import type {UpdaterFunction} from './ZodSwitch';
 import {useLocalState} from './local-state';
 import type {JSONPath} from './zod-types';
+import {getEnumValues} from './zod-schema-type';
 
 const container: React.CSSProperties = {
 	width: '100%',
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodEnumEditor: React.FC<{
-	readonly schema: z.ZodTypeAny;
+	readonly schema: any;
 	readonly jsonPath: JSONPath;
 	readonly value: string;
 	readonly defaultValue: string;
@@ -36,11 +36,6 @@ export const ZodEnumEditor: React.FC<{
 	onRemove,
 	saving,
 }) => {
-	const z = useZodIfPossible();
-	if (!z) {
-		throw new Error('expected zod');
-	}
-
 	const {
 		localValue,
 		onChange: setLocalValue,
@@ -52,17 +47,12 @@ export const ZodEnumEditor: React.FC<{
 		savedValue: defaultValue,
 	});
 
-	const def = schema._def;
-
-	const typeName = def.typeName as z.ZodFirstPartyTypeKind;
-	if (typeName !== z.ZodFirstPartyTypeKind.ZodEnum) {
-		throw new Error('expected enum');
-	}
+	const enumValues = getEnumValues(schema);
 
 	const isRoot = jsonPath.length === 0;
 
 	const comboBoxValues = useMemo(() => {
-		return def.values.map((option: string): ComboboxValue => {
+		return enumValues.map((option: string): ComboboxValue => {
 			return {
 				value: option,
 				label: option,
@@ -77,7 +67,7 @@ export const ZodEnumEditor: React.FC<{
 				type: 'item',
 			};
 		});
-	}, [def.values, setLocalValue, value]);
+	}, [enumValues, setLocalValue, value]);
 
 	const save = useCallback(() => {
 		onSave(() => value, false, false);

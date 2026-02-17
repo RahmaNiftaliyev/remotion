@@ -37,7 +37,7 @@ export const ZodFieldValidation: React.FC<{
 			<InfoBubble title="Zod validation failure">
 				<div style={stackTrace}>
 					<div style={stackTraceLabel}>Zod Validation has failed:</div>
-					{localValue.zodValidation.error.errors.map((error, index) => (
+					{localValue.zodValidation.error.errors.map((error: {code: string; message: string}, index: number) => (
 						// eslint-disable-next-line react/no-array-index-key
 						<div key={index} style={stackTraceLabel}>
 							Type: {error.code} <br />

@@ -1,5 +1,4 @@
 import React, {useCallback} from 'react';
-import type {z} from 'zod';
 import {VERY_LIGHT_TEXT} from '../../../helpers/colors';
 import {RemotionInput} from '../../NewComposition/RemInput';
 import {Spacing} from '../../layout';
@@ -50,7 +49,8 @@ const formatDate = (date: Date) => {
 };
 
 export const ZodDateEditor: React.FC<{
-	readonly schema: z.ZodTypeAny;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	readonly schema: any;
 	readonly jsonPath: JSONPath;
 	readonly value: Date;
 	readonly defaultValue: Date;

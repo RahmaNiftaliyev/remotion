@@ -66,6 +66,7 @@ import {
 	schemaArrayTestSchema,
 	schemaTestSchema,
 } from './SchemaTest';
+import {ZodV4SchemaTest, zodV4Schema} from './ZodV4SchemaTest';
 import {Scripts} from './Scripts';
 import {WidthHeightSequences} from './Sequence/WidthHeightSequences';
 import CircleTest from './Shapes/CircleTest';
@@ -1507,6 +1508,24 @@ export const Index: React.FC = () => {
 					// @ts-expect-error Needs an object
 					schema={schemaArrayTestSchema}
 					defaultProps={{}}
+				/>
+				<Composition
+					id="zod-v4-schema-test"
+					component={ZodV4SchemaTest}
+					width={1920}
+					height={1080}
+					fps={30}
+					durationInFrames={150}
+					schema={zodV4Schema}
+					defaultProps={{
+						greeting: 'Hello from Zod v4!',
+						count: 42,
+						enabled: true,
+						items: [{label: 'alpha', value: 1}],
+						mode: 'dark' as const,
+						optional: undefined,
+						nested: {a: 'hello', b: 99},
+					}}
 				/>
 			</Folder>
 			<Folder name="TailwindCSS">

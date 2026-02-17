@@ -1,5 +1,4 @@
 import React, {useCallback} from 'react';
-import type {z} from 'zod';
 import {RemotionInput} from '../../NewComposition/RemInput';
 import {useZodIfPossible} from '../../get-zod-if-possible';
 import {Fieldset} from './Fieldset';
@@ -14,7 +13,8 @@ const fullWidth: React.CSSProperties = {
 };
 
 export const ZodStringEditor: React.FC<{
-	readonly schema: z.ZodTypeAny;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	readonly schema: any;
 	readonly jsonPath: JSONPath;
 	readonly value: string;
 	readonly defaultValue: string;

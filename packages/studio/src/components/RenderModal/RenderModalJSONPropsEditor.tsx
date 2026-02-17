@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useMemo} from 'react';
 import type {SerializedJSONWithCustomFields} from 'remotion';
 import {NoReactInternals} from 'remotion/no-react';
-import type {z} from 'zod';
 import {FAIL_COLOR} from '../../helpers/colors';
 import {setUnsavedProps} from '../../helpers/document-title';
 import {useKeybinding} from '../../helpers/use-keybinding';
@@ -25,7 +24,8 @@ const scrollable: React.CSSProperties = {
 	flex: 1,
 };
 
-const parseJSON = (str: string, schema: z.ZodTypeAny): State => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const parseJSON = (str: string, schema: any): State => {
 	try {
 		const value = NoReactInternals.deserializeJSONWithSpecialTypes(str);
 		const zodValidation = schema.safeParse(value);
@@ -44,7 +44,8 @@ export const RenderModalJSONPropsEditor: React.FC<{
 	readonly showSaveButton: boolean;
 	readonly serializedJSON: SerializedJSONWithCustomFields | null;
 	readonly defaultProps: Record<string, unknown>;
-	readonly schema: z.ZodTypeAny;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	readonly schema: any;
 }> = ({
 	setValue,
 	value,

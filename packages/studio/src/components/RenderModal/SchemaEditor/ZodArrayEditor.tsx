@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import type {z} from 'zod';
+import {getArrayElement} from './zod-schema-type';
 import {
 	useZodIfPossible,
 	useZodTypesIfPossible,
@@ -16,8 +16,9 @@ import {deepEqual} from './deep-equal';
 import {useLocalState} from './local-state';
 import type {JSONPath} from './zod-types';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodArrayEditor: React.FC<{
-	readonly schema: z.ZodTypeAny;
+	readonly schema: any;
 	readonly jsonPath: JSONPath;
 	readonly value: unknown[];
 	readonly defaultValue: unknown[];
@@ -50,7 +51,7 @@ export const ZodArrayEditor: React.FC<{
 
 	const [expanded, setExpanded] = useState(true);
 
-	const def = schema._def as z.ZodArrayDef;
+	const arrayElement = getArrayElement(schema);
 
 	const suffix = useMemo(() => {
 		return expanded ? ' [' : ' [...] ';
@@ -61,11 +62,6 @@ export const ZodArrayEditor: React.FC<{
 	}
 
 	const zodTypes = useZodTypesIfPossible();
-
-	const typeName = def.typeName as z.ZodFirstPartyTypeKind;
-	if (typeName !== z.ZodFirstPartyTypeKind.ZodArray) {
-		throw new Error('expected object');
-	}
 
 	const isDefaultValue = useMemo(() => {
 		return deepEqual(localValue.value, defaultValue);
@@ -106,12 +102,12 @@ export const ZodArrayEditor: React.FC<{
 									<ZodArrayItemEditor
 										onChange={onChange}
 										value={child}
-										def={def}
+										elementSchema={arrayElement}
 										index={i}
 										jsonPath={jsonPath}
 										defaultValue={
 											defaultValue?.[i] ??
-											createZodValues(def.type, z, zodTypes)
+											createZodValues(arrayElement, z, zodTypes)
 										}
 										onSave={onSave}
 										showSaveButton={showSaveButton}

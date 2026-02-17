@@ -1,5 +1,4 @@
 import React, {useCallback} from 'react';
-import type {z} from 'zod';
 import {RemTextarea} from '../../NewComposition/RemTextarea';
 import {
 	useZodIfPossible,
@@ -22,7 +21,8 @@ const textareaStyle: React.CSSProperties = {
 };
 
 export const ZodTextareaEditor: React.FC<{
-	readonly schema: z.ZodTypeAny;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	readonly schema: any;
 	readonly jsonPath: JSONPath;
 	readonly value: string;
 	readonly defaultValue: string;

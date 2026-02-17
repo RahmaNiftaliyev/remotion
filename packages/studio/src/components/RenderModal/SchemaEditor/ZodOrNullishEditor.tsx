@@ -1,5 +1,4 @@
 import {useCallback} from 'react';
-import type {z} from 'zod';
 import {LIGHT_TEXT} from '../../../helpers/colors';
 import {Checkbox} from '../../Checkbox';
 import {
@@ -33,8 +32,10 @@ export const ZodOrNullishEditor: React.FC<{
 	jsonPath: JSONPath;
 	value: unknown;
 	defaultValue: unknown;
-	schema: z.ZodTypeAny;
-	innerSchema: z.ZodTypeAny;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	schema: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	innerSchema: any;
 	setValue: UpdaterFunction<unknown>;
 	onSave: UpdaterFunction<unknown>;
 	onRemove: null | (() => void);

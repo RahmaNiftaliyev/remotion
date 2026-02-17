@@ -1,9 +1,24 @@
-import type {z} from 'zod';
-import type {ZodType, ZodTypesType} from '../../get-zod-if-possible';
+import type {ZodTypesType} from '../../get-zod-if-possible';
+import {
+	getArrayElement,
+	getDefaultValue,
+	getEffectsInner,
+	getEnumValues,
+	getInnerType,
+	getLiteralValue,
+	getObjectShape,
+	getUnionOptions,
+	getZodSchemaDescription,
+	getZodSchemaType,
+	isZodV3Schema,
+} from './zod-schema-type';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnySchema = any;
 
 export const createZodValues = (
-	schema: Zod.ZodTypeAny,
-	zodRuntime: ZodType,
+	schema: AnySchema,
+	zodRuntime: unknown,
 	zodTypes: ZodTypesType | null,
 ): unknown => {
 	if (!schema) {
@@ -11,53 +26,64 @@ export const createZodValues = (
 	}
 
 	const def = schema._def;
-	const typeName = def.typeName as z.ZodFirstPartyTypeKind;
+	const typeName = getZodSchemaType(schema);
 
 	switch (typeName) {
-		case zodRuntime.ZodFirstPartyTypeKind.ZodString:
+		case 'string':
 			return '';
-		case zodRuntime.ZodFirstPartyTypeKind.ZodNumber: {
-			for (const check of (def as z.ZodNumberDef).checks) {
-				if (check.kind === 'min') {
-					return check.value;
-				}
-
-				if (check.kind === 'max' && check.value < 0) {
-					return check.value;
+		case 'number': {
+			const checks = def.checks;
+			if (checks) {
+				if (isZodV3Schema(schema)) {
+					for (const check of checks) {
+						if (check.kind === 'min') return check.value;
+						if (check.kind === 'max' && check.value < 0)
+							return check.value;
+					}
+				} else {
+					for (const check of checks) {
+						const cd = check._zod?.def;
+						if (cd?.check === 'greater_than') return cd.value;
+						if (cd?.check === 'less_than' && cd.value < 0)
+							return cd.value;
+					}
 				}
 			}
 
 			return 0;
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodBigInt:
+		case 'bigint':
 			return BigInt(0);
-		case zodRuntime.ZodFirstPartyTypeKind.ZodBoolean:
+		case 'boolean':
 			return false;
-		case zodRuntime.ZodFirstPartyTypeKind.ZodNaN:
+		case 'nan':
 			return NaN;
-		case zodRuntime.ZodFirstPartyTypeKind.ZodDate:
+		case 'date':
 			return new Date();
-		case zodRuntime.ZodFirstPartyTypeKind.ZodSymbol:
+		case 'symbol':
 			return Symbol('remotion');
-		case zodRuntime.ZodFirstPartyTypeKind.ZodUndefined:
+		case 'undefined':
+		case 'void':
 			return undefined;
-		case zodRuntime.ZodFirstPartyTypeKind.ZodNull:
+		case 'null':
 			return null;
-		case zodRuntime.ZodFirstPartyTypeKind.ZodAny:
+		case 'any':
 			throw new Error('Cannot create a value for type z.any()');
-		case zodRuntime.ZodFirstPartyTypeKind.ZodUnknown:
+		case 'unknown':
 			throw new Error('Cannot create a value for type z.unknown()');
-		case zodRuntime.ZodFirstPartyTypeKind.ZodNever:
+		case 'never':
 			throw new Error('Cannot create a value for type z.never()');
-		case zodRuntime.ZodFirstPartyTypeKind.ZodVoid:
-			return undefined;
-		case zodRuntime.ZodFirstPartyTypeKind.ZodObject: {
-			const shape = (def as z.ZodObjectDef).shape();
+		case 'object': {
+			const shape = getObjectShape(schema);
 			const keys = Object.keys(shape);
 			const returnValue = keys.reduce(
 				(existing, key) => {
-					existing[key] = createZodValues(shape[key], zodRuntime, zodTypes);
+					existing[key] = createZodValues(
+						shape[key],
+						zodRuntime,
+						zodTypes,
+					);
 					return existing;
 				},
 				{} as Record<string, unknown>,
@@ -65,49 +91,45 @@ export const createZodValues = (
 			return returnValue;
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodArray: {
-			return [
-				createZodValues((def as z.ZodArrayDef).type, zodRuntime, zodTypes),
-			];
+		case 'array': {
+			return [createZodValues(getArrayElement(schema), zodRuntime, zodTypes)];
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodUnion: {
-			const firstOptions = (def as z.ZodUnionDef).options[0];
-			return firstOptions
-				? createZodValues(firstOptions, zodRuntime, zodTypes)
+		case 'union': {
+			const firstOption = getUnionOptions(schema)[0];
+			return firstOption
+				? createZodValues(firstOption, zodRuntime, zodTypes)
 				: undefined;
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodDiscriminatedUnion: {
-			const options = (def as z.ZodDiscriminatedUnionDef<string>).options[0];
+		case 'discriminatedUnion': {
+			const options = getUnionOptions(schema)[0];
 			return createZodValues(options, zodRuntime, zodTypes);
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodLiteral: {
-			return (def as z.ZodLiteralDef).value;
+		case 'literal': {
+			return getLiteralValue(schema);
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodEffects: {
+		case 'effects': {
+			const description = getZodSchemaDescription(schema);
 			if (
 				zodTypes &&
-				schema._def.description ===
-					zodTypes.ZodZypesInternals.REMOTION_COLOR_BRAND
+				description === zodTypes.ZodZypesInternals.REMOTION_COLOR_BRAND
 			) {
 				return '#ffffff';
 			}
 
 			if (
 				zodTypes &&
-				schema._def.description ===
-					zodTypes.ZodZypesInternals.REMOTION_TEXTAREA_BRAND
+				description === zodTypes.ZodZypesInternals.REMOTION_TEXTAREA_BRAND
 			) {
 				return '';
 			}
 
 			if (
 				zodTypes &&
-				schema._def.description ===
-					zodTypes.ZodZypesInternals.REMOTION_MATRIX_BRAND
+				description === zodTypes.ZodZypesInternals.REMOTION_MATRIX_BRAND
 			) {
 				return [
 					[1, 0, 0],
@@ -116,15 +138,11 @@ export const createZodValues = (
 				];
 			}
 
-			return createZodValues(
-				(def as z.ZodEffectsDef).schema,
-				zodRuntime,
-				zodTypes,
-			);
+			return createZodValues(getEffectsInner(schema), zodRuntime, zodTypes);
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodIntersection: {
-			const {left, right} = def as z.ZodIntersectionDef;
+		case 'intersection': {
+			const {left, right} = def;
 			const leftValue = createZodValues(left, zodRuntime, zodTypes);
 			if (typeof leftValue !== 'object') {
 				throw new Error(
@@ -143,95 +161,72 @@ export const createZodValues = (
 			return {...leftValue, ...rightValue};
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodTuple: {
-			const items = (def as z.ZodTupleDef).items.map((item) =>
+		case 'tuple': {
+			const items = def.items.map((item: AnySchema) =>
 				createZodValues(item, zodRuntime, zodTypes),
 			);
 			return items;
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodRecord: {
-			const values = createZodValues(
-				(def as z.ZodRecordDef).valueType,
-				zodRuntime,
-				zodTypes,
-			);
+		case 'record': {
+			const values = createZodValues(def.valueType, zodRuntime, zodTypes);
 			return {key: values};
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodMap: {
-			const defType = def as z.ZodMapDef;
-			const values = createZodValues(defType.valueType, zodRuntime, zodTypes);
-			const key = createZodValues(defType.keyType, zodRuntime, zodTypes);
+		case 'map': {
+			const values = createZodValues(def.valueType, zodRuntime, zodTypes);
+			const key = createZodValues(def.keyType, zodRuntime, zodTypes);
 			return new Map([[key, values]]);
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodLazy: {
-			const defType = def as z.ZodLazyDef;
-			const type = defType.getter();
+		case 'lazy': {
+			const type = def.getter();
 			return createZodValues(type, zodRuntime, zodTypes);
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodSet: {
-			const defType = def as z.ZodSetDef;
-			const values = createZodValues(defType.valueType, zodRuntime, zodTypes);
+		case 'set': {
+			const values = createZodValues(def.valueType, zodRuntime, zodTypes);
 			return new Set([values]);
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodFunction: {
+		case 'function': {
 			throw new Error('Cannot create a value for type function');
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodEnum: {
-			const {values} = def as z.ZodEnumDef;
-			return values[0];
+		case 'enum': {
+			return getEnumValues(schema)[0];
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodNativeEnum: {
+		case 'nativeEnum': {
 			return 0;
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodOptional: {
-			const defType = def as z.ZodOptionalDef;
-			const value = createZodValues(defType.innerType, zodRuntime, zodTypes);
-			return value;
+		case 'optional':
+		case 'nullable':
+		case 'catch': {
+			return createZodValues(getInnerType(schema), zodRuntime, zodTypes);
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodNullable: {
-			const defType = def as z.ZodNullableDef;
-			const value = createZodValues(defType.innerType, zodRuntime, zodTypes);
-			return value;
+		case 'default': {
+			return getDefaultValue(schema);
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodDefault: {
-			const defType = def as z.ZodDefaultDef;
-			return defType.defaultValue();
-		}
-
-		case zodRuntime.ZodFirstPartyTypeKind.ZodCatch: {
-			const defType = def as z.ZodCatchDef;
-			const value = createZodValues(defType.innerType, zodRuntime, zodTypes);
-			return value;
-		}
-
-		case zodRuntime.ZodFirstPartyTypeKind.ZodPromise: {
-			const defType = def as z.ZodPromiseDef;
-			const value = createZodValues(defType.type, zodRuntime, zodTypes);
+		case 'promise': {
+			// v3: _def.type, v4: _def.innerType
+			const inner = isZodV3Schema(schema) ? def.type : def.innerType;
+			const value = createZodValues(inner, zodRuntime, zodTypes);
 			return Promise.resolve(value);
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodBranded: {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const defType = def as z.ZodBrandedDef<any>;
-			const value = createZodValues(defType.type, zodRuntime, zodTypes);
-			return value;
+		case 'branded': {
+			// v3: _def.type, v4: schema is the base type (branded doesn't wrap in v4)
+			const inner = isZodV3Schema(schema) ? def.type : schema;
+			return createZodValues(inner, zodRuntime, zodTypes);
 		}
 
-		case zodRuntime.ZodFirstPartyTypeKind.ZodPipeline: {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const defType = def as z.ZodPipelineDef<any, any>;
-			const value = createZodValues(defType.out, zodRuntime, zodTypes);
-			return value;
+		case 'pipeline': {
+			// v3: _def.out, v4: _def.out
+			return createZodValues(def.out, zodRuntime, zodTypes);
 		}
 
 		default:

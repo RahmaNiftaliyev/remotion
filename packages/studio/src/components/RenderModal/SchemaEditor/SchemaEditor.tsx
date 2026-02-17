@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Internals} from 'remotion';
-import type {AnyZodObject, z} from 'zod';
+import {getZodSchemaType} from './zod-schema-type';
 import {setUnsavedProps} from '../../../helpers/document-title';
 import {useKeybinding} from '../../../helpers/use-keybinding';
 import {VERTICAL_SCROLLBAR_CLASSNAME} from '../../Menu/is-menu-item';
@@ -22,13 +22,15 @@ const scrollable: React.CSSProperties = {
 	overflowY: 'auto',
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const SchemaEditor: React.FC<{
-	readonly schema: AnyZodObject;
+	readonly schema: any;
 	readonly unsavedDefaultProps: Record<string, unknown>;
 	readonly setValue: React.Dispatch<
 		React.SetStateAction<Record<string, unknown>>
 	>;
-	readonly zodValidationResult: z.SafeParseReturnType<unknown, unknown>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	readonly zodValidationResult: {success: boolean; error?: any};
 	readonly savedDefaultProps: Record<string, unknown>;
 	readonly onSave: (
 		updater: (oldState: Record<string, unknown>) => Record<string, unknown>,
@@ -108,9 +110,7 @@ export const SchemaEditor: React.FC<{
 		};
 	}, [keybindings, onQuickSave, onSave]);
 
-	const def: z.ZodTypeDef = schema._def;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const typeName = (def as any).typeName as z.ZodFirstPartyTypeKind;
+	const typeName = getZodSchemaType(schema);
 
 	const reset = useCallback(() => {
 		setValue(savedDefaultProps);
@@ -128,7 +128,7 @@ export const SchemaEditor: React.FC<{
 		);
 	}
 
-	if (typeName !== z.ZodFirstPartyTypeKind.ZodObject) {
+	if (typeName !== 'object') {
 		return <TopLevelZodValue typeReceived={typeName} />;
 	}
 

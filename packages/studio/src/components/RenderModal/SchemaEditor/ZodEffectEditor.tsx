@@ -1,6 +1,5 @@
 import React from 'react';
-import type {z} from 'zod';
-import {useZodIfPossible} from '../../get-zod-if-possible';
+import {getEffectsInner, getZodSchemaType} from './zod-schema-type';
 import {Fieldset} from './Fieldset';
 import {ZodFieldValidation} from './ZodFieldValidation';
 import type {UpdaterFunction} from './ZodSwitch';
@@ -12,8 +11,9 @@ const fullWidth: React.CSSProperties = {
 	width: '100%',
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodEffectEditor: React.FC<{
-	readonly schema: z.ZodTypeAny;
+	readonly schema: any;
 	readonly jsonPath: JSONPath;
 	readonly value: unknown;
 	readonly setValue: UpdaterFunction<unknown>;
@@ -35,9 +35,9 @@ export const ZodEffectEditor: React.FC<{
 	saving,
 	mayPad,
 }) => {
-	const z = useZodIfPossible();
-	if (!z) {
-		throw new Error('expected zod');
+	const typeName = getZodSchemaType(schema);
+	if (typeName !== 'effects') {
+		throw new Error('expected effect');
 	}
 
 	const {localValue, onChange} = useLocalState({
@@ -47,11 +47,7 @@ export const ZodEffectEditor: React.FC<{
 		savedValue: defaultValue,
 	});
 
-	const def = schema._def;
-	const typeName = def.typeName as z.ZodFirstPartyTypeKind;
-	if (typeName !== z.ZodFirstPartyTypeKind.ZodEffects) {
-		throw new Error('expected effect');
-	}
+	const innerSchema = getEffectsInner(schema);
 
 	return (
 		<Fieldset shouldPad={mayPad} success={localValue.zodValidation.success}>
@@ -60,7 +56,7 @@ export const ZodEffectEditor: React.FC<{
 					value={value}
 					setValue={onChange}
 					jsonPath={jsonPath}
-					schema={def.schema}
+					schema={innerSchema}
 					defaultValue={defaultValue}
 					onSave={onSave}
 					showSaveButton={showSaveButton}

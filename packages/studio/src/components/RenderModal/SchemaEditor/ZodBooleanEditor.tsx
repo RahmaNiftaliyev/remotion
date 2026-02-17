@@ -1,5 +1,4 @@
 import React, {useCallback} from 'react';
-import type {z} from 'zod';
 import {Checkbox} from '../../Checkbox';
 import {Fieldset} from './Fieldset';
 import {SchemaLabel} from './SchemaLabel';
@@ -12,7 +11,8 @@ const fullWidth: React.CSSProperties = {
 };
 
 export const ZodBooleanEditor: React.FC<{
-	readonly schema: z.ZodTypeAny;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	readonly schema: any;
 	readonly jsonPath: JSONPath;
 	readonly value: boolean;
 	readonly setValue: UpdaterFunction<boolean>;

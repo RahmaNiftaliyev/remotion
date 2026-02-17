@@ -8,13 +8,13 @@ import React, {
 	useState,
 } from 'react';
 import {Internals} from 'remotion';
-import type {z} from 'zod';
 import type {UpdaterFunction} from './ZodSwitch';
 import {deepEqual} from './deep-equal';
 
 export type LocalState<T> = {
 	value: T;
-	zodValidation: z.SafeParseReturnType<unknown, unknown>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	zodValidation: {success: boolean; error?: any};
 	keyStabilityRevision: number;
 };
 
@@ -34,7 +34,8 @@ export const useLocalState = <T,>({
 	savedValue,
 }: {
 	unsavedValue: T;
-	schema: z.ZodTypeAny;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	schema: any;
 	setValue: UpdaterFunction<T>;
 	savedValue: T;
 }) => {

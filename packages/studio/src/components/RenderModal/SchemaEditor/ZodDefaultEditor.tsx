@@ -1,15 +1,16 @@
 import React from 'react';
-import type {z} from 'zod';
+import {getInnerType} from './zod-schema-type';
 import type {UpdaterFunction} from './ZodSwitch';
 import {ZodSwitch} from './ZodSwitch';
 import type {JSONPath} from './zod-types';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodDefaultEditor: React.FC<{
 	readonly showSaveButton: boolean;
 	readonly jsonPath: JSONPath;
 	readonly value: unknown;
 	readonly defaultValue: unknown;
-	readonly schema: z.ZodTypeAny;
+	readonly schema: any;
 	readonly setValue: UpdaterFunction<unknown>;
 	readonly onSave: UpdaterFunction<unknown>;
 	readonly onRemove: null | (() => void);
@@ -29,7 +30,7 @@ export const ZodDefaultEditor: React.FC<{
 	saveDisabledByParent,
 	mayPad,
 }) => {
-	const {innerType} = schema._def as z.ZodDefaultDef;
+	const innerType = getInnerType(schema);
 
 	return (
 		<ZodSwitch

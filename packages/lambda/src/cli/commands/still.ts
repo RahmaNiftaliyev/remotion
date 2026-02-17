@@ -36,6 +36,9 @@ const {
 	mediaCacheSizeInBytesOption,
 	darkModeOption,
 	browserExecutableOption,
+	userAgentOption,
+	disableWebSecurityOption,
+	ignoreCertificateErrorsOption,
 } = BrowserSafeApis.options;
 
 const {
@@ -76,22 +79,20 @@ export const stillCommand = async ({
 		quit(1);
 	}
 
-	const {
-		envVariables,
-		inputProps,
-		stillFrame,
-		height,
-		width,
-		userAgent,
-		disableWebSecurity,
-		ignoreCertificateErrors,
-	} = getCliOptions({
+	const {envVariables, inputProps, stillFrame, height, width} = getCliOptions({
 		isStill: true,
 		logLevel,
 		indent: false,
 	});
 
 	const browserExecutable = browserExecutableOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const userAgent = userAgentOption.getValue({commandLine: parsedCli}).value;
+	const disableWebSecurity = disableWebSecurityOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const ignoreCertificateErrors = ignoreCertificateErrorsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
 

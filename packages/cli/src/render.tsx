@@ -52,6 +52,9 @@ const {
 	browserExecutableOption,
 	everyNthFrameOption,
 	proResProfileOption,
+	userAgentOption,
+	disableWebSecurityOption,
+	ignoreCertificateErrorsOption,
 } = BrowserSafeApis.options;
 
 export const render = async (
@@ -97,9 +100,6 @@ export const render = async (
 		shouldOutputImageSequence,
 		inputProps,
 		envVariables,
-		userAgent,
-		disableWebSecurity,
-		ignoreCertificateErrors,
 		height,
 		width,
 		ffmpegOverride,
@@ -119,6 +119,13 @@ export const render = async (
 		commandLine: parsedCli,
 	}).value;
 	const proResProfile = proResProfileOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const userAgent = userAgentOption.getValue({commandLine: parsedCli}).value;
+	const disableWebSecurity = disableWebSecurityOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const ignoreCertificateErrors = ignoreCertificateErrorsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
 	const x264Preset = x264Option.getValue({commandLine: parsedCli}).value;

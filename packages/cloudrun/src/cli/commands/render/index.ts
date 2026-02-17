@@ -42,6 +42,9 @@ const {
 	browserExecutableOption,
 	everyNthFrameOption,
 	proResProfileOption,
+	userAgentOption,
+	disableWebSecurityOption,
+	ignoreCertificateErrorsOption,
 } = BrowserSafeApis.options;
 
 export const renderCommand = async (
@@ -87,9 +90,6 @@ export const renderCommand = async (
 		inputProps,
 		height,
 		width,
-		disableWebSecurity,
-		ignoreCertificateErrors,
-		userAgent,
 	} = CliInternals.getCliOptions({
 		isStill: false,
 		logLevel,
@@ -106,6 +106,15 @@ export const renderCommand = async (
 		commandLine: CliInternals.parsedCli,
 	}).value;
 	const proResProfile = proResProfileOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
+	const userAgent = userAgentOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
+	const disableWebSecurity = disableWebSecurityOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
+	const ignoreCertificateErrors = ignoreCertificateErrorsOption.getValue({
 		commandLine: CliInternals.parsedCli,
 	}).value;
 	const offthreadVideoCacheSizeInBytes =

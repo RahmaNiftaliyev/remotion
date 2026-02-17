@@ -30,6 +30,9 @@ const {
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
 	browserExecutableOption,
+	userAgentOption,
+	disableWebSecurityOption,
+	ignoreCertificateErrorsOption,
 } = BrowserSafeApis.options;
 
 export const listCompositionsCommand = async (
@@ -68,19 +71,20 @@ export const listCompositionsCommand = async (
 		reason,
 	);
 
-	const {
-		envVariables,
-		inputProps,
-		ignoreCertificateErrors,
-		userAgent,
-		disableWebSecurity,
-	} = getCliOptions({
+	const {envVariables, inputProps} = getCliOptions({
 		isStill: false,
 		logLevel,
 		indent: false,
 	});
 
 	const browserExecutable = browserExecutableOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const userAgent = userAgentOption.getValue({commandLine: parsedCli}).value;
+	const disableWebSecurity = disableWebSecurityOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const ignoreCertificateErrors = ignoreCertificateErrorsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
 	const publicPath = publicPathOption.getValue({commandLine: parsedCli}).value;

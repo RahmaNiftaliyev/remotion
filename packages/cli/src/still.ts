@@ -31,6 +31,9 @@ const {
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
 	browserExecutableOption,
+	userAgentOption,
+	disableWebSecurityOption,
+	ignoreCertificateErrorsOption,
 } = BrowserSafeApis.options;
 
 export const still = async (
@@ -70,22 +73,20 @@ export const still = async (
 		process.exit(1);
 	}
 
-	const {
-		envVariables,
-		height,
-		inputProps,
-		stillFrame,
-		width,
-		disableWebSecurity,
-		ignoreCertificateErrors,
-		userAgent,
-	} = getCliOptions({
+	const {envVariables, height, inputProps, stillFrame, width} = getCliOptions({
 		isStill: true,
 		logLevel,
 		indent: false,
 	});
 
 	const browserExecutable = browserExecutableOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const userAgent = userAgentOption.getValue({commandLine: parsedCli}).value;
+	const disableWebSecurity = disableWebSecurityOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const ignoreCertificateErrors = ignoreCertificateErrorsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
 	const jpegQuality = jpegQualityOption.getValue({

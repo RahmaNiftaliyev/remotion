@@ -34,6 +34,9 @@ const {
 	pixelFormatOption,
 	everyNthFrameOption,
 	proResProfileOption,
+	userAgentOption,
+	disableWebSecurityOption,
+	ignoreCertificateErrorsOption,
 	publicLicenseKeyOption,
 	stillImageFormatOption,
 	videoImageFormatOption,
@@ -138,12 +141,16 @@ export const getRenderDefaults = (): RenderDefaults => {
 	const videoImageFormat = videoImageFormatOption.getValue({
 		commandLine: parsedCli,
 	}).value;
-	const disableWebSecurity = ConfigInternals.getChromiumDisableWebSecurity();
-	const ignoreCertificateErrors = ConfigInternals.getIgnoreCertificateErrors();
+	const disableWebSecurity = disableWebSecurityOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const ignoreCertificateErrors = ignoreCertificateErrorsOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	const darkMode = darkModeOption.getValue({
 		commandLine: parsedCli,
 	}).value;
-	const userAgent = ConfigInternals.getChromiumUserAgent();
+	const userAgent = userAgentOption.getValue({commandLine: parsedCli}).value;
 	const metadata = ConfigInternals.getMetadata();
 	const outputLocation = ConfigInternals.getOutputLocation();
 

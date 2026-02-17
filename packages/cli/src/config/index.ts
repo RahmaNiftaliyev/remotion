@@ -1,8 +1,4 @@
 import {getBrowser} from './browser';
-import {
-	getChromiumDisableWebSecurity,
-	getIgnoreCertificateErrors,
-} from './chromium-flags';
 import {getConcurrency} from './concurrency';
 import {getDotEnvLocation} from './env-file';
 import {getRange, setFrameRangeFromCli} from './frame-range';
@@ -40,10 +36,6 @@ import {
 	getBufferStateDelayInMilliseconds,
 	setBufferStateDelayInMilliseconds,
 } from './buffer-state-delay-in-milliseconds';
-import {
-	setChromiumDisableWebSecurity,
-	setChromiumIgnoreCertificateErrors,
-} from './chromium-flags';
 import type {Concurrency} from './concurrency';
 import {setConcurrency} from './concurrency';
 import {getEntryPoint, setEntryPoint} from './entry-point';
@@ -61,7 +53,6 @@ import {setOutputLocation} from './output-location';
 import type {WebpackOverrideFn} from './override-webpack';
 import {overrideWebpackConfig} from './override-webpack';
 import {setPort, setRendererPort, setStudioPort} from './preview-server';
-import {getChromiumUserAgent, setChromiumUserAgent} from './user-agent';
 import {setWebpackCaching} from './webpack-caching';
 import {
 	getWebpackPolling,
@@ -123,6 +114,9 @@ const {
 	proResProfileOption,
 	stillImageFormatOption,
 	videoImageFormatOption,
+	userAgentOption,
+	disableWebSecurityOption,
+	ignoreCertificateErrorsOption,
 } = BrowserSafeApis.options;
 
 declare global {
@@ -664,11 +658,11 @@ export const Config: FlatConfig = {
 	setTimeoutInMilliseconds: delayRenderTimeoutInMillisecondsOption.setConfig,
 	setDelayRenderTimeoutInMilliseconds:
 		delayRenderTimeoutInMillisecondsOption.setConfig,
-	setChromiumDisableWebSecurity,
-	setChromiumIgnoreCertificateErrors,
+	setChromiumDisableWebSecurity: disableWebSecurityOption.setConfig,
+	setChromiumIgnoreCertificateErrors: ignoreCertificateErrorsOption.setConfig,
 	setChromiumHeadlessMode: headlessOption.setConfig,
 	setChromiumOpenGlRenderer: glOption.setConfig,
-	setChromiumUserAgent,
+	setChromiumUserAgent: userAgentOption.setConfig,
 	setDotEnvLocation,
 	setConcurrency,
 	setChromiumMultiProcessOnLinux: enableMultiprocessOnLinuxOption.setConfig,
@@ -740,8 +734,6 @@ export const ConfigInternals = {
 	getStudioPort,
 	getRendererPortFromConfigFile,
 	getRendererPortFromConfigFileAndCliFlag,
-	getChromiumDisableWebSecurity,
-	getIgnoreCertificateErrors,
 	getConcurrency,
 	getStillFrame,
 	getShouldOutputImageSequence,
@@ -760,7 +752,6 @@ export const ConfigInternals = {
 	getEntryPoint,
 	getWebpackPolling,
 	getShouldOpenBrowser,
-	getChromiumUserAgent,
 	getBufferStateDelayInMilliseconds,
 	getOutputCodecOrUndefined: BrowserSafeApis.getOutputCodecOrUndefined,
 };

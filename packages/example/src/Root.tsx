@@ -1520,11 +1520,10 @@ export const Index: React.FC = () => {
 					defaultProps={{
 						greeting: 'Hello from Zod v4!',
 						count: 42,
-						enabled: true,
-						items: [{label: 'alpha', value: 1}],
-						mode: 'dark' as const,
-						optional: undefined,
-						nested: {a: 'hello', b: 99},
+						enabled: false,
+						items: [{label: 'alpha!', value: 1}],
+						mode: 'light' as const,
+						nested: {a: 'asdfadsf', b: 99},
 					}}
 				/>
 			</Folder>

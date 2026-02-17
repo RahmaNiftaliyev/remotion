@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import {AbsoluteFill} from 'remotion';
-import {z} from 'zod';
+import {z} from 'zod/v4';
 
 export const zodV4Schema = z.object({
 	greeting: z.string().default('Hello from Zod v4!'),

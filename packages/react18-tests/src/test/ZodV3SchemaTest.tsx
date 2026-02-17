@@ -3,7 +3,7 @@
  * Verifies that the studio schema editor works with zod v3 schemas.
  */
 import React from 'react';
-import {z} from 'zod/v3';
+import {z} from 'zod';
 
 export const zodV3Schema = z.object({
 	title: z.string(),

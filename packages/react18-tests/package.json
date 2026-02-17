@@ -17,7 +17,7 @@
 	"license": "UNLICENSED",
 	"dependencies": {
 		"remotion": "workspace:*",
-		"zod": "catalog:"
+		"zod": "3.22.3"
 	},
 	"devDependencies": {
 		"@remotion/eslint-config-internal": "workspace:*",

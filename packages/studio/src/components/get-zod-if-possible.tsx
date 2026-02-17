@@ -15,14 +15,14 @@ export type ZodTypesType = Awaited<
 	typeof import('@remotion/zod-types')
 >;
 
-export const getZodIfPossible = async (): Promise<ZodType | null> => {
+export async function getZodIfPossible(): Promise<ZodType | null> {
 	try {
 		const {z} = await import('zod');
 		return z;
 	} catch {
 		return null;
 	}
-};
+}
 
 export const getZodV3IfPossible = async (): Promise<ZodV3Type | null> => {
 	try {
@@ -42,10 +42,10 @@ export const getZTypesIfPossible = async (): Promise<ZodTypesType | null> => {
 	}
 };
 
-export const useZodIfPossible = () => {
+export function useZodIfPossible(): ZodType | null {
 	const context = useContext(ZodContext);
 	return context?.zod ?? null;
-};
+}
 
 export const useZodV3IfPossible = () => {
 	const context = useContext(ZodContext);

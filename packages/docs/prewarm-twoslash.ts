@@ -17,7 +17,7 @@ const DOCS_ROOT = resolve(import.meta.dirname);
 const CACHE_ROOT = join(DOCS_ROOT, 'node_modules', '.cache', 'twoslash');
 const WORKER_PATH = join(DOCS_ROOT, 'twoslash-worker.ts');
 const NUM_WORKERS = process.env.VERCEL
-	? cpus().length
+	? Math.max(1, cpus().length - 1)
 	: Math.max(1, cpus().length - 2);
 
 const pluginDir = join(DOCS_ROOT, '..', 'docusaurus-plugin');
@@ -173,7 +173,9 @@ function runWorker(
 		const timeout = setTimeout(() => {
 			if (!settled) {
 				settled = true;
-				console.error(`Worker ${workerId} timed out after ${WORKER_TIMEOUT_MS / 1000}s, killing...`);
+				console.error(
+					`Worker ${workerId} timed out after ${WORKER_TIMEOUT_MS / 1000}s, killing...`,
+				);
 				child.kill('SIGKILL');
 				try {
 					unlinkSync(tmpFile);
@@ -245,7 +247,12 @@ async function main() {
 	for (const file of allFiles) {
 		const content = readFileSync(file, 'utf8');
 		allBlocks.push(
-			...extractTwoslashBlocks(content, file, validCachePaths, cachePathToFiles),
+			...extractTwoslashBlocks(
+				content,
+				file,
+				validCachePaths,
+				cachePathToFiles,
+			),
 		);
 	}
 
@@ -301,15 +308,14 @@ async function main() {
 	const workerPromises = chunks.map((chunk, i) => runWorker(chunk, i));
 
 	const progressInterval = setInterval(() => {
-		const cached = existsSync(CACHE_ROOT)
-			? readdirSync(CACHE_ROOT).length
-			: 0;
+		const cached = existsSync(CACHE_ROOT) ? readdirSync(CACHE_ROOT).length : 0;
 		const elapsed = ((performance.now() - startTime) / 1000).toFixed(0);
 		console.log(`  ${elapsed}s elapsed, ~${cached} cached`);
 	}, 15000);
 
 	const results = await Promise.all(workerPromises);
 	clearInterval(progressInterval);
+	console.log('Workers completed');
 
 	const totalCompleted = results.reduce((s, r) => s + r.completed, 0);
 	const totalErrors = results.reduce((s, r) => s + r.errors, 0);
@@ -326,7 +332,9 @@ async function main() {
 
 	allTimings.sort((a, b) => b.ms - a.ms);
 
-	console.log(`\nTwoslash pre-warm: ${totalCompleted} blocks in ${totalTime}s using ${numWorkers} workers (${totalErrors} errors)`);
+	console.log(
+		`\nTwoslash pre-warm: ${totalCompleted} blocks in ${totalTime}s using ${numWorkers} workers (${totalErrors} errors)`,
+	);
 	const errorTimings = allTimings.filter((t) => t.error);
 	if (errorTimings.length > 0) {
 		console.log(`\nErrors:`);

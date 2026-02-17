@@ -1,6 +1,11 @@
 /* eslint-disable no-console */
+import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
+
+dotenv.config({
+	path: path.join(__dirname, '..', '.env'),
+});
 
 export const remoteExampleVideos = {
 	mp4av1: 'https://pub-646d808d9cb240cea53bedc76dd3cd0c.r2.dev/mp4-av1.mp4',

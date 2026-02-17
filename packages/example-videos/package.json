@@ -20,6 +20,7 @@
 	"dependencies": {},
 	"devDependencies": {
 		"@remotion/eslint-config-internal": "workspace:*",
+		"dotenv": "17.3.1",
 		"eslint": "catalog:",
 		"@typescript/native-preview": "catalog:"
 	},

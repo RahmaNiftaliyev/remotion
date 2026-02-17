@@ -94,7 +94,7 @@
 			"react": "19.2.3",
 			"react-dom": "19.2.3",
 			"eslint": "9.19.0",
-			"prettier": "3.6.0",
+			"prettier": "3.8.1",
 			"zod": "3.22.3",
 			"@types/react": "19.2.7",
 			"@types/react-dom": "19.2.3",

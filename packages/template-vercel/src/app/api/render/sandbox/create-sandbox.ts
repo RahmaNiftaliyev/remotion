@@ -5,9 +5,9 @@ import {
   OnProgressFn,
 } from "../helpers";
 import { addBundleToSandbox } from "./add-bundle";
-import { installSystemDependencies } from "./install-system-dependencies";
-import { installJsDependencies } from "./install-js-dependencies";
 import { installBrowser } from "./install-browser";
+import { installJsDependencies } from "./install-js-dependencies";
+import { installSystemDependencies } from "./install-system-dependencies";
 import { patchCompositor } from "./patch-compositor";
 
 export async function createSandbox({

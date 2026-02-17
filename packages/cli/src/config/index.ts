@@ -37,7 +37,6 @@ import {
 	setBufferStateDelayInMilliseconds,
 } from './buffer-state-delay-in-milliseconds';
 import type {Concurrency} from './concurrency';
-import {setConcurrency} from './concurrency';
 import {getEntryPoint, setEntryPoint} from './entry-point';
 import {setDotEnvLocation} from './env-file';
 import {
@@ -63,6 +62,7 @@ import {getWidth, overrideWidth} from './width';
 export type {Concurrency, WebpackConfiguration, WebpackOverrideFn};
 
 const {
+	concurrencyOption,
 	offthreadVideoCacheSizeInBytesOption,
 	x264Option,
 	audioBitrateOption,
@@ -664,7 +664,7 @@ export const Config: FlatConfig = {
 	setChromiumOpenGlRenderer: glOption.setConfig,
 	setChromiumUserAgent: userAgentOption.setConfig,
 	setDotEnvLocation,
-	setConcurrency,
+	setConcurrency: concurrencyOption.setConfig,
 	setChromiumMultiProcessOnLinux: enableMultiprocessOnLinuxOption.setConfig,
 	setChromiumDarkMode: darkModeOption.setConfig,
 	setQuality: () => {

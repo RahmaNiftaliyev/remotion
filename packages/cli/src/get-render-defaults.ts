@@ -8,6 +8,7 @@ const {
 	x264Option,
 	audioBitrateOption,
 	offthreadVideoCacheSizeInBytesOption,
+	concurrencyOption,
 	offthreadVideoThreadsOption,
 	scaleOption,
 	jpegQualityOption,
@@ -49,7 +50,7 @@ export const getRenderDefaults = (): RenderDefaults => {
 	const logLevel = logLevelOption.getValue({commandLine: parsedCli}).value;
 	const defaultCodec = ConfigInternals.getOutputCodecOrUndefined();
 	const concurrency = RenderInternals.resolveConcurrency(
-		ConfigInternals.getConcurrency(),
+		concurrencyOption.getValue({commandLine: parsedCli}).value,
 	);
 	const pixelFormat = pixelFormatOption.getValue({
 		commandLine: parsedCli,

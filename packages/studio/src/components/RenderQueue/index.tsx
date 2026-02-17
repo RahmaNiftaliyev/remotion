@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useMemo} from 'react';
 import {Internals} from 'remotion';
 import {StudioServerConnectionCtx} from '../../helpers/client-id';
 import {BACKGROUND, BORDER_COLOR, LIGHT_TEXT} from '../../helpers/colors';
+import {SHOW_BROWSER_RENDERING} from '../../helpers/show-browser-rendering';
 import {VERTICAL_SCROLLBAR_CLASSNAME} from '../Menu/is-menu-item';
 import {Spacing} from '../layout';
 import {RenderQueueItem} from './RenderQueueItem';
@@ -78,7 +79,7 @@ export const RenderQueue: React.FC = () => {
 		return -1;
 	}, [canvasContent, jobs]);
 
-	if (connectionStatus === 'disconnected') {
+	if (connectionStatus === 'disconnected' && !SHOW_BROWSER_RENDERING) {
 		return (
 			<div style={explainer}>
 				<Spacing y={5} />

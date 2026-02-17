@@ -9,9 +9,9 @@ import type {
 	MediaParserOnAudioTrack,
 	MediaParserVideoTrack,
 	Options,
+	ParseMediaCallbacks,
 	ParseMediaFields,
 	ParseMediaOptions,
-	ParseMediaCallbacks,
 	WriterInterface,
 } from '@remotion/media-parser';
 import {

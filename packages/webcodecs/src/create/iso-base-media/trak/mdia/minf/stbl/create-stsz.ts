@@ -6,9 +6,7 @@ import {
 	stringsToUint8Array,
 } from '../../../../primitives';
 
-export const createStsz = (
-	samplePositions: SamplePosition[],
-) => {
+export const createStsz = (samplePositions: SamplePosition[]) => {
 	const sampleSizes = samplePositions.map(
 		(samplePosition) => samplePosition.size,
 	);

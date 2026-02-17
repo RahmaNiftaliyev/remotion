@@ -3,9 +3,7 @@ import type {
 	MediaParserVideoSample,
 	SamplePosition,
 } from '@remotion/media-parser';
-import {
-	MediaParserInternals,
-} from '@remotion/media-parser';
+import {MediaParserInternals} from '@remotion/media-parser';
 import type {MakeTrackAudio, MakeTrackVideo} from '../make-track-info';
 import {combineUint8Arrays} from '../matroska/matroska-utils';
 import type {MediaFn, MediaFnGeneratorInput} from '../media-fn';

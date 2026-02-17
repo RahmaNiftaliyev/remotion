@@ -1,9 +1,6 @@
 import type {CreateContent, Writer} from '@remotion/media-parser';
 
-export const createContent: CreateContent = ({
-	filename,
-	mimeType,
-}) => {
+export const createContent: CreateContent = ({filename, mimeType}) => {
 	const buf = new ArrayBuffer(0, {
 		// TODO: Educate that the buffer is limited to 2GB
 		maxByteLength: 2_000_000_000,

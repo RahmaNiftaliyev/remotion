@@ -1,7 +1,4 @@
-import type {
-	MediaParserLogLevel,
-	Writer,
-} from '@remotion/media-parser';
+import type {MediaParserLogLevel, Writer} from '@remotion/media-parser';
 import {
 	MediaParserInternals,
 	type MediaParserAudioSample,

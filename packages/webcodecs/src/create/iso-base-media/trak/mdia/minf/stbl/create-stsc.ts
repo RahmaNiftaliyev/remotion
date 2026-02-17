@@ -20,9 +20,7 @@ const createEntry = (entry: Entry) => {
 	]);
 };
 
-export const createStsc = (
-	samplePositions: SamplePosition[],
-) => {
+export const createStsc = (samplePositions: SamplePosition[]) => {
 	const entries: Entry[] = [];
 
 	const deduplicateLastEntry = () => {

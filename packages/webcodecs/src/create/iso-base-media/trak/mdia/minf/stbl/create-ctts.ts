@@ -18,9 +18,7 @@ const makeEntry = (entry: Entry) => {
 	]);
 };
 
-export const createCttsBox = (
-	samplePositions: SamplePosition[],
-) => {
+export const createCttsBox = (samplePositions: SamplePosition[]) => {
 	const offsets = samplePositions.map((s) => s.timestamp - s.decodingTimestamp);
 	const entries: Entry[] = [];
 

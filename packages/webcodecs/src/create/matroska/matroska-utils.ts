@@ -216,12 +216,11 @@ export type EbmlValueOrUint8Array<T extends Ebml> =
 	| Uint8Array
 	| _InternalEbmlValue<T, PossibleEbmlOrUint8Array>;
 
-export type EbmlParsedOrUint8Array<T extends Ebml> =
-	{
-		type: T['name'];
-		value: EbmlValueOrUint8Array<T>;
-		minVintWidth: number | null;
-	};
+export type EbmlParsedOrUint8Array<T extends Ebml> = {
+	type: T['name'];
+	value: EbmlValueOrUint8Array<T>;
+	minVintWidth: number | null;
+};
 
 // https://github.com/Vanilagy/webm-muxer/blob/main/src/ebml.ts#L101
 

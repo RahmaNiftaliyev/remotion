@@ -22,9 +22,7 @@ const makeEntry = (entry: Entry) => {
 	]);
 };
 
-export const createSttsAtom = (
-	samplePositions: SamplePosition[],
-) => {
+export const createSttsAtom = (samplePositions: SamplePosition[]) => {
 	let lastDuration: null | number = null;
 
 	const durations = samplePositions.map((_, i, a) => {

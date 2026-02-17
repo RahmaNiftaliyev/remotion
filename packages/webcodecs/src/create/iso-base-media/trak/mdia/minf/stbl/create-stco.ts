@@ -7,9 +7,7 @@ import {
 	stringsToUint8Array,
 } from '../../../../primitives';
 
-export const createStcoAtom = (
-	samplePositions: SamplePosition[],
-) => {
+export const createStcoAtom = (samplePositions: SamplePosition[]) => {
 	const chunkOffsets = [];
 	let lastChunk;
 	let needs64Bit = false;

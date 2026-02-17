@@ -6,9 +6,7 @@ import {
 	stringsToUint8Array,
 } from '../../../../primitives';
 
-export const createStss = (
-	samplePositions: SamplePosition[],
-) => {
+export const createStss = (samplePositions: SamplePosition[]) => {
 	const samples = samplePositions
 		.map((sample, i) => [sample.isKeyframe, i] as const)
 		.filter((s) => s[0])

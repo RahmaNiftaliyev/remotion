@@ -16,7 +16,7 @@ export const openaiStructuredCompletion = async <T>(
   schema: z.ZodType<T>,
 ): Promise<T> => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const jsonSchema = zodToJsonSchema(schema) as any;
+  const jsonSchema = zodToJsonSchema(schema as any) as any;
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",

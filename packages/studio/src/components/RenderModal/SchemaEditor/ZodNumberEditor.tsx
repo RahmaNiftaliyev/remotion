@@ -14,7 +14,7 @@ const fullWidth: React.CSSProperties = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getMinValue = (schema: any) => {
-	const checks = schema._def.checks;
+	const {checks} = schema._def;
 	if (!checks) return -Infinity;
 
 	if (isZodV3Schema(schema)) {
@@ -37,7 +37,7 @@ const getMinValue = (schema: any) => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getMaxValue = (schema: any) => {
-	const checks = schema._def.checks;
+	const {checks} = schema._def;
 	if (!checks) return Infinity;
 
 	if (isZodV3Schema(schema)) {
@@ -60,7 +60,7 @@ const getMaxValue = (schema: any) => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getStep = (schema: any): number | undefined => {
-	const checks = schema._def.checks;
+	const {checks} = schema._def;
 	if (!checks) return undefined;
 
 	if (isZodV3Schema(schema)) {

@@ -115,8 +115,7 @@ export const VisualControlsProvider: React.FC<{
 	const env = useRemotionEnvironment();
 
 	const visualControl = useCallback(
-		// eslint-disable-next-line prefer-arrow-callback
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// eslint-disable-next-line prefer-arrow-callback, @typescript-eslint/no-explicit-any
 		function <T>(key: string, value: T, schema?: any): T {
 			// eslint-disable-next-line no-constant-condition
 			if (handles && false) {

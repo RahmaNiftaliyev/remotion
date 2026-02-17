@@ -48,6 +48,7 @@ import {publicPathOption} from './public-path';
 import {reproOption} from './repro';
 import {scaleOption} from './scale';
 import {separateAudioOption} from './separate-audio';
+import {stillImageFormatOption} from './still-image-format';
 import {throwIfSiteExistsOption} from './throw-if-site-exists';
 import {delayRenderTimeoutInMillisecondsOption} from './timeout';
 import {videoBitrateOption} from './video-bitrate';
@@ -113,6 +114,7 @@ export const allOptions = {
 	forceNewStudioOption,
 	numberOfSharedAudioTagsOption,
 	ipv4Option,
+	stillImageFormatOption,
 };
 
 export type AvailableOptions = keyof typeof allOptions;

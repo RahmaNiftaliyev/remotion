@@ -11,6 +11,7 @@ import type {
 	StillImageFormat,
 } from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
+import {BrowserSafeApis} from '@remotion/renderer/client';
 import type {
 	AggregateRenderProgress,
 	JobProgressCallback,
@@ -277,7 +278,10 @@ export const renderStillFlow = async ({
 		});
 
 	const {format: imageFormat, source} = determineFinalStillImageFormat({
-		cliFlag: parsedCli['image-format'] ?? null,
+		cliFlag:
+			BrowserSafeApis.options.stillImageFormatOption.getValue({
+				commandLine: parsedCli,
+			}).value ?? null,
 		configImageFormat:
 			ConfigInternals.getUserPreferredStillImageFormat() ?? null,
 		downloadName: null,

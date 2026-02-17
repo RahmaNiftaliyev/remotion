@@ -15,13 +15,16 @@ import {join, resolve} from 'path';
 
 const DOCS_ROOT = resolve(import.meta.dirname);
 const CACHE_ROOT = join(DOCS_ROOT, 'node_modules', '.cache', 'twoslash');
-const WORKER_PATH = join(DOCS_ROOT, 'twoslash-worker.cjs');
-const NUM_WORKERS = cpus().length;
+const WORKER_PATH = join(DOCS_ROOT, 'twoslash-worker.ts');
+const NUM_WORKERS = process.env.VERCEL
+	? cpus().length
+	: Math.max(1, cpus().length - 2);
 
 const pluginDir = join(DOCS_ROOT, '..', 'docusaurus-plugin');
 const pluginRequire = createRequire(join(pluginDir, 'package.json'));
-const shikiVersion = pluginRequire('@typescript/twoslash/package.json')
+const twoslashVersion = pluginRequire('twoslash/package.json')
 	.version as string;
+const shikiVersion = pluginRequire('shiki/package.json').version as string;
 const tsVersion = pluginRequire('typescript/package.json').version as string;
 
 interface TwoslashBlock {
@@ -34,7 +37,9 @@ interface TwoslashBlock {
 function computeCachePath(code: string): string {
 	const shasum = createHash('sha1');
 	const codeSha = shasum
-		.update(`${code}-${shikiVersion}-${tsVersion}`)
+		.update(
+			`${code}-${twoslashVersion}-${shikiVersion}-${tsVersion}-github-dark`,
+		)
 		.digest('hex');
 	return join(CACHE_ROOT, `${codeSha}.json`);
 }
@@ -155,7 +160,7 @@ function runWorker(
 		const tmpFile = join(DOCS_ROOT, `.twoslash-work-${workerId}.json`);
 		writeFileSync(tmpFile, JSON.stringify(workItems));
 
-		const child = spawn('node', [WORKER_PATH, tmpFile], {
+		const child = spawn('bun', ['run', WORKER_PATH, tmpFile], {
 			cwd: DOCS_ROOT,
 			stdio: ['ignore', 'pipe', 'pipe'],
 		});
@@ -294,6 +299,15 @@ async function main() {
 	allTimings.sort((a, b) => b.ms - a.ms);
 
 	console.log(`\nTwoslash pre-warm: ${totalCompleted} blocks in ${totalTime}s using ${numWorkers} workers (${totalErrors} errors)`);
+	const errorTimings = allTimings.filter((t) => t.error);
+	if (errorTimings.length > 0) {
+		console.log(`\nErrors:`);
+		for (const t of errorTimings) {
+			const files = t.sourceFiles.join(', ');
+			console.log(`  ${t.ms}ms - ${files} ERROR: ${t.error}`);
+		}
+	}
+
 	console.log(`\nSlowest snippets:`);
 	for (const t of allTimings.slice(0, 30)) {
 		const files = t.sourceFiles.join(', ');

@@ -60,12 +60,7 @@ import RemoteVideo from './RemoteVideo';
 import {RetryDelayRender} from './RetryDelayRender';
 import RiveVehicle from './Rive/RiveExample';
 import {ScalePath} from './ScalePath';
-import {
-	ArrayTest,
-	SchemaTest,
-	schemaArrayTestSchema,
-	schemaTestSchema,
-} from './SchemaTest';
+import {SchemaTest, schemaTestSchema} from './SchemaTest';
 import {Scripts} from './Scripts';
 import {WidthHeightSequences} from './Sequence/WidthHeightSequences';
 import CircleTest from './Shapes/CircleTest';
@@ -1498,16 +1493,7 @@ export const Index: React.FC = () => {
 					durationInFrames={150}
 					schema={schemaTestSchema}
 				/>
-				<Composition
-					id="array-schema"
-					component={ArrayTest}
-					width={1200}
-					height={630}
-					fps={30}
-					durationInFrames={150}
-					schema={schemaArrayTestSchema}
-					defaultProps={[]}
-				/>
+
 				<Composition
 					id="zod-v4-schema-test"
 					component={ZodV4SchemaTest}

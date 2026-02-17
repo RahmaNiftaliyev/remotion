@@ -1505,9 +1505,8 @@ export const Index: React.FC = () => {
 					height={630}
 					fps={30}
 					durationInFrames={150}
-					// @ts-expect-error Needs an object
 					schema={schemaArrayTestSchema}
-					defaultProps={{}}
+					defaultProps={[]}
 				/>
 				<Composition
 					id="zod-v4-schema-test"

@@ -1,8 +1,12 @@
-import {useEffect, useState} from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import {type StaticFile, getStaticFiles} from '../api/get-static-files';
 import {watchPublicFolder} from '../api/watch-public-folder';
 
-export const useStaticFiles = (): StaticFile[] => {
+const StaticFilesContext = createContext<StaticFile[]>([]);
+
+export const StaticFilesProvider: React.FC<{
+	readonly children: React.ReactNode;
+}> = ({children}) => {
 	const [files, setFiles] = useState(() => getStaticFiles());
 
 	useEffect(() => {
@@ -13,5 +17,13 @@ export const useStaticFiles = (): StaticFile[] => {
 		return cancel;
 	}, []);
 
-	return files;
+	return React.createElement(
+		StaticFilesContext.Provider,
+		{value: files},
+		children,
+	);
+};
+
+export const useStaticFiles = (): StaticFile[] => {
+	return useContext(StaticFilesContext);
 };

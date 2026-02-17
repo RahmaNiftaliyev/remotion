@@ -1,12 +1,5 @@
-import React, {
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {Internals} from 'remotion';
-import {getStaticFiles, type StaticFile} from '../api/get-static-files';
 import {writeStaticFile} from '../api/write-static-file';
 import {StudioServerConnectionCtx} from '../helpers/client-id';
 import {BACKGROUND, CLEAR_HOVER, LIGHT_TEXT} from '../helpers/colors';
@@ -20,6 +13,7 @@ import {AssetFolderTree} from './AssetSelectorItem';
 import {CURRENT_ASSET_HEIGHT, CurrentAsset} from './CurrentAsset';
 import {inlineCodeSnippet} from './Menu/styles';
 import {showNotification} from './Notifications/NotificationCenter';
+import {useStaticFiles} from './use-static-files';
 
 const container: React.CSSProperties = {
 	display: 'flex',
@@ -49,11 +43,6 @@ const baseList: React.CSSProperties = {
 	overflowY: 'auto',
 };
 
-type State = {
-	staticFiles: StaticFile[];
-	publicFolderExists: string | null;
-};
-
 export const AssetSelector: React.FC<{
 	readonly readOnlyStudio: boolean;
 }> = ({readOnlyStudio}) => {
@@ -62,7 +51,6 @@ export const AssetSelector: React.FC<{
 	const {assetFoldersExpanded, setAssetFoldersExpanded} =
 		useContext(FolderContext);
 	const [dropLocation, setDropLocation] = useState<string | null>(null);
-	const {subscribeToEvent} = useContext(StudioServerConnectionCtx);
 	const connectionStatus = useContext(StudioServerConnectionCtx)
 		.previewServerState.type;
 	const shouldAllowUpload = connectionStatus === 'connected' && !readOnlyStudio;
@@ -78,32 +66,12 @@ export const AssetSelector: React.FC<{
 		};
 	}, [showCurrentAsset]);
 
-	const [{publicFolderExists, staticFiles}, setState] = React.useState<State>(
-		() => {
-			return {
-				staticFiles: getStaticFiles(),
-				publicFolderExists: window.remotion_publicFolderExists,
-			};
-		},
-	);
+	const staticFiles = useStaticFiles();
+	const publicFolderExists = window.remotion_publicFolderExists;
 
 	const assetTree = useMemo(() => {
 		return buildAssetFolderStructure(staticFiles, null, assetFoldersExpanded);
 	}, [assetFoldersExpanded, staticFiles]);
-
-	useEffect(() => {
-		const onUpdate = () => {
-			setState({
-				staticFiles: getStaticFiles(),
-				publicFolderExists: window.remotion_publicFolderExists,
-			});
-		};
-
-		const unsub = subscribeToEvent('new-public-folder', onUpdate);
-		return () => {
-			unsub();
-		};
-	}, [subscribeToEvent]);
 
 	const toggleFolder = useCallback(
 		(folderName: string, parentName: string | null) => {

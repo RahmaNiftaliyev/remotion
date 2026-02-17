@@ -4,6 +4,7 @@ import {Internals} from 'remotion';
 import {Editor} from './components/Editor';
 import {EditorContexts} from './components/EditorContexts';
 import {ServerDisconnected} from './components/Notifications/ServerDisconnected';
+import {StaticFilesProvider} from './components/use-static-files';
 import {FastRefreshContext} from './fast-refresh-context';
 import {FastRefreshProvider} from './FastRefreshProvider';
 import {injectCSS} from './helpers/inject-css';
@@ -35,17 +36,19 @@ const StudioInner: React.FC<{
 				audioLatencyHint={window.remotion_audioLatencyHint ?? 'interactive'}
 				nonceContextSeed={fastRefreshes + manualRefreshes}
 			>
-				<ResolveCompositionConfigInStudio>
-					<EditorContexts readOnlyStudio={readOnly}>
-						<Editor readOnlyStudio={readOnly} Root={rootComponent} />
-						{readOnly
-							? null
-							: createPortal(
-									<ServerDisconnected />,
-									getServerDisconnectedDomElement() as HTMLElement,
-								)}
-					</EditorContexts>
-				</ResolveCompositionConfigInStudio>
+				<StaticFilesProvider>
+					<ResolveCompositionConfigInStudio>
+						<EditorContexts readOnlyStudio={readOnly}>
+							<Editor readOnlyStudio={readOnly} Root={rootComponent} />
+							{readOnly
+								? null
+								: createPortal(
+										<ServerDisconnected />,
+										getServerDisconnectedDomElement() as HTMLElement,
+									)}
+						</EditorContexts>
+					</ResolveCompositionConfigInStudio>
+				</StaticFilesProvider>
 			</Internals.RemotionRootContexts>
 		</Internals.CompositionManagerProvider>
 	);

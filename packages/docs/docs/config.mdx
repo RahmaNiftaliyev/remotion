@@ -190,7 +190,7 @@ Config.setShouldOpenBrowser(false);
 
 ## `setBrowserExecutable()`<AvailableFrom v="1.5.0" />
 
-Set a custom Chrome or Chromium executable path. By default Remotion will try to find an existing version of Chrome on your system and if not found, it will download one. This flag is useful if you don't have Chrome installed in a standard location and you want to prevent downloading an additional browser or need [support for the H264 codec](/docs/html5-video#codec-support).
+<Options id="browser-executable" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -519,8 +519,7 @@ In version 1.x, the default behavior was inverse - Remotion would not override b
 
 ## `setPixelFormat()`
 
-Controls the pixel format in FFmpeg. [Read more about it here.](https://trac.ffmpeg.org/wiki/Chroma%20Subsampling) Acceptable values: `yuv420p`, `yuv422p`, `yuv444p`, `yuv420p10le`, `yuv422p10le`, `yuv444p10le`. Since v1.4, `yuva420p` is also supported for transparent WebM videos. Since v2.1.7, `yuva444p10le` is also supported for transparent ProRes videos
-Default value: `yuv420p`
+<Options id="pixel-format" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';

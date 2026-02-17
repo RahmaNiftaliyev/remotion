@@ -29,6 +29,7 @@ const {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	browserExecutableOption,
 } = BrowserSafeApis.options;
 
 export const listCompositionsCommand = async (
@@ -68,7 +69,6 @@ export const listCompositionsCommand = async (
 	);
 
 	const {
-		browserExecutable,
 		envVariables,
 		inputProps,
 		ignoreCertificateErrors,
@@ -80,6 +80,9 @@ export const listCompositionsCommand = async (
 		indent: false,
 	});
 
+	const browserExecutable = browserExecutableOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	const publicPath = publicPathOption.getValue({commandLine: parsedCli}).value;
 	const timeoutInMilliseconds = delayRenderTimeoutInMillisecondsOption.getValue(
 		{

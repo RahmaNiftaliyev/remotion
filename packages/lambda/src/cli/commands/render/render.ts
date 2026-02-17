@@ -56,6 +56,8 @@ const {
 	metadataOption,
 	mediaCacheSizeInBytesOption,
 	darkModeOption,
+	pixelFormatOption,
+	browserExecutableOption,
 } = BrowserSafeApis.options;
 
 export const renderCommand = async ({
@@ -90,12 +92,10 @@ export const renderCommand = async ({
 		envVariables,
 		frameRange,
 		inputProps,
-		pixelFormat,
 		proResProfile,
 		everyNthFrame,
 		height,
 		width,
-		browserExecutable,
 		ignoreCertificateErrors,
 		userAgent,
 		disableWebSecurity,
@@ -105,6 +105,12 @@ export const renderCommand = async ({
 		indent: false,
 	});
 
+	const pixelFormat = pixelFormatOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
+	const browserExecutable = browserExecutableOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
 	const x264Preset = x264Option.getValue({
 		commandLine: CliInternals.parsedCli,
 	}).value;

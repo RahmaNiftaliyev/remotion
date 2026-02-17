@@ -24,6 +24,7 @@ const {
 	binariesDirectoryOption,
 	mediaCacheSizeInBytesOption,
 	darkModeOption,
+	browserExecutableOption,
 } = BrowserSafeApis.options;
 
 export const stillCommand = async (
@@ -47,7 +48,6 @@ export const stillCommand = async (
 		stillFrame,
 		height,
 		width,
-		browserExecutable,
 		userAgent,
 		disableWebSecurity,
 		ignoreCertificateErrors,
@@ -56,6 +56,10 @@ export const stillCommand = async (
 		logLevel,
 		indent: false,
 	});
+
+	const browserExecutable = browserExecutableOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
 
 	let composition = args[1];
 

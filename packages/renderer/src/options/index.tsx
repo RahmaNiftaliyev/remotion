@@ -4,6 +4,7 @@ import {audioBitrateOption} from './audio-bitrate';
 import {audioCodecOption} from './audio-codec';
 import {beepOnFinishOption} from './beep-on-finish';
 import {binariesDirectoryOption} from './binaries-directory';
+import {browserExecutableOption} from './browser-executable';
 import {chromeModeOption} from './chrome-mode';
 import {colorSpaceOption} from './color-space';
 import {crfOption} from './crf';
@@ -41,6 +42,7 @@ import {offthreadVideoThreadsOption} from './offthreadvideo-threads';
 import {onBrowserDownloadOption} from './on-browser-download';
 import type {AnyRemotionOption} from './option';
 import {overwriteOption} from './overwrite';
+import {pixelFormatOption} from './pixel-format';
 import {preferLosslessAudioOption} from './prefer-lossless';
 import {publicDirOption} from './public-dir';
 import {publicLicenseKeyOption} from './public-license-key';
@@ -60,6 +62,7 @@ import {x264Option} from './x264-preset';
 
 export const allOptions = {
 	audioCodecOption,
+	browserExecutableOption,
 	scaleOption,
 	crfOption,
 	jpegQualityOption,
@@ -83,6 +86,7 @@ export const allOptions = {
 	beepOnFinishOption,
 	numberOfGifLoopsOption,
 	reproOption,
+	pixelFormatOption,
 	preferLosslessOption: preferLosslessAudioOption,
 	x264Option,
 	logLevelOption,

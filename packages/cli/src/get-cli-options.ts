@@ -64,9 +64,7 @@ export const getCliOptions = (options: {
 		? true
 		: ConfigInternals.getShouldOutputImageSequence(frameRange);
 
-	const pixelFormat = ConfigInternals.getPixelFormat();
 	const proResProfile = getProResProfile();
-	const browserExecutable = ConfigInternals.getBrowserExecutable();
 
 	const disableWebSecurity = ConfigInternals.getChromiumDisableWebSecurity();
 	const ignoreCertificateErrors = ConfigInternals.getIgnoreCertificateErrors();
@@ -95,11 +93,9 @@ export const getCliOptions = (options: {
 			options.logLevel,
 			options.indent,
 		),
-		pixelFormat,
 		proResProfile,
 		everyNthFrame,
 		stillFrame: ConfigInternals.getStillFrame(),
-		browserExecutable,
 		userAgent,
 		disableWebSecurity,
 		ignoreCertificateErrors,

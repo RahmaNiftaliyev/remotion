@@ -35,6 +35,7 @@ const {
 	binariesDirectoryOption,
 	mediaCacheSizeInBytesOption,
 	darkModeOption,
+	browserExecutableOption,
 } = BrowserSafeApis.options;
 
 const {
@@ -81,7 +82,6 @@ export const stillCommand = async ({
 		stillFrame,
 		height,
 		width,
-		browserExecutable,
 		userAgent,
 		disableWebSecurity,
 		ignoreCertificateErrors,
@@ -90,6 +90,10 @@ export const stillCommand = async ({
 		logLevel,
 		indent: false,
 	});
+
+	const browserExecutable = browserExecutableOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	const region = getAwsRegion();
 	let composition = args[1];

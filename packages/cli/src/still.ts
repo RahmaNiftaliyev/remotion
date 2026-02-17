@@ -30,6 +30,7 @@ const {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	browserExecutableOption,
 } = BrowserSafeApis.options;
 
 export const still = async (
@@ -70,7 +71,6 @@ export const still = async (
 	}
 
 	const {
-		browserExecutable,
 		envVariables,
 		height,
 		inputProps,
@@ -85,6 +85,9 @@ export const still = async (
 		indent: false,
 	});
 
+	const browserExecutable = browserExecutableOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	const jpegQuality = jpegQualityOption.getValue({
 		commandLine: parsedCli,
 	}).value;

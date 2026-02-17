@@ -20,7 +20,6 @@ import {
 } from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodDiscriminatedUnionEditor: React.FC<{
 	schema: any;
 	setValue: UpdaterFunction<Record<string, unknown>>;
@@ -80,6 +79,12 @@ export const ZodDiscriminatedUnionEditor: React.FC<{
 				leftItem: option === value[discriminator] ? <Checkmark /> : null,
 				onClick: () => {
 					const optionSchema = getDiscriminatedOption(schema, option);
+					if (!optionSchema) {
+						throw new Error(
+							`No schema found for discriminator value: ${option}`,
+						);
+					}
+
 					const val = createZodValues(optionSchema, z, zodTypes) as Record<
 						string,
 						unknown

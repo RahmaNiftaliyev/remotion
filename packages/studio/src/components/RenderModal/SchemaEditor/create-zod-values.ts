@@ -1,23 +1,29 @@
 import type {ZodTypesType} from '../../get-zod-if-possible';
 import {
+	type AnyZodSchema,
 	getArrayElement,
+	getBrandedInner,
 	getDefaultValue,
 	getEffectsInner,
-	getEnumValues,
+	getFirstEnumValue,
 	getInnerType,
+	getIntersectionSchemas,
 	getLiteralValue,
 	getObjectShape,
+	getPipelineInput,
+	getPipelineOutput,
+	getRecordKeyType,
+	getRecordValueType,
+	getTupleItems,
 	getUnionOptions,
+	getZodDef,
 	getZodSchemaDescription,
 	getZodSchemaType,
 	isZodV3Schema,
 } from './zod-schema-type';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnySchema = any;
-
 export const createZodValues = (
-	schema: AnySchema,
+	schema: AnyZodSchema,
 	zodRuntime: unknown,
 	zodTypes: ZodTypesType | null,
 ): unknown => {
@@ -25,14 +31,35 @@ export const createZodValues = (
 		throw new Error('Invalid zod schema');
 	}
 
-	const def = schema._def;
+	// In v4, .refine()/.describe() don't wrap in effects — the description
+	// lives directly on the schema. Check for branded descriptions early
+	// so they are detected regardless of the underlying type.
+	const description = getZodSchemaDescription(schema);
+	if (zodTypes) {
+		if (description === zodTypes.ZodZypesInternals.REMOTION_COLOR_BRAND) {
+			return '#ffffff';
+		}
+
+		if (description === zodTypes.ZodZypesInternals.REMOTION_TEXTAREA_BRAND) {
+			return '';
+		}
+
+		if (description === zodTypes.ZodZypesInternals.REMOTION_MATRIX_BRAND) {
+			return [
+				[1, 0, 0],
+				[0, 1, 0],
+				[0, 0, 1],
+			];
+		}
+	}
+
 	const typeName = getZodSchemaType(schema);
 
 	switch (typeName) {
 		case 'string':
 			return '';
 		case 'number': {
-			const {checks} = def;
+			const {checks} = getZodDef(schema);
 			if (checks) {
 				if (isZodV3Schema(schema)) {
 					for (const check of checks) {
@@ -67,6 +94,7 @@ export const createZodValues = (
 		case 'null':
 			return null;
 		case 'any':
+		case 'custom':
 			throw new Error('Cannot create a value for type z.any()');
 		case 'unknown':
 			throw new Error('Cannot create a value for type z.unknown()');
@@ -97,8 +125,8 @@ export const createZodValues = (
 		}
 
 		case 'discriminatedUnion': {
-			const options = getUnionOptions(schema)[0];
-			return createZodValues(options, zodRuntime, zodTypes);
+			const firstOption = getUnionOptions(schema)[0];
+			return createZodValues(firstOption, zodRuntime, zodTypes);
 		}
 
 		case 'literal': {
@@ -106,37 +134,11 @@ export const createZodValues = (
 		}
 
 		case 'effects': {
-			const description = getZodSchemaDescription(schema);
-			if (
-				zodTypes &&
-				description === zodTypes.ZodZypesInternals.REMOTION_COLOR_BRAND
-			) {
-				return '#ffffff';
-			}
-
-			if (
-				zodTypes &&
-				description === zodTypes.ZodZypesInternals.REMOTION_TEXTAREA_BRAND
-			) {
-				return '';
-			}
-
-			if (
-				zodTypes &&
-				description === zodTypes.ZodZypesInternals.REMOTION_MATRIX_BRAND
-			) {
-				return [
-					[1, 0, 0],
-					[0, 1, 0],
-					[0, 0, 1],
-				];
-			}
-
 			return createZodValues(getEffectsInner(schema), zodRuntime, zodTypes);
 		}
 
 		case 'intersection': {
-			const {left, right} = def;
+			const {left, right} = getIntersectionSchemas(schema);
 			const leftValue = createZodValues(left, zodRuntime, zodTypes);
 			if (typeof leftValue !== 'object') {
 				throw new Error(
@@ -156,30 +158,45 @@ export const createZodValues = (
 		}
 
 		case 'tuple': {
-			const items = def.items.map((item: AnySchema) =>
+			return getTupleItems(schema).map((item) =>
 				createZodValues(item, zodRuntime, zodTypes),
 			);
-			return items;
 		}
 
 		case 'record': {
-			const values = createZodValues(def.valueType, zodRuntime, zodTypes);
+			const values = createZodValues(
+				getRecordValueType(schema),
+				zodRuntime,
+				zodTypes,
+			);
 			return {key: values};
 		}
 
 		case 'map': {
-			const values = createZodValues(def.valueType, zodRuntime, zodTypes);
-			const key = createZodValues(def.keyType, zodRuntime, zodTypes);
+			const values = createZodValues(
+				getRecordValueType(schema),
+				zodRuntime,
+				zodTypes,
+			);
+			const key = createZodValues(
+				getRecordKeyType(schema),
+				zodRuntime,
+				zodTypes,
+			);
 			return new Map([[key, values]]);
 		}
 
 		case 'lazy': {
-			const type = def.getter();
+			const type = getZodDef(schema).getter();
 			return createZodValues(type, zodRuntime, zodTypes);
 		}
 
 		case 'set': {
-			const values = createZodValues(def.valueType, zodRuntime, zodTypes);
+			const values = createZodValues(
+				getZodDef(schema).valueType,
+				zodRuntime,
+				zodTypes,
+			);
 			return new Set([values]);
 		}
 
@@ -188,7 +205,7 @@ export const createZodValues = (
 		}
 
 		case 'enum': {
-			return getEnumValues(schema)[0];
+			return getFirstEnumValue(schema);
 		}
 
 		case 'nativeEnum': {
@@ -206,6 +223,7 @@ export const createZodValues = (
 		}
 
 		case 'promise': {
+			const def = getZodDef(schema);
 			// v3: _def.type, v4: _def.innerType
 			const inner = isZodV3Schema(schema) ? def.type : def.innerType;
 			const value = createZodValues(inner, zodRuntime, zodTypes);
@@ -213,14 +231,19 @@ export const createZodValues = (
 		}
 
 		case 'branded': {
-			// v3: _def.type, v4: schema is the base type (branded doesn't wrap in v4)
-			const inner = isZodV3Schema(schema) ? def.type : schema;
-			return createZodValues(inner, zodRuntime, zodTypes);
+			return createZodValues(getBrandedInner(schema), zodRuntime, zodTypes);
 		}
 
-		case 'pipeline': {
-			// v3: _def.out, v4: _def.out
-			return createZodValues(def.out, zodRuntime, zodTypes);
+		case 'pipeline':
+		case 'pipe': {
+			const out = getPipelineOutput(schema);
+			// In v4, .transform() creates pipe { in, out: transform }.
+			// Since we don't apply transforms, use the input side.
+			if (getZodSchemaType(out) === 'transform') {
+				return createZodValues(getPipelineInput(schema), zodRuntime, zodTypes);
+			}
+
+			return createZodValues(out, zodRuntime, zodTypes);
 		}
 
 		default:

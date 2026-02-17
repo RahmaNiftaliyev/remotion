@@ -1,17 +1,20 @@
 import type {ZodTypesType} from '../../get-zod-if-possible';
 import {
+	type AnyZodSchema,
 	getArrayElement,
+	getBrandedInner,
 	getEffectsInner,
 	getInnerType,
+	getIntersectionSchemas,
 	getObjectShape,
+	getPipelineOutput,
+	getRecordKeyType,
+	getRecordValueType,
+	getTupleItems,
 	getUnionOptions,
 	getZodSchemaDescription,
 	getZodSchemaType,
-	isZodV3Schema,
 } from './zod-schema-type';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnySchema = any;
 
 export const extractEnumJsonPaths = ({
 	schema,
@@ -19,12 +22,22 @@ export const extractEnumJsonPaths = ({
 	currentPath,
 	zodTypes,
 }: {
-	schema: AnySchema;
+	schema: AnyZodSchema;
 	zodRuntime: unknown;
 	zodTypes: ZodTypesType | null;
 	currentPath: (string | number)[];
 }): (string | number)[][] => {
-	const def = schema._def;
+	// In v4, .refine()/.describe() don't wrap in effects — the description
+	// lives directly on the schema. Check for branded descriptions early
+	// so they are detected regardless of the underlying type.
+	const description = getZodSchemaDescription(schema);
+	if (
+		zodTypes &&
+		description === zodTypes.ZodZypesInternals.REMOTION_MATRIX_BRAND
+	) {
+		return [currentPath];
+	}
+
 	const typeName = getZodSchemaType(schema);
 
 	switch (typeName) {
@@ -54,7 +67,7 @@ export const extractEnumJsonPaths = ({
 
 		case 'union': {
 			return getUnionOptions(schema)
-				.map((option: AnySchema) => {
+				.map((option) => {
 					return extractEnumJsonPaths({
 						schema: option,
 						zodRuntime,
@@ -67,7 +80,7 @@ export const extractEnumJsonPaths = ({
 
 		case 'discriminatedUnion': {
 			return getUnionOptions(schema)
-				.map((op: AnySchema) => {
+				.map((op) => {
 					return extractEnumJsonPaths({
 						schema: op,
 						zodRuntime,
@@ -83,14 +96,6 @@ export const extractEnumJsonPaths = ({
 		}
 
 		case 'effects': {
-			const description = getZodSchemaDescription(schema);
-			if (
-				zodTypes &&
-				description === zodTypes.ZodZypesInternals.REMOTION_MATRIX_BRAND
-			) {
-				return [currentPath];
-			}
-
 			return extractEnumJsonPaths({
 				schema: getEffectsInner(schema),
 				zodRuntime,
@@ -100,7 +105,7 @@ export const extractEnumJsonPaths = ({
 		}
 
 		case 'intersection': {
-			const {left, right} = def;
+			const {left, right} = getIntersectionSchemas(schema);
 			const leftValue = extractEnumJsonPaths({
 				schema: left,
 				zodRuntime,
@@ -119,8 +124,8 @@ export const extractEnumJsonPaths = ({
 		}
 
 		case 'tuple': {
-			return def.items
-				.map((item: AnySchema, i: number) =>
+			return getTupleItems(schema)
+				.map((item, i) =>
 					extractEnumJsonPaths({
 						schema: item,
 						zodRuntime,
@@ -132,12 +137,20 @@ export const extractEnumJsonPaths = ({
 		}
 
 		case 'record': {
-			return extractEnumJsonPaths({
-				schema: def.valueType,
+			const recordPath = [...currentPath, '{}'];
+			const keyResults = extractEnumJsonPaths({
+				schema: getRecordKeyType(schema),
 				zodRuntime,
-				currentPath: [...currentPath, '{}'],
+				currentPath: recordPath,
 				zodTypes,
 			});
+			const valueResults = extractEnumJsonPaths({
+				schema: getRecordValueType(schema),
+				zodRuntime,
+				currentPath: recordPath,
+				zodTypes,
+			});
+			return [...keyResults, ...valueResults];
 		}
 
 		case 'function': {
@@ -177,18 +190,18 @@ export const extractEnumJsonPaths = ({
 		}
 
 		case 'branded': {
-			const inner = isZodV3Schema(schema) ? def.type : schema;
 			return extractEnumJsonPaths({
-				schema: inner,
+				schema: getBrandedInner(schema),
 				zodRuntime,
 				currentPath,
 				zodTypes,
 			});
 		}
 
-		case 'pipeline': {
+		case 'pipeline':
+		case 'pipe': {
 			return extractEnumJsonPaths({
-				schema: def.out,
+				schema: getPipelineOutput(schema),
 				zodRuntime,
 				currentPath,
 				zodTypes,
@@ -210,7 +223,8 @@ export const extractEnumJsonPaths = ({
 		case 'void':
 		case 'map':
 		case 'lazy':
-		case 'set': {
+		case 'set':
+		case 'custom': {
 			return [];
 		}
 

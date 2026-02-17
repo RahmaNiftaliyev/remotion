@@ -72,7 +72,8 @@ test('Should be able to create a union', async () => {
 	expect(createZodValues(z.union([z.number(), z.string()]), z, zodTypes)).toBe(
 		0,
 	);
-	expect(createZodValues(z.union([]) as never, z, zodTypes)).toBe(undefined);
+	// In v4, z.union([]) throws during schema creation
+	expect(() => createZodValues(z.union([]) as never, z, zodTypes)).toThrow();
 });
 
 test('Zod literal', async () => {
@@ -108,10 +109,11 @@ test('Should be able to create a discriminated union', async () => {
 		),
 	).toEqual({status: 'failed', error: 0});
 
+	// In v4, z.discriminatedUnion('status', []) throws during schema creation
 	expect(() =>
 		// @ts-expect-error invalid zod type
 		createZodValues(z.discriminatedUnion('status', []), z, zodTypes),
-	).toThrow(/Invalid zod schema/);
+	).toThrow();
 });
 
 test('Zod instanceof', async () => {

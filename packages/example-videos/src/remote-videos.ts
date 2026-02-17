@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 dotenv.config({
+	quiet: true,
 	path: path.join(__dirname, '..', '.env'),
 });
 

@@ -70,4 +70,5 @@ export const stillImageFormatOption = {
 
 		currentStillImageFormat = value;
 	},
+	id: 'still-image-format',
 } satisfies AnyRemotionOption<StillImageFormat | null>;

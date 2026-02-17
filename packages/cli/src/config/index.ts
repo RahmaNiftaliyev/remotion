@@ -7,10 +7,6 @@ import {
 import {getConcurrency} from './concurrency';
 import {getDotEnvLocation} from './env-file';
 import {getRange, setFrameRangeFromCli} from './frame-range';
-import {
-	getUserPreferredVideoImageFormat,
-	setVideoImageFormat,
-} from './image-format';
 import {getShouldOutputImageSequence} from './image-sequence';
 import {getOutputLocation} from './output-location';
 import {
@@ -129,6 +125,7 @@ const {
 	numberOfSharedAudioTagsOption,
 	ipv4Option,
 	stillImageFormatOption,
+	videoImageFormatOption,
 } = BrowserSafeApis.options;
 
 declare global {
@@ -691,7 +688,7 @@ export const Config: FlatConfig = {
 	},
 	setJpegQuality: jpegQualityOption.setConfig,
 	setStillImageFormat: stillImageFormatOption.setConfig,
-	setVideoImageFormat,
+	setVideoImageFormat: videoImageFormatOption.setConfig,
 	setMetadata,
 	setEncodingMaxRate: encodingMaxRateOption.setConfig,
 	setEncodingBufferSize: encodingBufferSizeOption.setConfig,
@@ -756,7 +753,6 @@ export const ConfigInternals = {
 	getStillFrame,
 	getShouldOutputImageSequence,
 	getDotEnvLocation,
-	getUserPreferredVideoImageFormat,
 	getWebpackOverrideFn,
 	getWebpackCaching,
 	getOutputLocation,

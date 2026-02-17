@@ -54,6 +54,7 @@ import {delayRenderTimeoutInMillisecondsOption} from './timeout';
 import {videoBitrateOption} from './video-bitrate';
 import {mediaCacheSizeInBytesOption} from './video-cache-size';
 import {videoCodecOption} from './video-codec';
+import {videoImageFormatOption} from './video-image-format';
 import {webhookCustomDataOption} from './webhook-custom-data';
 import {x264Option} from './x264-preset';
 
@@ -115,6 +116,7 @@ export const allOptions = {
 	numberOfSharedAudioTagsOption,
 	ipv4Option,
 	stillImageFormatOption,
+	videoImageFormatOption,
 };
 
 export type AvailableOptions = keyof typeof allOptions;

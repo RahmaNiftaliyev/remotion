@@ -33,6 +33,7 @@ const {
 	darkModeOption,
 	publicLicenseKeyOption,
 	stillImageFormatOption,
+	videoImageFormatOption,
 } = BrowserSafeApis.options;
 
 export const getRenderDefaults = (): RenderDefaults => {
@@ -126,7 +127,9 @@ export const getRenderDefaults = (): RenderDefaults => {
 	const stillImageFormat = stillImageFormatOption.getValue({
 		commandLine: parsedCli,
 	}).value;
-	const videoImageFormat = ConfigInternals.getUserPreferredVideoImageFormat();
+	const videoImageFormat = videoImageFormatOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	const disableWebSecurity = ConfigInternals.getChromiumDisableWebSecurity();
 	const ignoreCertificateErrors = ConfigInternals.getIgnoreCertificateErrors();
 	const darkMode = darkModeOption.getValue({

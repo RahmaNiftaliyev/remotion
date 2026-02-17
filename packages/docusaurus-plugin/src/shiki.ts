@@ -5,8 +5,8 @@ import type {Highlighter} from 'shiki';
 import {getHighlighter} from 'shiki';
 import type {UserConfigSettings} from 'shiki-twoslash';
 import {renderCodeToHTML} from 'shiki-twoslash';
-import {visit} from 'unist-util-visit';
 import type {BuildVisitor} from 'unist-util-visit';
+import {visit} from 'unist-util-visit';
 import {cachedTwoslashCall} from './caching';
 
 import {setupNodeForTwoslashException} from './exceptionMessageDOM';

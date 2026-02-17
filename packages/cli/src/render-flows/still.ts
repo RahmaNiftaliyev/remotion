@@ -276,22 +276,11 @@ export const renderStillFlow = async ({
 			mediaCacheSizeInBytes,
 		});
 
-	const {
-		value: resolvedStillImageFormat,
-		source: resolvedStillImageFormatSource,
-	} = BrowserSafeApis.options.stillImageFormatOption.getValue({
-		commandLine: parsedCli,
-	});
-
 	const {format: imageFormat, source} = determineFinalStillImageFormat({
-		cliFlag:
-			resolvedStillImageFormatSource === 'cli'
-				? resolvedStillImageFormat
-				: null,
-		configImageFormat:
-			resolvedStillImageFormatSource === 'config'
-				? resolvedStillImageFormat
-				: null,
+		configuredImageFormat:
+			BrowserSafeApis.options.stillImageFormatOption.getValue({
+				commandLine: parsedCli,
+			}).value,
 		downloadName: null,
 		outName: getUserPassedOutputLocation(
 			argsAfterComposition,

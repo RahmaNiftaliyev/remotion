@@ -2,8 +2,8 @@ import {formatBytes} from '@remotion/studio-shared';
 import {ALL_FORMATS, Input, UrlSource} from 'mediabunny';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {Internals, staticFile} from 'remotion';
-import {getStaticFiles} from '../api/get-static-files';
 import {BACKGROUND, BORDER_COLOR} from '../helpers/colors';
+import {useStaticFiles} from './use-static-files';
 
 export const CURRENT_ASSET_HEIGHT = 80;
 
@@ -65,15 +65,16 @@ export const CurrentAsset: React.FC = () => {
 	const assetName =
 		canvasContent?.type === 'asset' ? canvasContent.asset : null;
 
+	const staticFiles = useStaticFiles();
+
 	const sizeInBytes = useMemo(() => {
 		if (!assetName) {
 			return null;
 		}
 
-		const staticFiles = getStaticFiles();
 		const file = staticFiles.find((f) => f.name === assetName);
 		return file?.sizeInBytes ?? null;
-	}, [assetName]);
+	}, [assetName, staticFiles]);
 
 	const [mediaMetadata, setMediaMetadata] = useState<MediaMetadata | null>(
 		null,

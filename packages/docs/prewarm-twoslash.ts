@@ -342,6 +342,13 @@ async function main() {
 		const status = t.error ? ` ERROR: ${t.error}` : '';
 		console.log(`  ${t.ms}ms - ${files}${status}`);
 	}
+
+	if (totalErrors > 0) {
+		console.error(`\n${totalErrors} twoslash errors — failing build`);
+		process.exit(1);
+	}
+
+	process.exit(0);
 }
 
 main().catch((e) => {

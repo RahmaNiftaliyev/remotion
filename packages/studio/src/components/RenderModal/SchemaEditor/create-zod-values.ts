@@ -32,7 +32,7 @@ export const createZodValues = (
 		case 'string':
 			return '';
 		case 'number': {
-			const checks = def.checks;
+			const {checks} = def;
 			if (checks) {
 				if (isZodV3Schema(schema)) {
 					for (const check of checks) {

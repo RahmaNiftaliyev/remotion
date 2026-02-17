@@ -86,12 +86,12 @@ export const isZodV3Schema = (schema: AnySchema): boolean => {
  */
 export const getZodSchemaType = (schema: AnySchema): ZodSchemaType => {
 	if (isZodV3Schema(schema)) {
-		const typeName: string = schema._def.typeName;
+		const {typeName} = schema._def;
 		return v3TypeNameMap[typeName] ?? typeName;
 	}
 
 	// v4 schema: _def.type is a string like "string", "number", etc.
-	const type: string = schema._def.type;
+	const {type} = schema._def;
 
 	// In v4, discriminatedUnion has _def.type === "union" with _def.discriminator
 	if (type === 'union' && schema._def.discriminator !== undefined) {
@@ -123,7 +123,7 @@ export const getZodSchemaDescription = (
  * v4: _def.shape (plain object)
  */
 export const getObjectShape = (schema: AnySchema): Record<string, unknown> => {
-	const shape = schema._def.shape;
+	const {shape} = schema._def;
 	return typeof shape === 'function' ? shape() : shape;
 };
 
@@ -175,7 +175,7 @@ export const getEnumValues = (schema: AnySchema): string[] => {
 		return schema._def.values;
 	}
 
-	const entries = schema._def.entries;
+	const {entries} = schema._def;
 	return Object.values(entries);
 };
 

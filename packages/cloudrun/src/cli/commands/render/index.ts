@@ -69,9 +69,13 @@ export const renderCommand = async (
 			},
 		);
 
-	const imageFormat = parsedCloudrunCli['image-format'];
+	const imageFormat = BrowserSafeApis.options.videoImageFormatOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
 
-	const audioCodec = parsedCloudrunCli['audio-codec'];
+	const audioCodec = BrowserSafeApis.options.audioCodecOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
 
 	const {
 		envVariables,
@@ -311,7 +315,7 @@ ${downloadName ? `		Downloaded File = ${downloadName}` : ''}
 		outName,
 		updateRenderProgress,
 		jpegQuality,
-		audioCodec,
+		audioCodec: audioCodec ?? undefined,
 		audioBitrate,
 		videoBitrate,
 		encodingMaxRate,
@@ -320,7 +324,7 @@ ${downloadName ? `		Downloaded File = ${downloadName}` : ''}
 		x264Preset,
 		crf,
 		pixelFormat,
-		imageFormat,
+		imageFormat: imageFormat ?? undefined,
 		scale,
 		everyNthFrame,
 		numberOfGifLoops,

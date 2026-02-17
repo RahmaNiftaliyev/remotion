@@ -12,6 +12,7 @@ const {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	browserExecutableOption,
 } = BrowserSafeApis.options;
 
 export const processVideoJob = async ({
@@ -41,11 +42,14 @@ export const processVideoJob = async ({
 		commandLine: parsedCli,
 	}).value;
 
-	const {browserExecutable, ffmpegOverride} = getCliOptions({
+	const {ffmpegOverride} = getCliOptions({
 		isStill: true,
 		logLevel,
 		indent: true,
 	});
+	const browserExecutable = browserExecutableOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	const fullEntryPoint = convertEntryPointToServeUrl(entryPoint);
 	await renderVideoFlow({
 		remotionRoot,

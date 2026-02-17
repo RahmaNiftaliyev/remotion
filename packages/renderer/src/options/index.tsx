@@ -4,6 +4,7 @@ import {audioBitrateOption} from './audio-bitrate';
 import {audioCodecOption} from './audio-codec';
 import {beepOnFinishOption} from './beep-on-finish';
 import {binariesDirectoryOption} from './binaries-directory';
+import {browserExecutableOption} from './browser-executable';
 import {chromeModeOption} from './chrome-mode';
 import {colorSpaceOption} from './color-space';
 import {crfOption} from './crf';
@@ -61,6 +62,7 @@ import {x264Option} from './x264-preset';
 
 export const allOptions = {
 	audioCodecOption,
+	browserExecutableOption,
 	scaleOption,
 	crfOption,
 	jpegQualityOption,

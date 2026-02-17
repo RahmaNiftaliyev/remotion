@@ -48,6 +48,8 @@ const {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	pixelFormatOption,
+	browserExecutableOption,
 } = BrowserSafeApis.options;
 
 export const render = async (
@@ -93,7 +95,6 @@ export const render = async (
 		shouldOutputImageSequence,
 		inputProps,
 		envVariables,
-		browserExecutable,
 		everyNthFrame,
 		userAgent,
 		disableWebSecurity,
@@ -102,13 +103,18 @@ export const render = async (
 		width,
 		ffmpegOverride,
 		proResProfile,
-		pixelFormat,
 	} = getCliOptions({
 		isStill: false,
 		logLevel,
 		indent: false,
 	});
 
+	const pixelFormat = pixelFormatOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const browserExecutable = browserExecutableOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	const x264Preset = x264Option.getValue({commandLine: parsedCli}).value;
 	const audioBitrate = audioBitrateOption.getValue({
 		commandLine: parsedCli,

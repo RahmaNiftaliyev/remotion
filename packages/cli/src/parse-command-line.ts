@@ -1,6 +1,5 @@
 import type {
 	AudioCodec,
-	BrowserExecutable,
 	Codec,
 	OpenGlRenderer,
 	StillImageFormat,
@@ -38,10 +37,13 @@ const {
 	numberOfSharedAudioTagsOption,
 	ipv4Option,
 	pixelFormatOption,
+	browserExecutableOption,
 } = BrowserSafeApis.options;
 
 export type CommandLineOptions = {
-	['browser-executable']: BrowserExecutable;
+	[browserExecutableOption.cliFlag]: TypeOfOption<
+		typeof browserExecutableOption
+	>;
 	[pixelFormatOption.cliFlag]: TypeOfOption<typeof pixelFormatOption>;
 	['image-format']: VideoImageFormat | StillImageFormat;
 	['prores-profile']: _InternalTypes['ProResProfile'];
@@ -127,10 +129,6 @@ export type CommandLineOptions = {
 };
 
 export const parseCommandLine = () => {
-	if (parsedCli['browser-executable']) {
-		Config.setBrowserExecutable(parsedCli['browser-executable']);
-	}
-
 	if (typeof parsedCli['bundle-cache'] !== 'undefined') {
 		Config.setCachingEnabled(parsedCli['bundle-cache'] !== 'false');
 	}

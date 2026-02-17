@@ -1,5 +1,4 @@
 import {getBrowser} from './browser';
-import {getBrowserExecutable} from './browser-executable';
 import {
 	getChromiumDisableWebSecurity,
 	getIgnoreCertificateErrors,
@@ -38,7 +37,6 @@ import type {
 import type {HardwareAccelerationOption} from '@remotion/renderer/client';
 import {BrowserSafeApis} from '@remotion/renderer/client';
 import {StudioServerInternals} from '@remotion/studio-server';
-import {setBrowserExecutable} from './browser-executable';
 import {
 	getBufferStateDelayInMilliseconds,
 	setBufferStateDelayInMilliseconds,
@@ -123,6 +121,7 @@ const {
 	numberOfSharedAudioTagsOption,
 	ipv4Option,
 	pixelFormatOption,
+	browserExecutableOption,
 	stillImageFormatOption,
 	videoImageFormatOption,
 } = BrowserSafeApis.options;
@@ -662,7 +661,7 @@ export const Config: FlatConfig = {
 	setPublicDir: publicDirOption.setConfig,
 	setEntryPoint,
 	setLevel: logLevelOption.setConfig,
-	setBrowserExecutable,
+	setBrowserExecutable: browserExecutableOption.setConfig,
 	setTimeoutInMilliseconds: delayRenderTimeoutInMillisecondsOption.setConfig,
 	setDelayRenderTimeoutInMilliseconds:
 		delayRenderTimeoutInMillisecondsOption.setConfig,
@@ -740,7 +739,6 @@ export const ConfigInternals = {
 	getRange,
 	getBrowser,
 	getProResProfile,
-	getBrowserExecutable,
 	getStudioPort,
 	getRendererPortFromConfigFile,
 	getRendererPortFromConfigFileAndCliFlag,

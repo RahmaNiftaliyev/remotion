@@ -2,7 +2,6 @@ import {BrowserSafeApis} from '@remotion/renderer/client';
 import type {JobProgressCallback, RenderJob} from '@remotion/studio-server';
 import {getRendererPortFromConfigFile} from '../config/preview-server';
 import {convertEntryPointToServeUrl} from '../convert-entry-point-to-serve-url';
-import {getCliOptions} from '../get-cli-options';
 import {parsedCli} from '../parsed-cli';
 import {renderStillFlow} from '../render-flows/still';
 
@@ -11,6 +10,7 @@ const {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	browserExecutableOption,
 } = BrowserSafeApis.options;
 
 export const processStill = async ({
@@ -30,11 +30,9 @@ export const processStill = async ({
 		throw new Error('Expected still job');
 	}
 
-	const {browserExecutable} = getCliOptions({
-		isStill: true,
-		logLevel: job.logLevel,
-		indent: true,
-	});
+	const browserExecutable = browserExecutableOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	const publicDir = publicDirOption.getValue({
 		commandLine: parsedCli,

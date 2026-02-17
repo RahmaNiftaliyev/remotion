@@ -16,20 +16,20 @@ const {
 	headlessOption,
 	chromeModeOption,
 	darkModeOption,
+	browserExecutableOption,
 } = BrowserSafeApis.options;
 
 export const gpuCommand = async (logLevel: LogLevel) => {
-	const {
-		browserExecutable,
-		disableWebSecurity,
-		ignoreCertificateErrors,
-		userAgent,
-	} = getCliOptions({
-		isStill: false,
-		logLevel,
-		indent: false,
-	});
+	const {disableWebSecurity, ignoreCertificateErrors, userAgent} =
+		getCliOptions({
+			isStill: false,
+			logLevel,
+			indent: false,
+		});
 
+	const browserExecutable = browserExecutableOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	const enableMultiProcessOnLinux = enableMultiprocessOnLinuxOption.getValue({
 		commandLine: parsedCli,
 	}).value;

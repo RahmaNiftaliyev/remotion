@@ -5,6 +5,7 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
+import {Internals} from 'remotion';
 import {getStaticFiles, type StaticFile} from '../api/get-static-files';
 import {writeStaticFile} from '../api/write-static-file';
 import {StudioServerConnectionCtx} from '../helpers/client-id';
@@ -16,6 +17,7 @@ import useAssetDragEvents from '../helpers/use-asset-drag-events';
 import {FolderContext} from '../state/folders';
 import {useZIndex} from '../state/z-index';
 import {AssetFolderTree} from './AssetSelectorItem';
+import {CURRENT_ASSET_HEIGHT, CurrentAsset} from './CurrentAsset';
 import {inlineCodeSnippet} from './Menu/styles';
 import {showNotification} from './Notifications/NotificationCenter';
 
@@ -43,8 +45,7 @@ const label: React.CSSProperties = {
 	fontSize: 14,
 };
 
-const list: React.CSSProperties = {
-	height: '100%',
+const baseList: React.CSSProperties = {
 	overflowY: 'auto',
 };
 
@@ -57,6 +58,7 @@ export const AssetSelector: React.FC<{
 	readonly readOnlyStudio: boolean;
 }> = ({readOnlyStudio}) => {
 	const {tabIndex} = useZIndex();
+	const {canvasContent} = useContext(Internals.CompositionManager);
 	const {assetFoldersExpanded, setAssetFoldersExpanded} =
 		useContext(FolderContext);
 	const [dropLocation, setDropLocation] = useState<string | null>(null);
@@ -64,6 +66,17 @@ export const AssetSelector: React.FC<{
 	const connectionStatus = useContext(StudioServerConnectionCtx)
 		.previewServerState.type;
 	const shouldAllowUpload = connectionStatus === 'connected' && !readOnlyStudio;
+
+	const showCurrentAsset = canvasContent?.type === 'asset';
+
+	const list: React.CSSProperties = useMemo(() => {
+		return {
+			...baseList,
+			height: showCurrentAsset
+				? `calc(100% - ${CURRENT_ASSET_HEIGHT}px)`
+				: '100%',
+		};
+	}, [showCurrentAsset]);
 
 	const [{publicFolderExists, staticFiles}, setState] = React.useState<State>(
 		() => {
@@ -162,6 +175,7 @@ export const AssetSelector: React.FC<{
 			onDragOver={shouldAllowUpload ? onDragOver : undefined}
 			onDrop={shouldAllowUpload ? onDrop : undefined}
 		>
+			{showCurrentAsset ? <CurrentAsset /> : null}
 			{staticFiles.length === 0 ? (
 				publicFolderExists ? (
 					<div style={emptyState}>

@@ -1,4 +1,4 @@
-import type {MediaParserInternalTypes} from '@remotion/media-parser';
+import type {SamplePosition} from '@remotion/media-parser';
 import {combineUint8Arrays} from '../../../../../matroska/matroska-utils';
 import {
 	addSize,
@@ -23,7 +23,7 @@ const makeEntry = (entry: Entry) => {
 };
 
 export const createSttsAtom = (
-	samplePositions: MediaParserInternalTypes['SamplePosition'][],
+	samplePositions: SamplePosition[],
 ) => {
 	let lastDuration: null | number = null;
 

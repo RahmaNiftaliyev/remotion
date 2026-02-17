@@ -1,6 +1,6 @@
 import type {
-	MediaParserInternalTypes,
 	MediaParserLogLevel,
+	Writer,
 } from '@remotion/media-parser';
 import {
 	MediaParserInternals,
@@ -52,7 +52,7 @@ export const makeCluster = async ({
 	timescale,
 	logLevel,
 }: {
-	writer: MediaParserInternalTypes['Writer'];
+	writer: Writer;
 	clusterStartTimestamp: number;
 	timescale: number;
 	logLevel: MediaParserLogLevel;

@@ -1,6 +1,6 @@
-import type {MediaParserInternalTypes} from '@remotion/media-parser';
+import type {SamplePosition} from '@remotion/media-parser';
 
-export const exampleVideoSamplePositions: MediaParserInternalTypes['SamplePosition'][] =
+export const exampleVideoSamplePositions: SamplePosition[] =
 	[
 		{
 			offset: 5799,
@@ -1324,7 +1324,7 @@ export const exampleVideoSamplePositions: MediaParserInternalTypes['SamplePositi
 		},
 	];
 
-export const exampleAudioSamplePositions: MediaParserInternalTypes['SamplePosition'][] =
+export const exampleAudioSamplePositions: SamplePosition[] =
 	[
 		{
 			offset: 18371,

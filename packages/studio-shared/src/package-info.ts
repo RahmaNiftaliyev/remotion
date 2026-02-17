@@ -95,12 +95,6 @@ export type ExtraPackage = {
 
 export const extraPackages: ExtraPackage[] = [
 	{
-		name: 'zod',
-		version: '3.22.3',
-		description: 'Schema validation library for defining component props',
-		docsUrl: 'https://www.remotion.dev/docs/schemas',
-	},
-	{
 		name: 'mediabunny',
 		version: '1.34.2',
 		description: 'Multimedia library used by Remotion',

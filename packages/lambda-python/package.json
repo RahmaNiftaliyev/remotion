@@ -6,7 +6,6 @@
 	"private": true,
 	"version": "4.0.423",
 	"scripts": {
-		"lint": "node build.mjs",
 		"publishprivate": "node publish.mjs"
 	},
 	"devDependencies": {

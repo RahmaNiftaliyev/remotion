@@ -26,6 +26,7 @@ import {
 } from './options/audio-codec';
 import {tmpDir} from './tmp-dir';
 import {truthy} from './truthy';
+import {validateNumberOfGifLoops} from './validate-number-of-gif-loops';
 
 type MandatoryCombineChunksOptions = {
 	outputLocation: string;
@@ -103,6 +104,8 @@ export const internalCombineChunks = async ({
 }: AllCombineChunksOptions & {
 	indent: boolean;
 }) => {
+	validateNumberOfGifLoops(numberOfGifLoops, codec);
+
 	const filelistDir = tmpDir(REMOTION_FILELIST_TOKEN);
 
 	const shouldCreateVideo = !isAudioCodec(codec);

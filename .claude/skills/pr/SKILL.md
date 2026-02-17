@@ -13,10 +13,10 @@ bunx prettier --experimental-cli src --write
 Commit the changes, use the following format:
 
 ```
-[package-name]: [commit-message]
+`[package-name]`: [commit-message]
 ```
 
-For example, `@remotion/shapes: Add heart shape`.  
+For example, "`@remotion/shapes`: Add heart shape".  
 The package name must be obtained from package.json.  
 If multiple packages are affected, use the one that you think if most relevant.
 

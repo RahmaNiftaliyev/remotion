@@ -1,4 +1,7 @@
 import type {StillImageFormat} from '@remotion/renderer';
+import {BrowserSafeApis} from '@remotion/renderer/client';
+
+const cliFlag = BrowserSafeApis.options.stillImageFormatOption.cliFlag;
 
 const deriveExtensionFromFilename = (
 	filename: string | null,
@@ -64,7 +67,7 @@ export const determineFinalStillImageFormat = ({
 			downloadNameExtension !== configuredImageFormat
 		) {
 			throw new TypeError(
-				`Image format mismatch: ${downloadName} was given as the download name, but --image-format=${configuredImageFormat} was passed. The image formats must match.`,
+				`Image format mismatch: ${downloadName} was given as the download name, but the image format "${configuredImageFormat}" was configured via --${cliFlag} or Config.setStillImageFormat(). The image formats must match.`,
 			);
 		}
 
@@ -74,7 +77,7 @@ export const determineFinalStillImageFormat = ({
 	if (outNameExtension) {
 		if (configuredImageFormat && outNameExtension !== configuredImageFormat) {
 			throw new TypeError(
-				`Image format mismatch: ${outName} was given as the ${outNameDescription}, but --image-format=${configuredImageFormat} was passed. The image formats must match.`,
+				`Image format mismatch: ${outName} was given as the ${outNameDescription}, but the image format "${configuredImageFormat}" was configured via --${cliFlag} or Config.setStillImageFormat(). The image formats must match.`,
 			);
 		}
 
@@ -82,7 +85,7 @@ export const determineFinalStillImageFormat = ({
 	}
 
 	if (configuredImageFormat !== null) {
-		return {format: configuredImageFormat, source: '--image-format flag'};
+		return {format: configuredImageFormat, source: `--${cliFlag} or config`};
 	}
 
 	return {format: 'png', source: 'Default'};

@@ -16,7 +16,7 @@ export const stillImageFormatOption = {
 			<code>&quot;png&quot;</code>.
 		</>
 	),
-	ssrName: 'stillImageFormat' as const,
+	ssrName: 'imageFormat' as const,
 	docLink: 'https://www.remotion.dev/docs/renderer/render-still#imageformat',
 	type: null as StillImageFormat | null,
 	getValue: ({commandLine}) => {

@@ -1,6 +1,7 @@
 import {BufferTarget, StreamTarget} from 'mediabunny';
 import type {CalculateMetadataFunction} from 'remotion';
 import {Internals, type LogLevel} from 'remotion';
+import {VERSION} from 'remotion/version';
 import type {AnyZodObject, z} from 'zod';
 import {addAudioSample, addVideoSampleAndCloseFrame} from './add-sample';
 import {handleArtifacts, type WebRendererOnArtifact} from './artifact';
@@ -135,7 +136,6 @@ type InternalRenderMediaOnWebOptions<
 	InputPropsIfHasProps<Schema, Props>;
 
 // TODO: More containers
-// TODO: Metadata
 // TODO: Validating inputs
 // TODO: Apply defaultCodec
 
@@ -289,6 +289,10 @@ const internalRenderMediaOnWeb = async <
 	using outputWithCleanup = makeOutputWithCleanup({
 		format,
 		target,
+	});
+
+	outputWithCleanup.output.setMetadataTags({
+		comment: `Made with Remotion ${VERSION}`,
 	});
 
 	using throttledProgress = createThrottledProgressCallback(onProgress);

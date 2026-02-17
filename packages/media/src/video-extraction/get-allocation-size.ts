@@ -1,6 +1,6 @@
-import type {VideoSample} from 'mediabunny';
+import type {VideoSampleWithoutDuration} from './keyframe-bank';
 
-export const getAllocationSize = (sample: VideoSample) => {
+export const getAllocationSize = (sample: VideoSampleWithoutDuration) => {
 	if (sample.format === null) {
 		return sample.codedHeight * sample.codedWidth * 4;
 	}

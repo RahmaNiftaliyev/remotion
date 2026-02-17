@@ -1,6 +1,6 @@
 export const EXTRA_PACKAGES: Record<string, string> = {
 	zod: '3.22.3',
-	mediabunny: '1.29.0',
+	mediabunny: '1.34.2',
 };
 
 export const EXTRA_PACKAGES_DOCS: Record<string, string> = {

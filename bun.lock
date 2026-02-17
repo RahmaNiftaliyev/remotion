@@ -142,7 +142,7 @@
         "@remotion/studio": "workspace:*",
         "@remotion/studio-server": "workspace:*",
         "@remotion/studio-shared": "workspace:*",
-        "dotenv": "9.0.2",
+        "dotenv": "17.3.1",
         "minimist": "1.2.6",
         "prompts": "2.4.2",
         "remotion": "workspace:*",
@@ -633,7 +633,7 @@
         "@types/web": "catalog:",
         "babel-loader": "^8.2.2",
         "css-loader": "5.2.7",
-        "dotenv": "9.0.2",
+        "dotenv": "17.3.1",
         "hls.js": "^0.14.17",
         "lottie-web": "5.13.0",
         "mediabunny": "catalog:",
@@ -869,7 +869,7 @@
       "name": "@remotion/lambda-python",
       "version": "4.0.423",
       "dependencies": {
-        "dotenv": "9.0.2",
+        "dotenv": "17.3.1",
       },
       "devDependencies": {
         "remotion": "workspace:*",
@@ -5305,7 +5305,7 @@
 
     "dot-prop": ["dot-prop@6.0.1", "", { "dependencies": { "is-obj": "2.0.0" } }, "sha512-tE7ztYzXHIeyvc7N+hR3oi7FIbf/NIjVP9hmAt3yMXzrQ072/fpjGLx2GxNxGxUl5V73MEqYzioOMoVhGMJ5cA=="],
 
-    "dotenv": ["dotenv@9.0.2", "", {}, "sha512-I9OvvrHp4pIARv4+x9iuewrWycX6CcZtoAu1XrzPxc5UygMJXJZYmBsynku8IkrJwgypE5DGNjDPmPRhDCptUg=="],
+    "dotenv": ["dotenv@17.3.1", "", {}, "sha512-IO8C/dzEb6O3F9/twg6ZLXz164a2fhTnEWb95H23Dm4OuN+92NmEAlTrupP9VW6Jm3sO26tQlqyvyi4CsnY9GA=="],
 
     "draco3d": ["draco3d@1.4.3", "", {}, "sha512-D7IipIMa04k0rhEPU8SJZVcpXP3JOPaLR+nai0a9+OltsnkLMmVmpAEe1DXXOEf6eSIvKqTAEPLdZZ8G+bC/8w=="],
 

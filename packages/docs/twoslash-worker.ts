@@ -88,3 +88,6 @@ process.stdout.write(
 		timings,
 	}) + '\n',
 );
+
+// Force exit — createTwoslasher holds a TS language service that keeps the process alive
+process.exit(0);

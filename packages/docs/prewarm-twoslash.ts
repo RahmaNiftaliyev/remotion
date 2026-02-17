@@ -152,6 +152,8 @@ interface WorkerResult {
 	timings: TimingEntry[];
 }
 
+const WORKER_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes per worker
+
 function runWorker(
 	workItems: TwoslashBlock[],
 	workerId: number,
@@ -166,6 +168,19 @@ function runWorker(
 		});
 
 		let lastReport: WorkerResult = {completed: 0, errors: 0, timings: []};
+		let settled = false;
+
+		const timeout = setTimeout(() => {
+			if (!settled) {
+				settled = true;
+				console.error(`Worker ${workerId} timed out after ${WORKER_TIMEOUT_MS / 1000}s, killing...`);
+				child.kill('SIGKILL');
+				try {
+					unlinkSync(tmpFile);
+				} catch {}
+				resolvePromise(lastReport);
+			}
+		}, WORKER_TIMEOUT_MS);
 
 		child.stdout.on('data', (data: Buffer) => {
 			const lines = data.toString().trim().split('\n');
@@ -178,20 +193,33 @@ function runWorker(
 			}
 		});
 
-		child.stderr.on('data', () => {});
+		child.stderr.on('data', (data: Buffer) => {
+			process.stderr.write(`[worker ${workerId}] ${data}`);
+		});
 
-		child.on('close', () => {
-			try {
-				unlinkSync(tmpFile);
-			} catch {}
-			resolvePromise(lastReport);
+		child.on('close', (code) => {
+			clearTimeout(timeout);
+			if (!settled) {
+				settled = true;
+				if (code !== 0 && code !== null) {
+					console.error(`Worker ${workerId} exited with code ${code}`);
+				}
+				try {
+					unlinkSync(tmpFile);
+				} catch {}
+				resolvePromise(lastReport);
+			}
 		});
 
 		child.on('error', (err) => {
-			try {
-				unlinkSync(tmpFile);
-			} catch {}
-			reject(err);
+			clearTimeout(timeout);
+			if (!settled) {
+				settled = true;
+				try {
+					unlinkSync(tmpFile);
+				} catch {}
+				reject(err);
+			}
 		});
 	});
 }

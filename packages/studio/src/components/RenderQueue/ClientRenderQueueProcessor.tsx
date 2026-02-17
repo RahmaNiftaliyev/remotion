@@ -136,7 +136,6 @@ export const ClientRenderQueueProcessor: React.FC = () => {
 				signal,
 				onProgress: (progress) => {
 					onProgress(job.id, {
-						renderedFrames: progress.renderedFrames,
 						encodedFrames: progress.encodedFrames,
 						totalFrames,
 					});

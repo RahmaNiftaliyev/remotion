@@ -70,9 +70,9 @@ const getProgressInBrackets = (
 
 	let progInPercent: number;
 	if (isClientRenderJob(currentRender)) {
-		const {renderedFrames, totalFrames} = currentRender.progress;
+		const {encodedFrames, totalFrames} = currentRender.progress;
 		progInPercent =
-			totalFrames > 0 ? Math.ceil((renderedFrames / totalFrames) * 100) : 0;
+			totalFrames > 0 ? Math.ceil((encodedFrames / totalFrames) * 100) : 0;
 	} else {
 		progInPercent = Math.ceil(currentRender.progress.value * 100);
 	}

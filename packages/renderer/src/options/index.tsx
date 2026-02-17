@@ -7,6 +7,7 @@ import {binariesDirectoryOption} from './binaries-directory';
 import {browserExecutableOption} from './browser-executable';
 import {chromeModeOption} from './chrome-mode';
 import {colorSpaceOption} from './color-space';
+import {concurrencyOption} from './concurrency';
 import {crfOption} from './crf';
 import {enableCrossSiteIsolationOption} from './cross-site-isolation';
 import {darkModeOption} from './dark-mode';
@@ -68,6 +69,7 @@ import {x264Option} from './x264-preset';
 export const allOptions = {
 	audioCodecOption,
 	browserExecutableOption,
+	concurrencyOption,
 	scaleOption,
 	crfOption,
 	jpegQualityOption,

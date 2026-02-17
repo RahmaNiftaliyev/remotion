@@ -307,8 +307,7 @@ The [command line flag](/docs/cli/render#--gl) `--gl` will take precedence over 
 
 ## `setConcurrency()`
 
-Sets how many Puppeteer instances will work on rendering your video in parallel.
-Default: `null`, meaning **half of the threads** available on your CPU.
+<Options id="concurrency" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';

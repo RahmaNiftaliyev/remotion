@@ -159,19 +159,27 @@ export const stillCommand = async (
 	}
 
 	const {stillImageFormatOption} = BrowserSafeApis.options;
+	const {
+		value: resolvedStillImageFormat,
+		source: resolvedStillImageFormatSource,
+	} = stillImageFormatOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	});
 
 	const {format: imageFormat, source: imageFormatReason} =
 		CliInternals.determineFinalStillImageFormat({
 			downloadName,
 			outName: outName ?? null,
 			cliFlag:
-				stillImageFormatOption.getValue({
-					commandLine: CliInternals.parsedCli,
-				}).value ?? null,
+				resolvedStillImageFormatSource === 'cli'
+					? resolvedStillImageFormat
+					: null,
 			isLambda: true,
 			fromUi: null,
 			configImageFormat:
-				ConfigInternals.getUserPreferredStillImageFormat() ?? null,
+				resolvedStillImageFormatSource === 'config'
+					? resolvedStillImageFormat
+					: null,
 		});
 	Log.verbose(
 		{indent: false, logLevel},

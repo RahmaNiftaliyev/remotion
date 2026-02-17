@@ -32,6 +32,7 @@ const {
 	mediaCacheSizeInBytesOption,
 	darkModeOption,
 	publicLicenseKeyOption,
+	stillImageFormatOption,
 } = BrowserSafeApis.options;
 
 export const getRenderDefaults = (): RenderDefaults => {
@@ -122,7 +123,9 @@ export const getRenderDefaults = (): RenderDefaults => {
 	}).value;
 
 	const everyNthFrame = ConfigInternals.getEveryNthFrame();
-	const stillImageFormat = ConfigInternals.getUserPreferredStillImageFormat();
+	const stillImageFormat = stillImageFormatOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	const videoImageFormat = ConfigInternals.getUserPreferredVideoImageFormat();
 	const disableWebSecurity = ConfigInternals.getChromiumDisableWebSecurity();
 	const ignoreCertificateErrors = ConfigInternals.getIgnoreCertificateErrors();

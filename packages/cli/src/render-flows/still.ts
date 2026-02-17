@@ -23,7 +23,6 @@ import {NoReactInternals} from 'remotion/no-react';
 import {defaultBrowserDownloadProgress} from '../browser-download-bar';
 import {chalk} from '../chalk';
 import {registerCleanupJob} from '../cleanup-before-quit';
-import {ConfigInternals} from '../config';
 import {determineFinalStillImageFormat} from '../determine-image-format';
 import {getAndValidateAbsoluteOutputFile} from '../get-cli-options';
 import {getCompositionWithDimensionOverride} from '../get-composition-with-dimension-override';
@@ -277,13 +276,22 @@ export const renderStillFlow = async ({
 			mediaCacheSizeInBytes,
 		});
 
+	const {
+		value: resolvedStillImageFormat,
+		source: resolvedStillImageFormatSource,
+	} = BrowserSafeApis.options.stillImageFormatOption.getValue({
+		commandLine: parsedCli,
+	});
+
 	const {format: imageFormat, source} = determineFinalStillImageFormat({
 		cliFlag:
-			BrowserSafeApis.options.stillImageFormatOption.getValue({
-				commandLine: parsedCli,
-			}).value ?? null,
+			resolvedStillImageFormatSource === 'cli'
+				? resolvedStillImageFormat
+				: null,
 		configImageFormat:
-			ConfigInternals.getUserPreferredStillImageFormat() ?? null,
+			resolvedStillImageFormatSource === 'config'
+				? resolvedStillImageFormat
+				: null,
 		downloadName: null,
 		outName: getUserPassedOutputLocation(
 			argsAfterComposition,

@@ -49,12 +49,22 @@ export const stillImageFormatOption = {
 		};
 	},
 	setConfig: (value) => {
+		if (value === null) {
+			currentStillImageFormat = null;
+			return;
+		}
+
 		if (
-			value !== null &&
 			!(validStillImageFormats as readonly string[]).includes(value as string)
 		) {
-			throw new Error(
-				`Invalid still image format: ${value}. Must be one of: ${validStillImageFormats.join(', ')}`,
+			throw new TypeError(
+				[
+					`Value ${value} is not valid as a still image format.`,
+					// @ts-expect-error
+					value === 'jpg' ? 'Did you mean "jpeg"?' : null,
+				]
+					.filter(Boolean)
+					.join(' '),
 			);
 		}
 

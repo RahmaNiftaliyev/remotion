@@ -1,14 +1,14 @@
-import { makeStreamer } from '@remotion/streaming';
-import { TRANSCRIBE_VIDEO } from '../../scripts/server/constants';
+import { makeStreamer } from "@remotion/streaming";
+import { TRANSCRIBE_VIDEO } from "../../scripts/server/constants";
 import {
   MessageTypeId,
   StreamingMessage,
   formatMap,
   messageTypeIdToMessageType,
-} from '../../scripts/server/streaming';
-import { ProcessStatus } from '../components/ProcessingStatus';
-import { cancelTranscribeOnServer } from './cancel-transcribe';
-import { parseJsonOrThrowSource } from './upload-file';
+} from "../../scripts/server/streaming";
+import { ProcessStatus } from "../components/ProcessingStatus";
+import { cancelTranscribeOnServer } from "./cancel-transcribe";
+import { parseJsonOrThrowSource } from "./upload-file";
 
 export const transcribeVideoOnServer = async ({
   onProgress,
@@ -31,7 +31,7 @@ export const transcribeVideoOnServer = async ({
       messageTypeId as MessageTypeId,
     );
     const innerPayload =
-      formatMap[messageType] === 'json'
+      formatMap[messageType] === "json"
         ? parseJsonOrThrowSource(data, messageType)
         : data;
 
@@ -43,35 +43,35 @@ export const transcribeVideoOnServer = async ({
       },
     };
 
-    if (message.type === 'transcribing-progress') {
+    if (message.type === "transcribing-progress") {
       onProgress({
         title: `Transcribing ${message.payload.filename}`,
         description: `${message.payload.progress}%`,
         abort: () => cancelTranscribeOnServer(),
       });
     }
-    if (message.type === 'install-whisper-progress') {
+    if (message.type === "install-whisper-progress") {
       onProgress({
         title: `Installing Whisper`,
         description: `See console for progress`,
         abort: () => cancelTranscribeOnServer(),
       });
     }
-    if (message.type === 'downloading-whisper-model-progress') {
+    if (message.type === "downloading-whisper-model-progress") {
       onProgress({
         title: `Downloading Whisper model`,
         description: `${Math.round(message.payload.progressInPercent)}%`,
         abort: () => cancelTranscribeOnServer(),
       });
     }
-    if (message.type === 'whisper-abort') {
-      throw new Error('aborted by user');
+    if (message.type === "whisper-abort") {
+      throw new Error("aborted by user");
     }
   });
 
   const res = await fetch(url, {});
   if (!res.body) {
-    throw new Error('No body');
+    throw new Error("No body");
   }
 
   const reader = res.body.getReader();

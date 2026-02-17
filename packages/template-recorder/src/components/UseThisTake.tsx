@@ -1,21 +1,21 @@
-import React, { useCallback } from 'react';
-import { WEBCAM_PREFIX } from '../../config/cameras';
-import { RecordingStatus } from '../RecordButton';
-import { cancelTranscribeOnServer } from '../helpers/cancel-transcribe';
-import { convertInBrowser } from '../helpers/convert-in-browser';
-import { downloadVideo } from '../helpers/download-video';
-import { getExtension } from '../helpers/find-good-supported-codec';
-import { Prefix } from '../helpers/prefixes';
-import { transcribeVideoOnServer } from '../helpers/transcribe-video';
-import { uploadFileToServer } from '../helpers/upload-file';
-import { ProcessStatus } from './ProcessingStatus';
-import { Button } from './ui/button';
+import React, { useCallback } from "react";
+import { WEBCAM_PREFIX } from "../../config/cameras";
+import { RecordingStatus } from "../RecordButton";
+import { cancelTranscribeOnServer } from "../helpers/cancel-transcribe";
+import { convertInBrowser } from "../helpers/convert-in-browser";
+import { downloadVideo } from "../helpers/download-video";
+import { getExtension } from "../helpers/find-good-supported-codec";
+import { Prefix } from "../helpers/prefixes";
+import { transcribeVideoOnServer } from "../helpers/transcribe-video";
+import { uploadFileToServer } from "../helpers/upload-file";
+import { ProcessStatus } from "./ProcessingStatus";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu';
+} from "./ui/dropdown-menu";
 let currentProcessing = Promise.resolve();
 
 export const UseThisTake: React.FC<{
@@ -25,12 +25,12 @@ export const UseThisTake: React.FC<{
   setStatus: React.Dispatch<React.SetStateAction<ProcessStatus | null>>;
 }> = ({ selectedFolder, recordingStatus, setRecordingStatus, setStatus }) => {
   const keepVideoOnServer = useCallback(async () => {
-    if (recordingStatus.type !== 'recording-finished') {
-      throw new Error('Recording not finished');
+    if (recordingStatus.type !== "recording-finished") {
+      throw new Error("Recording not finished");
     }
 
     if (selectedFolder === null) {
-      alert('Please select a folder first.');
+      alert("Please select a folder first.");
       return Promise.resolve();
     }
 
@@ -42,7 +42,7 @@ export const UseThisTake: React.FC<{
         .then(() => {
           setStatus({
             title: `Converting ${blob.prefix}${blob.endDate}.${extension}`,
-            description: 'Starting...',
+            description: "Starting...",
             abort: null,
           });
           return blob.data();
@@ -63,7 +63,7 @@ export const UseThisTake: React.FC<{
         .then((convertedBlob) => {
           setStatus({
             title: `Copying to public folder ${blob.prefix}${blob.endDate}.${extension}`,
-            description: 'Copying in progress',
+            description: "Copying in progress",
             abort: null,
           });
           return uploadFileToServer({
@@ -80,12 +80,12 @@ export const UseThisTake: React.FC<{
         })
         .catch((err) => {
           // ⚠️ might come from @remotion/webcodecs or from transcribe-video.ts
-          if ((err as Error).message.includes('aborted by user')) {
+          if ((err as Error).message.includes("aborted by user")) {
             aborted = true;
             return;
           }
           alert(
-            'Failed to convert video. Downloaded original video for backup.',
+            "Failed to convert video. Downloaded original video for backup.",
           );
           console.log(err);
           return blob.data();
@@ -93,9 +93,9 @@ export const UseThisTake: React.FC<{
         .then((buffer) => {
           if (buffer) {
             const blobToDownload = new Blob([buffer], {
-              type: blob.mimeType.includes('webm') ? 'video/webm' : 'video/mp4',
+              type: blob.mimeType.includes("webm") ? "video/webm" : "video/mp4",
             });
-            const a = document.createElement('a');
+            const a = document.createElement("a");
             const url = URL.createObjectURL(blobToDownload);
             a.href = url;
             a.download = `${blob.prefix}${blob.endDate}.${extension}`;
@@ -111,8 +111,8 @@ export const UseThisTake: React.FC<{
     currentProcessing = currentProcessing
       .then(() => {
         setStatus({
-          title: `Transcribing ${WEBCAM_PREFIX}${recordingStatus.endDate}.${recordingStatus.blobs.find((b) => b.prefix === WEBCAM_PREFIX)?.mimeType.includes('webm') ? 'webm' : 'mp4'}`,
-          description: 'See Terminal for progress',
+          title: `Transcribing ${WEBCAM_PREFIX}${recordingStatus.endDate}.${recordingStatus.blobs.find((b) => b.prefix === WEBCAM_PREFIX)?.mimeType.includes("webm") ? "webm" : "mp4"}`,
+          description: "See Terminal for progress",
           abort: () => cancelTranscribeOnServer(),
         });
         return transcribeVideoOnServer({
@@ -125,7 +125,7 @@ export const UseThisTake: React.FC<{
       })
       .catch((err) => {
         // ⚠️ might come from @remotion/webcodecs or from transcribe-video.ts
-        if ((err as Error).message.includes('aborted by user')) {
+        if ((err as Error).message.includes("aborted by user")) {
           return;
         }
 
@@ -135,12 +135,12 @@ export const UseThisTake: React.FC<{
         setStatus(null);
       });
 
-    setRecordingStatus({ type: 'idle' });
+    setRecordingStatus({ type: "idle" });
   }, [recordingStatus, selectedFolder, setRecordingStatus, setStatus]);
 
   const keepVideosWithoutConverting = useCallback(async () => {
-    if (recordingStatus.type !== 'recording-finished') {
-      throw new Error('Recording not finished');
+    if (recordingStatus.type !== "recording-finished") {
+      throw new Error("Recording not finished");
     }
 
     for (const blob of recordingStatus.blobs) {
@@ -148,9 +148,9 @@ export const UseThisTake: React.FC<{
       const extension = getExtension(blob.mimeType);
 
       const blobToDownload = new Blob([buffer], {
-        type: blob.mimeType.includes('webm') ? 'video/webm' : 'video/mp4',
+        type: blob.mimeType.includes("webm") ? "video/webm" : "video/mp4",
       });
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       const url = URL.createObjectURL(blobToDownload);
       a.href = url;
       a.download = `${blob.prefix}${blob.endDate}-unprocessed.${extension}`;
@@ -159,8 +159,8 @@ export const UseThisTake: React.FC<{
   }, [recordingStatus]);
 
   const keepVideoOnClient = useCallback(async () => {
-    if (recordingStatus.type !== 'recording-finished') {
-      throw new Error('Recording not finished');
+    if (recordingStatus.type !== "recording-finished") {
+      throw new Error("Recording not finished");
     }
 
     for (const blob of recordingStatus.blobs) {
@@ -176,13 +176,13 @@ export const UseThisTake: React.FC<{
 
   const previewWebcam = useCallback(
     async (prefix: Prefix) => {
-      if (recordingStatus.type !== 'recording-finished') {
-        throw new Error('Recording not finished');
+      if (recordingStatus.type !== "recording-finished") {
+        throw new Error("Recording not finished");
       }
 
       const webcamBlob = recordingStatus.blobs.find((b) => b.prefix === prefix);
       if (!webcamBlob) {
-        throw new Error('No webcam blob');
+        throw new Error("No webcam blob");
       }
 
       // turn into blob url and open in new tab
@@ -190,7 +190,7 @@ export const UseThisTake: React.FC<{
         type: webcamBlob.mimeType,
       });
       const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
+      window.open(url, "_blank");
     },
     [recordingStatus],
   );
@@ -201,7 +201,7 @@ export const UseThisTake: React.FC<{
         {window.remotionServerEnabled ? (
           <Button
             variant="default"
-            className={'rounded-r-none'}
+            className={"rounded-r-none"}
             onClick={keepVideoOnServer}
           >
             {`Copy to public/${selectedFolder}`}
@@ -209,7 +209,7 @@ export const UseThisTake: React.FC<{
         ) : (
           <Button
             variant="default"
-            className={'rounded-r-none'}
+            className={"rounded-r-none"}
             onClick={keepVideoOnClient}
           >
             {`Download files`}
@@ -219,7 +219,7 @@ export const UseThisTake: React.FC<{
           <DropdownMenuTrigger asChild>
             <Button
               variant="default"
-              className={'rounded-l-none border-l-2 px-2'}
+              className={"rounded-l-none border-l-2 px-2"}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -239,7 +239,7 @@ export const UseThisTake: React.FC<{
             <DropdownMenuItem onClick={keepVideosWithoutConverting}>
               Download without conversion
             </DropdownMenuItem>
-            {recordingStatus.type === 'recording-finished' &&
+            {recordingStatus.type === "recording-finished" &&
               recordingStatus.blobs.map((blob) => (
                 <DropdownMenuItem
                   key={blob.prefix}

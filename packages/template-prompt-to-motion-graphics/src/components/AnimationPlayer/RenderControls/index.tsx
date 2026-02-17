@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
-import { useEffect, useRef } from 'react';
-import { useRendering } from '../../../helpers/use-rendering';
-import { DownloadButton } from './DownloadButton';
-import { ErrorComp } from './Error';
-import { ProgressBar } from './ProgressBar';
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { useRendering } from "../../../helpers/use-rendering";
+import { DownloadButton } from "./DownloadButton";
+import { ErrorComp } from "./Error";
+import { ProgressBar } from "./ProgressBar";
 
 export const RenderControls: React.FC<{
   code: string;
@@ -28,41 +28,41 @@ export const RenderControls: React.FC<{
       prev.durationInFrames !== durationInFrames ||
       prev.fps !== fps;
 
-    if (hasChanged && state.status !== 'init') {
+    if (hasChanged && state.status !== "init") {
       undo();
     }
     previousPropsRef.current = { code, durationInFrames, fps };
   }, [code, durationInFrames, fps, state.status, undo]);
 
   if (
-    state.status === 'init' ||
-    state.status === 'invoking' ||
-    state.status === 'error'
+    state.status === "init" ||
+    state.status === "invoking" ||
+    state.status === "error"
   ) {
     return (
       <div>
         <Button
-          disabled={state.status === 'invoking' || !code}
-          loading={state.status === 'invoking'}
+          disabled={state.status === "invoking" || !code}
+          loading={state.status === "invoking"}
           onClick={renderMedia}
         >
           <Download className="w-4 h-4 mr-2" />
-          {state.status === 'invoking'
-            ? 'Starting render...'
-            : 'Render & Download'}
+          {state.status === "invoking"
+            ? "Starting render..."
+            : "Render & Download"}
         </Button>
-        {state.status === 'error' && (
+        {state.status === "error" && (
           <ErrorComp message={state.error.message} />
         )}
       </div>
     );
   }
 
-  if (state.status === 'rendering') {
+  if (state.status === "rendering") {
     return <ProgressBar progress={state.progress} />;
   }
 
-  if (state.status === 'done') {
+  if (state.status === "done") {
     return <DownloadButton state={state} undo={undo} />;
   }
 

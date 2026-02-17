@@ -1,4 +1,4 @@
-import { spring, useCurrentFrame, useVideoConfig } from 'remotion';
+import { spring, useCurrentFrame, useVideoConfig } from "remotion";
 
 export const Title: React.FC<{
   text: string;
@@ -7,19 +7,19 @@ export const Title: React.FC<{
 }> = ({ text, titleColor, displaySpeed }) => {
   const videoConfig = useVideoConfig();
   const frame = useCurrentFrame();
-  const rawText = text.split(' ').map((t) => ` ${t} `);
+  const rawText = text.split(" ").map((t) => ` ${t} `);
 
   return (
     <>
       <h1
         style={{
-          fontFamily: 'SF Pro Text, Helvetica, Arial',
-          fontWeight: 'bold',
+          fontFamily: "SF Pro Text, Helvetica, Arial",
+          fontWeight: "bold",
           fontSize: 100,
-          textAlign: 'center',
-          position: 'absolute',
+          textAlign: "center",
+          position: "absolute",
           bottom: 160,
-          width: '100%',
+          width: "100%",
         }}
       >
         {rawText.map((t, i) => {
@@ -39,7 +39,7 @@ export const Title: React.FC<{
                     mass: 0.5,
                   },
                 })})`,
-                display: 'inline-block',
+                display: "inline-block",
               }}
             >
               {t}

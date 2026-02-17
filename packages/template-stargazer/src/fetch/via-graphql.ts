@@ -1,4 +1,4 @@
-import { QueryResult, Stargazer, getFromCache, saveResult } from '../cache';
+import { QueryResult, Stargazer, getFromCache, saveResult } from "../cache";
 
 type Edge = {
   starredAt: string;
@@ -12,7 +12,7 @@ type Edge = {
 
 type ApiError =
   | {
-      type: 'RATE_LIMITED';
+      type: "RATE_LIMITED";
       message: string;
     }
   | {
@@ -53,7 +53,7 @@ export const fetchViaGraphQl = async ({
   }
   const query = `{
 		repository(owner: "${repoOrg}", name: "${repoName}") {
-			stargazers(first: ${count}${cursor ? `, after: "${cursor}"` : ''}) {
+			stargazers(first: ${count}${cursor ? `, after: "${cursor}"` : ""}) {
 				edges {
 					starredAt
 					node {
@@ -67,10 +67,10 @@ export const fetchViaGraphQl = async ({
 		}
 	}`;
 
-  const res = await fetch('https://api.github.com/graphql', {
-    method: 'POST',
+  const res = await fetch("https://api.github.com/graphql", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       authorization: `token ${process.env.REMOTION_GITHUB_TOKEN}`,
     },
     signal: abortSignal,
@@ -84,9 +84,9 @@ export const fetchViaGraphQl = async ({
 
   const json = (await res.json()) as GitHubApiResponse;
 
-  if ('errors' in json) {
-    if (json.errors[0].type === 'RATE_LIMITED') {
-      console.error('Rate limit exceeded, waiting 1 minute...');
+  if ("errors" in json) {
+    if (json.errors[0].type === "RATE_LIMITED") {
+      console.error("Rate limit exceeded, waiting 1 minute...");
       await new Promise((resolve) => {
         setTimeout(resolve, 60 * 1000);
       });

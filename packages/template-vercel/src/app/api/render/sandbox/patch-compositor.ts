@@ -1,8 +1,8 @@
-import { Sandbox } from '@vercel/sandbox';
+import { Sandbox } from "@vercel/sandbox";
 
-const GLIBC_DIR = '/tmp/glibc235';
+const GLIBC_DIR = "/tmp/glibc235";
 const LIBC6_DEB_URL =
-  'https://launchpadlibrarian.net/612471225/libc6_2.35-0ubuntu3.1_amd64.deb';
+  "https://launchpadlibrarian.net/612471225/libc6_2.35-0ubuntu3.1_amd64.deb";
 
 /**
  * Remotion does not officially support glibc 2.34, but it can be patched.
@@ -88,8 +88,8 @@ echo "[patch-compositor] Compositor patched successfully"
 `;
 
   const cmd = await sandbox.runCommand({
-    cmd: 'bash',
-    args: ['-c', script],
+    cmd: "bash",
+    args: ["-c", script],
     detached: true,
   });
 

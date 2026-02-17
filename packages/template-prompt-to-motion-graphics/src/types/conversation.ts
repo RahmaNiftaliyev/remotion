@@ -9,7 +9,7 @@ export interface AssistantMetadata {
   /** Which skills were detected for this generation */
   skills?: string[];
   /** Whether this was a tool-based edit or full replacement */
-  editType?: 'tool_edit' | 'full_replacement';
+  editType?: "tool_edit" | "full_replacement";
   /** The edit operations applied (if tool_edit) */
   edits?: EditOperation[];
   /** Model used for generation */
@@ -18,7 +18,7 @@ export interface AssistantMetadata {
 
 export interface ConversationMessage {
   id: string;
-  role: 'user' | 'assistant' | 'error';
+  role: "user" | "assistant" | "error";
   content: string;
   timestamp: number;
   /** For user messages, store attached images as base64 data URLs */
@@ -28,7 +28,7 @@ export interface ConversationMessage {
   /** For assistant messages, store metadata about the generation */
   metadata?: AssistantMetadata;
   /** For error messages, store the error type */
-  errorType?: 'edit_failed' | 'api' | 'validation';
+  errorType?: "edit_failed" | "api" | "validation";
   /** For edit_failed errors, store the failed edit operation */
   failedEdit?: EditOperation;
 }
@@ -47,7 +47,7 @@ export interface ConversationState {
 }
 
 export interface ConversationContextMessage {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   /** For user messages, attached images as base64 data URLs */
   attachedImages?: string[];

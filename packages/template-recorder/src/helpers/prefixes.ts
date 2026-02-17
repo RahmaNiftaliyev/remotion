@@ -3,7 +3,7 @@ import {
   ALTERNATIVE2_PREFIX,
   DISPLAY_PREFIX,
   WEBCAM_PREFIX,
-} from '../../config/cameras';
+} from "../../config/cameras";
 
 export const prefixes = [
   WEBCAM_PREFIX,

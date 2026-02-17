@@ -1,8 +1,8 @@
 import type {
   EditOperation,
   ErrorCorrectionContext,
-} from '@/types/conversation';
-import { useCallback, useEffect, useRef } from 'react';
+} from "@/types/conversation";
+import { useCallback, useEffect, useRef } from "react";
 
 interface AutoCorrectionConfig {
   maxAttempts: number;
@@ -31,7 +31,7 @@ interface AutoCorrectionConfig {
   ) => void;
   onAddErrorMessage: (
     message: string,
-    type: 'edit_failed' | 'api' | 'validation',
+    type: "edit_failed" | "api" | "validation",
     failedEdit?: EditOperation,
   ) => void;
   onClearGenerationError: () => void;
@@ -57,16 +57,16 @@ export function useAutoCorrection({
   onClearErrorCorrection,
 }: AutoCorrectionConfig) {
   // Track whether last code change was from AI or user
-  const lastChangeSourceRef = useRef<'ai' | 'user'>('ai');
+  const lastChangeSourceRef = useRef<"ai" | "user">("ai");
 
   // Mark code as AI-generated
   const markAsAiGenerated = useCallback(() => {
-    lastChangeSourceRef.current = 'ai';
+    lastChangeSourceRef.current = "ai";
   }, []);
 
   // Mark code as user-edited
   const markAsUserEdited = useCallback(() => {
-    lastChangeSourceRef.current = 'user';
+    lastChangeSourceRef.current = "user";
   }, []);
 
   // Check if we should attempt auto-correction
@@ -74,7 +74,7 @@ export function useAutoCorrection({
     return (
       hasGeneratedOnce &&
       !isStreaming &&
-      lastChangeSourceRef.current === 'ai' &&
+      lastChangeSourceRef.current === "ai" &&
       (errorCorrection?.attemptNumber ?? 0) < maxAttempts
     );
   }, [hasGeneratedOnce, isStreaming, errorCorrection, maxAttempts]);
@@ -94,8 +94,8 @@ export function useAutoCorrection({
         compilationError,
       );
 
-      onAddErrorMessage(`Compilation error: ${compilationError}`, 'validation');
-      onTriggerCorrection('Fix the compilation error', {
+      onAddErrorMessage(`Compilation error: ${compilationError}`, "validation");
+      onTriggerCorrection("Fix the compilation error", {
         error: compilationError,
         attemptNumber: nextAttempt,
         maxAttempts,
@@ -129,7 +129,7 @@ export function useAutoCorrection({
       );
 
       onClearGenerationError();
-      onTriggerCorrection('Retry the previous request', {
+      onTriggerCorrection("Retry the previous request", {
         error: generationError.message,
         attemptNumber: nextAttempt,
         maxAttempts,

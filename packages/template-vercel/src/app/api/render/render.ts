@@ -1,12 +1,12 @@
-import { Sandbox } from '@vercel/sandbox';
-import { BUILD_DIR } from '../../../../build-dir.mjs';
-import type { RenderConfig } from '../../../../render';
-import { COMP_NAME } from '../../../../types/constants';
+import { Sandbox } from "@vercel/sandbox";
+import { BUILD_DIR } from "../../../../build-dir.mjs";
+import type { RenderConfig } from "../../../../render";
+import { COMP_NAME } from "../../../../types/constants";
 
 export type RenderInSandboxProgress =
-  | { type: 'render-progress'; progress: number }
-  | { type: 'uploading' }
-  | { type: 'done'; url: string; size: number };
+  | { type: "render-progress"; progress: number }
+  | { type: "uploading" }
+  | { type: "done"; url: string; size: number };
 
 export async function renderInSandbox({
   sandbox,
@@ -23,7 +23,7 @@ export async function renderInSandbox({
   const renderId = crypto.randomUUID();
   const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
   if (!blobToken) {
-    throw new Error('BLOB_READ_WRITE_TOKEN is not set');
+    throw new Error("BLOB_READ_WRITE_TOKEN is not set");
   }
 
   const renderConfig: RenderConfig = {
@@ -36,8 +36,8 @@ export async function renderInSandbox({
 
   // Run the render script
   const renderCmd = await sandbox.runCommand({
-    cmd: 'node',
-    args: ['--strip-types', 'render.ts', JSON.stringify(renderConfig)],
+    cmd: "node",
+    args: ["--strip-types", "render.ts", JSON.stringify(renderConfig)],
     detached: true,
   });
 
@@ -45,17 +45,17 @@ export async function renderInSandbox({
   let doneSize: number | null = null;
 
   for await (const log of renderCmd.logs()) {
-    if (log.stream === 'stdout') {
+    if (log.stream === "stdout") {
       try {
         const message = JSON.parse(log.data);
-        if (message.type === 'progress') {
+        if (message.type === "progress") {
           await onProgress({
-            type: 'render-progress',
+            type: "render-progress",
             progress: message.progress,
           });
-        } else if (message.type === 'uploading') {
-          await onProgress({ type: 'uploading' });
-        } else if (message.type === 'done') {
+        } else if (message.type === "uploading") {
+          await onProgress({ type: "uploading" });
+        } else if (message.type === "done") {
           doneUrl = message.url;
           doneSize = message.size;
         }
@@ -73,8 +73,8 @@ export async function renderInSandbox({
   }
 
   if (!doneUrl || doneSize === null) {
-    throw new Error('Render script did not return upload result');
+    throw new Error("Render script did not return upload result");
   }
 
-  await onProgress({ type: 'done', url: doneUrl, size: doneSize });
+  await onProgress({ type: "done", url: doneUrl, size: doneSize });
 }

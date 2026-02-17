@@ -1,9 +1,9 @@
-import { Sandbox } from '@vercel/sandbox';
-import { readFile } from 'fs/promises';
-import path from 'path';
+import { Sandbox } from "@vercel/sandbox";
+import { readFile } from "fs/promises";
+import path from "path";
 
 async function getEnsureBrowserScript(): Promise<Buffer> {
-  const scriptPath = path.join(process.cwd(), 'ensure-browser.ts');
+  const scriptPath = path.join(process.cwd(), "ensure-browser.ts");
   return readFile(scriptPath);
 }
 
@@ -17,22 +17,22 @@ export async function installBrowser({
   const ensureBrowserScript = await getEnsureBrowserScript();
   await sandbox.writeFiles([
     {
-      path: 'ensure-browser.ts',
+      path: "ensure-browser.ts",
       content: ensureBrowserScript,
     },
   ]);
 
   const ensureBrowserCmd = await sandbox.runCommand({
-    cmd: 'node',
-    args: ['--strip-types', 'ensure-browser.ts'],
+    cmd: "node",
+    args: ["--strip-types", "ensure-browser.ts"],
     detached: true,
   });
 
   for await (const log of ensureBrowserCmd.logs()) {
-    if (log.stream === 'stdout') {
+    if (log.stream === "stdout") {
       try {
         const message = JSON.parse(log.data);
-        if (message.type === 'browser-progress') {
+        if (message.type === "browser-progress") {
           await onProgress(message.percent ?? 0);
           continue;
         }

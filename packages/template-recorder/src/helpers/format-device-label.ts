@@ -1,18 +1,18 @@
 export type Label = { id: string; label: string };
 
 const removeUsbIdentifier = (label: string) => {
-  return label.replace(/\(\w{4}:\w{4}\)/, '').trim();
+  return label.replace(/\(\w{4}:\w{4}\)/, "").trim();
 };
 
 const removeBuiltIn = (label: string) => {
-  return label.replace(/\(Built-in\)/, '').trim();
+  return label.replace(/\(Built-in\)/, "").trim();
 };
 
 const removeVirtual = (label: string) => {
-  return label.replace(/\(Virtual\)/, '').trim();
+  return label.replace(/\(Virtual\)/, "").trim();
 };
 const removeMdevice = (label: string) => {
-  return label.replace(/\(m-de:vice\)/, '').trim();
+  return label.replace(/\(m-de:vice\)/, "").trim();
 };
 
 const takeStringInBraces = (label: string): string => {
@@ -21,15 +21,15 @@ const takeStringInBraces = (label: string): string => {
     return label;
   }
 
-  if (match[1] === 'Bluetooth') {
-    return label.replace(/\(Bluetooth\)/, '').trim();
+  if (match[1] === "Bluetooth") {
+    return label.replace(/\(Bluetooth\)/, "").trim();
   }
 
   return match[1] as string;
 };
 
 const removeLeadingNumber = (label: string) => {
-  return label.replace(/^\d+- /, '').trim();
+  return label.replace(/^\d+- /, "").trim();
 };
 
 export const formatDeviceLabel = (label: string) => {

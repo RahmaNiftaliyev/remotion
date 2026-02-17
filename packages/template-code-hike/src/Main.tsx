@@ -1,11 +1,11 @@
-import { HighlightedCode } from 'codehike/code';
-import { useMemo } from 'react';
-import { AbsoluteFill, Series, useVideoConfig } from 'remotion';
-import { CodeTransition } from './CodeTransition';
-import { ProgressBar } from './ProgressBar';
-import { RefreshOnCodeChange } from './ReloadOnCodeChange';
-import { ThemeColors, ThemeProvider } from './calculate-metadata/theme';
-import { verticalPadding } from './font';
+import { HighlightedCode } from "codehike/code";
+import { useMemo } from "react";
+import { AbsoluteFill, Series, useVideoConfig } from "remotion";
+import { CodeTransition } from "./CodeTransition";
+import { ProgressBar } from "./ProgressBar";
+import { RefreshOnCodeChange } from "./ReloadOnCodeChange";
+import { ThemeColors, ThemeProvider } from "./calculate-metadata/theme";
+import { verticalPadding } from "./font";
 
 export type Props = {
   steps: HighlightedCode[] | null;
@@ -15,7 +15,7 @@ export type Props = {
 
 export const Main: React.FC<Props> = ({ steps, themeColors, codeWidth }) => {
   if (!steps) {
-    throw new Error('Steps are not defined');
+    throw new Error("Steps are not defined");
   }
 
   const { durationInFrames } = useVideoConfig();
@@ -23,7 +23,7 @@ export const Main: React.FC<Props> = ({ steps, themeColors, codeWidth }) => {
   const transitionDuration = 30;
 
   if (!themeColors) {
-    throw new Error('Theme colors are not defined');
+    throw new Error("Theme colors are not defined");
   }
 
   const outerStyle: React.CSSProperties = useMemo(() => {
@@ -43,8 +43,8 @@ export const Main: React.FC<Props> = ({ steps, themeColors, codeWidth }) => {
       <AbsoluteFill style={outerStyle}>
         <AbsoluteFill
           style={{
-            width: codeWidth || '100%',
-            margin: 'auto',
+            width: codeWidth || "100%",
+            margin: "auto",
           }}
         >
           <ProgressBar steps={steps} />

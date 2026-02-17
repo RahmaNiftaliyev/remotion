@@ -1,11 +1,11 @@
-import { head, put } from '@vercel/blob';
+import { head, put } from "@vercel/blob";
 
 type SnapshotCache = {
   snapshotId: string;
   expiresAt: string;
 };
 
-const SNAPSHOT_BLOB_KEY = `snapshot-cache/${process.env.VERCEL_DEPLOYMENT_ID ?? 'local'}.json`;
+const SNAPSHOT_BLOB_KEY = `snapshot-cache/${process.env.VERCEL_DEPLOYMENT_ID ?? "local"}.json`;
 
 export async function getCachedSnapshot(): Promise<string | null> {
   if (!process.env.VERCEL) {
@@ -37,8 +37,8 @@ export async function saveSnapshotCache(
   };
 
   await put(SNAPSHOT_BLOB_KEY, JSON.stringify(cache), {
-    access: 'public',
-    contentType: 'application/json',
+    access: "public",
+    contentType: "application/json",
     addRandomSuffix: false,
   });
 }

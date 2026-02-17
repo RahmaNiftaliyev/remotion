@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
-import { AbsoluteFill } from 'remotion';
-import type { Dimensions } from '../config/layout';
-import { fitElementSizeInContainer } from '../remotion/layout/fit-element';
-import { useElementSize } from './helpers/use-element-size';
+import React, { useMemo } from "react";
+import { AbsoluteFill } from "remotion";
+import type { Dimensions } from "../config/layout";
+import { fitElementSizeInContainer } from "../remotion/layout/fit-element";
+import { useElementSize } from "./helpers/use-element-size";
 
 export const CropIndicator: React.FC<{
   resolution: Dimensions;
@@ -34,7 +34,7 @@ export const CropIndicator: React.FC<{
 
   const cropIndicator: React.CSSProperties = useMemo(() => {
     return {
-      border: '2px solid #F7D449',
+      border: "2px solid #F7D449",
       borderRadius: 10,
       ...cropIndicatorRect,
     };

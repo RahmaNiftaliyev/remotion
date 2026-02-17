@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { CopyButton } from './CopyButton';
+import React from "react";
+import { CopyButton } from "./CopyButton";
 
 interface EditorHeaderProps {
   filename: string;

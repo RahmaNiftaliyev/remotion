@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
 const container: React.CSSProperties = {
-  alignSelf: 'flex-end',
+  alignSelf: "flex-end",
 };
 
 export const AlignEnd: React.FC<{

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Toggle } from './components/ui/toggle';
+import React from "react";
+import { Toggle } from "./components/ui/toggle";
 
 export const ToggleMirror: React.FC<{
   onPressedChange: (pressed: boolean) => void;

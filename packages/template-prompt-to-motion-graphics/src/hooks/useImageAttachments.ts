@@ -1,4 +1,4 @@
-import { fileToBase64 } from '@/helpers/capture-frame';
+import { fileToBase64 } from "@/helpers/capture-frame";
 import {
   useCallback,
   useRef,
@@ -6,7 +6,7 @@ import {
   type ChangeEvent,
   type ClipboardEvent,
   type DragEvent,
-} from 'react';
+} from "react";
 
 const MAX_ATTACHED_IMAGES = 4;
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB per image
@@ -52,9 +52,9 @@ export function useImageAttachments(): UseImageAttachmentsReturn {
     }
 
     if (oversizedFiles.length > 0) {
-      const fileNames = oversizedFiles.map((f) => f.name).join(', ');
+      const fileNames = oversizedFiles.map((f) => f.name).join(", ");
       setError(
-        `${oversizedFiles.length === 1 ? 'File' : 'Files'} too large (max ${MAX_FILE_SIZE_MB}MB): ${fileNames}`,
+        `${oversizedFiles.length === 1 ? "File" : "Files"} too large (max ${MAX_FILE_SIZE_MB}MB): ${fileNames}`,
       );
     }
 
@@ -79,14 +79,14 @@ export function useImageAttachments(): UseImageAttachmentsReturn {
   const handleFileSelect = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(e.target.files || []);
-      const imageFiles = files.filter((f) => f.type.startsWith('image/'));
+      const imageFiles = files.filter((f) => f.type.startsWith("image/"));
       const validFiles = filterValidFiles(imageFiles);
       if (validFiles.length > 0) {
         const base64Images = await Promise.all(validFiles.map(fileToBase64));
         addImages(base64Images);
       }
       // Reset input so same file can be selected again
-      e.target.value = '';
+      e.target.value = "";
     },
     [addImages, filterValidFiles],
   );
@@ -94,7 +94,7 @@ export function useImageAttachments(): UseImageAttachmentsReturn {
   const handlePaste = useCallback(
     async (e: ClipboardEvent) => {
       const items = Array.from(e.clipboardData.items);
-      const imageItems = items.filter((item) => item.type.startsWith('image/'));
+      const imageItems = items.filter((item) => item.type.startsWith("image/"));
       if (imageItems.length > 0) {
         e.preventDefault();
         const files = imageItems
@@ -126,7 +126,7 @@ export function useImageAttachments(): UseImageAttachmentsReturn {
       setIsDragging(false);
 
       const files = Array.from(e.dataTransfer.files);
-      const imageFiles = files.filter((f) => f.type.startsWith('image/'));
+      const imageFiles = files.filter((f) => f.type.startsWith("image/"));
       const validFiles = filterValidFiles(imageFiles);
       if (validFiles.length > 0) {
         const base64Images = await Promise.all(validFiles.map(fileToBase64));

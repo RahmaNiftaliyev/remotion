@@ -1,27 +1,27 @@
-import React from 'react';
-import { AbsoluteFill, Sequence, useVideoConfig } from 'remotion';
+import React from "react";
+import { AbsoluteFill, Sequence, useVideoConfig } from "remotion";
 
-import { Audio } from '@remotion/media';
-import { FONT_FAMILY } from '../helpers/font';
-import { AudiogramCompositionSchemaType } from '../helpers/schema';
-import { BassOverlay } from './BassOverlay';
-import { SongInfo } from './SongInfo';
-import { Spectrum } from './Spectrum';
-import { Waveform } from './Waveform';
+import { Audio } from "@remotion/media";
+import { FONT_FAMILY } from "../helpers/font";
+import { AudiogramCompositionSchemaType } from "../helpers/schema";
+import { BassOverlay } from "./BassOverlay";
+import { SongInfo } from "./SongInfo";
+import { Spectrum } from "./Spectrum";
+import { Waveform } from "./Waveform";
 
 const containerStyle: React.CSSProperties = {
-  flexDirection: 'column',
-  justifyContent: 'flex-end',
-  color: 'white',
+  flexDirection: "column",
+  justifyContent: "flex-end",
+  color: "white",
   padding: 48,
   gap: 32,
   fontFamily: FONT_FAMILY,
 };
 
 const visualizerContainerStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  width: '100%',
+  display: "flex",
+  alignItems: "center",
+  width: "100%",
   borderRadius: 32,
   padding: 32,
   marginTop: 32,
@@ -42,7 +42,7 @@ export const Visualizer: React.FC<AudiogramCompositionSchemaType> = ({
   return (
     <AbsoluteFill
       style={{
-        backgroundColor: '#000000',
+        backgroundColor: "#000000",
       }}
     >
       <Sequence from={-audioOffsetInFrames}>
@@ -50,14 +50,14 @@ export const Visualizer: React.FC<AudiogramCompositionSchemaType> = ({
         <Audio src={audioFileUrl} />
         <AbsoluteFill style={containerStyle}>
           <div style={visualizerContainerStyle}>
-            {visualizer.type === 'oscilloscope' ? (
+            {visualizer.type === "oscilloscope" ? (
               <Waveform
                 waveColor={visualizer.color}
                 audioSrc={audioFileUrl}
                 windowInSeconds={visualizer.windowInSeconds}
                 amplitude={visualizer.amplitude}
               />
-            ) : visualizer.type === 'spectrum' ? (
+            ) : visualizer.type === "spectrum" ? (
               <Spectrum
                 barColor={visualizer.color}
                 audioSrc={audioFileUrl}

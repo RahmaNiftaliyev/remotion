@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,9 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Settings } from 'lucide-react';
-import { useEffect, useState } from 'react';
+} from "@/components/ui/dialog";
+import { Settings } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface SettingsModalProps {
   durationInFrames: number;

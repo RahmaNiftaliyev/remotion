@@ -1,13 +1,13 @@
-import { Metadata, Viewport } from 'next';
-import '../../styles/global.css';
+import { Metadata, Viewport } from "next";
+import "../../styles/global.css";
 
 export const metadata: Metadata = {
-  title: 'Remotion and Next.js',
-  description: 'Remotion and Next.js',
+  title: "Remotion and Next.js",
+  description: "Remotion and Next.js",
 };
 
 export const viewport: Viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
   maximumScale: 1,
 };

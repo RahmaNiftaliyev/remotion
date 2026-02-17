@@ -1,4 +1,4 @@
-import './gh-styles.css';
+import "./gh-styles.css";
 
 export function RepoHeader({
   stars,
@@ -13,10 +13,10 @@ export function RepoHeader({
     <div
       className="d-flex mb-3 px-3 px-md-4 px-lg-5"
       style={{
-        padding: '16px 24px',
-        boxShadow: 'inset 0 -1px 0 var(--color-border-secondary)',
-        backgroundColor: 'white',
-        position: 'absolute',
+        padding: "16px 24px",
+        boxShadow: "inset 0 -1px 0 var(--color-border-secondary)",
+        backgroundColor: "white",
+        position: "absolute",
         top: 0,
         right: 0,
         left: 0,
@@ -29,13 +29,13 @@ export function RepoHeader({
         <h1
           className="d-flex flex-items-center break-word f3 text-normal"
           style={{
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            display: 'flex',
-            flexDirection: 'row',
-            flexWrap: 'nowrap',
-            alignItems: 'center',
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "nowrap",
+            alignItems: "center",
           }}
         >
           <svg
@@ -62,10 +62,10 @@ export function RepoHeader({
             itemProp="name"
             className="mr-2 flex-self-stretch"
             style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              display: 'inline-block',
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              display: "inline-block",
               fontWeight: 500,
             }}
           >
@@ -75,7 +75,7 @@ export function RepoHeader({
       </div>
       <ul
         className="pagehead-actions flex-shrink-0 d-none d-md-inline"
-        style={{ padding: '2px 0' }}
+        style={{ padding: "2px 0" }}
       >
         <li>
           <div className="d-block js-toggler-container js-social-container starring-container ">
@@ -96,10 +96,10 @@ export function RepoHeader({
                   />
                 </svg>
                 <span data-view-component="true">Star</span>
-              </div>{' '}
+              </div>{" "}
               <a
                 className="social-count"
-                style={{ minWidth: 52, textAlign: 'center' }}
+                style={{ minWidth: 52, textAlign: "center" }}
               >
                 {stars}
               </a>

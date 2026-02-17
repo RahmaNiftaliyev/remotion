@@ -1,5 +1,5 @@
-import { Composition } from 'remotion';
-import { MyComposition } from './Composition';
+import { Composition } from "remotion";
+import { MyComposition } from "./Composition";
 
 export const RemotionRoot: React.FC = () => {
   return (

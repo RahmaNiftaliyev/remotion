@@ -1,15 +1,15 @@
-import { Button } from '@/components/ui/button';
-import React from 'react';
-import { State } from '../../../helpers/use-rendering';
+import { Button } from "@/components/ui/button";
+import React from "react";
+import { State } from "../../../helpers/use-rendering";
 
 const Megabytes: React.FC<{
   sizeInBytes: number;
 }> = ({ sizeInBytes }) => {
-  const megabytes = Intl.NumberFormat('en', {
-    notation: 'compact',
-    style: 'unit',
-    unit: 'byte',
-    unitDisplay: 'narrow',
+  const megabytes = Intl.NumberFormat("en", {
+    notation: "compact",
+    style: "unit",
+    unit: "byte",
+    unitDisplay: "narrow",
   }).format(sizeInBytes);
   return <span className="opacity-60">{megabytes}</span>;
 };
@@ -18,12 +18,12 @@ export const DownloadButton: React.FC<{
   state: State;
   undo: () => void;
 }> = ({ state, undo }) => {
-  if (state.status === 'rendering') {
+  if (state.status === "rendering") {
     return <Button disabled>Download video</Button>;
   }
 
-  if (state.status !== 'done') {
-    throw new Error('Download button should not be rendered when not done');
+  if (state.status !== "done") {
+    throw new Error("Download button should not be rendered when not done");
   }
 
   return (

@@ -1,4 +1,4 @@
-import { RemotionExample } from './index';
+import { RemotionExample } from "./index";
 
 export const textRotationCode = `import { useCurrentFrame, AbsoluteFill, interpolate } from "remotion";
 
@@ -73,10 +73,10 @@ export const MyAnimation = () => {
 };`;
 
 export const textRotationExample: RemotionExample = {
-  id: 'text-rotation',
-  name: 'Text Rotation',
-  description: 'Rotating words with dissolve and blur effects',
-  category: 'Text',
+  id: "text-rotation",
+  name: "Text Rotation",
+  description: "Rotating words with dissolve and blur effects",
+  category: "Text",
   durationInFrames: 240,
   fps: 30,
   code: textRotationCode,

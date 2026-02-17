@@ -1,4 +1,4 @@
-import { Sandbox } from '@vercel/sandbox';
+import { Sandbox } from "@vercel/sandbox";
 
 export async function installSystemDependencies({
   sandbox,
@@ -8,26 +8,26 @@ export async function installSystemDependencies({
   onProgress: (progress: number) => Promise<void>;
 }): Promise<void> {
   const sysInstallCmd = await sandbox.runCommand({
-    cmd: 'sudo',
+    cmd: "sudo",
     args: [
-      'dnf',
-      'install',
-      '-y',
-      'nss',
-      'atk',
-      'at-spi2-atk',
-      'cups-libs',
-      'libdrm',
-      'libXcomposite',
-      'libXdamage',
-      'libXrandr',
-      'mesa-libgbm',
-      'alsa-lib',
-      'pango',
-      'gtk3',
-      'patchelf',
-      'zstd',
-      'binutils',
+      "dnf",
+      "install",
+      "-y",
+      "nss",
+      "atk",
+      "at-spi2-atk",
+      "cups-libs",
+      "libdrm",
+      "libXcomposite",
+      "libXdamage",
+      "libXrandr",
+      "mesa-libgbm",
+      "alsa-lib",
+      "pango",
+      "gtk3",
+      "patchelf",
+      "zstd",
+      "binutils",
     ],
     detached: true,
   });

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 import {
   compileCode as compile,
   type CompilationResult,
-} from '../remotion/compiler';
+} from "../remotion/compiler";
 
 export interface AnimationState {
   code: string;
@@ -13,7 +13,7 @@ export interface AnimationState {
   isCompiling: boolean;
 }
 
-export function useAnimationState(initialCode: string = '') {
+export function useAnimationState(initialCode: string = "") {
   const [state, setState] = useState<AnimationState>({
     code: initialCode,
     Component: null,

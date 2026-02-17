@@ -1,5 +1,5 @@
-import { Caption } from '@remotion/captions';
-import { msToFrame } from '../helpers/ms-to-frame';
+import { Caption } from "@remotion/captions";
+import { msToFrame } from "../helpers/ms-to-frame";
 
 export const getSentenceToDisplay = ({
   windowedFrameSubs,
@@ -19,9 +19,9 @@ export const getSentenceToDisplay = ({
 
       return (
         nextWord &&
-        (w.text.endsWith('?') ||
-          w.text.endsWith('.') ||
-          w.text.endsWith('!')) &&
+        (w.text.endsWith("?") ||
+          w.text.endsWith(".") ||
+          w.text.endsWith("!")) &&
         msToFrame(nextWord.startMs) < frame
       );
     }) + 1;

@@ -1,8 +1,8 @@
-import { UPLOAD_VIDEO } from '../../scripts/server/constants';
-import { getExtension } from './find-good-supported-codec';
+import { UPLOAD_VIDEO } from "../../scripts/server/constants";
+import { getExtension } from "./find-good-supported-codec";
 
 export const parseJsonOrThrowSource = (data: Uint8Array, type: string) => {
-  const asString = new TextDecoder('utf-8').decode(data);
+  const asString = new TextDecoder("utf-8").decode(data);
   try {
     return JSON.parse(asString);
   } catch {
@@ -41,11 +41,11 @@ export const uploadFileToServer = async ({
   }).toString();
 
   const res = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     body: videoFile,
   });
   if (!res.body) {
-    throw new Error('No body');
+    throw new Error("No body");
   }
   await res.text();
 };

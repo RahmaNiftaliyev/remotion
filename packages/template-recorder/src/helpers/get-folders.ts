@@ -1,7 +1,7 @@
-const KEY = 'remotionrecorder.selectedFolder';
+const KEY = "remotionrecorder.selectedFolder";
 
 const params = new URLSearchParams(window.location.search);
-const folderFromUrl = params.get('folder');
+const folderFromUrl = params.get("folder");
 
 export const loadFolderFromUrl = () => {
   if (!folderFromUrl) {
@@ -9,7 +9,7 @@ export const loadFolderFromUrl = () => {
   }
 
   const newUrl = window.location.origin + window.location.pathname;
-  window.history.replaceState({}, '', newUrl);
+  window.history.replaceState({}, "", newUrl);
   return folderFromUrl;
 };
 
@@ -19,7 +19,7 @@ export const loadSelectedFolder = () => {
   }
 
   const projectFromLS = window.localStorage.getItem(KEY);
-  if (projectFromLS === '') {
+  if (projectFromLS === "") {
     return null;
   }
 

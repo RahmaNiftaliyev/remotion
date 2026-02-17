@@ -1,18 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { AbsoluteFill } from 'remotion';
-import { Spinner } from './components/Spinner';
-import type { SelectedSource } from './helpers/get-selected-video-source';
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import { AbsoluteFill } from "remotion";
+import { Spinner } from "./components/Spinner";
+import type { SelectedSource } from "./helpers/get-selected-video-source";
 import {
   getCameraStreamConstraints,
   getVideoStream,
-} from './helpers/get-video-stream';
-import { Prefix } from './helpers/prefixes';
-import { useMediaSources } from './state/media-sources';
+} from "./helpers/get-video-stream";
+import { Prefix } from "./helpers/prefixes";
+import { useMediaSources } from "./state/media-sources";
 
 const container: React.CSSProperties = {
   flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
+  justifyContent: "center",
+  alignItems: "center",
 };
 
 export type ResolutionAndFps = {
@@ -48,13 +48,13 @@ export const Stream: React.FC<{
   const videoStyle: React.CSSProperties = useMemo(() => {
     return {
       opacity: mediaStream ? 1 : 0,
-      height: '100%',
-      transform: mirror ? 'scaleX(-1)' : undefined,
+      height: "100%",
+      transform: mirror ? "scaleX(-1)" : undefined,
     };
   }, [mediaStream, mirror]);
 
   useEffect(() => {
-    if (mediaStream.streamState.type !== 'loaded') {
+    if (mediaStream.streamState.type !== "loaded") {
       return;
     }
 
@@ -64,13 +64,13 @@ export const Stream: React.FC<{
     }
 
     track.onended = () => {
-      setMediaStream(prefix, { type: 'initial' });
+      setMediaStream(prefix, { type: "initial" });
     };
   }, [mediaStream, prefix, setMediaStream]);
 
   useEffect(() => {
     return () => {
-      if (mediaStream.streamState.type !== 'loaded') {
+      if (mediaStream.streamState.type !== "loaded") {
         return;
       }
 
@@ -91,11 +91,11 @@ export const Stream: React.FC<{
     }
 
     if (selectedVideoSource === null) {
-      setMediaStream(prefix, { type: 'initial' });
+      setMediaStream(prefix, { type: "initial" });
       return;
     }
 
-    setMediaStream(prefix, { type: 'loading' });
+    setMediaStream(prefix, { type: "loading" });
 
     const cleanup: (() => void)[] = [];
 
@@ -108,21 +108,21 @@ export const Stream: React.FC<{
       .then((stream) => {
         const videoTrack = stream.getVideoTracks()[0];
         if (!videoTrack) {
-          throw new Error('No video track');
+          throw new Error("No video track");
         }
 
         videoTrack.addEventListener(
-          'ended',
+          "ended",
           () => {
             clear();
-            setMediaStream(prefix, { type: 'initial' });
+            setMediaStream(prefix, { type: "initial" });
           },
           { once: true },
         );
 
         const settings = videoTrack.getSettings();
         if (!settings) {
-          throw new Error('No video settings');
+          throw new Error("No video settings");
         }
 
         setResolution({
@@ -142,13 +142,13 @@ export const Stream: React.FC<{
           current.srcObject = null;
         });
 
-        setMediaStream(prefix, { type: 'loaded', stream });
+        setMediaStream(prefix, { type: "loaded", stream });
       })
       .catch((e) => {
         const errMessage =
-          e.name === 'NotReadableError'
-            ? 'The selected device is not readable. This could be due to another app using this camera.'
-            : e.name === 'OverconstrainedError'
+          e.name === "NotReadableError"
+            ? "The selected device is not readable. This could be due to another app using this camera."
+            : e.name === "OverconstrainedError"
               ? `Could not find a resolution satisfying these constraints: ${JSON.stringify(
                   getCameraStreamConstraints(
                     selectedVideoSource,
@@ -158,7 +158,7 @@ export const Stream: React.FC<{
               : e.message || e.name;
 
         setMediaStream(prefix, {
-          type: 'error',
+          type: "error",
           error: errMessage,
         });
       });
@@ -198,33 +198,33 @@ export const Stream: React.FC<{
       });
     };
 
-    current.addEventListener('resize', onResize);
+    current.addEventListener("resize", onResize);
 
     return () => {
-      current.removeEventListener('resize', onResize);
+      current.removeEventListener("resize", onResize);
     };
   }, [setResolution]);
 
   const onReset = useCallback(() => {
     setMediaStream(prefix, {
-      type: 'initial',
+      type: "initial",
     });
     clear();
   }, [clear, prefix, setMediaStream]);
 
   return (
-    <AbsoluteFill style={container} id={prefix + '-video-container'}>
+    <AbsoluteFill style={container} id={prefix + "-video-container"}>
       <video ref={sourceRef} muted style={videoStyle} />
-      {mediaStream.streamState.type === 'loading' ? <Spinner /> : null}
-      {mediaStream.streamState.type === 'error' ? (
+      {mediaStream.streamState.type === "loading" ? <Spinner /> : null}
+      {mediaStream.streamState.type === "error" ? (
         <AbsoluteFill
           style={{
             padding: 20,
-            textWrap: 'balance',
-            color: 'rgba(255, 255, 255, 0.5)',
+            textWrap: "balance",
+            color: "rgba(255, 255, 255, 0.5)",
             fontSize: 14,
-            justifyContent: 'center',
-            alignItems: 'center',
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           {mediaStream.streamState.error}

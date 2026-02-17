@@ -1,8 +1,8 @@
-import { Composition } from 'remotion';
-import { Main } from './Main';
+import { Composition } from "remotion";
+import { Main } from "./Main";
 
-import { calculateMetadata } from './calculate-metadata/calculate-metadata';
-import { schema } from './calculate-metadata/schema';
+import { calculateMetadata } from "./calculate-metadata/calculate-metadata";
+import { schema } from "./calculate-metadata/schema";
 
 export const RemotionRoot = () => {
   return (
@@ -12,10 +12,10 @@ export const RemotionRoot = () => {
       defaultProps={{
         steps: null,
         themeColors: null,
-        theme: 'github-dark' as const,
+        theme: "github-dark" as const,
         codeWidth: null,
         width: {
-          type: 'auto',
+          type: "auto",
         },
       }}
       fps={30}

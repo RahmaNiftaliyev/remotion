@@ -1,19 +1,19 @@
-import { getThemeColors } from '@code-hike/lighter';
-import { measureText } from '@remotion/layout-utils';
-import { HighlightedCode } from 'codehike/code';
-import { CalculateMetadataFunction } from 'remotion';
-import { z } from 'zod';
+import { getThemeColors } from "@code-hike/lighter";
+import { measureText } from "@remotion/layout-utils";
+import { HighlightedCode } from "codehike/code";
+import { CalculateMetadataFunction } from "remotion";
+import { z } from "zod";
 import {
   fontFamily,
   fontSize,
   horizontalPadding,
   tabSize,
   waitUntilDone,
-} from '../font';
-import { Props } from '../Main';
-import { getFiles } from './get-files';
-import { processSnippet } from './process-snippet';
-import { schema } from './schema';
+} from "../font";
+import { Props } from "../Main";
+import { getFiles } from "./get-files";
+import { processSnippet } from "./process-snippet";
+import { schema } from "./schema";
 
 export const calculateMetadata: CalculateMetadataFunction<
   Props & z.infer<typeof schema>
@@ -22,7 +22,7 @@ export const calculateMetadata: CalculateMetadataFunction<
 
   await waitUntilDone();
   const widthPerCharacter = measureText({
-    text: 'A',
+    text: "A",
     fontFamily,
     fontSize,
     validateFontIsLoaded: true,
@@ -30,9 +30,9 @@ export const calculateMetadata: CalculateMetadataFunction<
 
   const maxCharacters = Math.max(
     ...contents
-      .map(({ value }) => value.split('\n'))
+      .map(({ value }) => value.split("\n"))
       .flat()
-      .map((value) => value.replaceAll('\t', ' '.repeat(tabSize)).length)
+      .map((value) => value.replaceAll("\t", " ".repeat(tabSize)).length)
       .flat(),
   );
   const codeWidth = widthPerCharacter * maxCharacters;
@@ -49,13 +49,13 @@ export const calculateMetadata: CalculateMetadataFunction<
   const naturalWidth = codeWidth + horizontalPadding * 2;
   const divisibleByTwo = Math.ceil(naturalWidth / 2) * 2; // MP4 requires an even width
 
-  const minimumWidth = props.width.type === 'fixed' ? 0 : 1080;
+  const minimumWidth = props.width.type === "fixed" ? 0 : 1080;
   const minimumWidthApplied = Math.max(minimumWidth, divisibleByTwo);
 
   return {
     durationInFrames: contents.length * defaultStepDuration,
     width:
-      props.width.type === 'fixed'
+      props.width.type === "fixed"
         ? Math.max(minimumWidthApplied, props.width.value)
         : minimumWidthApplied,
     props: {

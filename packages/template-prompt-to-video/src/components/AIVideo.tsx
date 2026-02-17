@@ -1,12 +1,12 @@
-import { loadFont } from '@remotion/google-fonts/BreeSerif';
-import { Audio } from '@remotion/media';
-import { AbsoluteFill, Sequence, staticFile, useVideoConfig } from 'remotion';
-import { z } from 'zod';
-import { FPS, INTRO_DURATION } from '../lib/constants';
-import { TimelineSchema } from '../lib/types';
-import { calculateFrameTiming, getAudioPath } from '../lib/utils';
-import { Background } from './Background';
-import Subtitle from './Subtitle';
+import { loadFont } from "@remotion/google-fonts/BreeSerif";
+import { Audio } from "@remotion/media";
+import { AbsoluteFill, Sequence, staticFile, useVideoConfig } from "remotion";
+import { z } from "zod";
+import { FPS, INTRO_DURATION } from "../lib/constants";
+import { TimelineSchema } from "../lib/types";
+import { calculateFrameTiming, getAudioPath } from "../lib/utils";
+import { Background } from "./Background";
+import Subtitle from "./Subtitle";
 
 export const aiVideoSchema = z.object({
   timeline: TimelineSchema.nullable(),
@@ -18,35 +18,35 @@ export const AIVideo: React.FC<z.infer<typeof aiVideoSchema>> = ({
   timeline,
 }) => {
   if (!timeline) {
-    throw new Error('Expected timeline to be fetched');
+    throw new Error("Expected timeline to be fetched");
   }
 
   const { id } = useVideoConfig();
 
   return (
-    <AbsoluteFill style={{ backgroundColor: 'white' }}>
+    <AbsoluteFill style={{ backgroundColor: "white" }}>
       <Sequence durationInFrames={INTRO_DURATION}>
         <AbsoluteFill
           style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            textAlign: 'center',
-            display: 'flex',
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+            display: "flex",
             zIndex: 10,
           }}
         >
           <div
             style={{
               fontSize: 120,
-              lineHeight: '122px',
-              width: '87%',
-              color: 'black',
+              lineHeight: "122px",
+              width: "87%",
+              color: "black",
               fontFamily,
-              textTransform: 'uppercase',
-              backgroundColor: 'yellow',
+              textTransform: "uppercase",
+              backgroundColor: "yellow",
               paddingTop: 20,
               paddingBottom: 20,
-              border: '10px solid black',
+              border: "10px solid black",
             }}
           >
             {timeline.shortTitle}

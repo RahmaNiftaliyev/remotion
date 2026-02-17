@@ -1,8 +1,8 @@
-import { makeTransform, scale, translateY } from '@remotion/animation-utils';
-import { loadFont } from '@remotion/google-fonts/BreeSerif';
-import { fitText } from '@remotion/layout-utils';
-import type React from 'react';
-import { AbsoluteFill, interpolate, useVideoConfig } from 'remotion';
+import { makeTransform, scale, translateY } from "@remotion/animation-utils";
+import { loadFont } from "@remotion/google-fonts/BreeSerif";
+import { fitText } from "@remotion/layout-utils";
+import type React from "react";
+import { AbsoluteFill, interpolate, useVideoConfig } from "remotion";
 
 export const Word: React.FC<{
   enterProgress: number;
@@ -24,8 +24,8 @@ export const Word: React.FC<{
   return (
     <AbsoluteFill
       style={{
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center",
         top: undefined,
         bottom: 350,
         height: 150,
@@ -34,15 +34,15 @@ export const Word: React.FC<{
       <div
         style={{
           fontSize,
-          color: 'white',
-          WebkitTextStroke: stroke ? '20px black' : undefined,
+          color: "white",
+          WebkitTextStroke: stroke ? "20px black" : undefined,
           transform: makeTransform([
             scale(interpolate(enterProgress, [0, 1], [0.8, 1])),
             translateY(interpolate(enterProgress, [0, 1], [50, 0])),
           ]),
           fontFamily,
-          textTransform: 'uppercase',
-          textAlign: 'center',
+          textTransform: "uppercase",
+          textAlign: "center",
         }}
       >
         {text}

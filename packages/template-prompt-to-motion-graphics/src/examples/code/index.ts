@@ -1,12 +1,12 @@
-import { animatedShapesExample } from './animated-shapes';
-import { fallingSpheresExample } from './falling-spheres';
-import { goldPriceChartExample } from './gold-price-chart';
-import { histogramExample } from './histogram';
-import { lottieAnimationExample } from './lottie-animation';
-import { progressBarExample } from './progress-bar';
-import { textRotationExample } from './text-rotation';
-import { typewriterHighlightExample } from './typewriter-highlight';
-import { wordCarouselExample } from './word-carousel';
+import { animatedShapesExample } from "./animated-shapes";
+import { fallingSpheresExample } from "./falling-spheres";
+import { goldPriceChartExample } from "./gold-price-chart";
+import { histogramExample } from "./histogram";
+import { lottieAnimationExample } from "./lottie-animation";
+import { progressBarExample } from "./progress-bar";
+import { textRotationExample } from "./text-rotation";
+import { typewriterHighlightExample } from "./typewriter-highlight";
+import { wordCarouselExample } from "./word-carousel";
 
 export interface RemotionExample {
   id: string;
@@ -15,7 +15,7 @@ export interface RemotionExample {
   code: string;
   durationInFrames: number;
   fps: number;
-  category: 'Text' | 'Charts' | 'Animation' | '3D' | 'Other';
+  category: "Text" | "Charts" | "Animation" | "3D" | "Other";
 }
 
 export const examples: RemotionExample[] = [
@@ -35,7 +35,7 @@ export function getExampleById(id: string): RemotionExample | undefined {
 }
 
 export function getExamplesByCategory(
-  category: RemotionExample['category'],
+  category: RemotionExample["category"],
 ): RemotionExample[] {
   return examples.filter((e) => e.category === category);
 }

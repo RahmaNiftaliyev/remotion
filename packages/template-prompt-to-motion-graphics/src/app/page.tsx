@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { LandingPageInput } from '@/components/LandingPageInput';
-import { PageLayout } from '@/components/PageLayout';
-import type { ModelId } from '@/types/generation';
-import type { NextPage } from 'next';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { LandingPageInput } from "@/components/LandingPageInput";
+import { PageLayout } from "@/components/PageLayout";
+import type { ModelId } from "@/types/generation";
+import type { NextPage } from "next";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -20,11 +20,11 @@ const Home: NextPage = () => {
     // Store images in sessionStorage (too large for URL params)
     if (attachedImages && attachedImages.length > 0) {
       sessionStorage.setItem(
-        'initialAttachedImages',
+        "initialAttachedImages",
         JSON.stringify(attachedImages),
       );
     } else {
-      sessionStorage.removeItem('initialAttachedImages');
+      sessionStorage.removeItem("initialAttachedImages");
     }
     const params = new URLSearchParams({ prompt, model });
     router.push(`/generate?${params.toString()}`);

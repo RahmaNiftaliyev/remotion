@@ -1,7 +1,7 @@
-import { useWindowedAudioData, visualizeAudio } from '@remotion/media-utils';
-import { useCurrentFrame, useVideoConfig } from 'remotion';
-import { AudioVizContainer } from './AudioVizContainer';
-import { BASE_SIZE } from './constants';
+import { useWindowedAudioData, visualizeAudio } from "@remotion/media-utils";
+import { useCurrentFrame, useVideoConfig } from "remotion";
+import { AudioVizContainer } from "./AudioVizContainer";
+import { BASE_SIZE } from "./constants";
 
 const Bar: React.FC<{ height: number; color: string }> = ({
   height,
@@ -51,7 +51,7 @@ export const Spectrum: React.FC<{
     frame,
     audioData,
     numberOfSamples, // Use more samples to get a nicer visualisation
-    optimizeFor: 'speed',
+    optimizeFor: "speed",
     dataOffsetInSeconds,
   });
 

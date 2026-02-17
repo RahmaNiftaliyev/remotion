@@ -1,6 +1,6 @@
-import { ProcessStatus } from '../components/ProcessingStatus';
-import { convertInBrowser } from './convert-in-browser';
-import { getExtension } from './find-good-supported-codec';
+import { ProcessStatus } from "../components/ProcessingStatus";
+import { convertInBrowser } from "./convert-in-browser";
+import { getExtension } from "./find-good-supported-codec";
 
 export const downloadVideo = async ({
   data,
@@ -33,10 +33,10 @@ export const downloadVideo = async ({
   });
 
   if (!saved) {
-    throw new Error('Conversion failed');
+    throw new Error("Conversion failed");
   }
 
-  const link = document.createElement('a');
+  const link = document.createElement("a");
   const blobUrl = URL.createObjectURL(saved);
   link.href = blobUrl;
   link.download = `${prefix}${endDate}.${getExtension(mimeType)}`;

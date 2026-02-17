@@ -1,7 +1,7 @@
-import { ALL_FORMATS, Input, UrlSource } from 'mediabunny';
-import { Composition, staticFile } from 'remotion';
-import { Visualizer } from './Visualizer/Main';
-import { visualizerCompositionSchema } from './helpers/schema';
+import { ALL_FORMATS, Input, UrlSource } from "mediabunny";
+import { Composition, staticFile } from "remotion";
+import { Visualizer } from "./Visualizer/Main";
+import { visualizerCompositionSchema } from "./helpers/schema";
 
 const FPS = 30;
 
@@ -17,20 +17,20 @@ export const RemotionRoot: React.FC = () => {
         defaultProps={{
           // audio settings
           audioOffsetInSeconds: 0,
-          audioFileUrl: staticFile('demo-track.mp3'),
+          audioFileUrl: staticFile("demo-track.mp3"),
           // song data
-          coverImageUrl: staticFile('demo-song-cover.jpeg'),
-          songName: 'Sunset Render Deja Vu',
-          artistName: 'Remotion',
-          textColor: 'white',
+          coverImageUrl: staticFile("demo-song-cover.jpeg"),
+          songName: "Sunset Render Deja Vu",
+          artistName: "Remotion",
+          textColor: "white",
           // visualizer settings
           visualizer: {
-            type: 'spectrum' as const,
+            type: "spectrum" as const,
             bassOverlay: true,
-            color: '#0b84f3',
+            color: "#0b84f3",
             linesToDisplay: 65,
             mirrorWave: false,
-            numberOfSamples: '512' as const,
+            numberOfSamples: "512" as const,
           },
         }}
         // Determine the length of the video based on the duration of the audio file

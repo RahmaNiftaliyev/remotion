@@ -1,15 +1,15 @@
-import { Caption } from '@remotion/captions';
-import React, { useMemo, useRef } from 'react';
-import { useCurrentFrame } from 'remotion';
-import { msToFrame } from '../helpers/ms-to-frame';
-import { CAPTIONS_FONT_SIZE } from './constants';
-import { FONT_FAMILY } from './font';
+import { Caption } from "@remotion/captions";
+import React, { useMemo, useRef } from "react";
+import { useCurrentFrame } from "remotion";
+import { msToFrame } from "../helpers/ms-to-frame";
+import { CAPTIONS_FONT_SIZE } from "./constants";
+import { FONT_FAMILY } from "./font";
 import {
   filterCurrentlyDisplayedLines,
   layoutText,
-} from './get-number-of-lines-for-text';
-import { getSentenceToDisplay } from './sentence-to-display';
-import { Word } from './Word';
+} from "./get-number-of-lines-for-text";
+import { getSentenceToDisplay } from "./sentence-to-display";
+import { Word } from "./Word";
 
 const useWindowedFrameCaptions = ({
   captions,
@@ -76,14 +76,14 @@ export const PaginatedCaptions: React.FC<{
   return (
     <div
       style={{
-        position: 'relative',
-        overflow: 'hidden',
-        paddingBottom: '20px',
+        position: "relative",
+        overflow: "hidden",
+        paddingBottom: "20px",
       }}
     >
       <div ref={windowRef}>
         {currentlyShownLines.map((line) => (
-          <div key={line.map((item) => item.text).join(' ')}>
+          <div key={line.map((item) => item.text).join(" ")}>
             {line.map((item) => (
               <span
                 key={item.startMs + item.endMs}

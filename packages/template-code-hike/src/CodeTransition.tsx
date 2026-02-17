@@ -1,18 +1,18 @@
-import { AnnotationHandler, HighlightedCode, Pre } from 'codehike/code';
-import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import { Easing, interpolate, useCurrentFrame, useDelayRender } from 'remotion';
+import { AnnotationHandler, HighlightedCode, Pre } from "codehike/code";
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { Easing, interpolate, useCurrentFrame, useDelayRender } from "remotion";
 
 import {
   calculateTransitions,
   getStartingSnapshot,
   TokenTransitionsSnapshot,
-} from 'codehike/utils/token-transitions';
-import { callout } from './annotations/Callout';
-import { applyStyle } from './utils';
+} from "codehike/utils/token-transitions";
+import { callout } from "./annotations/Callout";
+import { applyStyle } from "./utils";
 
-import { errorInline, errorMessage } from './annotations/Error';
-import { tokenTransitions } from './annotations/InlineToken';
-import { fontFamily, fontSize, tabSize } from './font';
+import { errorInline, errorMessage } from "./annotations/Error";
+import { tokenTransitions } from "./annotations/InlineToken";
+import { fontFamily, fontSize, tabSize } from "./font";
 
 export function CodeTransition({
   oldCode,
@@ -60,8 +60,8 @@ export function CodeTransition({
         [delay, delay + duration],
         [0, 1],
         {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
         },
       );
       const progress = interpolate(linearProgress, [0, 1], [0, 1], {
@@ -84,7 +84,7 @@ export function CodeTransition({
 
   const style: React.CSSProperties = useMemo(() => {
     return {
-      position: 'relative',
+      position: "relative",
       fontSize,
       lineHeight: 1.5,
       fontFamily,

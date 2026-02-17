@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { CompositionProps } from './constants';
+import { z } from "zod";
+import { CompositionProps } from "./constants";
 
 export const RenderRequest = z.object({
   id: z.string(),
@@ -13,15 +13,15 @@ export const ProgressRequest = z.object({
 
 export type ProgressResponse =
   | {
-      type: 'error';
+      type: "error";
       message: string;
     }
   | {
-      type: 'progress';
+      type: "progress";
       progress: number;
     }
   | {
-      type: 'done';
+      type: "done";
       url: string;
       size: number;
     };

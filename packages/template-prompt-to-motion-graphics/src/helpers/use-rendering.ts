@@ -1,30 +1,30 @@
-import { useCallback, useMemo, useState } from 'react';
-import { z } from 'zod';
-import { CompositionProps } from '../../types/constants';
-import { getProgress, renderVideo } from '../lambda/api';
+import { useCallback, useMemo, useState } from "react";
+import { z } from "zod";
+import { CompositionProps } from "../../types/constants";
+import { getProgress, renderVideo } from "../lambda/api";
 
 export type State =
   | {
-      status: 'init';
+      status: "init";
     }
   | {
-      status: 'invoking';
+      status: "invoking";
     }
   | {
       renderId: string;
       bucketName: string;
       progress: number;
-      status: 'rendering';
+      status: "rendering";
     }
   | {
       renderId: string | null;
-      status: 'error';
+      status: "error";
       error: Error;
     }
   | {
       url: string;
       size: number;
-      status: 'done';
+      status: "done";
     };
 
 const wait = async (milliSeconds: number) => {
@@ -37,17 +37,17 @@ const wait = async (milliSeconds: number) => {
 
 export const useRendering = (inputProps: z.infer<typeof CompositionProps>) => {
   const [state, setState] = useState<State>({
-    status: 'init',
+    status: "init",
   });
 
   const renderMedia = useCallback(async () => {
     setState({
-      status: 'invoking',
+      status: "invoking",
     });
     try {
       const { renderId, bucketName } = await renderVideo({ inputProps });
       setState({
-        status: 'rendering',
+        status: "rendering",
         progress: 0,
         renderId: renderId,
         bucketName: bucketName,
@@ -61,27 +61,27 @@ export const useRendering = (inputProps: z.infer<typeof CompositionProps>) => {
           bucketName: bucketName,
         });
         switch (result.type) {
-          case 'error': {
+          case "error": {
             setState({
-              status: 'error',
+              status: "error",
               renderId: renderId,
               error: new Error(result.message),
             });
             pending = false;
             break;
           }
-          case 'done': {
+          case "done": {
             setState({
               size: result.size,
               url: result.url,
-              status: 'done',
+              status: "done",
             });
             pending = false;
             break;
           }
-          case 'progress': {
+          case "progress": {
             setState({
-              status: 'rendering',
+              status: "rendering",
               bucketName: bucketName,
               progress: result.progress,
               renderId: renderId,
@@ -92,7 +92,7 @@ export const useRendering = (inputProps: z.infer<typeof CompositionProps>) => {
       }
     } catch (err) {
       setState({
-        status: 'error',
+        status: "error",
         error: err as Error,
         renderId: null,
       });
@@ -100,7 +100,7 @@ export const useRendering = (inputProps: z.infer<typeof CompositionProps>) => {
   }, [inputProps]);
 
   const undo = useCallback(() => {
-    setState({ status: 'init' });
+    setState({ status: "init" });
   }, []);
 
   return useMemo(() => {

@@ -1,15 +1,15 @@
-import { zColor } from '@remotion/zod-types';
+import { zColor } from "@remotion/zod-types";
 import {
   AbsoluteFill,
   interpolate,
   Sequence,
   useCurrentFrame,
   useVideoConfig,
-} from 'remotion';
-import { z } from 'zod';
-import { Text } from './HelloWorld/Title';
-import { RequestMetadata, VoiceType } from './lib/interfaces';
-import { voices } from './server/TextToSpeech/constants';
+} from "remotion";
+import { z } from "zod";
+import { Text } from "./HelloWorld/Title";
+import { RequestMetadata, VoiceType } from "./lib/interfaces";
+import { voices } from "./server/TextToSpeech/constants";
 
 export const mySchema = z.object({
   titleText: z.string(),
@@ -32,14 +32,14 @@ export const HelloWorld: React.FC<RequestMetadata> = (props) => {
     [videoConfig.durationInFrames - 25, videoConfig.durationInFrames - 15],
     [1, 0],
     {
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
     },
   );
   const transitionStart = 25;
 
   return (
-    <AbsoluteFill style={{ flex: 1, backgroundColor: 'white' }}>
+    <AbsoluteFill style={{ flex: 1, backgroundColor: "white" }}>
       <div style={{ opacity }}>
         <Sequence from={transitionStart + 10}>
           <Text {...props} />

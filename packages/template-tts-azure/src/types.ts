@@ -1,5 +1,5 @@
-import { zColor } from '@remotion/zod-types';
-import { z } from 'zod';
+import { zColor } from "@remotion/zod-types";
+import { z } from "zod";
 
 export const env = z
   .object({
@@ -12,7 +12,7 @@ export const env = z
   })
   .parse(process.env);
 
-const voices = ['ptBRWoman', 'ptBRMan', 'enUSWoman1', 'enUSWoman2'] as const;
+const voices = ["ptBRWoman", "ptBRMan", "enUSWoman1", "enUSWoman2"] as const;
 
 export type Voice = (typeof voices)[number];
 

@@ -1,14 +1,14 @@
-import { zColor } from '@remotion/zod-types';
-import React from 'react';
-import { AbsoluteFill } from 'remotion';
-import { z } from 'zod';
-import './fonts.css';
-import { Swirl } from './Swirl';
+import { zColor } from "@remotion/zod-types";
+import React from "react";
+import { AbsoluteFill } from "remotion";
+import { z } from "zod";
+import "./fonts.css";
+import { Swirl } from "./Swirl";
 
-const fontFamily = 'Inter';
+const fontFamily = "Inter";
 
 const absContainer: React.CSSProperties = {
-  backgroundColor: 'white',
+  backgroundColor: "white",
 };
 
 const container: React.CSSProperties = {
@@ -16,46 +16,46 @@ const container: React.CSSProperties = {
   padding: 100,
   fontFamily,
   // Setting this property allows you to set a linebreak via URL parameter %0A
-  whiteSpace: 'pre-wrap',
+  whiteSpace: "pre-wrap",
 };
 
 const titleStyle: React.CSSProperties = {
-  fontSize: '5.5em',
+  fontSize: "5.5em",
   marginTop: 0,
   fontWeight: 700,
   marginBottom: 0,
 };
 
 const descriptionStyle: React.CSSProperties = {
-  color: '#61778a',
-  fontSize: '3.2em',
+  color: "#61778a",
+  fontSize: "3.2em",
   margin: 0,
   marginTop: 20,
   lineHeight: 1.3,
   fontWeight: 500,
-  maxWidth: '90%',
+  maxWidth: "90%",
   maxLines: 2,
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
+  overflow: "hidden",
+  textOverflow: "ellipsis",
   lineClamp: 2,
 };
 
 const gradientText: React.CSSProperties = {
-  background: 'linear-gradient(to right, black, #666)',
-  WebkitBackgroundClip: 'text',
-  WebkitTextFillColor: 'transparent',
+  background: "linear-gradient(to right, black, #666)",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
   fontFamily,
 };
 
 const sloganStyle: React.CSSProperties = {
-  position: 'absolute',
+  position: "absolute",
   bottom: 58,
   right: 100,
   fontSize: 36,
   lineHeight: 1.1,
   fontWeight: 700,
-  textAlign: 'right',
-  whiteSpace: 'pre',
+  textAlign: "right",
+  whiteSpace: "pre",
 };
 
 export const myCompSchema = z.object({

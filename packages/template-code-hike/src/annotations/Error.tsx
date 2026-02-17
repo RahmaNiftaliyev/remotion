@@ -1,16 +1,16 @@
-import { AnnotationHandler, InlineAnnotation, InnerToken } from 'codehike/code';
-import { mix, readableColor } from 'polished';
-import { interpolate, useCurrentFrame } from 'remotion';
-import { useThemeColors } from '../calculate-metadata/theme';
+import { AnnotationHandler, InlineAnnotation, InnerToken } from "codehike/code";
+import { mix, readableColor } from "polished";
+import { interpolate, useCurrentFrame } from "remotion";
+import { useThemeColors } from "../calculate-metadata/theme";
 
 export const errorInline: AnnotationHandler = {
-  name: 'error',
+  name: "error",
   transform: (annotation: InlineAnnotation) => {
     const { query, lineNumber, data } = annotation;
     return [
       annotation,
       {
-        name: 'error-message',
+        name: "error-message",
         query,
         fromLineNumber: lineNumber,
         toLineNumber: lineNumber,
@@ -22,7 +22,7 @@ export const errorInline: AnnotationHandler = {
     <span
       style={{
         // @ts-expect-error - React types
-        '--decoration': 'underline wavy red',
+        "--decoration": "underline wavy red",
       }}
     >
       {children}
@@ -33,7 +33,7 @@ export const errorInline: AnnotationHandler = {
       <InnerToken
         merge={props}
         style={{
-          textDecoration: 'var(--decoration)',
+          textDecoration: "var(--decoration)",
         }}
       />
     );
@@ -41,12 +41,12 @@ export const errorInline: AnnotationHandler = {
 };
 
 export const errorMessage: AnnotationHandler = {
-  name: 'error-message',
+  name: "error-message",
   Block: ({ annotation, children }) => {
     const frame = useCurrentFrame();
     const opacity = interpolate(frame, [25, 35], [0, 1], {
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
     });
     const themeColors = useThemeColors();
 
@@ -59,12 +59,12 @@ export const errorMessage: AnnotationHandler = {
         <div
           style={{
             opacity,
-            borderLeft: '4px solid red',
-            marginLeft: '-1rem',
+            borderLeft: "4px solid red",
+            marginLeft: "-1rem",
             backgroundColor: calloutColor,
-            padding: '1rem 2rem',
-            marginTop: '0.5rem',
-            whiteSpace: 'pre-wrap',
+            padding: "1rem 2rem",
+            marginTop: "0.5rem",
+            whiteSpace: "pre-wrap",
             color: themeColors.editor.foreground,
           }}
         >

@@ -1,6 +1,6 @@
-import { Composition } from 'remotion';
-import { HelloWorld } from './HelloWorld';
-import { Logo } from './HelloWorld/Logo';
+import { Composition } from "remotion";
+import { HelloWorld } from "./HelloWorld";
+import { Logo } from "./HelloWorld/Logo";
 
 // Each <Composition> is an entry in the sidebar!
 
@@ -19,8 +19,8 @@ export const RemotionRoot = () => {
         // You can override these props for each render:
         // https://www.remotion.dev/docs/parametrized-rendering
         defaultProps={{
-          titleText: 'Welcome to Remotion',
-          titleColor: 'black',
+          titleText: "Welcome to Remotion",
+          titleColor: "black",
         }}
       />
       {/* Mount any React component to make it show up in the sidebar and work on it individually! */}

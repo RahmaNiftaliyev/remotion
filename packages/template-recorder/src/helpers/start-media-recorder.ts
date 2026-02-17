@@ -1,11 +1,11 @@
-import { CurrentRecorder } from '../RecordButton';
-import { StreamState } from '../state/media-sources';
+import { CurrentRecorder } from "../RecordButton";
+import { StreamState } from "../state/media-sources";
 import {
   findGoodSupportedCodec,
   getExtension,
-} from './find-good-supported-codec';
-import { Prefix } from './prefixes';
-import { createFileStorage } from './store-file';
+} from "./find-good-supported-codec";
+import { Prefix } from "./prefixes";
+import { createFileStorage } from "./store-file";
 
 const mediaRecorderOptions: MediaRecorderOptions = {
   audioBitsPerSecond: 128000,
@@ -31,7 +31,7 @@ export const startMediaRecorder = async ({
   timestamp: number;
   source: StreamState;
 }): Promise<CurrentRecorder | null> => {
-  if (source.type !== 'loaded') {
+  if (source.type !== "loaded") {
     throw new Error(`Source not loaded for ${prefix}`);
   }
 
@@ -56,10 +56,10 @@ export const startMediaRecorder = async ({
   const periodicSaveController = new AbortController();
 
   recorder.addEventListener(
-    'dataavailable',
+    "dataavailable",
     ({ data }) => {
       writer.write(data).then(() => {
-        console.log('Data written', filename, writer.getBytesWritten());
+        console.log("Data written", filename, writer.getBytesWritten());
       });
     },
     {
@@ -75,7 +75,7 @@ export const startMediaRecorder = async ({
 
     recorder.stop();
     recorder.addEventListener(
-      'error',
+      "error",
       (event) => {
         console.log(event);
         reject(new Error(`Error recording ${prefix}`));
@@ -86,13 +86,13 @@ export const startMediaRecorder = async ({
       },
     );
     recorder.addEventListener(
-      'dataavailable',
+      "dataavailable",
       ({ data }) => {
         writer
           .write(data)
           .then(() => {
             console.log(
-              'Final Data written',
+              "Final Data written",
               filename,
               writer.getBytesWritten(),
             );

@@ -2,9 +2,9 @@ import {
   createSmoothSvgPath,
   useWindowedAudioData,
   visualizeAudioWaveform,
-} from '@remotion/media-utils';
-import React, { useMemo } from 'react';
-import { useCurrentFrame, useVideoConfig } from 'remotion';
+} from "@remotion/media-utils";
+import React, { useMemo } from "react";
+import { useCurrentFrame, useVideoConfig } from "remotion";
 
 interface WaveformContainerProps {
   children?: React.ReactNode;

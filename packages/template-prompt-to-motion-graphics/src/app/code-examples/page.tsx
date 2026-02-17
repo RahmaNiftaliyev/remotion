@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { ArrowLeft, PanelLeft, PanelLeftClose } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { ArrowLeft, PanelLeft, PanelLeftClose } from "lucide-react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Suspense,
   useCallback,
@@ -10,12 +10,12 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react';
-import { AnimationPlayer } from '../../components/AnimationPlayer';
-import { CodeEditor } from '../../components/CodeEditor';
-import { Header } from '../../components/Header';
-import { examples, getExampleById } from '../../examples/code';
-import { useAnimationState } from '../../hooks/useAnimationState';
+} from "react";
+import { AnimationPlayer } from "../../components/AnimationPlayer";
+import { CodeEditor } from "../../components/CodeEditor";
+import { Header } from "../../components/Header";
+import { examples, getExampleById } from "../../examples/code";
+import { useAnimationState } from "../../hooks/useAnimationState";
 
 function DemoPageContent() {
   const searchParams = useSearchParams();
@@ -23,7 +23,7 @@ function DemoPageContent() {
 
   // Derive selected example directly from URL (single source of truth)
   const selectedExample = useMemo(() => {
-    const exampleId = searchParams.get('example');
+    const exampleId = searchParams.get("example");
     if (exampleId) {
       return getExampleById(exampleId) ?? examples[0]!;
     }
@@ -44,8 +44,8 @@ function DemoPageContent() {
   useEffect(() => {
     if (selectedButtonRef.current) {
       selectedButtonRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
+        behavior: "smooth",
+        block: "nearest",
       });
     }
   }, [selectedExample.id]);
@@ -101,11 +101,11 @@ function DemoPageContent() {
         {/* Sidebar */}
         <div
           className={`flex flex-col shrink-0 transition-all duration-300 overflow-hidden ${
-            sidebarOpen ? 'w-64 mr-8' : 'w-0 border-r-0'
+            sidebarOpen ? "w-64 mr-8" : "w-0 border-r-0"
           }`}
         >
           <div
-            className={`flex-1 overflow-y-auto pr-4 w-64 ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+            className={`flex-1 overflow-y-auto pr-4 w-64 ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
           >
             {categories.map((category) => (
               <div key={category} className="mb-6">
@@ -126,8 +126,8 @@ function DemoPageContent() {
                         onClick={() => handleExampleSelect(example.id)}
                         className={`w-full text-left p-3 rounded-lg border transition-all ${
                           selectedExample.id === example.id
-                            ? 'border-primary bg-primary/10 text-foreground'
-                            : 'border-border-dim bg-muted text-gray-400 hover:border-border hover:bg-background-elevated'
+                            ? "border-primary bg-primary/10 text-foreground"
+                            : "border-border-dim bg-muted text-gray-400 hover:border-border hover:bg-background-elevated"
                         }`}
                       >
                         <div className="font-medium text-sm">
@@ -150,7 +150,7 @@ function DemoPageContent() {
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="p-2 rounded-lg border border-border-dim bg-muted text-muted-foreground hover:text-foreground hover:border-border transition-colors"
-              title={sidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
+              title={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
             >
               {sidebarOpen ? (
                 <PanelLeftClose className="w-4 h-4" />

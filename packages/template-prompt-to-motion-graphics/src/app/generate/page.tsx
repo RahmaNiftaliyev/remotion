@@ -1,30 +1,30 @@
-'use client';
+"use client";
 
-import { Loader2 } from 'lucide-react';
-import type { NextPage } from 'next';
-import { useSearchParams } from 'next/navigation';
-import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { AnimationPlayer } from '../../components/AnimationPlayer';
-import { ChatSidebar, type ChatSidebarRef } from '../../components/ChatSidebar';
-import { CodeEditor } from '../../components/CodeEditor';
-import { PageLayout } from '../../components/PageLayout';
-import { TabPanel } from '../../components/TabPanel';
-import { examples } from '../../examples/code';
-import { useAnimationState } from '../../hooks/useAnimationState';
-import { useAutoCorrection } from '../../hooks/useAutoCorrection';
-import { useConversationState } from '../../hooks/useConversationState';
+import { Loader2 } from "lucide-react";
+import type { NextPage } from "next";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { AnimationPlayer } from "../../components/AnimationPlayer";
+import { ChatSidebar, type ChatSidebarRef } from "../../components/ChatSidebar";
+import { CodeEditor } from "../../components/CodeEditor";
+import { PageLayout } from "../../components/PageLayout";
+import { TabPanel } from "../../components/TabPanel";
+import { examples } from "../../examples/code";
+import { useAnimationState } from "../../hooks/useAnimationState";
+import { useAutoCorrection } from "../../hooks/useAutoCorrection";
+import { useConversationState } from "../../hooks/useConversationState";
 import type {
   AssistantMetadata,
   EditOperation,
   ErrorCorrectionContext,
-} from '../../types/conversation';
-import type { GenerationErrorType, StreamPhase } from '../../types/generation';
+} from "../../types/conversation";
+import type { GenerationErrorType, StreamPhase } from "../../types/generation";
 
 const MAX_CORRECTION_ATTEMPTS = 3;
 
 function GeneratePageContent() {
   const searchParams = useSearchParams();
-  const initialPrompt = searchParams.get('prompt') || '';
+  const initialPrompt = searchParams.get("prompt") || "";
 
   // If we have an initial prompt from URL, start in streaming state
   // so syntax highlighting is disabled from the beginning
@@ -37,7 +37,7 @@ function GeneratePageContent() {
   const [currentFrame, setCurrentFrame] = useState(0);
   const [isStreaming, setIsStreaming] = useState(willAutoStart);
   const [streamPhase, setStreamPhase] = useState<StreamPhase>(
-    willAutoStart ? 'reasoning' : 'idle',
+    willAutoStart ? "reasoning" : "idle",
   );
   const [prompt, setPrompt] = useState(initialPrompt);
   const [hasAutoStarted, setHasAutoStarted] = useState(false);
@@ -79,7 +79,7 @@ function GeneratePageContent() {
     isCompiling,
     setCode,
     compileCode,
-  } = useAnimationState(examples[0]?.code || '');
+  } = useAnimationState(examples[0]?.code || "");
 
   // Runtime errors from the Player (e.g., "cannot access variable before initialization")
   const [runtimeError, setRuntimeError] = useState<string | null>(null);
@@ -182,7 +182,7 @@ function GeneratePageContent() {
   const handleGenerationComplete = useCallback(
     (generatedCode: string, summary?: string, metadata?: AssistantMetadata) => {
       const content =
-        summary || 'Generated your animation, any follow up edits?';
+        summary || "Generated your animation, any follow up edits?";
       addAssistantMessage(content, generatedCode, metadata);
       markAsAiGenerated();
     },
@@ -232,7 +232,7 @@ function GeneratePageContent() {
     if (initialPrompt && !hasAutoStarted && chatSidebarRef.current) {
       setHasAutoStarted(true);
       // Check for initial attached images from sessionStorage
-      const storedImagesJson = sessionStorage.getItem('initialAttachedImages');
+      const storedImagesJson = sessionStorage.getItem("initialAttachedImages");
       let storedImages: string[] | undefined;
       if (storedImagesJson) {
         try {
@@ -240,7 +240,7 @@ function GeneratePageContent() {
         } catch {
           // Ignore parse errors
         }
-        sessionStorage.removeItem('initialAttachedImages');
+        sessionStorage.removeItem("initialAttachedImages");
       }
       setTimeout(() => {
         chatSidebarRef.current?.triggerGeneration({
@@ -290,7 +290,7 @@ function GeneratePageContent() {
           <TabPanel
             codeContent={
               <CodeEditor
-                code={hasGeneratedOnce && !generationError ? code : ''}
+                code={hasGeneratedOnce && !generationError ? code : ""}
                 onChange={handleCodeChange}
                 isStreaming={isStreaming}
                 streamPhase={streamPhase}
@@ -306,7 +306,7 @@ function GeneratePageContent() {
                 isCompiling={isCompiling}
                 isStreaming={isStreaming}
                 error={generationError?.message || codeError}
-                errorType={generationError?.type || 'compilation'}
+                errorType={generationError?.type || "compilation"}
                 code={code}
                 onRuntimeError={handleRuntimeError}
                 onFrameChange={setCurrentFrame}

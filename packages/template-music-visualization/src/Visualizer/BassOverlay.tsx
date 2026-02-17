@@ -1,5 +1,5 @@
-import { useWindowedAudioData, visualizeAudio } from '@remotion/media-utils';
-import { AbsoluteFill, useCurrentFrame, useVideoConfig } from 'remotion';
+import { useWindowedAudioData, visualizeAudio } from "@remotion/media-utils";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 
 interface BassOverlayProps {
   audioSrc: string;
@@ -28,7 +28,7 @@ export const BassOverlay: React.FC<BassOverlayProps> = ({
     audioData,
     fps,
     frame,
-    optimizeFor: 'speed',
+    optimizeFor: "speed",
     numberOfSamples: 128,
     dataOffsetInSeconds,
   });

@@ -4,8 +4,8 @@ import type {
   ConversationMessage,
   ConversationState,
   EditOperation,
-} from '@/types/conversation';
-import { useCallback, useRef, useState } from 'react';
+} from "@/types/conversation";
+import { useCallback, useRef, useState } from "react";
 
 export function useConversationState() {
   const [state, setState] = useState<ConversationState>({
@@ -16,13 +16,13 @@ export function useConversationState() {
   });
 
   // Track the last AI-generated code to detect manual edits
-  const lastAiCodeRef = useRef<string>('');
+  const lastAiCodeRef = useRef<string>("");
 
   const addUserMessage = useCallback(
     (content: string, attachedImages?: string[]) => {
       const message: ConversationMessage = {
         id: `user-${Date.now()}`,
-        role: 'user',
+        role: "user",
         content,
         timestamp: Date.now(),
         attachedImages,
@@ -40,7 +40,7 @@ export function useConversationState() {
     (content: string, codeSnapshot: string, metadata?: AssistantMetadata) => {
       const message: ConversationMessage = {
         id: `assistant-${Date.now()}`,
-        role: 'assistant',
+        role: "assistant",
         content,
         timestamp: Date.now(),
         codeSnapshot,
@@ -61,12 +61,12 @@ export function useConversationState() {
   const addErrorMessage = useCallback(
     (
       content: string,
-      errorType: 'edit_failed' | 'api' | 'validation',
+      errorType: "edit_failed" | "api" | "validation",
       failedEdit?: EditOperation,
     ) => {
       const message: ConversationMessage = {
         id: `error-${Date.now()}`,
-        role: 'error',
+        role: "error",
         content,
         timestamp: Date.now(),
         errorType,
@@ -83,7 +83,7 @@ export function useConversationState() {
 
   const markManualEdit = useCallback((currentCode: string) => {
     // Only mark as manual edit if code differs from last AI generation
-    if (currentCode !== lastAiCodeRef.current && lastAiCodeRef.current !== '') {
+    if (currentCode !== lastAiCodeRef.current && lastAiCodeRef.current !== "") {
       setState((prev) => ({
         ...prev,
         hasManualEdits: true,
@@ -92,7 +92,7 @@ export function useConversationState() {
   }, []);
 
   const clearConversation = useCallback(() => {
-    lastAiCodeRef.current = '';
+    lastAiCodeRef.current = "";
     setState({
       messages: [],
       hasManualEdits: false,
@@ -122,12 +122,12 @@ export function useConversationState() {
   const getFullContext = useCallback((): ConversationContextMessage[] => {
     // Filter out error messages - they're not part of the conversation context for the AI
     return state.messages
-      .filter((m) => m.role === 'user' || m.role === 'assistant')
+      .filter((m) => m.role === "user" || m.role === "assistant")
       .map((m) => ({
-        role: m.role as 'user' | 'assistant',
-        content: m.role === 'user' ? m.content : '[Generated Code]',
+        role: m.role as "user" | "assistant",
+        content: m.role === "user" ? m.content : "[Generated Code]",
         // Include attached images for user messages so the AI remembers what was shared
-        ...(m.role === 'user' && m.attachedImages && m.attachedImages.length > 0
+        ...(m.role === "user" && m.attachedImages && m.attachedImages.length > 0
           ? { attachedImages: m.attachedImages }
           : {}),
       }));
@@ -137,7 +137,7 @@ export function useConversationState() {
   const getPreviouslyUsedSkills = useCallback((): string[] => {
     const allSkills = new Set<string>();
     state.messages.forEach((m) => {
-      if (m.role === 'assistant' && m.metadata?.skills) {
+      if (m.role === "assistant" && m.metadata?.skills) {
         m.metadata.skills.forEach((skill) => allSkills.add(skill));
       }
     });
@@ -149,7 +149,7 @@ export function useConversationState() {
     for (let i = state.messages.length - 1; i >= 0; i--) {
       const msg = state.messages[i];
       if (
-        msg.role === 'user' &&
+        msg.role === "user" &&
         msg.attachedImages &&
         msg.attachedImages.length > 0
       ) {

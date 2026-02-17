@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
+import { useEffect, useRef } from "react";
+import { interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 
 function point({
   x,
@@ -29,7 +29,7 @@ export const Swirl: React.FC<{
   const { width, height } = useVideoConfig();
 
   useEffect(() => {
-    const ctx = ref.current?.getContext('2d');
+    const ctx = ref.current?.getContext("2d");
     if (!ctx) {
       return;
     }

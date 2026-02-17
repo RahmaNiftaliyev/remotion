@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const style: React.CSSProperties = {
   height: 48 / 1.8,

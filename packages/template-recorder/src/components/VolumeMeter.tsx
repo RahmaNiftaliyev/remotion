@@ -1,22 +1,22 @@
-import { useEffect, useMemo, useState } from 'react';
-import { StreamState } from '../state/media-sources';
+import { useEffect, useMemo, useState } from "react";
+import { StreamState } from "../state/media-sources";
 
-const GREEN = '#0b800b';
-const YELLOW = '#bda615';
-const RED = '#800b0b';
+const GREEN = "#0b800b";
+const YELLOW = "#bda615";
+const RED = "#800b0b";
 
 const container: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'center',
-  width: '100%',
-  alignItems: 'center',
-  flexDirection: 'row',
+  display: "flex",
+  justifyContent: "center",
+  width: "100%",
+  alignItems: "center",
+  flexDirection: "row",
 };
 
 const gradientStyle: React.CSSProperties = {
-  display: 'flex',
+  display: "flex",
   backgroundImage: `linear-gradient(to right, ${GREEN}, ${GREEN} 66% , ${YELLOW} 66%, ${YELLOW} 90%, ${RED} 90%,${RED} )`,
-  justifyContent: 'flex-end',
+  justifyContent: "flex-end",
   height: 4,
   flex: 1,
 };
@@ -27,7 +27,7 @@ export const VolumeMeter: React.FC<{
   const [currentVolume, setCurrentVolume] = useState(0);
 
   useEffect(() => {
-    if (mediaStream.type !== 'loaded') {
+    if (mediaStream.type !== "loaded") {
       return;
     }
 
@@ -64,10 +64,10 @@ export const VolumeMeter: React.FC<{
       setCurrentVolume((old) => (old + currentAverageVolume) / 2);
     };
 
-    scriptProcessor.addEventListener('audioprocess', onAudioProcess);
+    scriptProcessor.addEventListener("audioprocess", onAudioProcess);
 
     return () => {
-      scriptProcessor.removeEventListener('audioprocess', onAudioProcess);
+      scriptProcessor.removeEventListener("audioprocess", onAudioProcess);
       scriptProcessor.disconnect();
     };
   }, [mediaStream]);
@@ -77,16 +77,16 @@ export const VolumeMeter: React.FC<{
   }, [currentVolume]);
 
   const dynamicCover: React.CSSProperties = useMemo(() => {
-    const widthPercentageString = widthPercent.toString() + '%';
+    const widthPercentageString = widthPercent.toString() + "%";
 
     return {
       width: widthPercentageString,
       height: 4,
-      backgroundColor: '#242424',
+      backgroundColor: "#242424",
     };
   }, [widthPercent]);
 
-  if (mediaStream.type !== 'loaded') {
+  if (mediaStream.type !== "loaded") {
     return null;
   }
 

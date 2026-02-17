@@ -1,28 +1,28 @@
-import { DialogTitle } from '@radix-ui/react-dialog';
-import React, { useCallback, useMemo } from 'react';
-import { Button } from './components/ui/button';
+import { DialogTitle } from "@radix-ui/react-dialog";
+import React, { useCallback, useMemo } from "react";
+import { Button } from "./components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-} from './components/ui/dialog';
+} from "./components/ui/dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from './components/ui/select';
-import { MaxResolution } from './helpers/get-max-resolution-of-device';
+} from "./components/ui/select";
+import { MaxResolution } from "./helpers/get-max-resolution-of-device";
 import {
   FPS_AVAILABLE,
   SizeConstraint,
   VIDEO_SIZES,
   VideoSize,
-} from './helpers/get-selected-video-source';
-import { setPreferredResolutionForDevice } from './preferred-resolution';
+} from "./helpers/get-selected-video-source";
+import { setPreferredResolutionForDevice } from "./preferred-resolution";
 
 export const ResolutionLimiter: React.FC<{
   maxResolution: MaxResolution;
@@ -63,8 +63,8 @@ export const ResolutionLimiter: React.FC<{
   }, [maxResolution]);
 
   const onResolutionChange = useCallback(
-    (value: VideoSize | 'full') => {
-      if (value === 'full') {
+    (value: VideoSize | "full") => {
+      if (value === "full") {
         setActiveVideoSize((v) => {
           const newSize = {
             ...v,
@@ -90,8 +90,8 @@ export const ResolutionLimiter: React.FC<{
   );
 
   const onFpsChange = useCallback(
-    (value: string | 'any') => {
-      if (value === 'any') {
+    (value: string | "any") => {
+      if (value === "any") {
         setActiveVideoSize((v) => {
           const newState: SizeConstraint = {
             ...v,
@@ -130,18 +130,18 @@ export const ResolutionLimiter: React.FC<{
 
   const fullResolutionLabel = useMemo(() => {
     if (maxResolution === null) {
-      return 'Full resolution';
+      return "Full resolution";
     }
     const { width, height } = maxResolution;
     if (width && !height) {
       return `Full resolution (${width}p)`;
     }
 
-    return 'Full resolution';
+    return "Full resolution";
   }, [maxResolution]);
 
   const labelForFps = useCallback((fps: number | null) => {
-    return fps === null ? 'Default' : `At least ${fps} FPS`;
+    return fps === null ? "Default" : `At least ${fps} FPS`;
   }, []);
 
   return (
@@ -162,10 +162,10 @@ export const ResolutionLimiter: React.FC<{
               />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem key={'full'} value={'full'}>
+              <SelectItem key={"full"} value={"full"}>
                 <span
                   style={{
-                    whiteSpace: 'nowrap',
+                    whiteSpace: "nowrap",
                   }}
                 >
                   {fullResolutionLabel}
@@ -173,7 +173,7 @@ export const ResolutionLimiter: React.FC<{
               </SelectItem>
               {availableLowerResolutions.map(([key]) => (
                 <SelectItem key={key} value={key}>
-                  <span style={{ whiteSpace: 'nowrap' }}>Limit to {key}</span>
+                  <span style={{ whiteSpace: "nowrap" }}>Limit to {key}</span>
                 </SelectItem>
               ))}
             </SelectContent>
@@ -188,7 +188,7 @@ export const ResolutionLimiter: React.FC<{
               </DialogDescription>
             ) : (
               <DialogDescription>
-                {deviceName} can record in up to{' '}
+                {deviceName} can record in up to{" "}
                 {Math.floor(maxResolution.frameRate * 100) / 100} FPS, but this
                 might drop the resolution.
               </DialogDescription>
@@ -201,10 +201,10 @@ export const ResolutionLimiter: React.FC<{
               />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem key={'any'} value={'any'}>
+              <SelectItem key={"any"} value={"any"}>
                 <span
                   style={{
-                    whiteSpace: 'nowrap',
+                    whiteSpace: "nowrap",
                   }}
                 >
                   Default
@@ -212,7 +212,7 @@ export const ResolutionLimiter: React.FC<{
               </SelectItem>
               {availableHigherFps.map((key) => (
                 <SelectItem key={key} value={String(key)}>
-                  <span style={{ whiteSpace: 'nowrap' }}>
+                  <span style={{ whiteSpace: "nowrap" }}>
                     {labelForFps(key)}
                   </span>
                 </SelectItem>

@@ -2,8 +2,8 @@ import {
   HeadObjectCommand,
   PutObjectCommand,
   S3Client,
-} from '@aws-sdk/client-s3';
-import md5 from 'md5';
+} from "@aws-sdk/client-s3";
+import md5 from "md5";
 import {
   AudioConfig,
   AudioOutputStream,
@@ -11,8 +11,8 @@ import {
   SpeechConfig,
   SpeechSynthesisResult,
   SpeechSynthesizer,
-} from 'microsoft-cognitiveservices-speech-sdk';
-import { env, Voice } from './types';
+} from "microsoft-cognitiveservices-speech-sdk";
+import { env, Voice } from "./types";
 
 export const getFileName = ({
   text,
@@ -25,10 +25,10 @@ export const getFileName = ({
 };
 
 export const voiceMap: { [key in Voice]: string } = {
-  ptBRWoman: 'pt-BR-FranciscaNeural',
-  ptBRMan: 'pt-BR-AntonioNeural',
-  enUSWoman1: 'en-US-JennyNeural',
-  enUSWoman2: 'en-US-AriaNeural',
+  ptBRWoman: "pt-BR-FranciscaNeural",
+  ptBRMan: "pt-BR-AntonioNeural",
+  enUSWoman1: "en-US-JennyNeural",
+  enUSWoman2: "en-US-AriaNeural",
 } as const;
 
 export const synthesizeSpeech = async (
@@ -41,7 +41,7 @@ export const synthesizeSpeech = async (
   );
 
   if (!voiceMap[voice]) {
-    throw new Error('Voice not found');
+    throw new Error("Voice not found");
   }
 
   const fileName = getFileName({ text, voice });
@@ -67,7 +67,7 @@ export const synthesizeSpeech = async (
         } else if (res.errorDetails) {
           reject(new Error(res.errorDetails));
         } else {
-          reject(new Error('Speech Synthesis Error'));
+          reject(new Error("Speech Synthesis Error"));
         }
       },
       (error) => {

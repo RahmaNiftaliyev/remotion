@@ -1,13 +1,13 @@
-import { interpolate, useCurrentFrame } from 'remotion';
-import { COLOR_1, FONT_FAMILY } from './constants';
+import { interpolate, useCurrentFrame } from "remotion";
+import { COLOR_1, FONT_FAMILY } from "./constants";
 
 const subtitle = {
   fontFamily: FONT_FAMILY,
   fontSize: 40,
-  textAlign: 'center',
-  position: 'absolute',
+  textAlign: "center",
+  position: "absolute",
   bottom: 140,
-  width: '100%',
+  width: "100%",
 };
 
 const codeStyle = {

@@ -1,6 +1,6 @@
-import { Caption, createTikTokStyleCaptions } from '@remotion/captions';
-import { getVideoMetadata } from '@remotion/media-utils';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Caption, createTikTokStyleCaptions } from "@remotion/captions";
+import { getVideoMetadata } from "@remotion/media-utils";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AbsoluteFill,
   CalculateMetadataFunction,
@@ -11,11 +11,11 @@ import {
   useDelayRender,
   useVideoConfig,
   watchStaticFile,
-} from 'remotion';
-import { z } from 'zod';
-import { loadFont } from '../load-font';
-import { NoCaptionFile } from './NoCaptionFile';
-import SubtitlePage from './SubtitlePage';
+} from "remotion";
+import { z } from "zod";
+import { loadFont } from "../load-font";
+import { NoCaptionFile } from "./NoCaptionFile";
+import SubtitlePage from "./SubtitlePage";
 
 export type SubtitleProp = {
   startInSeconds: number;
@@ -61,10 +61,10 @@ export const CaptionedVideo: React.FC<{
   const { fps } = useVideoConfig();
 
   const subtitlesFile = src
-    .replace(/.mp4$/, '.json')
-    .replace(/.mkv$/, '.json')
-    .replace(/.mov$/, '.json')
-    .replace(/.webm$/, '.json');
+    .replace(/.mp4$/, ".json")
+    .replace(/.mkv$/, ".json")
+    .replace(/.mov$/, ".json")
+    .replace(/.webm$/, ".json");
 
   const fetchSubtitles = useCallback(async () => {
     try {
@@ -98,11 +98,11 @@ export const CaptionedVideo: React.FC<{
   }, [subtitles]);
 
   return (
-    <AbsoluteFill style={{ backgroundColor: 'white' }}>
+    <AbsoluteFill style={{ backgroundColor: "white" }}>
       <AbsoluteFill>
         <OffthreadVideo
           style={{
-            objectFit: 'cover',
+            objectFit: "cover",
           }}
           src={src}
         />

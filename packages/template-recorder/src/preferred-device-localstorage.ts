@@ -1,8 +1,8 @@
-import { Prefix } from './helpers/prefixes';
+import { Prefix } from "./helpers/prefixes";
 
 const getPreferredDeviceForPrefix = (
   prefix: Prefix,
-  type: 'video' | 'audio',
+  type: "video" | "audio",
 ) => {
   return window.localStorage.getItem(
     `recorder.preferredDevice.${type}.${prefix}`,
@@ -11,7 +11,7 @@ const getPreferredDeviceForPrefix = (
 
 export const setPreferredDeviceForPrefix = (
   prefix: Prefix,
-  type: 'video' | 'audio',
+  type: "video" | "audio",
   deviceId: string | null,
 ) => {
   window.localStorage.setItem(
@@ -22,11 +22,11 @@ export const setPreferredDeviceForPrefix = (
 
 export const getPreferredDeviceIfExists = (
   prefix: Prefix,
-  type: 'video' | 'audio',
+  type: "video" | "audio",
   devices: MediaDeviceInfo[],
 ) => {
   const deviceId = getPreferredDeviceForPrefix(prefix, type);
-  if (deviceId === '' || deviceId === null) {
+  if (deviceId === "" || deviceId === null) {
     return null;
   }
 

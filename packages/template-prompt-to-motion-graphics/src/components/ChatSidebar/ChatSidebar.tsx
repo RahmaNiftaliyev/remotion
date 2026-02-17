@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { useGenerationApi } from '@/hooks/useGenerationApi';
-import { cn } from '@/lib/utils';
+import { Button } from "@/components/ui/button";
+import { useGenerationApi } from "@/hooks/useGenerationApi";
+import { cn } from "@/lib/utils";
 import type {
   AssistantMetadata,
   ConversationContextMessage,
   ConversationMessage,
   EditOperation,
   ErrorCorrectionContext,
-} from '@/types/conversation';
+} from "@/types/conversation";
 import {
   MODELS,
   type GenerationErrorType,
   type ModelId,
   type StreamPhase,
-} from '@/types/generation';
-import { PanelLeftClose, PanelLeftOpen, RotateCcw } from 'lucide-react';
+} from "@/types/generation";
+import { PanelLeftClose, PanelLeftOpen, RotateCcw } from "lucide-react";
 import {
   forwardRef,
   useEffect,
@@ -24,9 +24,9 @@ import {
   useRef,
   useState,
   type ComponentType,
-} from 'react';
-import { ChatHistory } from './ChatHistory';
-import { ChatInput } from './ChatInput';
+} from "react";
+import { ChatHistory } from "./ChatHistory";
+import { ChatInput } from "./ChatInput";
 
 export interface ChatSidebarRef {
   triggerGeneration: (options?: {
@@ -67,7 +67,7 @@ interface ChatSidebarProps {
   ) => void;
   onErrorMessage?: (
     message: string,
-    errorType: 'edit_failed' | 'api' | 'validation',
+    errorType: "edit_failed" | "api" | "validation",
   ) => void;
   errorCorrection?: ErrorCorrectionContext;
   onPendingMessage?: (skills?: string[]) => void;
@@ -111,7 +111,7 @@ export const ChatSidebar = forwardRef<ChatSidebarRef, ChatSidebarProps>(
     ref,
   ) {
     const [model, setModel] = useState<ModelId>(MODELS[1].id);
-    const promptRef = useRef<string>('');
+    const promptRef = useRef<string>("");
 
     const { isLoading, runGeneration } = useGenerationApi();
 
@@ -127,7 +127,7 @@ export const ChatSidebar = forwardRef<ChatSidebarRef, ChatSidebarProps>(
       const currentPrompt = promptRef.current;
       if (!currentPrompt.trim()) return;
 
-      onPromptChange(''); // Clear input immediately
+      onPromptChange(""); // Clear input immediately
 
       await runGeneration(
         currentPrompt,
@@ -164,10 +164,10 @@ export const ChatSidebar = forwardRef<ChatSidebarRef, ChatSidebarProps>(
     return (
       <div
         className={cn(
-          'flex flex-col bg-background transition-all duration-300',
+          "flex flex-col bg-background transition-all duration-300",
           isCollapsed
-            ? 'w-12 shrink-0'
-            : 'w-full h-[40vh] min-[1000px]:h-auto min-[1000px]:w-[40%] min-[1000px]:min-w-[320px] min-[1000px]:max-w-[520px] shrink',
+            ? "w-12 shrink-0"
+            : "w-full h-[40vh] min-[1000px]:h-auto min-[1000px]:w-[40%] min-[1000px]:min-w-[320px] min-[1000px]:max-w-[520px] shrink",
         )}
       >
         {isCollapsed ? (
@@ -196,10 +196,10 @@ export const ChatSidebar = forwardRef<ChatSidebarRef, ChatSidebarProps>(
                   onClick={() => {
                     if (
                       window.confirm(
-                        'Start over? This will reset your animation.',
+                        "Start over? This will reset your animation.",
                       )
                     ) {
-                      window.location.href = '/';
+                      window.location.href = "/";
                     }
                   }}
                   title="Start over"

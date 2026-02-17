@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { formatMilliseconds } from './helpers/format-time';
+import React, { useEffect, useState } from "react";
+import { formatMilliseconds } from "./helpers/format-time";
 
 export const Timer: React.FC<{
   startDate: number;

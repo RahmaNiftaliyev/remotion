@@ -1,4 +1,4 @@
-import { continueRender, delayRender, staticFile } from 'remotion';
+import { continueRender, delayRender, staticFile } from "remotion";
 
 export const TheBoldFont = `TheBoldFont`;
 
@@ -15,7 +15,7 @@ export const loadFont = async (): Promise<void> => {
 
   const font = new FontFace(
     TheBoldFont,
-    `url('${staticFile('theboldfont.ttf')}') format('truetype')`,
+    `url('${staticFile("theboldfont.ttf")}') format('truetype')`,
   );
 
   await font.load();

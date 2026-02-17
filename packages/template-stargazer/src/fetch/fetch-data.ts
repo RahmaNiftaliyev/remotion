@@ -1,6 +1,6 @@
-import { QueryResult, Stargazer } from '../cache';
-import { fetchViaGraphQl } from './via-graphql';
-import { fetchPageViaRest, REST_PER_PAGE } from './via-rest';
+import { QueryResult, Stargazer } from "../cache";
+import { fetchViaGraphQl } from "./via-graphql";
+import { fetchPageViaRest, REST_PER_PAGE } from "./via-rest";
 
 export async function fetchStargazers({
   repoOrg,
@@ -15,10 +15,10 @@ export async function fetchStargazers({
 }) {
   let allStargazers: Stargazer[] = [];
 
-  console.log('Fetching stars...');
+  console.log("Fetching stars...");
   if (!process.env.REMOTION_GITHUB_TOKEN) {
     console.error(
-      'No REMOTION_GITHUB_TOKEN environment variable found. Using the GitHub REST API instead of GraphQL, which has a lower rate-limit and does not show the star dates.',
+      "No REMOTION_GITHUB_TOKEN environment variable found. Using the GitHub REST API instead of GraphQL, which has a lower rate-limit and does not show the star dates.",
     );
 
     let page = 0;

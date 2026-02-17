@@ -4,11 +4,11 @@ import {
   interpolate,
   useCurrentFrame,
   useVideoConfig,
-} from 'remotion';
-import { z } from 'zod';
-import { Title } from './HelloWorld/Title';
-import { createS3Url } from './tts';
-import { compSchema } from './types';
+} from "remotion";
+import { z } from "zod";
+import { Title } from "./HelloWorld/Title";
+import { createS3Url } from "./tts";
+import { compSchema } from "./types";
 
 export const HelloWorld: React.FC<z.infer<typeof compSchema>> = ({
   text,
@@ -24,13 +24,13 @@ export const HelloWorld: React.FC<z.infer<typeof compSchema>> = ({
     [videoConfig.durationInFrames - 25, videoConfig.durationInFrames - 15],
     [1, 0],
     {
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
     },
   );
 
   return (
-    <AbsoluteFill style={{ backgroundColor: 'white' }}>
+    <AbsoluteFill style={{ backgroundColor: "white" }}>
       <AbsoluteFill style={{ opacity }}>
         <Title
           displaySpeed={displaySpeed}

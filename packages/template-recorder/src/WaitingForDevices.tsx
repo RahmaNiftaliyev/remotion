@@ -5,8 +5,8 @@ import {
   useEffect,
   useMemo,
   useState,
-} from 'react';
-import { getDevices } from './helpers/get-devices';
+} from "react";
+import { getDevices } from "./helpers/get-devices";
 
 export type DevicesContext = {
   devices: MediaDeviceInfo[] | null;
@@ -73,7 +73,7 @@ export const WaitingForDevices: React.FC<{
 export const useDevices = (): MediaDeviceInfo[] => {
   const context = useContext(DevicesContext);
   if (!context?.devices) {
-    throw new Error('useDevices must be used within a DevicesContextProvider');
+    throw new Error("useDevices must be used within a DevicesContextProvider");
   }
 
   return context.devices;

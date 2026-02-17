@@ -4,10 +4,10 @@ import {
   staticFile,
   useCurrentFrame,
   useVideoConfig,
-} from 'remotion';
-import { FPS, IMAGE_HEIGHT, IMAGE_WIDTH } from '../lib/constants';
-import { BackgroundElement } from '../lib/types';
-import { calculateBlur, getImagePath } from '../lib/utils';
+} from "remotion";
+import { FPS, IMAGE_HEIGHT, IMAGE_WIDTH } from "../lib/constants";
+import { BackgroundElement } from "../lib/types";
+import { calculateBlur, getImagePath } from "../lib/utils";
 
 const EXTRA_SCALE = 0.2;
 
@@ -27,7 +27,7 @@ export const Background: React.FC<{
 
   const currentScaleAnim = item.animations?.find(
     (anim) =>
-      anim.type === 'scale' && anim.startMs <= localMs && anim.endMs >= localMs,
+      anim.type === "scale" && anim.startMs <= localMs && anim.endMs >= localMs,
   );
 
   if (currentScaleAnim) {
@@ -56,7 +56,7 @@ export const Background: React.FC<{
         style={{
           width: imgWidth * imgScale,
           height: imgHeight * imgScale,
-          position: 'absolute',
+          position: "absolute",
           top,
           left,
           filter: `blur(${currentBlur}px)`,

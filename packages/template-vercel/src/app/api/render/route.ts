@@ -1,12 +1,12 @@
-import { waitUntil } from '@vercel/functions';
-import { RenderRequest } from '../../../../types/schema';
+import { waitUntil } from "@vercel/functions";
+import { RenderRequest } from "../../../../types/schema";
 import {
   createDisposableWriter,
   formatSSE,
   type RenderProgress,
-} from './helpers';
-import { renderInSandbox } from './render';
-import { reuseOrCreateSandbox } from './sandbox/reuse-or-create-sandbox';
+} from "./helpers";
+import { renderInSandbox } from "./render";
+import { reuseOrCreateSandbox } from "./sandbox/reuse-or-create-sandbox";
 
 export async function POST(req: Request) {
   const encoder = new TextEncoder();
@@ -26,32 +26,32 @@ export async function POST(req: Request) {
       const body = RenderRequest.parse(payload);
 
       await using sandbox = await reuseOrCreateSandbox(send);
-      const renderingPhase = 'Rendering video...';
-      await send({ type: 'phase', phase: renderingPhase, progress: 0 });
+      const renderingPhase = "Rendering video...";
+      await send({ type: "phase", phase: renderingPhase, progress: 0 });
       await renderInSandbox({
         sandbox,
         inputProps: body.inputProps,
         onProgress: async (update) => {
-          if (update.type === 'render-progress') {
+          if (update.type === "render-progress") {
             await send({
-              type: 'phase',
+              type: "phase",
               phase: renderingPhase,
               progress: update.progress,
             });
-          } else if (update.type === 'uploading') {
+          } else if (update.type === "uploading") {
             await send({
-              type: 'phase',
-              phase: 'Uploading video...',
+              type: "phase",
+              phase: "Uploading video...",
               progress: 1,
             });
-          } else if (update.type === 'done') {
-            await send({ type: 'done', url: update.url, size: update.size });
+          } else if (update.type === "done") {
+            await send({ type: "done", url: update.url, size: update.size });
           }
         },
       });
     } catch (err) {
       console.log(err);
-      await send({ type: 'error', message: (err as Error).message });
+      await send({ type: "error", message: (err as Error).message });
     }
   };
 
@@ -59,9 +59,9 @@ export async function POST(req: Request) {
 
   return new Response(stream.readable, {
     headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      Connection: 'keep-alive',
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
     },
   });
 }

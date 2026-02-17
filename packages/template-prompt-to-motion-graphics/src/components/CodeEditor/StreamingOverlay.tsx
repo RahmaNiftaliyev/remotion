@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
 interface StreamingOverlayProps {
   visible: boolean;
@@ -9,7 +9,7 @@ interface StreamingOverlayProps {
 
 export const StreamingOverlay: React.FC<StreamingOverlayProps> = ({
   visible,
-  message = 'Generating code...',
+  message = "Generating code...",
 }) => {
   if (!visible) return null;
 

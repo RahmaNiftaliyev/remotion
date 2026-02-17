@@ -1,6 +1,6 @@
-import React from 'react';
-import { Composition } from 'remotion';
-import { DynamicComp } from './DynamicComp';
+import React from "react";
+import { Composition } from "remotion";
+import { DynamicComp } from "./DynamicComp";
 
 const defaultCode = `import { AbsoluteFill } from "remotion";
 export const MyAnimation = () => <AbsoluteFill style={{ backgroundColor: "#000" }} />;`;

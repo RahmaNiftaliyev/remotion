@@ -1,5 +1,5 @@
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { storage } from '.';
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from ".";
 
 export const uploadFileToFirebase = async (
   audioData: Uint8Array | ArrayBuffer | Blob,

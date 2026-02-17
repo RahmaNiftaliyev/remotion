@@ -1,5 +1,5 @@
-import { MicIcon } from 'lucide-react';
-import React, { useMemo } from 'react';
+import { MicIcon } from "lucide-react";
+import React, { useMemo } from "react";
 
 const spacer: React.CSSProperties = {
   width: 12,
@@ -12,15 +12,15 @@ export const CurrentAudio: React.FC<{
 }> = ({ label, onClick, disabled }) => {
   const container: React.CSSProperties = useMemo(() => {
     return {
-      display: 'flex',
-      flexDirection: 'row',
+      display: "flex",
+      flexDirection: "row",
       fontSize: 13,
-      alignItems: 'center',
+      alignItems: "center",
       flex: 1,
       lineHeight: 1.4,
       paddingLeft: 10,
-      cursor: 'pointer',
-      height: '100%',
+      cursor: "pointer",
+      height: "100%",
     };
   }, []);
 
@@ -33,7 +33,7 @@ export const CurrentAudio: React.FC<{
     >
       <MicIcon></MicIcon>
       <div style={spacer}></div>
-      <div>{label ?? 'No audio selected'}</div>
+      <div>{label ?? "No audio selected"}</div>
     </div>
   );
 };

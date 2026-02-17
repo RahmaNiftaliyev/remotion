@@ -1,12 +1,12 @@
-import { z } from 'zod';
-import { themeSchema } from './theme';
+import { z } from "zod";
+import { themeSchema } from "./theme";
 
-export const width = z.discriminatedUnion('type', [
+export const width = z.discriminatedUnion("type", [
   z.object({
-    type: z.literal('auto'),
+    type: z.literal("auto"),
   }),
   z.object({
-    type: z.literal('fixed'),
+    type: z.literal("fixed"),
     value: z.number().step(1),
   }),
 ]);

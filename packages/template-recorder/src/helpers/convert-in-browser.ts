@@ -5,8 +5,8 @@ import {
   Conversion,
   Input,
   Output,
-} from 'mediabunny';
-import { getMediabunnyOutput } from './find-good-supported-codec';
+} from "mediabunny";
+import { getMediabunnyOutput } from "./find-good-supported-codec";
 
 export const convertInBrowser = async ({
   src,
@@ -46,12 +46,12 @@ export const convertInBrowser = async ({
   };
 
   if (!conversion.isValid) {
-    throw new Error('Conversion is not valid');
+    throw new Error("Conversion is not valid");
   }
 
   await conversion.execute();
   if (!output.target.buffer) {
-    throw new Error('Conversion failed');
+    throw new Error("Conversion failed");
   }
 
   return new Blob([output.target.buffer]);

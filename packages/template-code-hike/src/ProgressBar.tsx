@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
-import { useCurrentFrame, useVideoConfig } from 'remotion';
-import { useThemeColors } from './calculate-metadata/theme';
+import React, { useMemo } from "react";
+import { useCurrentFrame, useVideoConfig } from "remotion";
+import { useThemeColors } from "./calculate-metadata/theme";
 
 const Step: React.FC<{
   readonly index: number;
@@ -15,22 +15,22 @@ const Step: React.FC<{
         themeColors.editor.lineHighlightBackground ??
         themeColors.editor.rangeHighlightBackground,
       borderRadius: 6,
-      overflow: 'hidden',
-      height: '100%',
+      overflow: "hidden",
+      height: "100%",
       flex: 1,
     };
   }, [themeColors]);
 
   const inner: React.CSSProperties = useMemo(() => {
     return {
-      height: '100%',
+      height: "100%",
       backgroundColor: themeColors.icon.foreground,
       width:
         index > currentStep
           ? 0
           : index === currentStep
-            ? currentStepProgress * 100 + '%'
-            : '100%',
+            ? currentStepProgress * 100 + "%"
+            : "100%",
     };
   }, [themeColors.icon.foreground, index, currentStep, currentStepProgress]);
 
@@ -51,12 +51,12 @@ export function ProgressBar({ steps }: { readonly steps: unknown[] }) {
 
   const container: React.CSSProperties = useMemo(() => {
     return {
-      position: 'absolute',
+      position: "absolute",
       top: 48,
       height: 6,
       left: 0,
       right: 0,
-      display: 'flex',
+      display: "flex",
       gap: 12,
     };
   }, []);

@@ -33,6 +33,12 @@ const highlighter = await createHighlighter({
 	langs: uniqueLangs,
 });
 
+const transformer = transformerTwoslash({
+	twoslasher,
+	renderer: rendererClassic(),
+	explicitTrigger: false,
+});
+
 let completed = 0;
 let errors = 0;
 const timings: Array<{cachePath: string; ms: number; error?: string}> = [];
@@ -43,13 +49,7 @@ for (const item of items) {
 		const html = highlighter.codeToHtml(item.code, {
 			lang: item.lang,
 			theme: 'github-dark',
-			transformers: [
-				transformerTwoslash({
-					twoslasher,
-					renderer: rendererClassic(),
-					explicitTrigger: false,
-				}),
-			],
+			transformers: [transformer],
 		});
 
 		const dir = dirname(item.cachePath);

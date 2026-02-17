@@ -8,6 +8,7 @@ import {
 	CanUseRemotionHooksProvider,
 } from './CanUseRemotionHooks.js';
 import type {Codec} from './codec.js';
+import type {TComposition} from './CompositionManager.js';
 import {CompositionSetters} from './CompositionManagerContext.js';
 import {FolderContext} from './Folder.js';
 import {serializeThenDeserializeInStudio} from './input-props-serialization.js';
@@ -197,12 +198,12 @@ const InnerComposition = <
 			component: lazy,
 			defaultProps: serializeThenDeserializeInStudio(
 				(defaultProps ?? {}) as z.output<Schema> & Props,
-			) as z.output<Schema> & Props,
+			) as InferProps<Schema, Props>,
 			nonce,
 			parentFolderName: parentName,
 			schema: schema ?? null,
 			calculateMetadata: compProps.calculateMetadata ?? null,
-		});
+		} as TComposition<Schema, Props>);
 
 		return () => {
 			unregisterComposition(id);

@@ -7,7 +7,6 @@
 	"repository": {
 		"url": "https://github.com/remotion-dev/remotion/tree/main/packages/media"
 	},
-	"sideEffects": false,
 	"author": "Jonny Burger <jonny@remotion.dev>, Hunain Ahmed <junaidhunain6@gmail.com>",
 	"bugs": {
 		"url": "https://github.com/remotion-dev/remotion/issues"

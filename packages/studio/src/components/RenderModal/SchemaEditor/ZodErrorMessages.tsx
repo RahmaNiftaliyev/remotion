@@ -46,33 +46,37 @@ export const ZodErrorMessages: React.FC<{
 	if (viewTab === 'json') {
 		return (
 			<div>
-				{zodValidationResult.error.errors.map((error: {path: (string | number)[]; message: string}) => {
-					return (
-						<div key={error.path.join('.')} style={style}>
-							<WarningTriangle style={triangleStyle} />
-							<Spacing x={1} />
-							{error.path.length === 0 ? 'Root' : error.path.join('.')}:{' '}
-							{error.message}
-						</div>
-					);
-				})}
+				{zodValidationResult.error.errors.map(
+					(error: {path: (string | number)[]; message: string}) => {
+						return (
+							<div key={error.path.join('.')} style={style}>
+								<WarningTriangle style={triangleStyle} />
+								<Spacing x={1} />
+								{error.path.length === 0 ? 'Root' : error.path.join('.')}:{' '}
+								{error.message}
+							</div>
+						);
+					},
+				)}
 			</div>
 		);
 	}
 
 	return (
 		<div>
-			{zodValidationResult.error.errors.map((error: {path: (string | number)[]; message: string}) => {
-				return (
-					<div key={error.path.join('.')} style={style}>
-						-{' '}
-						<code style={code}>
-							{error.path.length === 0 ? 'Root' : error.path.join('.')}
-						</code>
-						: {error.message}
-					</div>
-				);
-			})}
+			{zodValidationResult.error.errors.map(
+				(error: {path: (string | number)[]; message: string}) => {
+					return (
+						<div key={error.path.join('.')} style={style}>
+							-{' '}
+							<code style={code}>
+								{error.path.length === 0 ? 'Root' : error.path.join('.')}
+							</code>
+							: {error.message}
+						</div>
+					);
+				},
+			)}
 		</div>
 	);
 };

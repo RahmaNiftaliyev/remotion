@@ -7,8 +7,8 @@ import {SchemaLabel} from './SchemaLabel';
 import {ZodFieldValidation} from './ZodFieldValidation';
 import type {UpdaterFunction} from './ZodSwitch';
 import {useLocalState} from './local-state';
-import type {JSONPath} from './zod-types';
 import {getEnumValues} from './zod-schema-type';
+import type {JSONPath} from './zod-types';
 
 const container: React.CSSProperties = {
 	width: '100%',

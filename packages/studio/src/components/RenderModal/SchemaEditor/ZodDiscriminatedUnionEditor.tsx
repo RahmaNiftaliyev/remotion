@@ -13,12 +13,12 @@ import {ZodObjectEditor} from './ZodObjectEditor';
 import type {UpdaterFunction} from './ZodSwitch';
 import {createZodValues} from './create-zod-values';
 import {useLocalState} from './local-state';
-import type {JSONPath} from './zod-types';
 import {
-	getDiscriminator,
-	getDiscriminatedOptionKeys,
 	getDiscriminatedOption,
+	getDiscriminatedOptionKeys,
+	getDiscriminator,
 } from './zod-schema-type';
+import type {JSONPath} from './zod-types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodDiscriminatedUnionEditor: React.FC<{
@@ -77,15 +77,13 @@ export const ZodDiscriminatedUnionEditor: React.FC<{
 				label: option,
 				id: option,
 				keyHint: null,
-				leftItem:
-					option === value[discriminator] ? <Checkmark /> : null,
+				leftItem: option === value[discriminator] ? <Checkmark /> : null,
 				onClick: () => {
 					const optionSchema = getDiscriminatedOption(schema, option);
-					const val = createZodValues(
-						optionSchema,
-						z,
-						zodTypes,
-					) as Record<string, unknown>;
+					const val = createZodValues(optionSchema, z, zodTypes) as Record<
+						string,
+						unknown
+					>;
 					setLocalValue(() => val, false, false);
 				},
 				quickSwitcherLabel: null,
@@ -93,15 +91,7 @@ export const ZodDiscriminatedUnionEditor: React.FC<{
 				type: 'item',
 			};
 		});
-	}, [
-		options,
-		setLocalValue,
-		discriminator,
-		schema,
-		value,
-		z,
-		zodTypes,
-	]);
+	}, [options, setLocalValue, discriminator, schema, value, z, zodTypes]);
 
 	const save = useCallback(() => {
 		onSave(() => value, false, false);
@@ -116,8 +106,7 @@ export const ZodDiscriminatedUnionEditor: React.FC<{
 						<SchemaLabel
 							handleClick={null}
 							isDefaultValue={
-								localValue.value[discriminator] ===
-								defaultValue[discriminator]
+								localValue.value[discriminator] === defaultValue[discriminator]
 							}
 							jsonPath={[...jsonPath, discriminator]}
 							onRemove={onRemove}

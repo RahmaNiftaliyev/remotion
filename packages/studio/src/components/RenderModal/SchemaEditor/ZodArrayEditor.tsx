@@ -1,5 +1,4 @@
 import React, {useMemo, useState} from 'react';
-import {getArrayElement} from './zod-schema-type';
 import {
 	useZodIfPossible,
 	useZodTypesIfPossible,
@@ -14,6 +13,7 @@ import type {UpdaterFunction} from './ZodSwitch';
 import {createZodValues} from './create-zod-values';
 import {deepEqual} from './deep-equal';
 import {useLocalState} from './local-state';
+import {getArrayElement} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -66,7 +66,6 @@ import {
 	schemaArrayTestSchema,
 	schemaTestSchema,
 } from './SchemaTest';
-import {ZodV4SchemaTest, zodV4Schema} from './ZodV4SchemaTest';
 import {Scripts} from './Scripts';
 import {WidthHeightSequences} from './Sequence/WidthHeightSequences';
 import CircleTest from './Shapes/CircleTest';
@@ -110,6 +109,7 @@ import {VideoTesting} from './VideoTesting';
 import {WarpDemoOuter} from './WarpText';
 import {WarpDemo2} from './WarpText/demo2';
 import {WatchStaticDemo} from './watch-static';
+import {ZodV4SchemaTest, zodV4Schema} from './ZodV4SchemaTest';
 
 if (alias !== 'alias') {
 	throw new Error('should support TS aliases');

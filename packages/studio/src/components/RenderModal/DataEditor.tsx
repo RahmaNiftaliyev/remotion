@@ -8,7 +8,6 @@ import React, {
 import type {_InternalTypes, SerializedJSONWithCustomFields} from 'remotion';
 import {getInputProps, Internals} from 'remotion';
 import {NoReactInternals} from 'remotion/no-react';
-import {getZodSchemaType} from './SchemaEditor/zod-schema-type';
 import {FastRefreshContext} from '../../fast-refresh-context';
 import {StudioServerConnectionCtx} from '../../helpers/client-id';
 import {BACKGROUND, BORDER_COLOR, LIGHT_TEXT} from '../../helpers/colors';
@@ -30,6 +29,7 @@ import {
 	ZodNotInstalled,
 } from './SchemaEditor/SchemaErrorMessages';
 import {extractEnumJsonPaths} from './SchemaEditor/extract-enum-json-paths';
+import {getZodSchemaType} from './SchemaEditor/zod-schema-type';
 import {WarningIndicatorButton} from './WarningIndicatorButton';
 import type {TypeCanSaveState} from './get-render-modal-warnings';
 import {
@@ -49,7 +49,7 @@ export type State =
 			value: Record<string, unknown>;
 			validJSON: true;
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		zodValidation: {success: boolean; error?: any};
+			zodValidation: {success: boolean; error?: any};
 	  }
 	| {
 			str: string;
@@ -174,7 +174,12 @@ export const DataEditor: React.FC<{
 			return 'no-schema' as const;
 		}
 
-		if (!(typeof (unresolvedComposition.schema as {safeParse?: unknown}).safeParse === 'function')) {
+		if (
+			!(
+				typeof (unresolvedComposition.schema as {safeParse?: unknown})
+					.safeParse === 'function'
+			)
+		) {
 			throw new Error(
 				'A value which is not a Zod schema was passed to `schema`',
 			);
@@ -192,7 +197,9 @@ export const DataEditor: React.FC<{
 			return 'no-schema' as const;
 		}
 
-		return (schema as {safeParse: (v: unknown) => {success: boolean; error?: unknown}}).safeParse(defaultProps);
+		return (
+			schema as {safeParse: (v: unknown) => {success: boolean; error?: unknown}}
+		).safeParse(defaultProps);
 	}, [defaultProps, schema]);
 
 	const setShowWarning: React.Dispatch<React.SetStateAction<boolean>> =

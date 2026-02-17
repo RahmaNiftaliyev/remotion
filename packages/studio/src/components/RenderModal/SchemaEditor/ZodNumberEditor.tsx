@@ -5,8 +5,8 @@ import {SchemaLabel} from './SchemaLabel';
 import {ZodFieldValidation} from './ZodFieldValidation';
 import type {UpdaterFunction} from './ZodSwitch';
 import {useLocalState} from './local-state';
-import type {JSONPath} from './zod-types';
 import {isZodV3Schema} from './zod-schema-type';
+import type {JSONPath} from './zod-types';
 
 const fullWidth: React.CSSProperties = {
 	width: '100%',
@@ -19,9 +19,7 @@ const getMinValue = (schema: any) => {
 
 	if (isZodV3Schema(schema)) {
 		// v3: {kind: "min", value: 0, inclusive: true}
-		const minCheck = checks.find(
-			(c: {kind: string}) => c.kind === 'min',
-		);
+		const minCheck = checks.find((c: {kind: string}) => c.kind === 'min');
 		if (!minCheck || !minCheck.inclusive) return -Infinity;
 		return minCheck.value;
 	}
@@ -44,9 +42,7 @@ const getMaxValue = (schema: any) => {
 
 	if (isZodV3Schema(schema)) {
 		// v3: {kind: "max", value: 100, inclusive: true}
-		const maxCheck = checks.find(
-			(c: {kind: string}) => c.kind === 'max',
-		);
+		const maxCheck = checks.find((c: {kind: string}) => c.kind === 'max');
 		if (!maxCheck || !maxCheck.inclusive) return Infinity;
 		return maxCheck.value;
 	}

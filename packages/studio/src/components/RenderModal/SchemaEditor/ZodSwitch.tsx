@@ -1,9 +1,6 @@
 import React from 'react';
 import {useZodTypesIfPossible} from '../../get-zod-if-possible';
-import {
-	getZodSchemaDescription,
-	getZodSchemaType,
-} from './zod-schema-type';
+import {getZodSchemaDescription, getZodSchemaType} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 import {ZodArrayEditor} from './ZodArrayEditor';
 import {ZodBooleanEditor} from './ZodBooleanEditor';

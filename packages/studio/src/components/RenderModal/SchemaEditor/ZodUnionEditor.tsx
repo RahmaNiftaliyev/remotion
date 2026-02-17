@@ -1,8 +1,8 @@
 import {ZonNonEditableValue} from './ZodNonEditableValue';
 import {ZodOrNullishEditor} from './ZodOrNullishEditor';
 import type {UpdaterFunction} from './ZodSwitch';
-import type {JSONPath} from './zod-types';
 import {getZodSchemaType} from './zod-schema-type';
+import type {JSONPath} from './zod-types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const findNull = (value: readonly any[]) => {

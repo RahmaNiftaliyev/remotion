@@ -1,6 +1,5 @@
 import type {ComponentType} from 'react';
-import type {CalculateMetadataFunction} from 'remotion';
-import type {AnyZodObject} from 'remotion';
+import type {AnyZodObject, CalculateMetadataFunction} from 'remotion';
 
 export type InferProps<
 	Schema extends AnyZodObject,

@@ -1,5 +1,4 @@
 import React, {useMemo, useState} from 'react';
-import {isZodV3Schema, getZodSchemaType} from './zod-schema-type';
 import {fieldsetLabel} from '../layout';
 import {Fieldset} from './Fieldset';
 import {SchemaLabel} from './SchemaLabel';
@@ -9,6 +8,7 @@ import type {UpdaterFunction} from './ZodSwitch';
 import {ZodSwitch} from './ZodSwitch';
 import {deepEqual} from './deep-equal';
 import {useLocalState} from './local-state';
+import {getZodSchemaType, isZodV3Schema} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 
 export type ObjectDiscrimatedUnionReplacement = {

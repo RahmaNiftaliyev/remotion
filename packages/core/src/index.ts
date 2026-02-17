@@ -123,6 +123,7 @@ export type BundleState =
 checkMultipleRemotionVersions();
 export * from './AbsoluteFill.js';
 export * from './animated-image/index.js';
+export type {AnyZodObject} from './any-zod-type.js';
 export {Artifact} from './Artifact.js';
 export {Audio, Html5Audio, RemotionAudioProps} from './audio/index.js';
 export type {LoopVolumeCurveBehavior} from './audio/use-audio-frame.js';
@@ -172,7 +173,6 @@ export {Series} from './series/index.js';
 export * from './spring/index.js';
 export {staticFile} from './static-file.js';
 export * from './Still.js';
-export type {AnyZodObject} from './any-zod-type.js';
 export type {PlayableMediaTag} from './timeline-position-state.js';
 export {useBufferState} from './use-buffer-state';
 export {useCurrentFrame} from './use-current-frame.js';

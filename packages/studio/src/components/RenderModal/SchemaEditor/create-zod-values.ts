@@ -37,15 +37,13 @@ export const createZodValues = (
 				if (isZodV3Schema(schema)) {
 					for (const check of checks) {
 						if (check.kind === 'min') return check.value;
-						if (check.kind === 'max' && check.value < 0)
-							return check.value;
+						if (check.kind === 'max' && check.value < 0) return check.value;
 					}
 				} else {
 					for (const check of checks) {
 						const cd = check._zod?.def;
 						if (cd?.check === 'greater_than') return cd.value;
-						if (cd?.check === 'less_than' && cd.value < 0)
-							return cd.value;
+						if (cd?.check === 'less_than' && cd.value < 0) return cd.value;
 					}
 				}
 			}
@@ -79,11 +77,7 @@ export const createZodValues = (
 			const keys = Object.keys(shape);
 			const returnValue = keys.reduce(
 				(existing, key) => {
-					existing[key] = createZodValues(
-						shape[key],
-						zodRuntime,
-						zodTypes,
-					);
+					existing[key] = createZodValues(shape[key], zodRuntime, zodTypes);
 					return existing;
 				},
 				{} as Record<string, unknown>,

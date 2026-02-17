@@ -1,8 +1,7 @@
 import {BufferTarget, StreamTarget} from 'mediabunny';
-import type {CalculateMetadataFunction} from 'remotion';
+import type {AnyZodObject, CalculateMetadataFunction} from 'remotion';
 import {Internals, type LogLevel} from 'remotion';
 import {VERSION} from 'remotion/version';
-import type {AnyZodObject} from 'remotion';
 import {addAudioSample, addVideoSampleAndCloseFrame} from './add-sample';
 import {handleArtifacts, type WebRendererOnArtifact} from './artifact';
 import {onlyInlineAudio} from './audio';

@@ -1,10 +1,10 @@
 import React from 'react';
-import {getEffectsInner, getZodSchemaType} from './zod-schema-type';
 import {Fieldset} from './Fieldset';
 import {ZodFieldValidation} from './ZodFieldValidation';
 import type {UpdaterFunction} from './ZodSwitch';
 import {ZodSwitch} from './ZodSwitch';
 import {useLocalState} from './local-state';
+import {getEffectsInner, getZodSchemaType} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 
 const fullWidth: React.CSSProperties = {

@@ -38,9 +38,7 @@ export const ZodV3SchemaTest: React.FC<z.infer<typeof zodV3Schema>> = ({
 			<div style={{fontSize: 24, marginTop: 10}}>
 				Count: {count} | Enabled: {String(enabled)} | Level: {level}
 			</div>
-			<div style={{fontSize: 20, marginTop: 10}}>
-				Tags: {tags.join(', ')}
-			</div>
+			<div style={{fontSize: 20, marginTop: 10}}>Tags: {tags.join(', ')}</div>
 		</div>
 	);
 };

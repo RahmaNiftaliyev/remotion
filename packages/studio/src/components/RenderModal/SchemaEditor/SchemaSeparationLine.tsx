@@ -1,5 +1,4 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import {getArrayElement} from './zod-schema-type';
 import {BACKGROUND, LIGHT_TEXT, LINE_COLOR} from '../../../helpers/colors';
 import {Plus} from '../../../icons/plus';
 import {
@@ -9,6 +8,7 @@ import {
 import {Spacing} from '../../layout';
 import {fieldSetText} from '../layout';
 import {createZodValues} from './create-zod-values';
+import {getArrayElement} from './zod-schema-type';
 
 export const VERTICAL_GUIDE_HEIGHT = 24;
 

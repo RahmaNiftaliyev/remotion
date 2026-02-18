@@ -1,6 +1,6 @@
 export {createSandbox} from './create-sandbox';
-export {renderStillOnVercel} from './render-still';
-export {renderVideoOnVercel} from './render-video';
+export {renderStillOnVercel} from './render-still-on-vercel';
+export {renderVideoOnVercel} from './render-video-on-vercel';
 export {restoreSnapshot} from './restore-snapshot';
 export {saveSnapshot} from './save-snapshot';
 export type {
@@ -8,4 +8,4 @@ export type {
 	RenderOnVercelProgress,
 	VercelSandbox,
 } from './types';
-export {uploadToBlobStorage} from './upload-to-blob-storage';
+export {uploadToVercelBlob} from './upload-to-vercel-blob';

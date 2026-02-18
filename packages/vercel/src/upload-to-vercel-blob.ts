@@ -45,7 +45,7 @@ try {
 `;
 }
 
-export async function uploadToBlobStorage({
+export async function uploadToVercelBlob({
 	sandbox,
 	sandboxFilePath,
 	blobPath,

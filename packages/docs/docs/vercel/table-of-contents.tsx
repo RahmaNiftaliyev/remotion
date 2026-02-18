@@ -26,8 +26,8 @@ export const TableOfContents: React.FC = () => {
 					<strong>renderStillOnVercel()</strong>
 					<div>Render a still image in a sandbox</div>
 				</TOCItem>
-				<TOCItem link="/docs/vercel/upload-to-blob-storage">
-					<strong>uploadToBlobStorage()</strong>
+				<TOCItem link="/docs/vercel/upload-to-vercel-blob">
+					<strong>uploadToVercelBlob()</strong>
 					<div>Upload a file from the sandbox to Vercel Blob</div>
 				</TOCItem>
 				<TOCItem link="/docs/vercel/types">

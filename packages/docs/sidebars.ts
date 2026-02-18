@@ -473,7 +473,7 @@ const sidebars: SidebarsConfig = {
 				'vercel/restore-snapshot',
 				'vercel/render-video-on-vercel',
 				'vercel/render-still-on-vercel',
-				'vercel/upload-to-blob-storage',
+				'vercel/upload-to-vercel-blob',
 				'vercel/vercel-types',
 			],
 		},

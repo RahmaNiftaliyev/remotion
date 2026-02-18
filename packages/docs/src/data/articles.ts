@@ -6602,13 +6602,13 @@ export const articles = [
 		slug: 'vercel/types',
 	},
 	{
-		id: 'vercel/upload-to-blob-storage',
-		title: 'uploadToBlobStorage()',
-		relativePath: 'docs/vercel/upload-to-blob-storage.mdx',
-		compId: 'articles-docs-vercel-upload-to-blob-storage',
+		id: 'vercel/upload-to-vercel-blob',
+		title: 'uploadToVercelBlob()',
+		relativePath: 'docs/vercel/upload-to-vercel-blob.mdx',
+		compId: 'articles-docs-vercel-upload-to-vercel-blob',
 		crumb: '@remotion/vercel',
 		noAi: false,
-		slug: 'vercel/upload-to-blob-storage',
+		slug: 'vercel/upload-to-vercel-blob',
 	},
 	{
 		id: 'version-mismatch',

@@ -8,7 +8,7 @@ crumb: '@remotion/vercel'
 
 Renders a still image inside a Vercel Sandbox. Writes a render script to the sandbox, executes it, and returns the output file path.
 
-The rendered file stays inside the sandbox. Use [`uploadToBlobStorage()`](/docs/vercel/upload-to-blob-storage) to upload it to Vercel Blob.
+The rendered file stays inside the sandbox. Use [`uploadToVercelBlob()`](/docs/vercel/upload-to-vercel-blob) to upload it to Vercel Blob.
 
 ## Example
 
@@ -69,5 +69,5 @@ The path to the rendered still image inside the sandbox.
 ## See also
 
 - [`renderVideoOnVercel()`](/docs/vercel/render-video-on-vercel)
-- [`uploadToBlobStorage()`](/docs/vercel/upload-to-blob-storage)
-- [Source code for this function](https://github.com/remotion-dev/remotion/blob/main/packages/vercel/src/render-still.ts)
+- [`uploadToVercelBlob()`](/docs/vercel/upload-to-vercel-blob)
+- [Source code for this function](https://github.com/remotion-dev/remotion/blob/main/packages/vercel/src/render-still-on-vercel.ts)

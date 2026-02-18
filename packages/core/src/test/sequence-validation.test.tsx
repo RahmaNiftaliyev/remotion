@@ -58,10 +58,10 @@ describe('Composition-validation render should throw with invalid props', () => 
 			() =>
 				render(
 					<WrapSequenceContext>
-						{/* @ts-expect-error */}
 						<Sequence
 							from={0}
 							durationInFrames={100}
+							// @ts-expect-error
 							layout={'invalid-value'}
 						/>
 					</WrapSequenceContext>,

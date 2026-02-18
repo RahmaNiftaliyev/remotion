@@ -17,9 +17,13 @@ This is the production counterpart to [`createSandbox()`](/docs/vercel/create-sa
 // @target: es2022
 import {createSandbox, restoreSnapshot} from '@remotion/vercel';
 // ---cut---
-await using sandbox = process.env.VERCEL
+const sandbox = process.env.VERCEL
   ? await restoreSnapshot()
   : await createSandbox({bundleDir: '.remotion'});
+
+// ... use the sandbox
+
+await sandbox.stop();
 ```
 
 ## Arguments
@@ -29,6 +33,20 @@ None.
 ## Return value
 
 A [`VercelSandbox`](/docs/vercel/types#vercelsandbox) object restored from the cached snapshot. Throws if no snapshot is found.
+
+## Using `await using`
+
+You can use `await using` to automatically clean up the sandbox when it goes out of scope:
+
+```ts twoslash title="route.ts"
+// @module: es2022
+// @target: es2022
+import {createSandbox, restoreSnapshot} from '@remotion/vercel';
+// ---cut---
+await using sandbox = process.env.VERCEL
+  ? await restoreSnapshot()
+  : await createSandbox({bundleDir: '.remotion'});
+```
 
 ## See also
 

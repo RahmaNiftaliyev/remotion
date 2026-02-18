@@ -24,6 +24,10 @@ const sandbox = await createSandbox({
     console.log(`${message} (${Math.round(progress * 100)}%)`);
   },
 });
+
+// ... use the sandbox
+
+await sandbox.stop();
 ```
 
 ## Arguments
@@ -51,7 +55,21 @@ type CreateSandboxOnProgress = (update: {
 
 ## Return value
 
-A `VercelSandbox` object (a [`Sandbox`](https://vercel.com/docs/vercel-sandbox/sdk-reference#sandbox-class) with `AsyncDisposable` support). You can use `await using` to automatically clean up the sandbox when it goes out of scope.
+A `VercelSandbox` object (a [`Sandbox`](https://vercel.com/docs/vercel-sandbox/sdk-reference#sandbox-class) with `AsyncDisposable` support). Call `sandbox.stop()` when you are done with the sandbox.
+
+## Using `await using`
+
+You can use `await using` to automatically clean up the sandbox when it goes out of scope:
+
+```ts twoslash title="create-snapshot.ts"
+// @module: es2022
+// @target: es2022
+import {createSandbox} from '@remotion/vercel';
+// ---cut---
+await using sandbox = await createSandbox({
+  bundleDir: '.remotion',
+});
+```
 
 ## See also
 

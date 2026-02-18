@@ -326,7 +326,7 @@ const PremountedPostmountedSequenceRefForwardingFunction: React.ForwardRefRender
 	} = props;
 
 	const premountFor = ENABLE_V5_BREAKING_CHANGES
-		? (premountForProp ?? (postmountForProp === undefined ? fps : 0))
+		? (premountForProp ?? fps)
 		: (premountForProp ?? 0);
 	const postmountFor = postmountForProp ?? 0;
 

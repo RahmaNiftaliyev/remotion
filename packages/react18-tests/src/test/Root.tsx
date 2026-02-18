@@ -42,7 +42,7 @@ export const Root: React.FC = () => {
 				defaultProps={{
 					title: 'Hello from Zod v3!',
 					count: 10,
-					enabled: true,
+					enabled: [1, 0, 0, 1],
 					tags: ['react18', 'zod-v3'],
 					level: 'beginner' as const,
 				}}

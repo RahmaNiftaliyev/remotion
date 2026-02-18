@@ -9,14 +9,14 @@ import React, {
 	useState,
 } from 'react';
 import {useRemotionEnvironment} from 'remotion';
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import {getZodSchemaFromPrimitive} from '../api/get-zod-schema-from-primitive';
 import {useZodIfPossible} from '../components/get-zod-if-possible';
+import type {AnyZodSchema} from '../components/RenderModal/SchemaEditor/zod-schema-type';
 import {getVisualControlEditedValue} from './get-current-edited-value';
 
 export type VisualControlValueWithoutUnsaved = {
 	valueInCode: unknown;
-	schema: any;
+	schema: AnyZodSchema;
 	stack: string;
 };
 
@@ -38,7 +38,7 @@ export const VisualControlsTabActivatedContext =
 export type SetVisualControlsContextType = {
 	updateHandles: () => void;
 	updateValue: (key: string, value: unknown) => void;
-	visualControl: <T>(key: string, value: T, schema?: any) => T;
+	visualControl: <T>(key: string, value: T, schema?: AnyZodSchema) => T;
 };
 
 export const VisualControlsContext = createContext<VisualControlsContextType>({
@@ -47,7 +47,7 @@ export const VisualControlsContext = createContext<VisualControlsContextType>({
 
 export type VisualControlRef = {
 	// May not call it visualControl, because we rely on stacktrace names
-	globalVisualControl: <T>(key: string, value: T, schema?: any) => T;
+	globalVisualControl: <T>(key: string, value: T, schema?: AnyZodSchema) => T;
 };
 
 export const visualControlRef = createRef<VisualControlRef>();
@@ -115,8 +115,8 @@ export const VisualControlsProvider: React.FC<{
 	const env = useRemotionEnvironment();
 
 	const visualControl = useCallback(
-		// eslint-disable-next-line prefer-arrow-callback, @typescript-eslint/no-explicit-any
-		function <T>(key: string, value: T, schema?: any): T {
+		// eslint-disable-next-line prefer-arrow-callback
+		function <T>(key: string, value: T, schema?: AnyZodSchema): T {
 			// eslint-disable-next-line no-constant-condition
 			if (handles && false) {
 				/** Intentional: State is managed imperatively */

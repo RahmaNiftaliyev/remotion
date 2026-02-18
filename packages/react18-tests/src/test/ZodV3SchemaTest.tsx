@@ -2,13 +2,14 @@
  * Test composition using zod v3 schema (via zod/v3 import).
  * Verifies that the studio schema editor works with zod v3 schemas.
  */
+import {zMatrix} from '@remotion/zod-types-v3';
 import React from 'react';
 import {z} from 'zod';
 
 export const zodV3Schema = z.object({
 	title: z.string(),
 	count: z.number().min(0).max(100),
-	enabled: z.boolean(),
+	enabled: zMatrix(),
 	tags: z.array(z.string()),
 	level: z.enum(['beginner', 'intermediate', 'advanced']),
 });

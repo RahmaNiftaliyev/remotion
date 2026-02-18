@@ -80,6 +80,28 @@ export const ZodSwitch: React.FC<{
 	}
 
 	if (typeName === 'string') {
+		// In v4, .refine() doesn't wrap in ZodEffects, so check brand here too
+		if (
+			zodTypes &&
+			description === zodTypes.ZodZypesInternals.REMOTION_COLOR_BRAND
+		) {
+			return (
+				<ZodColorEditor
+					value={value as string}
+					setValue={setValue as UpdaterFunction<string>}
+					jsonPath={jsonPath}
+					schema={schema}
+					onSave={onSave as UpdaterFunction<string>}
+					defaultValue={defaultValue as string}
+					showSaveButton={showSaveButton}
+					onRemove={onRemove}
+					saving={saving}
+					saveDisabledByParent={saveDisabledByParent}
+					mayPad={mayPad}
+				/>
+			);
+		}
+
 		if ((value as string).startsWith(window.remotion_staticBase)) {
 			return (
 				<ZodStaticFileEditor
@@ -251,6 +273,28 @@ export const ZodSwitch: React.FC<{
 	}
 
 	if (typeName === 'array') {
+		// In v4, .refine() doesn't wrap in ZodEffects, so check brand here too
+		if (
+			zodTypes &&
+			description === zodTypes.ZodZypesInternals.REMOTION_MATRIX_BRAND
+		) {
+			return (
+				<ZodMatrixEditor
+					setValue={setValue as UpdaterFunction<unknown[]>}
+					value={value as unknown[]}
+					jsonPath={jsonPath}
+					schema={schema}
+					defaultValue={defaultValue as unknown[]}
+					onSave={onSave as UpdaterFunction<unknown[]>}
+					showSaveButton={showSaveButton}
+					onRemove={onRemove}
+					saving={saving}
+					saveDisabledByParent={saveDisabledByParent}
+					mayPad={mayPad}
+				/>
+			);
+		}
+
 		return (
 			<ZodArrayEditor
 				setValue={setValue as UpdaterFunction<unknown[]>}

@@ -2275,6 +2275,7 @@
       "name": "@remotion/web-renderer",
       "version": "4.0.424",
       "dependencies": {
+        "@mediabunny/mp3-encoder": "catalog:",
         "@remotion/licensing": "workspace:*",
         "mediabunny": "catalog:",
         "remotion": "workspace:*",

@@ -25,7 +25,7 @@ export type CanRenderIssue = {
 export type CanRenderMediaOnWebResult = {
 	canRender: boolean;
 	issues: CanRenderIssue[];
-	resolvedVideoCodec: WebRendererVideoCodec;
+	resolvedVideoCodec: WebRendererVideoCodec | null;
 	resolvedAudioCodec: WebRendererAudioCodec | null;
 	resolvedOutputTarget: WebRendererOutputTarget;
 };

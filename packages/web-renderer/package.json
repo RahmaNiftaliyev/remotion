@@ -18,6 +18,7 @@
 	"author": "Remotion <jonny@remotion.dev>",
 	"license": "UNLICENSED",
 	"dependencies": {
+		"@mediabunny/mp3-encoder": "catalog:",
 		"@remotion/licensing": "workspace:*",
 		"remotion": "workspace:*",
 		"mediabunny": "catalog:"

@@ -345,7 +345,11 @@ const WebRenderModal: React.FC<WebRenderModalProps> = ({
 	const setContainerFormat = useCallback(
 		(newContainer: WebRendererContainer) => {
 			setContainer(newContainer);
-			setCodec(getDefaultVideoCodecForContainer(newContainer) ?? 'h264');
+			const defaultVideoCodec = getDefaultVideoCodecForContainer(newContainer);
+			if (defaultVideoCodec) {
+				setCodec(defaultVideoCodec);
+			}
+
 			setAudioCodec(getDefaultAudioCodecForContainer(newContainer));
 			updateOutNameExtension(newContainer);
 		},

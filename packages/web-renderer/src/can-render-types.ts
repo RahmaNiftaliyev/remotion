@@ -32,7 +32,7 @@ export type CanRenderMediaOnWebResult = {
 
 export type CanRenderMediaOnWebOptions = {
 	container?: WebRendererContainer;
-	videoCodec?: WebRendererVideoCodec;
+	videoCodec?: WebRendererVideoCodec | null;
 	audioCodec?: WebRendererAudioCodec | null;
 	width: number;
 	height: number;

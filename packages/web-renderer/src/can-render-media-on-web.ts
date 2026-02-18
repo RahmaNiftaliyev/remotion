@@ -27,15 +27,6 @@ export const canRenderMediaOnWeb = async (
 ): Promise<CanRenderMediaOnWebResult> => {
 	const issues: CanRenderIssue[] = [];
 
-	if (typeof VideoEncoder === 'undefined') {
-		issues.push({
-			type: 'webcodecs-unavailable',
-			message:
-				'WebCodecs API is not available in this browser. A modern browser with WebCodecs support is required.',
-			severity: 'error',
-		});
-	}
-
 	const container = options.container ?? 'mp4';
 	const videoCodec =
 		options.videoCodec ?? getDefaultVideoCodecForContainer(container) ?? null;
@@ -54,6 +45,15 @@ export const canRenderMediaOnWeb = async (
 			: getQualityForWebRendererQuality(options.audioBitrate ?? 'medium');
 
 	if (videoEnabled) {
+		if (typeof VideoEncoder === 'undefined') {
+			issues.push({
+				type: 'webcodecs-unavailable',
+				message:
+					'WebCodecs API is not available in this browser. A modern browser with WebCodecs support is required.',
+				severity: 'error',
+			});
+		}
+
 		if (!videoCodec) {
 			issues.push({
 				type: 'container-codec-mismatch',
@@ -148,7 +148,7 @@ export const canRenderMediaOnWeb = async (
 	return {
 		canRender: issues.filter((i) => i.severity === 'error').length === 0,
 		issues,
-		resolvedVideoCodec: videoCodec,
+		resolvedVideoCodec: videoEnabled ? videoCodec : null,
 		resolvedAudioCodec,
 		resolvedOutputTarget,
 	};

@@ -7,7 +7,7 @@
 	"main": "dist/index.js",
 	"type": "module",
 	"scripts": {
-		"formatting": "prettier --experimental-cli src --check",
+		"formatting": "prettier src --check",
 		"lint": "eslint src",
 		"make": "tsgo && bun --env-file=../.env.bundle bundle.ts",
 		"watch": "tsgo -w",

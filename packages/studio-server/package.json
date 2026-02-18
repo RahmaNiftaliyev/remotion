@@ -10,7 +10,7 @@
 	"scripts": {
 		"lint": "eslint src",
 		"test": "bun test src",
-		"formatting": "prettier --experimental-cli src --check",
+		"formatting": "prettier src --check",
 		"make": "tsgo -d"
 	},
 	"author": "Jonny Burger <jonny@remotion.dev>",

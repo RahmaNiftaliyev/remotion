@@ -28,7 +28,7 @@
 		"@types/node": "catalog:"
 	},
 	"scripts": {
-		"formatting": "prettier --experimental-cli src --check",
+		"formatting": "prettier src --check",
 		"lint": "eslint src",
 		"dev": "next dev",
 		"build-site": "next build"

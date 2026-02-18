@@ -9,7 +9,7 @@
 	"sideEffects": false,
 	"scripts": {
 		"lint": "eslint src",
-		"formatting": "prettier --experimental-cli src --check",
+		"formatting": "prettier src --check",
 		"make": "tsgo -d && bun --env-file=../.env.bundle bundle.ts"
 	},
 	"author": "Jonny Burger <jonny@remotion.dev>",

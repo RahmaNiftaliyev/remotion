@@ -104,7 +104,7 @@ function extractTwoslashBlocks(
 	while ((match = codeBlockRegex.exec(content)) !== null) {
 		const lang = match[1];
 		const meta = match[2].trim();
-		const code = match[3];
+		const code = match[3].replace(/\n$/, '');
 
 		if (lang === 'twoslash') {
 			const includeMatch = meta.match(/include\s+(\S+)/);

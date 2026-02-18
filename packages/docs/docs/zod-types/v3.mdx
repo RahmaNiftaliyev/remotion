@@ -1,0 +1,34 @@
+---
+image: /generated/articles-docs-zod-types-v3.png
+sidebar_label: Zod v3
+title: '@remotion/zod-types-v3'
+crumb: Schema
+---
+
+`@remotion/zod-types` creates schemas using Zod v4. If you are still using Zod v3 and need to compose Remotion schemas into a `z.object()`, use `@remotion/zod-types-v3` instead.
+
+## Installation
+
+<Installation pkg="@remotion/zod-types-v3" />
+
+## Usage
+
+```tsx title="Using @remotion/zod-types-v3 with Zod v3"
+import {z} from 'zod';
+import {zColor} from '@remotion/zod-types-v3';
+
+export const mySchema = z.object({
+  color: zColor(),
+});
+```
+
+The package exports the same `zColor()`, `zTextarea()`, and `zMatrix()` functions as `@remotion/zod-types`, but they return Zod v3 schema types.
+
+## When to use
+
+- Use `@remotion/zod-types` (default) if you are using Zod v4.
+- Use `@remotion/zod-types-v3` if you are still on Zod v3.
+
+## See also
+
+- [`@remotion/zod-types`](/docs/zod-types)

@@ -70,6 +70,7 @@
 		"@remotion/media-parser": "workspace:*",
 		"@remotion/whisper-web": "workspace:*",
 		"@remotion/zod-types": "workspace:*",
+		"@remotion/zod-types-v3": "workspace:*",
 		"@shopify/react-native-skia": "2.0.0",
 		"@types/express": "^4.17.11",
 		"@types/hls.js": "^0.13.3",

@@ -22,6 +22,7 @@ import {useVideoConfig} from './use-video-config.js';
 import {Freeze} from './freeze.js';
 import {useCurrentFrame} from './use-current-frame';
 import {useRemotionEnvironment} from './use-remotion-environment.js';
+import {ENABLE_V5_BREAKING_CHANGES} from './v5-flag.js';
 
 export type AbsoluteFillLayout = {
 	layout?: 'absolute-fill';
@@ -311,16 +312,23 @@ const PremountedPostmountedSequenceRefForwardingFunction: React.ForwardRefRender
 		);
 	}
 
+	const {fps} = useVideoConfig();
+
 	const {
 		style: passedStyle,
 		from = 0,
 		durationInFrames = Infinity,
-		premountFor = 0,
-		postmountFor = 0,
+		premountFor: premountForProp,
+		postmountFor: postmountForProp,
 		styleWhilePremounted,
 		styleWhilePostmounted,
 		...otherProps
 	} = props;
+
+	const premountFor = ENABLE_V5_BREAKING_CHANGES
+		? (premountForProp ?? (postmountForProp === undefined ? fps : 0))
+		: (premountForProp ?? 0);
+	const postmountFor = postmountForProp ?? 0;
 
 	const endThreshold = Math.ceil(from + durationInFrames - 1);
 	const premountingActive = frame < from && frame >= from - premountFor;
@@ -382,7 +390,15 @@ const SequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 	const env = useRemotionEnvironment();
 	if (props.layout !== 'none' && !env.isRendering) {
 		if (props.premountFor || props.postmountFor) {
-			return <PremountedPostmountedSequence {...props} ref={ref} />;
+			return <PremountedPostmountedSequence ref={ref} {...props} />;
+		}
+
+		if (
+			ENABLE_V5_BREAKING_CHANGES &&
+			props.premountFor === undefined &&
+			props.postmountFor === undefined
+		) {
+			return <PremountedPostmountedSequence ref={ref} {...props} />;
 		}
 	}
 

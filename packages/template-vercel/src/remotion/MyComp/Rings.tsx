@@ -1,5 +1,5 @@
-import React from "react";
-import { AbsoluteFill, interpolateColors, useVideoConfig } from "remotion";
+import React from 'react';
+import { AbsoluteFill, interpolateColors, useVideoConfig } from 'remotion';
 
 const RadialGradient: React.FC<{
   radius: number;
@@ -11,8 +11,8 @@ const RadialGradient: React.FC<{
   return (
     <AbsoluteFill
       style={{
-        justifyContent: "center",
-        alignItems: "center",
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
     >
       <div
@@ -46,7 +46,7 @@ export const Rings: React.FC<{
             <RadialGradient
               key={i}
               radius={height * 0.3 * i}
-              color={interpolateColors(i, [0, 4], ["#fff", "#fff"])}
+              color={interpolateColors(i, [0, 4], ['#fff', '#fff'])}
             />
           );
         })

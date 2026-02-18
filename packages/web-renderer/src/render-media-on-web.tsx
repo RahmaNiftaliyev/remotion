@@ -33,7 +33,7 @@ import {
 import type {WebRendererOutputTarget} from './output-target';
 import type {
 	CompositionCalculateMetadataOrExplicit,
-	InferProps,
+	InferZodInput,
 } from './props-if-has-props';
 import {onlyOneRenderAtATimeQueue} from './render-operations-queue';
 import {resolveAudioCodec} from './resolve-audio-codec';
@@ -52,7 +52,7 @@ export type InputPropsIfHasProps<
 	? {} extends Props
 		? {
 				// Neither props nor schema specified
-				inputProps?: Record<string, unknown> & Props;
+				inputProps?: InferZodInput<Schema> & Props;
 			}
 		: {
 				// Only props specified
@@ -61,11 +61,11 @@ export type InputPropsIfHasProps<
 	: {} extends Props
 		? {
 				// Only schema specified
-				inputProps: Record<string, unknown>;
+				inputProps: InferZodInput<Schema>;
 			}
 		: {
 				// Props and schema specified
-				inputProps: Record<string, unknown> & Props;
+				inputProps: InferZodInput<Schema> & Props;
 			};
 
 type MandatoryRenderMediaOnWebOptions<
@@ -226,7 +226,7 @@ const internalRenderMediaOnWeb = async <
 	const resolved = await Internals.resolveVideoConfig({
 		calculateMetadata:
 			(composition.calculateMetadata as unknown as CalculateMetadataFunction<
-				InferProps<AnyZodObject, Record<string, unknown>>
+				Record<string, unknown>
 			>) ?? null,
 		signal: signal ?? new AbortController().signal,
 		defaultProps: composition.defaultProps ?? {},

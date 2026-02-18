@@ -9,10 +9,7 @@ import {handleArtifacts} from './artifact';
 import {checkForError, createScaffold} from './create-scaffold';
 import type {InternalState} from './internal-state';
 import {makeInternalState} from './internal-state';
-import type {
-	CompositionCalculateMetadataOrExplicit,
-	InferProps,
-} from './props-if-has-props';
+import type {CompositionCalculateMetadataOrExplicit} from './props-if-has-props';
 import type {InputPropsIfHasProps} from './render-media-on-web';
 import {onlyOneRenderAtATimeQueue} from './render-operations-queue';
 import {sendUsageEvent} from './send-telemetry-event';
@@ -81,7 +78,7 @@ async function internalRenderStillOnWeb<
 	const resolved = await Internals.resolveVideoConfig({
 		calculateMetadata:
 			(composition.calculateMetadata as unknown as CalculateMetadataFunction<
-				InferProps<AnyZodObject, Record<string, unknown>>
+				Record<string, unknown>
 			>) ?? null,
 		signal: signal ?? new AbortController().signal,
 		defaultProps: composition.defaultProps ?? {},

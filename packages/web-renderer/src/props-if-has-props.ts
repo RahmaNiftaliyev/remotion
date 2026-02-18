@@ -2,7 +2,7 @@ import type {ComponentType} from 'react';
 import type {AnyZodObject, CalculateMetadataFunction} from 'remotion';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type InferZodInput<T> = T extends {_zod: {input: any}}
+export type InferZodInput<T> = T extends {_zod: {input: any}}
 	? T['_zod']['input']
 	: // eslint-disable-next-line @typescript-eslint/no-explicit-any
 		T extends {_input: any}

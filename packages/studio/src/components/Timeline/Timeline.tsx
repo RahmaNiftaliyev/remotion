@@ -98,7 +98,7 @@ export const Timeline: React.FC = () => {
 		<div
 			ref={timelineVerticalScroll}
 			style={container}
-			className={'css-reset timeline-root ' + VERTICAL_SCROLLBAR_CLASSNAME}
+			className={'css-reset ' + VERTICAL_SCROLLBAR_CLASSNAME}
 		>
 			<TimelineWidthProvider>
 				<div style={inner}>

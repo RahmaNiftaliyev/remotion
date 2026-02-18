@@ -26,7 +26,7 @@ export const TimelineScrollable: React.FC<{
 		<div
 			ref={scrollableRef}
 			style={outer}
-			className={HORIZONTAL_SCROLLBAR_CLASSNAME}
+			className={'timeline-root ' + HORIZONTAL_SCROLLBAR_CLASSNAME}
 		>
 			<div style={containerStyle}>{children}</div>
 		</div>

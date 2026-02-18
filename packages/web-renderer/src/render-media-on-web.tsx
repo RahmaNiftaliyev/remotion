@@ -225,7 +225,7 @@ const internalRenderMediaOnWeb = async <
 
 	const resolved = await Internals.resolveVideoConfig({
 		calculateMetadata:
-			(composition.calculateMetadata as CalculateMetadataFunction<
+			(composition.calculateMetadata as unknown as CalculateMetadataFunction<
 				InferProps<AnyZodObject, Record<string, unknown>>
 			>) ?? null,
 		signal: signal ?? new AbortController().signal,

@@ -2,7 +2,7 @@ import {
   createSandbox,
   renderVideoOnVercel,
   restoreSnapshot,
-  uploadToBlobStorage,
+  uploadToVercelBlob,
 } from "@remotion/vercel";
 import { waitUntil } from "@vercel/functions";
 import { COMP_NAME } from "../../../../types/constants";
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
         throw new Error("BLOB_READ_WRITE_TOKEN is not set");
       }
 
-      const { url, size } = await uploadToBlobStorage({
+      const { url, size } = await uploadToVercelBlob({
         sandbox,
         sandboxFilePath: file,
         contentType: "video/mp4",

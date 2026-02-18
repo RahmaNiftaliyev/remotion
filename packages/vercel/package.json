@@ -39,6 +39,7 @@
 	},
 	"devDependencies": {
 		"@remotion/eslint-config-internal": "workspace:*",
+		"@remotion/renderer": "workspace:*",
 		"@vercel/blob": "2.0.1",
 		"@vercel/sandbox": "1.6.0",
 		"eslint": "catalog:",

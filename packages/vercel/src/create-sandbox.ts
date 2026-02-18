@@ -4,7 +4,6 @@ import {installBrowser} from './internals/install-browser';
 import {installJsDependencies} from './internals/install-js-dependencies';
 import {installSystemDependencies} from './internals/install-system-dependencies';
 import {patchCompositor} from './internals/patch-compositor';
-import {getRenderVideoScript} from './internals/render-video-script';
 import type {CreateSandboxOnProgress, VercelSandbox} from './types';
 
 export const SANDBOX_CREATING_TIMEOUT = 5 * 60 * 1000;
@@ -74,16 +73,8 @@ export async function createSandbox({
 		},
 	});
 
-	// Write a default render script and package.json (module type)
-	const renderScript = getRenderVideoScript({
-		codec: 'h264',
-		outputFile: '/tmp/video.mp4',
-	});
+	// Write package.json (module type) so scripts can use ESM imports
 	await sandbox.writeFiles([
-		{
-			path: 'render.ts',
-			content: Buffer.from(renderScript),
-		},
 		{
 			path: 'package.json',
 			content: Buffer.from(JSON.stringify({type: 'module'})),

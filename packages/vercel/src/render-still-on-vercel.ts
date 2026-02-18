@@ -1,5 +1,5 @@
 import type {Sandbox} from '@vercel/sandbox';
-import {getRenderStillScript} from './internals/render-still-script';
+import {script as renderStillScript} from './internals/render-still-script';
 import type {RenderOnVercelProgress} from './types';
 
 export async function renderStillOnVercel({
@@ -21,12 +21,10 @@ export async function renderStillOnVercel({
 }): Promise<{file: string}> {
 	const serveUrl = `/vercel/sandbox/${bundleDir}`;
 
-	const renderScript = getRenderStillScript({imageFormat, outputFile});
-
 	await sandbox.writeFiles([
 		{
 			path: 'render-still.ts',
-			content: Buffer.from(renderScript),
+			content: Buffer.from(renderStillScript),
 		},
 	]);
 
@@ -34,6 +32,8 @@ export async function renderStillOnVercel({
 		serveUrl,
 		compositionId,
 		inputProps,
+		imageFormat,
+		outputFile,
 	};
 
 	const renderCmd = await sandbox.runCommand({

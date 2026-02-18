@@ -1,5 +1,5 @@
 import type {Sandbox} from '@vercel/sandbox';
-import {getEnsureBrowserScript} from './ensure-browser-script';
+import {script as ensureBrowserScript} from './ensure-browser-script';
 
 export async function installBrowser({
 	sandbox,
@@ -8,7 +8,6 @@ export async function installBrowser({
 	sandbox: Sandbox;
 	onProgress: (progress: number) => Promise<void>;
 }): Promise<void> {
-	const ensureBrowserScript = getEnsureBrowserScript();
 	await sandbox.writeFiles([
 		{
 			path: 'ensure-browser.ts',

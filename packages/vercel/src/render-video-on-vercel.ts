@@ -1,5 +1,5 @@
 import type {Sandbox} from '@vercel/sandbox';
-import {getRenderVideoScript} from './internals/render-video-script';
+import {script as renderVideoScript} from './internals/render-video-script';
 import type {RenderOnVercelProgress} from './types';
 
 export async function renderVideoOnVercel({
@@ -21,12 +21,10 @@ export async function renderVideoOnVercel({
 }): Promise<{file: string}> {
 	const serveUrl = `/vercel/sandbox/${bundleDir}`;
 
-	const renderScript = getRenderVideoScript({codec, outputFile});
-
 	await sandbox.writeFiles([
 		{
 			path: 'render-video.ts',
-			content: Buffer.from(renderScript),
+			content: Buffer.from(renderVideoScript),
 		},
 	]);
 
@@ -34,6 +32,8 @@ export async function renderVideoOnVercel({
 		serveUrl,
 		compositionId,
 		inputProps,
+		codec,
+		outputFile,
 	};
 
 	const renderCmd = await sandbox.runCommand({

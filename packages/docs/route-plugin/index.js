@@ -4,15 +4,6 @@ const fs = require('fs');
 module.exports = function () {
 	return {
 		name: 'slug-plugin',
-		configureWebpack() {
-			return {
-				resolve: {
-					alias: {
-						mediabunny: require.resolve('mediabunny'),
-					},
-				},
-			};
-		},
 		loadContent() {
 			const experts = fs.readFileSync(
 				path.join(

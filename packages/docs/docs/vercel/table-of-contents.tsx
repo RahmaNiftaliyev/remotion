@@ -38,6 +38,10 @@ export const TableOfContents: React.FC = () => {
 					<strong>uploadToBlobStorage()</strong>
 					<div>Upload a file from the sandbox to Vercel Blob</div>
 				</TOCItem>
+				<TOCItem link="/docs/vercel/types">
+					<strong>Types</strong>
+					<div>TypeScript types reference</div>
+				</TOCItem>
 			</Grid>
 		</div>
 	);

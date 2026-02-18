@@ -319,7 +319,7 @@ const PremountedPostmountedSequenceRefForwardingFunction: React.ForwardRefRender
 		from = 0,
 		durationInFrames = Infinity,
 		premountFor: premountForProp,
-		postmountFor: postmountForProp,
+		postmountFor = 0,
 		styleWhilePremounted,
 		styleWhilePostmounted,
 		...otherProps
@@ -328,7 +328,6 @@ const PremountedPostmountedSequenceRefForwardingFunction: React.ForwardRefRender
 	const premountFor = ENABLE_V5_BREAKING_CHANGES
 		? (premountForProp ?? fps)
 		: (premountForProp ?? 0);
-	const postmountFor = postmountForProp ?? 0;
 
 	const endThreshold = Math.ceil(from + durationInFrames - 1);
 	const premountingActive = frame < from && frame >= from - premountFor;

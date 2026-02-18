@@ -1,9 +1,9 @@
-import { Sandbox } from '@vercel/sandbox';
-import { execSync } from 'child_process';
-import { existsSync } from 'fs';
-import { readdir, readFile } from 'fs/promises';
-import path from 'path';
-import { BUILD_DIR } from '../../../../../build-dir.mjs';
+import { Sandbox } from "@vercel/sandbox";
+import { execSync } from "child_process";
+import { existsSync } from "fs";
+import { readdir, readFile } from "fs/promises";
+import path from "path";
+import { BUILD_DIR } from "../../../../../build-dir.mjs";
 
 export const addBundleToSandbox = async (
   sandbox: Sandbox & AsyncDisposable,
@@ -14,18 +14,18 @@ export const addBundleToSandbox = async (
   const dirs = new Set<string>();
   for (const file of bundleFiles) {
     const dir = path.dirname(file.path);
-    if (dir && dir !== '.') {
+    if (dir && dir !== ".") {
       dirs.add(dir);
     }
   }
 
   for (const dir of Array.from(dirs).sort()) {
-    await sandbox.mkDir(BUILD_DIR + '/' + dir);
+    await sandbox.mkDir(BUILD_DIR + "/" + dir);
   }
 
   await sandbox.writeFiles(
     bundleFiles.map((file) => ({
-      path: BUILD_DIR + '/' + file.path,
+      path: BUILD_DIR + "/" + file.path,
       content: file.content,
     })),
   );
@@ -40,7 +40,7 @@ async function getRemotionBundleFiles(): Promise<
 
   const files: { path: string; content: Buffer }[] = [];
 
-  async function readDirRecursive(dir: string, basePath: string = '') {
+  async function readDirRecursive(dir: string, basePath: string = "") {
     const entries = await readdir(dir, { withFileTypes: true });
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
@@ -68,10 +68,10 @@ async function ensureLocalBundle(): Promise<void> {
     try {
       execSync(`node_modules/.bin/remotion bundle --out-dir ./${BUILD_DIR}`, {
         cwd: process.cwd(),
-        stdio: 'pipe',
+        stdio: "pipe",
       });
     } catch (e) {
-      const stderr = (e as { stderr?: Buffer }).stderr?.toString() ?? '';
+      const stderr = (e as { stderr?: Buffer }).stderr?.toString() ?? "";
       throw new Error(`Remotion bundle failed: ${stderr}`);
     }
   }

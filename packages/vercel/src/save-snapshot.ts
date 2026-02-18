@@ -1,5 +1,5 @@
 import {put} from '@vercel/blob';
-import type {VercelSandbox} from './types';
+import type {Sandbox} from '@vercel/sandbox';
 
 type SnapshotCache = {
 	snapshotId: string;
@@ -12,7 +12,7 @@ export async function saveSnapshot({
 	sandbox,
 	expiration = 0,
 }: {
-	sandbox: VercelSandbox;
+	sandbox: Sandbox;
 	expiration?: number;
 }): Promise<{snapshotId: string}> {
 	const snapshot = await sandbox.snapshot({expiration});

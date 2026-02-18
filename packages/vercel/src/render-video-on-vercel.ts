@@ -1,5 +1,6 @@
+import type {Sandbox} from '@vercel/sandbox';
 import {getRenderVideoScript} from './internals/render-video-script';
-import type {RenderOnVercelProgress, VercelSandbox} from './types';
+import type {RenderOnVercelProgress} from './types';
 
 export async function renderVideoOnVercel({
 	sandbox,
@@ -10,7 +11,7 @@ export async function renderVideoOnVercel({
 	onProgress,
 	bundleDir = '.remotion',
 }: {
-	sandbox: VercelSandbox;
+	sandbox: Sandbox;
 	compositionId: string;
 	inputProps: Record<string, unknown>;
 	codec?: string;

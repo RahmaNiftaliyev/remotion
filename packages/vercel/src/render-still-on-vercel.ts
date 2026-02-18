@@ -1,5 +1,6 @@
+import type {Sandbox} from '@vercel/sandbox';
 import {getRenderStillScript} from './internals/render-still-script';
-import type {RenderOnVercelProgress, VercelSandbox} from './types';
+import type {RenderOnVercelProgress} from './types';
 
 export async function renderStillOnVercel({
 	sandbox,
@@ -10,7 +11,7 @@ export async function renderStillOnVercel({
 	onProgress,
 	bundleDir = '.remotion',
 }: {
-	sandbox: VercelSandbox;
+	sandbox: Sandbox;
 	compositionId: string;
 	inputProps: Record<string, unknown>;
 	imageFormat?: 'png' | 'jpeg' | 'webp';

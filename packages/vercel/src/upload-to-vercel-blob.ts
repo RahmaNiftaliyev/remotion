@@ -1,4 +1,4 @@
-import type {VercelSandbox} from './types';
+import type {Sandbox} from '@vercel/sandbox';
 
 function getExtension(filePath: string): string {
 	const lastDot = filePath.lastIndexOf('.');
@@ -52,7 +52,7 @@ export async function uploadToVercelBlob({
 	contentType,
 	blobToken,
 }: {
-	sandbox: VercelSandbox;
+	sandbox: Sandbox;
 	sandboxFilePath: string;
 	blobPath?: string;
 	contentType: string;

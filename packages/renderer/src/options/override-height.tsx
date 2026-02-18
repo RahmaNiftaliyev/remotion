@@ -1,3 +1,4 @@
+import {validateDimension} from '../validate';
 import type {AnyRemotionOption} from './option';
 
 let currentHeight: number | null = null;
@@ -14,11 +15,7 @@ export const overrideHeightOption = {
 	getValue: ({commandLine}) => {
 		if (commandLine[cliFlag] !== undefined) {
 			const value = commandLine[cliFlag] as number;
-			if (typeof value !== 'number') {
-				throw new TypeError(
-					`--height must be a number, got ${JSON.stringify(value)}`,
-				);
-			}
+			validateDimension(value, 'height', 'in --height flag');
 
 			return {
 				source: 'cli',
@@ -39,12 +36,7 @@ export const overrideHeightOption = {
 		};
 	},
 	setConfig: (height) => {
-		if (typeof height !== 'number') {
-			throw new TypeError(
-				`overrideHeight() must receive a number, got ${JSON.stringify(height)}`,
-			);
-		}
-
+		validateDimension(height, 'height', 'in Config.overrideHeight()');
 		currentHeight = height;
 	},
 	id: cliFlag,

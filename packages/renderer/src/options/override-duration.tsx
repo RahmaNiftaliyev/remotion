@@ -1,3 +1,4 @@
+import {validateDurationInFrames} from '../validate';
 import type {AnyRemotionOption} from './option';
 
 let currentDuration: number | null = null;
@@ -14,11 +15,10 @@ export const overrideDurationOption = {
 	getValue: ({commandLine}) => {
 		if (commandLine[cliFlag] !== undefined) {
 			const value = commandLine[cliFlag] as number;
-			if (typeof value !== 'number') {
-				throw new TypeError(
-					`--duration must be a number, got ${JSON.stringify(value)}`,
-				);
-			}
+			validateDurationInFrames(value, {
+				component: 'in --duration flag',
+				allowFloats: false,
+			});
 
 			return {
 				source: 'cli',
@@ -39,12 +39,10 @@ export const overrideDurationOption = {
 		};
 	},
 	setConfig: (duration) => {
-		if (typeof duration !== 'number') {
-			throw new TypeError(
-				`overrideDuration() must receive a number, got ${JSON.stringify(duration)}`,
-			);
-		}
-
+		validateDurationInFrames(duration, {
+			component: 'in Config.overrideDuration()',
+			allowFloats: false,
+		});
 		currentDuration = duration;
 	},
 	id: cliFlag,

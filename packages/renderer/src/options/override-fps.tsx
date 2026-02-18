@@ -1,3 +1,4 @@
+import {validateFps} from '../validate';
 import type {AnyRemotionOption} from './option';
 
 let currentFps: number | null = null;
@@ -14,11 +15,7 @@ export const overrideFpsOption = {
 	getValue: ({commandLine}) => {
 		if (commandLine[cliFlag] !== undefined) {
 			const value = commandLine[cliFlag] as number;
-			if (typeof value !== 'number') {
-				throw new TypeError(
-					`--fps must be a number, got ${JSON.stringify(value)}`,
-				);
-			}
+			validateFps(value, 'in --fps flag', false);
 
 			return {
 				source: 'cli',
@@ -39,12 +36,7 @@ export const overrideFpsOption = {
 		};
 	},
 	setConfig: (fps) => {
-		if (typeof fps !== 'number') {
-			throw new TypeError(
-				`overrideFps() must receive a number, got ${JSON.stringify(fps)}`,
-			);
-		}
-
+		validateFps(fps, 'in Config.overrideFps()', false);
 		currentFps = fps;
 	},
 	id: cliFlag,

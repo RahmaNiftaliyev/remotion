@@ -1,3 +1,4 @@
+import {validateDimension} from '../validate';
 import type {AnyRemotionOption} from './option';
 
 let currentWidth: number | null = null;
@@ -14,11 +15,7 @@ export const overrideWidthOption = {
 	getValue: ({commandLine}) => {
 		if (commandLine[cliFlag] !== undefined) {
 			const value = commandLine[cliFlag] as number;
-			if (typeof value !== 'number') {
-				throw new TypeError(
-					`--width must be a number, got ${JSON.stringify(value)}`,
-				);
-			}
+			validateDimension(value, 'width', 'in --width flag');
 
 			return {
 				source: 'cli',
@@ -39,12 +36,7 @@ export const overrideWidthOption = {
 		};
 	},
 	setConfig: (width) => {
-		if (typeof width !== 'number') {
-			throw new TypeError(
-				`overrideWidth() must receive a number, got ${JSON.stringify(width)}`,
-			);
-		}
-
+		validateDimension(width, 'width', 'in Config.overrideWidth()');
 		currentWidth = width;
 	},
 	id: cliFlag,

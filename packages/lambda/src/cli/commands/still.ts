@@ -79,7 +79,15 @@ export const stillCommand = async ({
 		quit(1);
 	}
 
-	const {envVariables, inputProps, stillFrame, height, width, fps, durationInFrames} = getCliOptions({
+	const {
+		envVariables,
+		inputProps,
+		stillFrame,
+		height,
+		width,
+		fps,
+		durationInFrames,
+	} = getCliOptions({
 		isStill: true,
 		logLevel,
 		indent: false,

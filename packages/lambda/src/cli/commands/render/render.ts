@@ -93,12 +93,19 @@ export const renderCommand = async ({
 
 	const region = getAwsRegion();
 
-	const {envVariables, frameRange, inputProps, height, width, fps, durationInFrames} =
-		CliInternals.getCliOptions({
-			isStill: false,
-			logLevel,
-			indent: false,
-		});
+	const {
+		envVariables,
+		frameRange,
+		inputProps,
+		height,
+		width,
+		fps,
+		durationInFrames,
+	} = CliInternals.getCliOptions({
+		isStill: false,
+		logLevel,
+		indent: false,
+	});
 
 	const pixelFormat = pixelFormatOption.getValue({
 		commandLine: CliInternals.parsedCli,

@@ -93,8 +93,7 @@ export const getCompositionWithDimensionOverride = async ({
 			height: height ?? returnValue.config.height,
 			width: width ?? returnValue.config.width,
 			fps: fps ?? returnValue.config.fps,
-			durationInFrames:
-				durationInFrames ?? returnValue.config.durationInFrames,
+			durationInFrames: durationInFrames ?? returnValue.config.durationInFrames,
 		},
 	};
 };

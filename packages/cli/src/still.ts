@@ -73,7 +73,15 @@ export const still = async (
 		process.exit(1);
 	}
 
-	const {envVariables, height, inputProps, stillFrame, width, fps, durationInFrames} = getCliOptions({
+	const {
+		envVariables,
+		height,
+		inputProps,
+		stillFrame,
+		width,
+		fps,
+		durationInFrames,
+	} = getCliOptions({
 		isStill: true,
 		logLevel,
 		indent: false,

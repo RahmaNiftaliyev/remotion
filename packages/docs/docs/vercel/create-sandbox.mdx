@@ -16,6 +16,7 @@ This is a lower-level API. For most use cases, prefer [`getOrCreateSandbox()`](/
 // @module: es2022
 // @target: es2022
 import {createSandbox} from '@remotion/vercel';
+import type {CreateSandboxOnProgress} from '@remotion/vercel';
 // ---cut---
 const sandbox = await createSandbox({
   bundleDir: '.remotion',
@@ -37,8 +38,12 @@ The path to your Remotion bundle directory, relative to the current working dire
 
 A callback that receives progress updates during sandbox creation.
 
+```ts twoslash
+import type {CreateSandboxOnProgress} from '@remotion/vercel';
+```
+
 ```ts
-type OnProgress = (update: {
+type CreateSandboxOnProgress = (update: {
   progress: number; // 0 to 1
   message: string; // Human-readable phase description
 }) => void;

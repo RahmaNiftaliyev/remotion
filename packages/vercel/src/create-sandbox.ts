@@ -5,7 +5,7 @@ import {installJsDependencies} from './internals/install-js-dependencies';
 import {installSystemDependencies} from './internals/install-system-dependencies';
 import {patchCompositor} from './internals/patch-compositor';
 import {getRenderVideoScript} from './internals/render-video-script';
-import type {OnProgress, VercelSandbox} from './types';
+import type {CreateSandboxOnProgress, VercelSandbox} from './types';
 
 export const SANDBOX_CREATING_TIMEOUT = 5 * 60 * 1000;
 
@@ -14,7 +14,7 @@ export async function createSandbox({
 	onProgress,
 }: {
 	bundleDir: string;
-	onProgress?: OnProgress;
+	onProgress?: CreateSandboxOnProgress;
 }): Promise<VercelSandbox> {
 	const report = (progress: number, message: string) => {
 		onProgress?.({progress, message});

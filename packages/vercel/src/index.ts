@@ -5,5 +5,9 @@ export {getSnapshot} from './get-snapshot';
 export {renderStillOnVercel} from './render-still';
 export {renderVideoOnVercel} from './render-video';
 export {saveSnapshot} from './save-snapshot';
-export type {OnProgress, RenderOnVercelProgress, VercelSandbox} from './types';
+export type {
+	CreateSandboxOnProgress,
+	RenderOnVercelProgress,
+	VercelSandbox,
+} from './types';
 export {uploadToBlobStorage} from './upload-to-blob-storage';

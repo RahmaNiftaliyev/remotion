@@ -1,14 +1,14 @@
 import {createSandbox, SANDBOX_CREATING_TIMEOUT} from './create-sandbox';
 import {getSnapshot} from './get-snapshot';
 import {createDisposableSandbox} from './internals/disposable';
-import type {OnProgress, VercelSandbox} from './types';
+import type {CreateSandboxOnProgress, VercelSandbox} from './types';
 
 export async function getOrCreateSandbox({
 	bundleDir,
 	onProgress,
 }: {
 	bundleDir: string;
-	onProgress?: OnProgress;
+	onProgress?: CreateSandboxOnProgress;
 }): Promise<VercelSandbox> {
 	// During local development, a new sandbox is created from scratch always (no snapshotting)
 	if (!process.env.VERCEL) {

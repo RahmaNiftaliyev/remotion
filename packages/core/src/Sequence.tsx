@@ -312,22 +312,16 @@ const PremountedPostmountedSequenceRefForwardingFunction: React.ForwardRefRender
 		);
 	}
 
-	const {fps} = useVideoConfig();
-
 	const {
 		style: passedStyle,
 		from = 0,
 		durationInFrames = Infinity,
-		premountFor: premountForProp,
+		premountFor = 0,
 		postmountFor = 0,
 		styleWhilePremounted,
 		styleWhilePostmounted,
 		...otherProps
 	} = props;
-
-	const premountFor = ENABLE_V5_BREAKING_CHANGES
-		? (premountForProp ?? fps)
-		: (premountForProp ?? 0);
 
 	const endThreshold = Math.ceil(from + durationInFrames - 1);
 	const premountingActive = frame < from && frame >= from - premountFor;
@@ -387,17 +381,19 @@ const SequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 	SequenceProps
 > = (props, ref) => {
 	const env = useRemotionEnvironment();
+	const {fps} = useVideoConfig();
 	if (props.layout !== 'none' && !env.isRendering) {
-		if (props.premountFor || props.postmountFor) {
-			return <PremountedPostmountedSequence ref={ref} {...props} />;
-		}
-
-		if (
-			ENABLE_V5_BREAKING_CHANGES &&
-			props.premountFor === undefined &&
-			props.postmountFor === undefined
-		) {
-			return <PremountedPostmountedSequence ref={ref} {...props} />;
+		const effectivePremountFor = ENABLE_V5_BREAKING_CHANGES
+			? (props.premountFor ?? fps)
+			: props.premountFor;
+		if (effectivePremountFor || props.postmountFor) {
+			return (
+				<PremountedPostmountedSequence
+					ref={ref}
+					{...props}
+					premountFor={effectivePremountFor}
+				/>
+			);
 		}
 	}
 

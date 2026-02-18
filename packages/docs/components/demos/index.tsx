@@ -128,8 +128,8 @@ export const Demo: React.FC<{
 	return (
 		<div style={container}>
 			<Player
-				acknowledgeRemotionLicense
 				key={key}
+				acknowledgeRemotionLicense
 				component={demo.comp}
 				compositionWidth={demo.compWidth}
 				compositionHeight={demo.compHeight}

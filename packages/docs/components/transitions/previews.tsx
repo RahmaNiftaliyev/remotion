@@ -263,8 +263,8 @@ export const PresentationPreview: React.FC<{
 
 	return (
 		<Player
-			acknowledgeRemotionLicense
 			ref={ref}
+			acknowledgeRemotionLicense
 			component={SampleTransition}
 			compositionHeight={presentationCompositionHeight}
 			compositionWidth={presentationCompositionWidth}

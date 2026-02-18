@@ -1,12 +1,16 @@
+import {
+  getOrCreateSandbox,
+  renderVideoOnVercel,
+  uploadToBlobStorage,
+} from "@remotion/vercel";
 import { waitUntil } from "@vercel/functions";
+import { COMP_NAME } from "../../../../types/constants";
 import { RenderRequest } from "../../../../types/schema";
 import {
   createDisposableWriter,
   formatSSE,
   type RenderProgress,
 } from "./helpers";
-import { renderInSandbox } from "./render";
-import { reuseOrCreateSandbox } from "./sandbox/reuse-or-create-sandbox";
 
 export async function POST(req: Request) {
   const encoder = new TextEncoder();
@@ -26,49 +30,72 @@ export async function POST(req: Request) {
       const body = RenderRequest.parse(payload);
 
       await send({ type: "phase", phase: "Creating sandbox...", progress: 0 });
-      await using sandbox = await reuseOrCreateSandbox(send);
-      await renderInSandbox({
+
+      await using sandbox = await getOrCreateSandbox({
+        bundleDir: ".remotion",
+        onProgress: ({ progress, message }) => {
+          send({
+            type: "phase",
+            phase: message,
+            progress,
+            subtitle: "This is only needed during development.",
+          });
+        },
+      });
+
+      const { file } = await renderVideoOnVercel({
         sandbox,
+        compositionId: COMP_NAME,
         inputProps: body.inputProps,
-        onProgress: async (update) => {
+        bundleDir: ".remotion",
+        onProgress: (update) => {
           switch (update.type) {
             case "opening-browser":
-              await send({
+              send({
                 type: "phase",
                 phase: "Opening browser...",
                 progress: 0,
               });
               break;
             case "selecting-composition":
-              await send({
+              send({
                 type: "phase",
                 phase: "Selecting composition...",
                 progress: 0,
               });
               break;
             case "render-progress":
-              await send({
+              send({
                 type: "phase",
                 phase: "Rendering video...",
                 progress: update.progress,
               });
               break;
-            case "uploading":
-              await send({
-                type: "phase",
-                phase: "Uploading video...",
-                progress: 1,
-              });
-              break;
-            case "done":
-              await send({ type: "done", url: update.url, size: update.size });
-              break;
             default:
-              update satisfies never;
               break;
           }
         },
       });
+
+      await send({
+        type: "phase",
+        phase: "Uploading video...",
+        progress: 1,
+      });
+
+      const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
+      if (!blobToken) {
+        throw new Error("BLOB_READ_WRITE_TOKEN is not set");
+      }
+
+      const { url, size } = await uploadToBlobStorage({
+        sandbox,
+        sandboxFilePath: file,
+        contentType: "video/mp4",
+        blobToken,
+      });
+
+      await send({ type: "done", url, size });
     } catch (err) {
       console.log(err);
       await send({ type: "error", message: (err as Error).message });

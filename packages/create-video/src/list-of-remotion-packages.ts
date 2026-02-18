@@ -83,4 +83,5 @@ export const listOfRemotionPackages = [
 	'@remotion/web-renderer',
 	'@remotion/design',
 	'@remotion/light-leaks',
+	'@remotion/vercel',
 ];

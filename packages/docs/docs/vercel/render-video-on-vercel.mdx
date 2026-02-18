@@ -1,0 +1,82 @@
+---
+image: /generated/articles-docs-vercel-render-video-on-vercel.png
+title: renderVideoOnVercel()
+crumb: '@remotion/vercel'
+---
+
+# renderVideoOnVercel()<AvailableFrom v="4.0.424" />
+
+Renders a video inside a Vercel Sandbox. Writes a render script to the sandbox, executes it, and returns the output file path.
+
+The rendered file stays inside the sandbox. Use [`uploadToBlobStorage()`](/docs/vercel/upload-to-blob-storage) to upload it to Vercel Blob.
+
+## Example
+
+```ts twoslash title="route.ts"
+// @module: es2022
+// @target: es2022
+import type {RenderOnVercelProgress, VercelSandbox} from '@remotion/vercel';
+const renderVideoOnVercel: (options: {sandbox: VercelSandbox; compositionId: string; inputProps: Record<string, unknown>; codec?: string; outputFile?: string; onProgress?: (progress: RenderOnVercelProgress) => void; bundleDir?: string}) => Promise<{file: string}> = null as unknown as any;
+declare const sandbox: VercelSandbox;
+// ---cut---
+const {file} = await renderVideoOnVercel({
+  sandbox,
+  compositionId: 'MyComp',
+  inputProps: {title: 'Hello World'},
+  onProgress: (update) => {
+    if (update.type === 'render-progress') {
+      console.log(`Rendering: ${Math.round(update.progress * 100)}%`);
+    }
+  },
+});
+```
+
+## Arguments
+
+An object with the following properties:
+
+### `sandbox`
+
+A `VercelSandbox` instance.
+
+### `compositionId`
+
+The ID of the Remotion composition to render.
+
+### `inputProps`
+
+Props to pass to the composition.
+
+### `codec?`
+
+The video codec to use. Default: `"h264"`.
+
+### `outputFile?`
+
+The output file path inside the sandbox. Default: `"/tmp/video.mp4"`.
+
+### `onProgress?`
+
+A callback that receives render progress updates.
+
+```ts
+type RenderOnVercelProgress = {type: 'opening-browser'} | {type: 'selecting-composition'} | {type: 'render-progress'; progress: number} | {type: 'uploading'} | {type: 'done'; url: string; size: number};
+```
+
+### `bundleDir?`
+
+The bundle directory name in the sandbox. Default: `".remotion"`.
+
+## Return value
+
+An object containing:
+
+### `file`
+
+The path to the rendered video inside the sandbox.
+
+## See also
+
+- [`renderStillOnVercel()`](/docs/vercel/render-still-on-vercel)
+- [`uploadToBlobStorage()`](/docs/vercel/upload-to-blob-storage)
+- [Source code for this function](https://github.com/remotion-dev/remotion/blob/main/packages/vercel/src/render-video.ts)

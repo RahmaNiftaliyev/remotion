@@ -462,6 +462,24 @@ const sidebars: SidebarsConfig = {
 		},
 		{
 			type: 'category',
+			label: '@remotion/vercel',
+			link: {
+				type: 'doc',
+				id: 'vercel/vercel-api',
+			},
+			items: [
+				'vercel/create-sandbox',
+				'vercel/get-or-create-sandbox',
+				'vercel/create-snapshot',
+				'vercel/save-snapshot',
+				'vercel/get-snapshot',
+				'vercel/render-video-on-vercel',
+				'vercel/render-still-on-vercel',
+				'vercel/upload-to-blob-storage',
+			],
+		},
+		{
+			type: 'category',
 			label: '@remotion/openai-whisper',
 			link: {
 				type: 'doc',

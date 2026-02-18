@@ -1,4 +1,5 @@
-// This file is copied into the Vercel sandbox and executed with `node --strip-types`
+export const getEnsureBrowserScript = (): string => {
+	return `\
 import { ensureBrowser } from "@remotion/renderer";
 
 await ensureBrowser({
@@ -11,3 +12,5 @@ await ensureBrowser({
 		};
 	},
 });
+`;
+};

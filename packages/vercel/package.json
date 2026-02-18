@@ -1,0 +1,57 @@
+{
+	"name": "@remotion/vercel",
+	"version": "4.0.424",
+	"description": "Render Remotion videos on Vercel Sandbox",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"module": "dist/esm/index.mjs",
+	"repository": {
+		"url": "https://github.com/remotion-dev/remotion/tree/main/packages/vercel"
+	},
+	"sideEffects": false,
+	"type": "module",
+	"scripts": {
+		"formatting": "prettier src --check",
+		"lint": "eslint src",
+		"watch": "tsgo -w",
+		"make": "tsgo && bun --env-file=../.env.bundle bundle.ts"
+	},
+	"author": "Jonny Burger <jonny@remotion.dev>",
+	"contributors": [],
+	"license": "Remotion License",
+	"bugs": {
+		"url": "https://github.com/remotion-dev/remotion/issues"
+	},
+	"dependencies": {
+		"remotion": "workspace:*"
+	},
+	"peerDependencies": {
+		"@vercel/blob": ">=2.0.0",
+		"@vercel/sandbox": ">=1.0.0"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"module": "./dist/esm/index.mjs",
+			"import": "./dist/esm/index.mjs"
+		},
+		"./package.json": "./package.json"
+	},
+	"devDependencies": {
+		"@remotion/eslint-config-internal": "workspace:*",
+		"@vercel/blob": "2.0.1",
+		"@vercel/sandbox": "1.6.0",
+		"eslint": "catalog:",
+		"@typescript/native-preview": "catalog:"
+	},
+	"keywords": [
+		"remotion",
+		"vercel",
+		"sandbox",
+		"video"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"homepage": "https://www.remotion.dev/docs/vercel"
+}

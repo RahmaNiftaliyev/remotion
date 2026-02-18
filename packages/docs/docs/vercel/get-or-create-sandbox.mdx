@@ -1,0 +1,50 @@
+---
+image: /generated/articles-docs-vercel-get-or-create-sandbox.png
+title: getOrCreateSandbox()
+crumb: '@remotion/vercel'
+---
+
+# getOrCreateSandbox()<AvailableFrom v="4.0.424" />
+
+The primary entry point for getting a sandbox. Automatically handles the dev/prod routing:
+
+- **Development** (no `VERCEL` env var): Creates a fresh sandbox from scratch using [`createSandbox()`](/docs/vercel/create-sandbox).
+- **Production** (on Vercel): Restores a sandbox from a cached snapshot. Throws an error if no snapshot is found.
+
+## Example
+
+```ts twoslash title="route.ts"
+// @module: es2022
+// @target: es2022
+import type {OnProgress, VercelSandbox} from '@remotion/vercel';
+const getOrCreateSandbox: (options: {bundleDir: string; onProgress?: OnProgress}) => Promise<VercelSandbox> = null as unknown as (options: {bundleDir: string; onProgress?: OnProgress}) => Promise<VercelSandbox>;
+// ---cut---
+await using sandbox = await getOrCreateSandbox({
+  bundleDir: '.remotion',
+  onProgress: ({progress, message}) => {
+    console.log(`${message} (${Math.round(progress * 100)}%)`);
+  },
+});
+```
+
+## Arguments
+
+An object with the following properties:
+
+### `bundleDir`
+
+The path to your Remotion bundle directory, relative to the current working directory.
+
+### `onProgress?`
+
+A callback that receives progress updates. Only called during development when a fresh sandbox is created.
+
+## Return value
+
+A `VercelSandbox` object.
+
+## See also
+
+- [`createSandbox()`](/docs/vercel/create-sandbox)
+- [`getSnapshot()`](/docs/vercel/get-snapshot)
+- [Source code for this function](https://github.com/remotion-dev/remotion/blob/main/packages/vercel/src/get-or-create-sandbox.ts)

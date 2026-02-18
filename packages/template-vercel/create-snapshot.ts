@@ -1,20 +1,15 @@
-import { createSandbox } from "./src/app/api/render/sandbox/create-sandbox";
-import { saveSnapshotCache } from "./src/app/api/render/sandbox/snapshots";
+import { createSandbox, createSnapshot, saveSnapshot } from "@remotion/vercel";
 
 const sandbox = await createSandbox({
-  onProgress: async (progress) => {
-    if (progress.type === "phase") {
-      const pct = Math.round((progress.progress ?? 0) * 100);
-      console.log(`[create-snapshot] ${progress.phase} (${pct}%)`);
-    }
+  bundleDir: ".remotion",
+  onProgress: ({ progress, message }) => {
+    const pct = Math.round(progress * 100);
+    console.log(`[create-snapshot] ${message} (${pct}%)`);
   },
 });
 
 console.log("[create-snapshot] Taking snapshot...");
-const snapshot = await sandbox.snapshot({ expiration: 0 });
+const { snapshotId } = await createSnapshot({ sandbox });
+await saveSnapshot({ snapshotId });
 
-await saveSnapshotCache(snapshot.snapshotId);
-
-console.log(
-  `[create-snapshot] Snapshot saved: ${snapshot.snapshotId} (never expires)`,
-);
+console.log(`[create-snapshot] Snapshot saved: ${snapshotId} (never expires)`);

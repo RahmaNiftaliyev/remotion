@@ -1,0 +1,37 @@
+---
+image: /generated/articles-docs-vercel-save-snapshot.png
+title: saveSnapshot()
+crumb: '@remotion/vercel'
+---
+
+# saveSnapshot()<AvailableFrom v="4.0.424" />
+
+Saves a snapshot ID to Vercel Blob storage, keyed by the current `VERCEL_DEPLOYMENT_ID`. This allows [`getOrCreateSandbox()`](/docs/vercel/get-or-create-sandbox) to restore the sandbox in production without re-creating it.
+
+## Example
+
+```ts twoslash title="create-snapshot.ts"
+// @module: es2022
+// @target: es2022
+const saveSnapshot: (options: {snapshotId: string}) => Promise<void> = null as unknown as (options: {snapshotId: string}) => Promise<void>;
+// ---cut---
+await saveSnapshot({snapshotId: 'snap_abc123'});
+```
+
+## Arguments
+
+An object with the following properties:
+
+### `snapshotId`
+
+The snapshot ID returned by [`createSnapshot()`](/docs/vercel/create-snapshot).
+
+## Return value
+
+`void`. Throws if the upload to Vercel Blob fails.
+
+## See also
+
+- [`createSnapshot()`](/docs/vercel/create-snapshot)
+- [`getSnapshot()`](/docs/vercel/get-snapshot)
+- [Source code for this function](https://github.com/remotion-dev/remotion/blob/main/packages/vercel/src/save-snapshot.ts)

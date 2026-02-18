@@ -83,6 +83,4 @@ const publish = async (template: MinimalTemplate) => {
 	await $`git push origin ${defaultBranch.trim()}`.cwd(workingDir);
 };
 
-for (const template of templates) {
-	await publish(template);
-}
+await Promise.all(templates.map((template) => publish(template)));

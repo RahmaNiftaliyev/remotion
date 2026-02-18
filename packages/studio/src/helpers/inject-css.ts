@@ -21,9 +21,22 @@ const makeDefaultGlobalCSS = () => {
     /* Override Chakra UI position: relative on body */
     position: static !important;
   }
+
+  #__remotion-studio-container {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  #__remotion-studio-container input,
+  #__remotion-studio-container textarea,
+  #__remotion-studio-container [contenteditable] {
+    user-select: text;
+    -webkit-user-select: text;
+  }
   
   .remotion-splitter {
     user-select: none;
+    -webkit-user-select: none;
   }
   
   .remotion-splitter-horizontal {

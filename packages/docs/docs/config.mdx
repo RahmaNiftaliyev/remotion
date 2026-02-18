@@ -610,7 +610,7 @@ The [command line flag](/docs/cli/render#--sequence) `--sequence` will take prec
 
 ## `overrideHeight()`<AvailableFrom v="3.2.40" />
 
-Overrides the height of the rendered video.
+<Options id="height" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -619,11 +619,10 @@ Config.overrideHeight(600);
 ```
 
 The [command line flag](/docs/cli/render#--height) `--height` will take precedence over this option.
-(see h264 validation?)
 
 ## `overrideWidth()`<AvailableFrom v="3.2.40" />
 
-Overrides the width of the rendered video.
+<Options id="width" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -631,7 +630,7 @@ import {Config} from '@remotion/cli/config';
 Config.overrideWidth(900);
 ```
 
-The [command line flag](/docs/cli/render#--width) `--width` will take precedence over this option
+The [command line flag](/docs/cli/render#--width) `--width` will take precedence over this option.
 
 ## `setCrf()`<AvailableFrom v="1.4.0" />
 

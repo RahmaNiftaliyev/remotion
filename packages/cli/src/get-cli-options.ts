@@ -64,8 +64,12 @@ export const getCliOptions = (options: {
 		commandLine: parsedCli,
 	}).value;
 
-	const height = ConfigInternals.getHeight();
-	const width = ConfigInternals.getWidth();
+	const height = BrowserSafeApis.options.overrideHeightOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const width = BrowserSafeApis.options.overrideWidthOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	RenderInternals.validateConcurrency({
 		value: concurrency,

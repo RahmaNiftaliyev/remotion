@@ -42,6 +42,8 @@ const {
 	userAgentOption,
 	disableWebSecurityOption,
 	ignoreCertificateErrorsOption,
+	overrideHeightOption,
+	overrideWidthOption,
 } = BrowserSafeApis.options;
 
 export type CommandLineOptions = {
@@ -109,8 +111,8 @@ export type CommandLineOptions = {
 	['disable-keyboard-shortcuts']: boolean;
 	['enable-experimental-client-side-rendering']: boolean;
 	muted: boolean;
-	height: number;
-	width: number;
+	[overrideHeightOption.cliFlag]: TypeOfOption<typeof overrideHeightOption>;
+	[overrideWidthOption.cliFlag]: TypeOfOption<typeof overrideWidthOption>;
 	runs: number;
 	concurrencies: string;
 	[enforceAudioOption.cliFlag]: TypeOfOption<typeof enforceAudioOption>;
@@ -139,14 +141,6 @@ export type CommandLineOptions = {
 export const parseCommandLine = () => {
 	if (typeof parsedCli['bundle-cache'] !== 'undefined') {
 		Config.setCachingEnabled(parsedCli['bundle-cache'] !== 'false');
-	}
-
-	if (parsedCli.height) {
-		Config.overrideHeight(parsedCli.height);
-	}
-
-	if (parsedCli.width) {
-		Config.overrideWidth(parsedCli.width);
 	}
 
 	if (parsedCli.frames) {

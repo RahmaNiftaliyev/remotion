@@ -44,7 +44,6 @@ import {
 	setFfmpegOverrideFunction,
 } from './ffmpeg-override';
 import {setFrameRange} from './frame-range';
-import {getHeight, overrideHeight} from './height';
 import {setImageSequence} from './image-sequence';
 import {getMetadata, setMetadata} from './metadata';
 import {getShouldOpenBrowser, setShouldOpenBrowser} from './open-browser';
@@ -57,7 +56,6 @@ import {
 	getWebpackPolling,
 	setWebpackPollingInMilliseconds,
 } from './webpack-poll';
-import {getWidth, overrideWidth} from './width';
 
 export type {Concurrency, WebpackConfiguration, WebpackOverrideFn};
 
@@ -117,6 +115,8 @@ const {
 	userAgentOption,
 	disableWebSecurityOption,
 	ignoreCertificateErrorsOption,
+	overrideHeightOption,
+	overrideWidthOption,
 } = BrowserSafeApis.options;
 
 declare global {
@@ -702,8 +702,8 @@ export const Config: FlatConfig = {
 	setVideoBitrate: videoBitrateOption.setConfig,
 	setAudioLatencyHint: audioLatencyHintOption.setConfig,
 	setForSeamlessAacConcatenation: forSeamlessAacConcatenationOption.setConfig,
-	overrideHeight,
-	overrideWidth,
+	overrideHeight: overrideHeightOption.setConfig,
+	overrideWidth: overrideWidthOption.setConfig,
 	overrideFfmpegCommand: setFfmpegOverrideFunction,
 	setAudioCodec: audioCodecOption.setConfig,
 	setOffthreadVideoCacheSizeInBytes: (size) => {
@@ -746,8 +746,6 @@ export const ConfigInternals = {
 	getMaxTimelineTracks: StudioServerInternals.getMaxTimelineTracks,
 	defaultOverrideFunction,
 	getFfmpegOverrideFunction,
-	getHeight,
-	getWidth,
 	getMetadata,
 	getEntryPoint,
 	getWebpackPolling,

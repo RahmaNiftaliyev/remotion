@@ -6,7 +6,7 @@ crumb: '@remotion/vercel'
 
 # renderStillOnVercel()<AvailableFrom v="4.0.425" />
 
-Renders a still image inside a Vercel Sandbox. Writes a render script to the sandbox, executes it, and returns the output file path.
+Renders a still image inside a Vercel Sandbox using [`RenderInternals.internalRenderStill()`](/docs/renderer/render-still). Writes a render script to the sandbox, executes it, and returns the output file path.
 
 The rendered file stays inside the sandbox. Use [`uploadToVercelBlob()`](/docs/vercel/upload-to-vercel-blob) to upload it to Vercel Blob.
 
@@ -44,15 +44,75 @@ Props to pass to the composition.
 
 ### `imageFormat?`
 
-The output image format. Default: `"png"`. Can be `"png"`, `"jpeg"`, or `"webp"`.
+The output image format. `"png"`, `"jpeg"`, `"pdf"`, or `"webp"`. Default: `"png"`.
 
 ### `outputFile?`
 
 The output file path inside the sandbox. Default: `"/tmp/still.png"`.
 
+### `frame?`
+
+The frame number to render. Default: `0`.
+
+### `jpegQuality?`
+
+JPEG quality (0–100). Only applicable when `imageFormat` is `"jpeg"`. Default: `80`.
+
+### `envVariables?`
+
+Environment variables to set during rendering. Default: `{}`.
+
+### `overwrite?`
+
+Whether to overwrite existing output files. Default: `true`.
+
+### `browserExecutable?`
+
+Custom path to a Chrome executable. Default: `null` (use installed browser).
+
+### `chromiumOptions?`
+
+Options for the headless Chrome instance. See [`renderStill() → chromiumOptions`](/docs/renderer/render-still#chromiumoptions). Default: `{}`.
+
+### `scale?`
+
+Scaling factor for the output. Default: `1`.
+
+### `logLevel?`
+
+Log level for the render process. `"trace"`, `"verbose"`, `"info"`, `"warn"`, or `"error"`. Default: `"info"`.
+
+### `timeoutInMilliseconds?`
+
+Timeout for delayRender() calls in milliseconds. Default: `30000`.
+
+### `chromeMode?`
+
+Chrome mode. `"headless-shell"` or `"chrome-for-testing"`. Default: `"headless-shell"`.
+
+### `offthreadVideoCacheSizeInBytes?`
+
+Cache size for `<OffthreadVideo>` in bytes. Default: `null`.
+
+### `mediaCacheSizeInBytes?`
+
+Cache size for media assets in bytes. Default: `null`.
+
+### `offthreadVideoThreads?`
+
+Number of threads for `<OffthreadVideo>` decoding. Default: `null`.
+
+### `binariesDirectory?`
+
+Custom directory for FFmpeg binaries. Default: `null`.
+
+### `licenseKey?`
+
+Remotion license key. Default: `null`.
+
 ### `onProgress?`
 
-A callback that receives render progress updates. See [`renderVideoOnVercel()`](/docs/vercel/render-video-on-vercel) for the type definition.
+A callback that receives render progress updates. See [`renderVideoOnVercel()`](/docs/vercel/render-video-on-vercel#onprogress) for the type definition.
 
 ### `bundleDir?`
 

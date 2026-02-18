@@ -1,25 +1,84 @@
 import type {Sandbox} from '@vercel/sandbox';
 import {script as renderStillScript} from './internals/render-still-script';
-import type {RenderOnVercelProgress} from './types';
+import type {
+	ChromeMode,
+	ChromiumOptions,
+	LogLevel,
+	RenderOnVercelProgress,
+	StillImageFormat,
+} from './types';
 
 export async function renderStillOnVercel({
 	sandbox,
 	compositionId,
 	inputProps,
-	imageFormat = 'png',
-	outputFile = '/tmp/still.png',
 	onProgress,
 	bundleDir = '.remotion',
+	outputFile = '/tmp/still.png',
+	frame = 0,
+	imageFormat = 'png',
+	jpegQuality = 80,
+	envVariables = {},
+	overwrite = true,
+	browserExecutable,
+	chromiumOptions = {},
+	scale = 1,
+	logLevel = 'info',
+	timeoutInMilliseconds = 30000,
+	binariesDirectory,
+	chromeMode = 'headless-shell',
+	offthreadVideoCacheSizeInBytes,
+	mediaCacheSizeInBytes,
+	offthreadVideoThreads,
+	licenseKey,
 }: {
 	sandbox: Sandbox;
 	compositionId: string;
 	inputProps: Record<string, unknown>;
-	imageFormat?: 'png' | 'jpeg' | 'webp';
-	outputFile?: string;
 	onProgress?: (progress: RenderOnVercelProgress) => void;
 	bundleDir?: string;
+	outputFile?: string;
+	frame?: number;
+	imageFormat?: StillImageFormat;
+	jpegQuality?: number;
+	envVariables?: Record<string, string>;
+	overwrite?: boolean;
+	browserExecutable?: string | null;
+	chromiumOptions?: ChromiumOptions;
+	scale?: number;
+	logLevel?: LogLevel;
+	timeoutInMilliseconds?: number;
+	binariesDirectory?: string | null;
+	chromeMode?: ChromeMode;
+	offthreadVideoCacheSizeInBytes?: number | null;
+	mediaCacheSizeInBytes?: number | null;
+	offthreadVideoThreads?: number | null;
+	licenseKey?: string | null;
 }): Promise<{file: string}> {
 	const serveUrl = `/vercel/sandbox/${bundleDir}`;
+
+	const renderConfig = {
+		serveUrl,
+		compositionId,
+		inputProps,
+		output: outputFile,
+		frame,
+		imageFormat,
+		jpegQuality,
+		envVariables,
+		overwrite,
+		browserExecutable: browserExecutable ?? null,
+		chromiumOptions,
+		scale,
+		logLevel,
+		timeoutInMilliseconds,
+		binariesDirectory: binariesDirectory ?? null,
+		chromeMode,
+		offthreadVideoCacheSizeInBytes: offthreadVideoCacheSizeInBytes ?? null,
+		mediaCacheSizeInBytes: mediaCacheSizeInBytes ?? null,
+		offthreadVideoThreads: offthreadVideoThreads ?? null,
+		licenseKey: licenseKey ?? null,
+	};
 
 	await sandbox.writeFiles([
 		{
@@ -27,14 +86,6 @@ export async function renderStillOnVercel({
 			content: Buffer.from(renderStillScript),
 		},
 	]);
-
-	const renderConfig = {
-		serveUrl,
-		compositionId,
-		inputProps,
-		imageFormat,
-		outputFile,
-	};
 
 	const renderCmd = await sandbox.runCommand({
 		cmd: 'node',

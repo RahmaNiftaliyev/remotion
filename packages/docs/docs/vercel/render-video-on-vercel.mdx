@@ -6,7 +6,7 @@ crumb: '@remotion/vercel'
 
 # renderVideoOnVercel()<AvailableFrom v="4.0.425" />
 
-Renders a video inside a Vercel Sandbox. Writes a render script to the sandbox, executes it, and returns the output file path.
+Renders a video inside a Vercel Sandbox using [`RenderInternals.internalRenderMedia()`](/docs/renderer/render-media). Writes a render script to the sandbox, executes it, and returns the output file path.
 
 The rendered file stays inside the sandbox. Use [`uploadToVercelBlob()`](/docs/vercel/upload-to-vercel-blob) to upload it to Vercel Blob.
 
@@ -54,12 +54,178 @@ The video codec to use. Default: `"h264"`.
 
 The output file path inside the sandbox. Default: `"/tmp/video.mp4"`.
 
+### `crf?`
+
+The Constant Rate Factor, controlling quality. See [`renderMedia() → crf`](/docs/renderer/render-media#crf). Default: `null` (codec default).
+
+### `imageFormat?`
+
+The image format for intermediate frames. `"png"`, `"jpeg"`, or `"none"`. Default: `null` (codec default).
+
+### `pixelFormat?`
+
+The pixel format for the output video. Default: `null` (codec default).
+
+### `envVariables?`
+
+Environment variables to set during rendering. Default: `{}`.
+
+### `frameRange?`
+
+A specific frame range to render. Can be a single frame number, a `[start, end]` tuple, or `[start, null]` for open-ended. Default: `null` (render all frames).
+
+### `everyNthFrame?`
+
+Render only every nth frame. Default: `1`.
+
+### `overwrite?`
+
+Whether to overwrite existing output files. Default: `true`.
+
+### `proResProfile?`
+
+The ProRes profile to use when `codec` is `"prores"`. One of `"4444-xq"`, `"4444"`, `"hq"`, `"standard"`, `"light"`, `"proxy"`.
+
+### `chromiumOptions?`
+
+Options for the headless Chrome instance. See [`renderMedia() → chromiumOptions`](/docs/renderer/render-media#chromiumoptions). Default: `{}`.
+
+### `scale?`
+
+Scaling factor for the output. Default: `1`.
+
+### `browserExecutable?`
+
+Custom path to a Chrome executable. Default: `null` (use installed browser).
+
+### `preferLossless?`
+
+Prefer lossless audio encoding when possible. Default: `false`.
+
+### `enforceAudioTrack?`
+
+Enforce an audio track even if the video has no audio. Default: `false`.
+
+### `disallowParallelEncoding?`
+
+Disable parallel encoding. Default: `false`.
+
+### `concurrency?`
+
+Number of frames to render concurrently. Default: `null` (auto).
+
+### `metadata?`
+
+Key-value metadata to embed in the output file. Default: `null`.
+
+### `logLevel?`
+
+Log level for the render process. `"trace"`, `"verbose"`, `"info"`, `"warn"`, or `"error"`. Default: `"info"`.
+
+### `timeoutInMilliseconds?`
+
+Timeout for delayRender() calls in milliseconds. Default: `30000`.
+
+### `videoBitrate?`
+
+Target video bitrate, e.g. `"1000k"` or `"10M"`. Default: `null`.
+
+### `audioBitrate?`
+
+Target audio bitrate, e.g. `"128k"`. Default: `null`.
+
+### `audioCodec?`
+
+The audio codec. `"pcm-16"`, `"aac"`, `"mp3"`, or `"opus"`. Default: `null` (derived from video codec).
+
+### `encodingMaxRate?`
+
+Maximum encoding bitrate for VBR encoding. Default: `null`.
+
+### `encodingBufferSize?`
+
+Encoding buffer size for VBR encoding. Default: `null`.
+
+### `muted?`
+
+Render without audio. Default: `false`.
+
+### `numberOfGifLoops?`
+
+Number of loops for GIF output. Default: `null`.
+
+### `x264Preset?`
+
+The x264 preset when using H.264 codec. Default: `null`.
+
+### `colorSpace?`
+
+The color space. `"default"`, `"bt601"`, `"bt709"`, or `"bt2020-ncl"`. Default: `"default"`.
+
+### `jpegQuality?`
+
+JPEG quality for intermediate frames (0–100). Default: `80`.
+
+### `forSeamlessAacConcatenation?`
+
+Optimize AAC audio for seamless concatenation. Default: `false`.
+
+### `separateAudioTo?`
+
+Write the audio track to a separate file. Default: `null`.
+
+### `hardwareAcceleration?`
+
+Hardware acceleration mode. `"disable"`, `"if-possible"`, or `"required"`. Default: `"disable"`.
+
+### `chromeMode?`
+
+Chrome mode. `"headless-shell"` or `"chrome-for-testing"`. Default: `"headless-shell"`.
+
+### `offthreadVideoCacheSizeInBytes?`
+
+Cache size for `<OffthreadVideo>` in bytes. Default: `null`.
+
+### `mediaCacheSizeInBytes?`
+
+Cache size for media assets in bytes. Default: `null`.
+
+### `offthreadVideoThreads?`
+
+Number of threads for `<OffthreadVideo>` decoding. Default: `null`.
+
+### `repro?`
+
+Enable repro mode for debugging. Default: `false`.
+
+### `binariesDirectory?`
+
+Custom directory for FFmpeg binaries. Default: `null`.
+
+### `licenseKey?`
+
+Remotion license key. Default: `null`.
+
 ### `onProgress?`
 
 A callback that receives render progress updates.
 
 ```ts
-type RenderOnVercelProgress = {type: 'opening-browser'} | {type: 'selecting-composition'} | {type: 'render-progress'; progress: number} | {type: 'uploading'} | {type: 'done'; url: string; size: number};
+type RenderOnVercelProgress =
+  | {type: 'opening-browser'}
+  | {type: 'selecting-composition'}
+  | {
+      type: 'render-progress';
+      renderedFrames: number;
+      encodedFrames: number;
+      encodedDoneIn: number | null;
+      renderedDoneIn: number | null;
+      renderEstimatedTime: number;
+      progress: number;
+      stitchStage: 'encoding' | 'muxing';
+    }
+  | {type: 'uploading'}
+  | {type: 'done'; url: string; size: number};
 ```
 
 ### `bundleDir?`

@@ -35,19 +35,43 @@ This page offers a comparison to help you decide which tag to use.
 Use the [`useRemotionEnvironment()`](/docs/use-remotion-environment) hook to render a different component in preview and rendering.
 
 ```tsx twoslash title="OffthreadVideo during preview, @remotion/media during rendering"
-import {useRemotionEnvironment, OffthreadVideo, RemotionOffthreadVideoProps} from 'remotion';
+import {
+	useRemotionEnvironment,
+	OffthreadVideo,
+	RemotionOffthreadVideoProps,
+} from 'remotion';
 import {Video, VideoProps} from '@remotion/media';
 
 const OffthreadWhileRenderingRefForwardingFunction: React.FC<{
-  offthreadVideoProps: RemotionOffthreadVideoProps;
-  videoProps: VideoProps;
+	offthreadVideoProps: RemotionOffthreadVideoProps;
+	videoProps: VideoProps;
 }> = ({offthreadVideoProps, videoProps}) => {
-  const env = useRemotionEnvironment();
+	const env = useRemotionEnvironment();
 
-  if (!env.isRendering) {
-    return <OffthreadVideo {...offthreadVideoProps} />;
-  }
+	if (!env.isRendering) {
+		return <OffthreadVideo {...offthreadVideoProps} />;
+	}
 
-  return <Video {...videoProps} />;
+	return <Video {...videoProps} />;
+};
+```
+
+The same pattern works for audio:
+
+```tsx twoslash title="Html5Audio during preview, @remotion/media during rendering"
+import {useRemotionEnvironment, Html5Audio, RemotionAudioProps} from 'remotion';
+import {Audio, AudioProps} from '@remotion/media';
+
+const Html5AudioWhilePreviewingComponent: React.FC<{
+	html5AudioProps: RemotionAudioProps;
+	audioProps: AudioProps;
+}> = ({html5AudioProps, audioProps}) => {
+	const env = useRemotionEnvironment();
+
+	if (!env.isRendering) {
+		return <Html5Audio {...html5AudioProps} />;
+	}
+
+	return <Audio {...audioProps} />;
 };
 ```

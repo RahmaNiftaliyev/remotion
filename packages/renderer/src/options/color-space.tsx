@@ -101,6 +101,7 @@ export const colorSpaceOption = {
 	setConfig: (value) => {
 		colorSpace = value ?? DEFAULT_COLOR_SPACE;
 	},
+	id: cliFlag,
 } satisfies AnyRemotionOption<ColorSpace | null>;
 
 export const validateColorSpace = (option: unknown) => {

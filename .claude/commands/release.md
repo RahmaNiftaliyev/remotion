@@ -8,3 +8,11 @@
 - Check `https://www.npmjs.com/package/remotion` to get the current version number
 - Run `bun set-version.ts <version>`, where <version> is the current version plus 1
 - Run `NPM_CONFIG_TOKEN=<token> bun run release` where <token> is the NPM token we just created
+- Generate a changelog in markdown and save it to `/tmp/release-<version>.md`:
+  - Run `git log v<previous_version>..v<new_version> --oneline` to get all commits
+  - Extract PR numbers from merge commits
+  - For each PR, run `gh pr view <number> --json title,author,number,url --jq '"* \(.title) by @\(.author.login) in \(.url)"'`
+  - Categorize PRs into sections: "What's Changed" (features, fixes, improvements), "Internal" (dependency upgrades, tooling, infra), "Docs" (documentation changes), "Templates" (template changes)
+  - Check for new contributors by comparing authors against known contributors
+  - Add `**Full Changelog**: https://github.com/remotion-dev/remotion/compare/v<previous_version>...v<new_version>` at the bottom
+  - Use the same format as previous GitHub releases (check with `gh release view v<previous_version>`)

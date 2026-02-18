@@ -16,6 +16,19 @@
  * v4 core schemas have `_zod.def` with `type` property.
  * At runtime, all zod schemas have `_def` (classic layer adds it for v4).
  */
+export interface ZodValidationError {
+	format(): {_errors: string[]};
+	issues: readonly {
+		code: string;
+		message: string;
+		path: readonly PropertyKey[];
+	}[];
+}
+
+export type ZodSafeParseResult =
+	| {success: true; data: unknown}
+	| {success: false; error: ZodValidationError};
+
 export interface AnyZodSchema {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	readonly _def?: Record<string, any>;
@@ -23,6 +36,19 @@ export interface AnyZodSchema {
 	readonly _zod?: {def: Record<string, any>; [key: string]: any};
 	readonly description?: string;
 }
+
+/**
+ * Call safeParse on any Zod schema (v3 or v4).
+ * All Zod schemas have safeParse at runtime, but some v4 internal types
+ * (like $ZodObject) don't declare it in their type definition.
+ */
+export const zodSafeParse = (
+	schema: AnyZodSchema,
+	data: unknown,
+): ZodSafeParseResult => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	return (schema as any).safeParse(data);
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getZodDef = (schema: AnyZodSchema): Record<string, any> => {

@@ -1,6 +1,11 @@
 import React from 'react';
 import {useZodTypesIfPossible} from '../../get-zod-if-possible';
-import {getZodSchemaDescription, getZodSchemaType} from './zod-schema-type';
+import type {AnyZodSchema} from './zod-schema-type';
+import {
+	getEffectsInner,
+	getZodSchemaDescription,
+	getZodSchemaType,
+} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 import {ZodArrayEditor} from './ZodArrayEditor';
 import {ZodBooleanEditor} from './ZodBooleanEditor';
@@ -28,11 +33,8 @@ export type UpdaterFunction<T> = (
 	increment: boolean,
 ) => void;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnySchema = any;
-
 export const ZodSwitch: React.FC<{
-	readonly schema: AnySchema;
+	readonly schema: AnyZodSchema;
 	readonly jsonPath: JSONPath;
 	readonly value: unknown;
 	readonly defaultValue: unknown;
@@ -361,7 +363,7 @@ export const ZodSwitch: React.FC<{
 					setValue={setValue as UpdaterFunction<unknown[]>}
 					value={value as unknown[]}
 					jsonPath={jsonPath}
-					schema={schema._def.schema}
+					schema={getEffectsInner(schema)}
 					defaultValue={defaultValue as unknown[]}
 					onSave={onSave as UpdaterFunction<unknown[]>}
 					showSaveButton={showSaveButton}

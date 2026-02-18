@@ -12,6 +12,7 @@ import type {UpdaterFunction} from './ZodSwitch';
 import {ZodSwitch} from './ZodSwitch';
 import {createZodValues} from './create-zod-values';
 import {useLocalState} from './local-state';
+import type {AnyZodSchema} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 
 const labelStyle: React.CSSProperties = {
@@ -32,10 +33,8 @@ export const ZodOrNullishEditor: React.FC<{
 	jsonPath: JSONPath;
 	value: unknown;
 	defaultValue: unknown;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	schema: any;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	innerSchema: any;
+	schema: AnyZodSchema;
+	innerSchema: AnyZodSchema;
 	setValue: UpdaterFunction<unknown>;
 	onSave: UpdaterFunction<unknown>;
 	onRemove: null | (() => void);

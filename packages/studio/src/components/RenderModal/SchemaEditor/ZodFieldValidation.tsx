@@ -22,7 +22,8 @@ export const ZodFieldValidation: React.FC<{
 	localValue: LocalState<unknown>;
 	path: JSONPath;
 }> = ({localValue, path}) => {
-	if (localValue.zodValidation.success) {
+	const {zodValidation} = localValue;
+	if (zodValidation.success) {
 		return null;
 	}
 
@@ -30,24 +31,22 @@ export const ZodFieldValidation: React.FC<{
 		<div style={legend}>
 			<ValidationMessage
 				align="flex-start"
-				message={localValue.zodValidation.error.format()._errors[0]}
+				message={zodValidation.error.format()._errors[0]}
 				type="error"
 			/>
 			<Spacing x={0.5} />
 			<InfoBubble title="Zod validation failure">
 				<div style={stackTrace}>
 					<div style={stackTraceLabel}>Zod Validation has failed:</div>
-					{localValue.zodValidation.error.errors.map(
-						(error: {code: string; message: string}, index: number) => (
-							// eslint-disable-next-line react/no-array-index-key
-							<div key={index} style={stackTraceLabel}>
-								Type: {error.code} <br />
-								Message: {error.message}
-								<br />
-								Path: {path.join('.')}
-							</div>
-						),
-					)}
+					{zodValidation.error.issues.map((error, index: number) => (
+						// eslint-disable-next-line react/no-array-index-key
+						<div key={index} style={stackTraceLabel}>
+							Type: {error.code} <br />
+							Message: {error.message}
+							<br />
+							Path: {path.join('.')}
+						</div>
+					))}
 				</div>
 			</InfoBubble>
 			<Spacing x={0.5} />

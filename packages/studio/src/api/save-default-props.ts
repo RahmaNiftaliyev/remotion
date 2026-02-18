@@ -1,6 +1,7 @@
 import {getRemotionEnvironment} from 'remotion';
 import type {ZodTypesType} from '../components/get-zod-if-possible';
 import {extractEnumJsonPaths} from '../components/RenderModal/SchemaEditor/extract-enum-json-paths';
+import type {AnyZodSchema} from '../components/RenderModal/SchemaEditor/zod-schema-type';
 import {callUpdateDefaultPropsApi} from '../components/RenderQueue/actions';
 import type {UpdateDefaultPropsFunction} from './helpers/calc-new-props';
 import {calcNewProps} from './helpers/calc-new-props';
@@ -48,7 +49,7 @@ export const saveDefaultProps = async ({
 		generatedDefaultProps,
 		composition.schema
 			? extractEnumJsonPaths({
-					schema: composition.schema,
+					schema: composition.schema as AnyZodSchema,
 					zodRuntime: z,
 					currentPath: [],
 					zodTypes,

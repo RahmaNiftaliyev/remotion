@@ -11,6 +11,8 @@ import {Flex, Row, Spacing} from '../layout';
 import type {State} from './DataEditor';
 import {ZodErrorMessages} from './SchemaEditor/ZodErrorMessages';
 import {deepEqual} from './SchemaEditor/deep-equal';
+import type {AnyZodSchema} from './SchemaEditor/zod-schema-type';
+import {zodSafeParse} from './SchemaEditor/zod-schema-type';
 
 const style: React.CSSProperties = {
 	fontFamily: 'monospace',
@@ -24,11 +26,10 @@ const scrollable: React.CSSProperties = {
 	flex: 1,
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const parseJSON = (str: string, schema: any): State => {
+const parseJSON = (str: string, schema: AnyZodSchema): State => {
 	try {
 		const value = NoReactInternals.deserializeJSONWithSpecialTypes(str);
-		const zodValidation = schema.safeParse(value);
+		const zodValidation = zodSafeParse(schema, value);
 		return {str, value, validJSON: true, zodValidation};
 	} catch (e) {
 		return {str, validJSON: false, error: (e as Error).message};
@@ -44,8 +45,7 @@ export const RenderModalJSONPropsEditor: React.FC<{
 	readonly showSaveButton: boolean;
 	readonly serializedJSON: SerializedJSONWithCustomFields | null;
 	readonly defaultProps: Record<string, unknown>;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	readonly schema: any;
+	readonly schema: AnyZodSchema;
 }> = ({
 	setValue,
 	value,
@@ -78,7 +78,7 @@ export const RenderModalJSONPropsEditor: React.FC<{
 			const parsed = parseJSON(e.target.value, schema);
 
 			if (parsed.validJSON) {
-				const validationResult = schema.safeParse(parsed.value);
+				const validationResult = zodSafeParse(schema, parsed.value);
 				setLocalValue({
 					str: e.target.value,
 					value: parsed.value,

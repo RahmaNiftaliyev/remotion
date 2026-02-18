@@ -14,7 +14,8 @@ import {deepEqual} from './deep-equal';
 import type {RevisionContextType} from './local-state';
 import {RevisionContext} from './local-state';
 import {defaultPropsEditorScrollableAreaRef} from './scroll-to-default-props-path';
-import {getZodSchemaType} from './zod-schema-type';
+import type {AnyZodSchema, ZodSafeParseResult} from './zod-schema-type';
+import {getZodSchemaType, zodSafeParse} from './zod-schema-type';
 
 const scrollable: React.CSSProperties = {
 	display: 'flex',
@@ -22,15 +23,13 @@ const scrollable: React.CSSProperties = {
 	overflowY: 'auto',
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const SchemaEditor: React.FC<{
-	readonly schema: any;
+	readonly schema: AnyZodSchema;
 	readonly unsavedDefaultProps: Record<string, unknown>;
 	readonly setValue: React.Dispatch<
 		React.SetStateAction<Record<string, unknown>>
 	>;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	readonly zodValidationResult: {success: boolean; error?: any};
+	readonly zodValidationResult: ZodSafeParseResult;
 	readonly savedDefaultProps: Record<string, unknown>;
 	readonly onSave: (
 		updater: (oldState: Record<string, unknown>) => Record<string, unknown>,
@@ -117,7 +116,7 @@ export const SchemaEditor: React.FC<{
 	}, [savedDefaultProps, setValue]);
 
 	if (!zodValidationResult.success) {
-		const defaultPropsValid = schema.safeParse(savedDefaultProps);
+		const defaultPropsValid = zodSafeParse(schema, savedDefaultProps);
 
 		if (!defaultPropsValid.success) {
 			return <InvalidDefaultProps zodValidationResult={zodValidationResult} />;

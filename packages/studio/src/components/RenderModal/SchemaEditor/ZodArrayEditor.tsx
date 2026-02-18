@@ -13,12 +13,12 @@ import type {UpdaterFunction} from './ZodSwitch';
 import {createZodValues} from './create-zod-values';
 import {deepEqual} from './deep-equal';
 import {useLocalState} from './local-state';
+import type {AnyZodSchema} from './zod-schema-type';
 import {getArrayElement} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodArrayEditor: React.FC<{
-	readonly schema: any;
+	readonly schema: AnyZodSchema;
 	readonly jsonPath: JSONPath;
 	readonly value: unknown[];
 	readonly defaultValue: unknown[];

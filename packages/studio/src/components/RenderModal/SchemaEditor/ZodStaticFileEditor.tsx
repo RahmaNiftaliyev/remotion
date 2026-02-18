@@ -8,15 +8,15 @@ import {SchemaLabel} from './SchemaLabel';
 import {ZodFieldValidation} from './ZodFieldValidation';
 import type {UpdaterFunction} from './ZodSwitch';
 import {useLocalState} from './local-state';
+import type {AnyZodSchema} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 
 const container: React.CSSProperties = {
 	width: '100%',
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodStaticFileEditor: React.FC<{
-	readonly schema: any;
+	readonly schema: AnyZodSchema;
 	readonly jsonPath: JSONPath;
 	readonly value: string;
 	readonly defaultValue: string;

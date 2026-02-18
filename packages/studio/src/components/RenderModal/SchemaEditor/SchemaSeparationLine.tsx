@@ -8,6 +8,7 @@ import {
 import {Spacing} from '../../layout';
 import {fieldSetText} from '../layout';
 import {createZodValues} from './create-zod-values';
+import type {AnyZodSchema} from './zod-schema-type';
 import {getArrayElement} from './zod-schema-type';
 
 export const VERTICAL_GUIDE_HEIGHT = 24;
@@ -35,8 +36,7 @@ export const SchemaArrayItemSeparationLine: React.FC<{
 		increment: boolean,
 	) => void;
 	readonly index: number;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	readonly schema: any;
+	readonly schema: AnyZodSchema;
 	readonly showAddButton: boolean;
 	readonly isLast: boolean;
 }> = ({onChange, index, schema, isLast, showAddButton}) => {

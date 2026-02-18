@@ -1,11 +1,11 @@
 import {ZonNonEditableValue} from './ZodNonEditableValue';
 import {ZodOrNullishEditor} from './ZodOrNullishEditor';
 import type {UpdaterFunction} from './ZodSwitch';
-import {getZodSchemaType} from './zod-schema-type';
+import type {AnyZodSchema} from './zod-schema-type';
+import {getUnionOptions, getZodSchemaType} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const findNull = (value: readonly any[]) => {
+const findNull = (value: readonly AnyZodSchema[]) => {
 	const nullIndex = value.findIndex((v) => {
 		const type = getZodSchemaType(v);
 		return type === 'null' || type === 'undefined';
@@ -31,13 +31,12 @@ const findNull = (value: readonly any[]) => {
 	};
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodUnionEditor: React.FC<{
 	showSaveButton: boolean;
 	jsonPath: JSONPath;
 	value: unknown;
 	defaultValue: unknown;
-	schema: any;
+	schema: AnyZodSchema;
 	setValue: UpdaterFunction<unknown>;
 	onSave: UpdaterFunction<unknown>;
 	onRemove: null | (() => void);
@@ -57,7 +56,7 @@ export const ZodUnionEditor: React.FC<{
 	saveDisabledByParent,
 	mayPad,
 }) => {
-	const {options} = schema._def;
+	const options = getUnionOptions(schema);
 
 	if (options.length > 2) {
 		return (

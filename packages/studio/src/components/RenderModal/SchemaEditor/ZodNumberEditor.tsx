@@ -5,16 +5,16 @@ import {SchemaLabel} from './SchemaLabel';
 import {ZodFieldValidation} from './ZodFieldValidation';
 import type {UpdaterFunction} from './ZodSwitch';
 import {useLocalState} from './local-state';
-import {isZodV3Schema} from './zod-schema-type';
+import type {AnyZodSchema} from './zod-schema-type';
+import {getZodDef, isZodV3Schema} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 
 const fullWidth: React.CSSProperties = {
 	width: '100%',
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getMinValue = (schema: any) => {
-	const {checks} = schema._def;
+const getMinValue = (schema: AnyZodSchema) => {
+	const {checks} = getZodDef(schema);
 	if (!checks) return -Infinity;
 
 	if (isZodV3Schema(schema)) {
@@ -35,9 +35,8 @@ const getMinValue = (schema: any) => {
 	return -Infinity;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getMaxValue = (schema: any) => {
-	const {checks} = schema._def;
+const getMaxValue = (schema: AnyZodSchema) => {
+	const {checks} = getZodDef(schema);
 	if (!checks) return Infinity;
 
 	if (isZodV3Schema(schema)) {
@@ -58,9 +57,8 @@ const getMaxValue = (schema: any) => {
 	return Infinity;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getStep = (schema: any): number | undefined => {
-	const {checks} = schema._def;
+const getStep = (schema: AnyZodSchema): number | undefined => {
+	const {checks} = getZodDef(schema);
 	if (!checks) return undefined;
 
 	if (isZodV3Schema(schema)) {
@@ -83,9 +81,8 @@ const getStep = (schema: any): number | undefined => {
 	return undefined;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodNumberEditor: React.FC<{
-	readonly schema: any;
+	readonly schema: AnyZodSchema;
 	readonly jsonPath: JSONPath;
 	readonly value: number;
 	readonly setValue: UpdaterFunction<number>;

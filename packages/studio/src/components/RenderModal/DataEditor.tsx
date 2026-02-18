@@ -29,7 +29,11 @@ import {
 	ZodNotInstalled,
 } from './SchemaEditor/SchemaErrorMessages';
 import {extractEnumJsonPaths} from './SchemaEditor/extract-enum-json-paths';
-import {getZodSchemaType} from './SchemaEditor/zod-schema-type';
+import type {
+	AnyZodSchema,
+	ZodSafeParseResult,
+} from './SchemaEditor/zod-schema-type';
+import {getZodSchemaType, zodSafeParse} from './SchemaEditor/zod-schema-type';
 import {WarningIndicatorButton} from './WarningIndicatorButton';
 import type {TypeCanSaveState} from './get-render-modal-warnings';
 import {
@@ -48,8 +52,7 @@ export type State =
 			str: string;
 			value: Record<string, unknown>;
 			validJSON: true;
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			zodValidation: {success: boolean; error?: any};
+			zodValidation: ZodSafeParseResult;
 	  }
 	| {
 			str: string;
@@ -185,7 +188,7 @@ export const DataEditor: React.FC<{
 			);
 		}
 
-		return unresolvedComposition.schema;
+		return unresolvedComposition.schema as AnyZodSchema;
 	}, [unresolvedComposition.schema, z]);
 
 	const zodValidationResult = useMemo(() => {
@@ -197,9 +200,7 @@ export const DataEditor: React.FC<{
 			return 'no-schema' as const;
 		}
 
-		return (
-			schema as {safeParse: (v: unknown) => {success: boolean; error?: unknown}}
-		).safeParse(defaultProps);
+		return zodSafeParse(schema, defaultProps);
 	}, [defaultProps, schema]);
 
 	const setShowWarning: React.Dispatch<React.SetStateAction<boolean>> =

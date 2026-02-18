@@ -8,7 +8,8 @@ import type {UpdaterFunction} from './ZodSwitch';
 import {ZodSwitch} from './ZodSwitch';
 import {deepEqual} from './deep-equal';
 import {useLocalState} from './local-state';
-import {getZodSchemaType, isZodV3Schema} from './zod-schema-type';
+import type {AnyZodSchema} from './zod-schema-type';
+import {getObjectShape, getZodSchemaType} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 
 export type ObjectDiscrimatedUnionReplacement = {
@@ -16,9 +17,8 @@ export type ObjectDiscrimatedUnionReplacement = {
 	markup: React.ReactNode;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodObjectEditor: React.FC<{
-	readonly schema: any;
+	readonly schema: AnyZodSchema;
 	readonly jsonPath: JSONPath;
 	readonly unsavedValue: Record<string, unknown>;
 	readonly savedValue: Record<string, unknown>;
@@ -52,18 +52,12 @@ export const ZodObjectEditor: React.FC<{
 		savedValue,
 	});
 
-	const def = schema._def;
-
 	const typeName = getZodSchemaType(schema);
 	if (typeName !== 'object') {
 		throw new Error('expected object');
 	}
 
-	// v3: _def.shape() is a function, v4: _def.shape is an object
-	const shape =
-		isZodV3Schema(schema) && typeof def.shape === 'function'
-			? def.shape()
-			: def.shape;
+	const shape = getObjectShape(schema);
 	const keys = Object.keys(shape);
 
 	const isRoot = jsonPath.length === 0;

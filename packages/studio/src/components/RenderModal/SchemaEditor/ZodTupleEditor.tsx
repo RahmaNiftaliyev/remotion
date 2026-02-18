@@ -10,14 +10,15 @@ import {useLocalState} from './local-state';
 import {SchemaLabel} from './SchemaLabel';
 import {SchemaArrayItemSeparationLine} from './SchemaSeparationLine';
 import {SchemaVerticalGuide} from './SchemaVerticalGuide';
+import type {AnyZodSchema} from './zod-schema-type';
+import {getTupleItems} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 import {ZodFieldValidation} from './ZodFieldValidation';
 import type {UpdaterFunction} from './ZodSwitch';
 import {ZodTupleItemEditor} from './ZodTupleItemEditor';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodTupleEditor: React.FC<{
-	readonly schema: any;
+	readonly schema: AnyZodSchema;
 	readonly jsonPath: JSONPath;
 	readonly value: unknown[];
 	readonly defaultValue: unknown[];
@@ -49,7 +50,7 @@ export const ZodTupleEditor: React.FC<{
 	});
 	const [expanded, setExpanded] = useState(true);
 
-	const def = schema._def;
+	const tupleItems = getTupleItems(schema);
 
 	const suffix = useMemo(() => {
 		return expanded ? ' [' : ' [...] ';
@@ -100,12 +101,12 @@ export const ZodTupleEditor: React.FC<{
 									<ZodTupleItemEditor
 										onChange={onChange}
 										value={child}
-										def={def}
+										tupleItems={tupleItems}
 										index={i}
 										jsonPath={jsonPath}
 										defaultValue={
 											defaultValue?.[i] ??
-											createZodValues(def.items[i], z, zodTypes)
+											createZodValues(tupleItems[i], z, zodTypes)
 										}
 										onSave={onSave}
 										showSaveButton={showSaveButton}

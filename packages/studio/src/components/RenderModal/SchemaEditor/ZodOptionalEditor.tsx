@@ -1,14 +1,15 @@
 import {ZodOrNullishEditor} from './ZodOrNullishEditor';
 import type {UpdaterFunction} from './ZodSwitch';
+import type {AnyZodSchema} from './zod-schema-type';
+import {getInnerType} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodOptionalEditor: React.FC<{
 	showSaveButton: boolean;
 	jsonPath: JSONPath;
 	value: unknown;
 	defaultValue: unknown;
-	schema: any;
+	schema: AnyZodSchema;
 	setValue: UpdaterFunction<unknown>;
 	onSave: UpdaterFunction<unknown>;
 	onRemove: null | (() => void);
@@ -28,8 +29,7 @@ export const ZodOptionalEditor: React.FC<{
 	saveDisabledByParent,
 	mayPad,
 }) => {
-	// Both v3 and v4 have _def.innerType
-	const {innerType} = schema._def;
+	const innerType = getInnerType(schema);
 
 	return (
 		<ZodOrNullishEditor

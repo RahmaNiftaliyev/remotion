@@ -13,6 +13,7 @@ import {ZodObjectEditor} from './ZodObjectEditor';
 import type {UpdaterFunction} from './ZodSwitch';
 import {createZodValues} from './create-zod-values';
 import {useLocalState} from './local-state';
+import type {AnyZodSchema} from './zod-schema-type';
 import {
 	getDiscriminatedOption,
 	getDiscriminatedOptionKeys,
@@ -21,7 +22,7 @@ import {
 import type {JSONPath} from './zod-types';
 
 export const ZodDiscriminatedUnionEditor: React.FC<{
-	schema: any;
+	schema: AnyZodSchema;
 	setValue: UpdaterFunction<Record<string, unknown>>;
 	value: Record<string, unknown>;
 	defaultValue: Record<string, unknown>;
@@ -152,6 +153,10 @@ export const ZodDiscriminatedUnionEditor: React.FC<{
 		schema,
 		value[discriminator] as string,
 	);
+
+	if (!currentOptionSchema) {
+		throw new Error('No matching option found for discriminated union');
+	}
 
 	return (
 		<ZodObjectEditor

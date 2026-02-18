@@ -132,7 +132,7 @@ export const VisualControlsProvider: React.FC<{
 
 			const {changed, currentValue} = setControl(key, {
 				valueInCode: value,
-				schema: schema ?? getZodSchemaFromPrimitive(value, z),
+				schema: (schema ?? getZodSchemaFromPrimitive(value, z)) as AnyZodSchema,
 				stack: new Error().stack as string,
 			});
 

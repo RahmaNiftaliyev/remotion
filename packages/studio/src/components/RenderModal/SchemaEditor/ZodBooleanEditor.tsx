@@ -4,6 +4,7 @@ import {Fieldset} from './Fieldset';
 import {SchemaLabel} from './SchemaLabel';
 import type {UpdaterFunction} from './ZodSwitch';
 import {useLocalState} from './local-state';
+import type {AnyZodSchema} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 
 const fullWidth: React.CSSProperties = {
@@ -11,8 +12,7 @@ const fullWidth: React.CSSProperties = {
 };
 
 export const ZodBooleanEditor: React.FC<{
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	readonly schema: any;
+	readonly schema: AnyZodSchema;
 	readonly jsonPath: JSONPath;
 	readonly value: boolean;
 	readonly setValue: UpdaterFunction<boolean>;

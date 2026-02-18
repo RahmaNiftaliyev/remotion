@@ -4,6 +4,7 @@ import {ZodFieldValidation} from './ZodFieldValidation';
 import type {UpdaterFunction} from './ZodSwitch';
 import {ZodSwitch} from './ZodSwitch';
 import {useLocalState} from './local-state';
+import type {AnyZodSchema} from './zod-schema-type';
 import {getEffectsInner, getZodSchemaType} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
 
@@ -11,9 +12,8 @@ const fullWidth: React.CSSProperties = {
 	width: '100%',
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ZodEffectEditor: React.FC<{
-	readonly schema: any;
+	readonly schema: AnyZodSchema;
 	readonly jsonPath: JSONPath;
 	readonly value: unknown;
 	readonly setValue: UpdaterFunction<unknown>;

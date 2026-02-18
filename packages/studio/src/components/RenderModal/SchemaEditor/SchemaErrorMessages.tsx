@@ -4,6 +4,7 @@ import {Button} from '../../Button';
 import {inlineCodeSnippet} from '../../Menu/styles';
 import {Spacing} from '../../layout';
 import {ZodErrorMessages} from './ZodErrorMessages';
+import type {ZodSafeParseResult} from './zod-schema-type';
 
 const explainer: React.CSSProperties = {
 	display: 'flex',
@@ -86,8 +87,7 @@ export const NoDefaultProps = () => {
 };
 
 export const InvalidDefaultProps: React.FC<{
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	zodValidationResult: {success: boolean; error?: any};
+	zodValidationResult: ZodSafeParseResult;
 }> = ({zodValidationResult}) => {
 	return (
 		<div style={errorContainer}>
@@ -112,8 +112,7 @@ export const InvalidDefaultProps: React.FC<{
 };
 
 export const InvalidSchema: React.FC<{
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	zodValidationResult: {success: boolean; error?: any};
+	zodValidationResult: ZodSafeParseResult;
 	reset: () => void;
 }> = ({zodValidationResult, reset}) => {
 	return (

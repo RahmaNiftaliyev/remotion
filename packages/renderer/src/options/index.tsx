@@ -7,6 +7,7 @@ import {binariesDirectoryOption} from './binaries-directory';
 import {browserExecutableOption} from './browser-executable';
 import {chromeModeOption} from './chrome-mode';
 import {colorSpaceOption} from './color-space';
+import {concurrencyOption} from './concurrency';
 import {crfOption} from './crf';
 import {enableCrossSiteIsolationOption} from './cross-site-isolation';
 import {darkModeOption} from './dark-mode';
@@ -44,6 +45,10 @@ import {offthreadVideoCacheSizeInBytesOption} from './offthreadvideo-cache-size'
 import {offthreadVideoThreadsOption} from './offthreadvideo-threads';
 import {onBrowserDownloadOption} from './on-browser-download';
 import type {AnyRemotionOption} from './option';
+import {overrideDurationOption} from './override-duration';
+import {overrideFpsOption} from './override-fps';
+import {overrideHeightOption} from './override-height';
+import {overrideWidthOption} from './override-width';
 import {overwriteOption} from './overwrite';
 import {pixelFormatOption} from './pixel-format';
 import {preferLosslessAudioOption} from './prefer-lossless';
@@ -68,6 +73,7 @@ import {x264Option} from './x264-preset';
 export const allOptions = {
 	audioCodecOption,
 	browserExecutableOption,
+	concurrencyOption,
 	scaleOption,
 	crfOption,
 	jpegQualityOption,
@@ -131,6 +137,10 @@ export const allOptions = {
 	stillImageFormatOption,
 	userAgentOption,
 	videoImageFormatOption,
+	overrideHeightOption,
+	overrideWidthOption,
+	overrideFpsOption,
+	overrideDurationOption,
 };
 
 export type AvailableOptions = keyof typeof allOptions;

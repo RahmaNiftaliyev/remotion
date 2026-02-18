@@ -1,11 +1,13 @@
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
+import {BrowserSafeApis} from '@remotion/renderer/client';
 import fs from 'node:fs';
 import path from 'node:path';
 import {ConfigInternals} from './config';
 import {getEnvironmentVariables} from './get-env';
 import {getInputProps} from './get-input-props';
 import {Log} from './log';
+import {parsedCli} from './parsed-cli';
 
 const getAndValidateFrameRange = (logLevel: LogLevel, indent: boolean) => {
 	const frameRange = ConfigInternals.getRange();
@@ -58,10 +60,23 @@ export const getCliOptions = (options: {
 		? true
 		: ConfigInternals.getShouldOutputImageSequence(frameRange);
 
-	const concurrency = ConfigInternals.getConcurrency();
+	const concurrency = BrowserSafeApis.options.concurrencyOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
-	const height = ConfigInternals.getHeight();
-	const width = ConfigInternals.getWidth();
+	const height = BrowserSafeApis.options.overrideHeightOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const width = BrowserSafeApis.options.overrideWidthOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const fps = BrowserSafeApis.options.overrideFpsOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const durationInFrames =
+		BrowserSafeApis.options.overrideDurationOption.getValue({
+			commandLine: parsedCli,
+		}).value;
 
 	RenderInternals.validateConcurrency({
 		value: concurrency,
@@ -83,5 +98,7 @@ export const getCliOptions = (options: {
 		ffmpegOverride: ConfigInternals.getFfmpegOverrideFunction(),
 		height,
 		width,
+		fps,
+		durationInFrames,
 	};
 };

@@ -307,8 +307,7 @@ The [command line flag](/docs/cli/render#--gl) `--gl` will take precedence over 
 
 ## `setConcurrency()`
 
-Sets how many Puppeteer instances will work on rendering your video in parallel.
-Default: `null`, meaning **half of the threads** available on your CPU.
+<Options id="concurrency" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -611,7 +610,7 @@ The [command line flag](/docs/cli/render#--sequence) `--sequence` will take prec
 
 ## `overrideHeight()`<AvailableFrom v="3.2.40" />
 
-Overrides the height of the rendered video.
+<Options id="height" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -620,11 +619,10 @@ Config.overrideHeight(600);
 ```
 
 The [command line flag](/docs/cli/render#--height) `--height` will take precedence over this option.
-(see h264 validation?)
 
 ## `overrideWidth()`<AvailableFrom v="3.2.40" />
 
-Overrides the width of the rendered video.
+<Options id="width" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -632,7 +630,31 @@ import {Config} from '@remotion/cli/config';
 Config.overrideWidth(900);
 ```
 
-The [command line flag](/docs/cli/render#--width) `--width` will take precedence over this option
+The [command line flag](/docs/cli/render#--width) `--width` will take precedence over this option.
+
+## `overrideFps()`<AvailableFrom v="4.0.424" />
+
+<Options id="fps" />
+
+```ts twoslash title="remotion.config.ts"
+import {Config} from '@remotion/cli/config';
+// ---cut---
+Config.overrideFps(25);
+```
+
+The [command line flag](/docs/cli/render#--fps) `--fps` will take precedence over this option.
+
+## `overrideDuration()`<AvailableFrom v="4.0.424" />
+
+<Options id="duration" />
+
+```ts twoslash title="remotion.config.ts"
+import {Config} from '@remotion/cli/config';
+// ---cut---
+Config.overrideDuration(300);
+```
+
+The [command line flag](/docs/cli/render#--duration) `--duration` will take precedence over this option.
 
 ## `setCrf()`<AvailableFrom v="1.4.0" />
 

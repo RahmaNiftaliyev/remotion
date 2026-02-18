@@ -37,7 +37,6 @@ import {
 	setBufferStateDelayInMilliseconds,
 } from './buffer-state-delay-in-milliseconds';
 import type {Concurrency} from './concurrency';
-import {setConcurrency} from './concurrency';
 import {getEntryPoint, setEntryPoint} from './entry-point';
 import {setDotEnvLocation} from './env-file';
 import {
@@ -45,7 +44,6 @@ import {
 	setFfmpegOverrideFunction,
 } from './ffmpeg-override';
 import {setFrameRange} from './frame-range';
-import {getHeight, overrideHeight} from './height';
 import {setImageSequence} from './image-sequence';
 import {getMetadata, setMetadata} from './metadata';
 import {getShouldOpenBrowser, setShouldOpenBrowser} from './open-browser';
@@ -58,11 +56,11 @@ import {
 	getWebpackPolling,
 	setWebpackPollingInMilliseconds,
 } from './webpack-poll';
-import {getWidth, overrideWidth} from './width';
 
 export type {Concurrency, WebpackConfiguration, WebpackOverrideFn};
 
 const {
+	concurrencyOption,
 	offthreadVideoCacheSizeInBytesOption,
 	x264Option,
 	audioBitrateOption,
@@ -117,6 +115,10 @@ const {
 	userAgentOption,
 	disableWebSecurityOption,
 	ignoreCertificateErrorsOption,
+	overrideHeightOption,
+	overrideWidthOption,
+	overrideFpsOption,
+	overrideDurationOption,
 } = BrowserSafeApis.options;
 
 declare global {
@@ -391,6 +393,14 @@ declare global {
 		 */
 		readonly overrideWidth: (newWidth: number) => void;
 		/**
+		 * Overrides the FPS of a composition
+		 */
+		readonly overrideFps: (newFps: number) => void;
+		/**
+		 * Overrides the duration in frames of a composition
+		 */
+		readonly overrideDuration: (newDuration: number) => void;
+		/**
 		 * Set the ProRes profile.
 		 * This method is only valid if the codec has been set to 'prores'.
 		 * Possible values: 4444-xq, 4444, hq, standard, light, proxy. Default: 'hq'
@@ -664,7 +674,7 @@ export const Config: FlatConfig = {
 	setChromiumOpenGlRenderer: glOption.setConfig,
 	setChromiumUserAgent: userAgentOption.setConfig,
 	setDotEnvLocation,
-	setConcurrency,
+	setConcurrency: concurrencyOption.setConfig,
 	setChromiumMultiProcessOnLinux: enableMultiprocessOnLinuxOption.setConfig,
 	setChromiumDarkMode: darkModeOption.setConfig,
 	setQuality: () => {
@@ -702,8 +712,10 @@ export const Config: FlatConfig = {
 	setVideoBitrate: videoBitrateOption.setConfig,
 	setAudioLatencyHint: audioLatencyHintOption.setConfig,
 	setForSeamlessAacConcatenation: forSeamlessAacConcatenationOption.setConfig,
-	overrideHeight,
-	overrideWidth,
+	overrideHeight: overrideHeightOption.setConfig,
+	overrideWidth: overrideWidthOption.setConfig,
+	overrideFps: overrideFpsOption.setConfig,
+	overrideDuration: overrideDurationOption.setConfig,
 	overrideFfmpegCommand: setFfmpegOverrideFunction,
 	setAudioCodec: audioCodecOption.setConfig,
 	setOffthreadVideoCacheSizeInBytes: (size) => {
@@ -746,8 +758,6 @@ export const ConfigInternals = {
 	getMaxTimelineTracks: StudioServerInternals.getMaxTimelineTracks,
 	defaultOverrideFunction,
 	getFfmpegOverrideFunction,
-	getHeight,
-	getWidth,
 	getMetadata,
 	getEntryPoint,
 	getWebpackPolling,

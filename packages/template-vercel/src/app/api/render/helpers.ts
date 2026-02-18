@@ -1,6 +1,6 @@
-import { Sandbox } from '@vercel/sandbox';
-import { readFile } from 'fs/promises';
-import path from 'path';
+import { Sandbox } from "@vercel/sandbox";
+import { readFile } from "fs/promises";
+import path from "path";
 
 export const createDisposableSandbox = async (
   options: Parameters<typeof Sandbox.create>[0],
@@ -24,9 +24,9 @@ export const createDisposableWriter = (
 };
 
 export type RenderProgress =
-  | { type: 'phase'; phase: string; progress: number }
-  | { type: 'done'; url: string; size: number }
-  | { type: 'error'; message: string };
+  | { type: "phase"; phase: string; progress: number }
+  | { type: "done"; url: string; size: number }
+  | { type: "error"; message: string };
 
 export type OnProgressFn = (message: RenderProgress) => Promise<void>;
 
@@ -35,6 +35,6 @@ export function formatSSE(message: RenderProgress): string {
 }
 
 export async function getRenderScript(): Promise<Buffer> {
-  const renderScriptPath = path.join(process.cwd(), 'render.ts');
+  const renderScriptPath = path.join(process.cwd(), "render.ts");
   return readFile(renderScriptPath);
 }

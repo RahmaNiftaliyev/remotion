@@ -1,14 +1,14 @@
-import { Sandbox } from '@vercel/sandbox';
+import { Sandbox } from "@vercel/sandbox";
 import {
   createDisposableSandbox,
   getRenderScript,
   OnProgressFn,
-} from '../helpers';
-import { addBundleToSandbox } from './add-bundle';
-import { installBrowser } from './install-browser';
-import { installJsDependencies } from './install-js-dependencies';
-import { installSystemDependencies } from './install-system-dependencies';
-import { patchCompositor } from './patch-compositor';
+} from "../helpers";
+import { addBundleToSandbox } from "./add-bundle";
+import { installBrowser } from "./install-browser";
+import { installJsDependencies } from "./install-js-dependencies";
+import { installSystemDependencies } from "./install-system-dependencies";
+import { patchCompositor } from "./patch-compositor";
 
 export async function createSandbox({
   onProgress,
@@ -16,12 +16,12 @@ export async function createSandbox({
   onProgress: OnProgressFn;
 }): Promise<Sandbox & AsyncDisposable> {
   const sandbox = await createDisposableSandbox({
-    runtime: 'node24',
+    runtime: "node24",
     resources: { vcpus: 4 },
     timeout: 5 * 60 * 1000,
   });
 
-  const preparingPhase = 'Preparing...';
+  const preparingPhase = "Preparing...";
 
   // Preparation has 3 stages with weights:
   // - System dependencies: 60%
@@ -32,7 +32,7 @@ export async function createSandbox({
   const WEIGHT_BROWSER = 0.2;
 
   await onProgress({
-    type: 'phase',
+    type: "phase",
     phase: preparingPhase,
     progress: 0,
   });
@@ -42,7 +42,7 @@ export async function createSandbox({
     sandbox,
     onProgress: async (stageProgress: number) => {
       await onProgress({
-        type: 'phase',
+        type: "phase",
         phase: preparingPhase,
         progress: stageProgress * WEIGHT_SYS_DEPS,
       });
@@ -50,8 +50,8 @@ export async function createSandbox({
   });
 
   await onProgress({
-    type: 'phase',
-    phase: 'Adding Remotion video to Sandbox...',
+    type: "phase",
+    phase: "Adding Remotion video to Sandbox...",
     progress: 0,
   });
 
@@ -59,7 +59,7 @@ export async function createSandbox({
   await addBundleToSandbox(sandbox);
 
   await onProgress({
-    type: 'phase',
+    type: "phase",
     phase: preparingPhase,
     progress: WEIGHT_SYS_DEPS + WEIGHT_BUNDLE,
   });
@@ -75,7 +75,7 @@ export async function createSandbox({
     sandbox,
     onProgress: async (browserProgress: number) => {
       await onProgress({
-        type: 'phase',
+        type: "phase",
         phase: preparingPhase,
         progress:
           WEIGHT_SYS_DEPS + WEIGHT_BUNDLE + browserProgress * WEIGHT_BROWSER,
@@ -86,12 +86,12 @@ export async function createSandbox({
   const renderScript = await getRenderScript();
   await sandbox.writeFiles([
     {
-      path: 'render.ts',
+      path: "render.ts",
       content: renderScript,
     },
     {
-      path: 'package.json',
-      content: Buffer.from(JSON.stringify({ type: 'module' })),
+      path: "package.json",
+      content: Buffer.from(JSON.stringify({ type: "module" })),
     },
   ]);
 

@@ -56,6 +56,9 @@ export const processStill = async ({
 		entryPointReason: 'same as Studio',
 		envVariables: job.envVariables,
 		height: null,
+		width: null,
+		fps: null,
+		durationInFrames: null,
 		fullEntryPoint,
 		serializedInputPropsWithCustomSchema:
 			job.serializedInputPropsWithCustomSchema,
@@ -67,7 +70,6 @@ export const processStill = async ({
 		remainingArgs: [],
 		scale: job.scale,
 		stillFrame: job.frame,
-		width: null,
 		compositionIdFromUi: job.compositionId,
 		imageFormatFromUi: job.imageFormat,
 		logLevel: job.logLevel,

@@ -58,6 +58,9 @@ export const renderStillFlow = async ({
 	chromiumOptions,
 	envVariables,
 	height,
+	width,
+	fps,
+	durationInFrames,
 	serializedInputPropsWithCustomSchema,
 	overwrite,
 	port,
@@ -66,7 +69,6 @@ export const renderStillFlow = async ({
 	jpegQuality,
 	scale,
 	stillFrame,
-	width,
 	compositionIdFromUi,
 	imageFormatFromUi,
 	logLevel,
@@ -104,6 +106,8 @@ export const renderStillFlow = async ({
 	publicDir: string | null;
 	height: number | null;
 	width: number | null;
+	fps: number | null;
+	durationInFrames: number | null;
 	compositionIdFromUi: string | null;
 	imageFormatFromUi: StillImageFormat | null;
 	logLevel: LogLevel;
@@ -255,6 +259,8 @@ export const renderStillFlow = async ({
 		await getCompositionWithDimensionOverride({
 			height,
 			width,
+			fps,
+			durationInFrames,
 			args: remainingArgs,
 			compositionIdFromUi,
 			browserExecutable,

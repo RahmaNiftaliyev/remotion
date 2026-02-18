@@ -64,8 +64,19 @@ export const getCliOptions = (options: {
 		commandLine: parsedCli,
 	}).value;
 
-	const height = ConfigInternals.getHeight();
-	const width = ConfigInternals.getWidth();
+	const height = BrowserSafeApis.options.overrideHeightOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const width = BrowserSafeApis.options.overrideWidthOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const fps = BrowserSafeApis.options.overrideFpsOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const durationInFrames =
+		BrowserSafeApis.options.overrideDurationOption.getValue({
+			commandLine: parsedCli,
+		}).value;
 
 	RenderInternals.validateConcurrency({
 		value: concurrency,
@@ -87,5 +98,7 @@ export const getCliOptions = (options: {
 		ffmpegOverride: ConfigInternals.getFfmpegOverrideFunction(),
 		height,
 		width,
+		fps,
+		durationInFrames,
 	};
 };

@@ -44,7 +44,6 @@ import {
 	setFfmpegOverrideFunction,
 } from './ffmpeg-override';
 import {setFrameRange} from './frame-range';
-import {getHeight, overrideHeight} from './height';
 import {setImageSequence} from './image-sequence';
 import {getMetadata, setMetadata} from './metadata';
 import {getShouldOpenBrowser, setShouldOpenBrowser} from './open-browser';
@@ -57,7 +56,6 @@ import {
 	getWebpackPolling,
 	setWebpackPollingInMilliseconds,
 } from './webpack-poll';
-import {getWidth, overrideWidth} from './width';
 
 export type {Concurrency, WebpackConfiguration, WebpackOverrideFn};
 
@@ -117,6 +115,10 @@ const {
 	userAgentOption,
 	disableWebSecurityOption,
 	ignoreCertificateErrorsOption,
+	overrideHeightOption,
+	overrideWidthOption,
+	overrideFpsOption,
+	overrideDurationOption,
 } = BrowserSafeApis.options;
 
 declare global {
@@ -390,6 +392,14 @@ declare global {
 		 * Overrides the width of a composition
 		 */
 		readonly overrideWidth: (newWidth: number) => void;
+		/**
+		 * Overrides the FPS of a composition
+		 */
+		readonly overrideFps: (newFps: number) => void;
+		/**
+		 * Overrides the duration in frames of a composition
+		 */
+		readonly overrideDuration: (newDuration: number) => void;
 		/**
 		 * Set the ProRes profile.
 		 * This method is only valid if the codec has been set to 'prores'.
@@ -702,8 +712,10 @@ export const Config: FlatConfig = {
 	setVideoBitrate: videoBitrateOption.setConfig,
 	setAudioLatencyHint: audioLatencyHintOption.setConfig,
 	setForSeamlessAacConcatenation: forSeamlessAacConcatenationOption.setConfig,
-	overrideHeight,
-	overrideWidth,
+	overrideHeight: overrideHeightOption.setConfig,
+	overrideWidth: overrideWidthOption.setConfig,
+	overrideFps: overrideFpsOption.setConfig,
+	overrideDuration: overrideDurationOption.setConfig,
 	overrideFfmpegCommand: setFfmpegOverrideFunction,
 	setAudioCodec: audioCodecOption.setConfig,
 	setOffthreadVideoCacheSizeInBytes: (size) => {
@@ -746,8 +758,6 @@ export const ConfigInternals = {
 	getMaxTimelineTracks: StudioServerInternals.getMaxTimelineTracks,
 	defaultOverrideFunction,
 	getFfmpegOverrideFunction,
-	getHeight,
-	getWidth,
 	getMetadata,
 	getEntryPoint,
 	getWebpackPolling,

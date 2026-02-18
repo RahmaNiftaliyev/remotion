@@ -45,6 +45,10 @@ import {offthreadVideoCacheSizeInBytesOption} from './offthreadvideo-cache-size'
 import {offthreadVideoThreadsOption} from './offthreadvideo-threads';
 import {onBrowserDownloadOption} from './on-browser-download';
 import type {AnyRemotionOption} from './option';
+import {overrideDurationOption} from './override-duration';
+import {overrideFpsOption} from './override-fps';
+import {overrideHeightOption} from './override-height';
+import {overrideWidthOption} from './override-width';
 import {overwriteOption} from './overwrite';
 import {pixelFormatOption} from './pixel-format';
 import {preferLosslessAudioOption} from './prefer-lossless';
@@ -133,6 +137,10 @@ export const allOptions = {
 	stillImageFormatOption,
 	userAgentOption,
 	videoImageFormatOption,
+	overrideHeightOption,
+	overrideWidthOption,
+	overrideFpsOption,
+	overrideDurationOption,
 };
 
 export type AvailableOptions = keyof typeof allOptions;

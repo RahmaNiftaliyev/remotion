@@ -102,6 +102,8 @@ export const render = async (
 		envVariables,
 		height,
 		width,
+		fps,
+		durationInFrames,
 		ffmpegOverride,
 	} = getCliOptions({
 		isStill: false,
@@ -253,6 +255,8 @@ export const render = async (
 		port: getRendererPortFromConfigFileAndCliFlag(),
 		height,
 		width,
+		fps,
+		durationInFrames,
 		remainingArgs,
 		compositionIdFromUi: null,
 		entryPointReason,

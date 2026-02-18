@@ -13,7 +13,7 @@
 		"remotiond": "remotiond-cli.js"
 	},
 	"scripts": {
-		"formatting": "prettier --experimental-cli src --check",
+		"formatting": "prettier src --check",
 		"lint": "eslint src",
 		"test": "bun test src",
 		"make": "tsgo -d"

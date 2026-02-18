@@ -7,7 +7,7 @@ Ensure we are not on the main branch, make a branch if necessary.
 For all packages affected, run Prettier to format the code:
 
 ```
-bunx prettier --experimental-cli src --write
+bunx prettier src --write
 ```
 
 Commit the changes, use the following format:

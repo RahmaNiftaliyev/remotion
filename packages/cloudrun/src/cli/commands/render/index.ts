@@ -90,6 +90,8 @@ export const renderCommand = async (
 		inputProps,
 		height,
 		width,
+		fps,
+		durationInFrames,
 	} = CliInternals.getCliOptions({
 		isStill: false,
 		logLevel,
@@ -191,13 +193,15 @@ export const renderCommand = async (
 				chromiumOptions,
 				envVariables,
 				height,
+				width,
+				fps,
+				durationInFrames,
 				indent,
 				port: ConfigInternals.getRendererPortFromConfigFileAndCliFlag(),
 				puppeteerInstance: undefined,
 				serveUrlOrWebpackUrl: serveUrl,
 				timeoutInMilliseconds: puppeteerTimeout,
 				logLevel,
-				width,
 				server: await server,
 				serializedInputPropsWithCustomSchema:
 					NoReactInternals.serializeJSONWithSpecialTypes({
@@ -355,6 +359,8 @@ ${downloadName ? `		Downloaded File = ${downloadName}` : ''}
 		muted,
 		forceWidth: width,
 		forceHeight: height,
+		forceFps: fps,
+		forceDurationInFrames: durationInFrames,
 		logLevel,
 		delayRenderTimeoutInMilliseconds: puppeteerTimeout,
 		// Special case: Should not use default local concurrency, or from

@@ -211,6 +211,8 @@ export const benchmarkCommand = async (
 		ffmpegOverride,
 		height,
 		width,
+		fps,
+		durationInFrames,
 		concurrency: unparsedConcurrency,
 	} = getCliOptions({
 		isStill: false,
@@ -491,6 +493,8 @@ export const benchmarkCommand = async (
 						...composition,
 						width: width ?? composition.width,
 						height: height ?? composition.height,
+						fps: fps ?? composition.fps,
+						durationInFrames: durationInFrames ?? composition.durationInFrames,
 					},
 					crf: configFileCrf ?? null,
 					envVariables,

@@ -59,6 +59,9 @@ export const processVideoJob = async ({
 		entryPointReason: 'same as Studio',
 		envVariables: job.envVariables,
 		height: null,
+		width: null,
+		fps: null,
+		durationInFrames: null,
 		fullEntryPoint,
 		serializedInputPropsWithCustomSchema:
 			job.serializedInputPropsWithCustomSchema,
@@ -69,7 +72,6 @@ export const processVideoJob = async ({
 		jpegQuality: job.jpegQuality ?? undefined,
 		remainingArgs: [],
 		scale: job.scale,
-		width: null,
 		compositionIdFromUi: job.compositionId,
 		logLevel: job.logLevel,
 		onProgress,

@@ -79,7 +79,15 @@ export const stillCommand = async ({
 		quit(1);
 	}
 
-	const {envVariables, inputProps, stillFrame, height, width} = getCliOptions({
+	const {
+		envVariables,
+		inputProps,
+		stillFrame,
+		height,
+		width,
+		fps,
+		durationInFrames,
+	} = getCliOptions({
 		isStill: true,
 		logLevel,
 		indent: false,
@@ -184,6 +192,8 @@ export const stillCommand = async ({
 			timeoutInMilliseconds,
 			height,
 			width,
+			fps,
+			durationInFrames,
 			server,
 			offthreadVideoCacheSizeInBytes,
 			offthreadVideoThreads,
@@ -265,6 +275,8 @@ export const stillCommand = async ({
 		scale,
 		forceHeight: height,
 		forceWidth: width,
+		forceFps: fps,
+		forceDurationInFrames: durationInFrames,
 		onInit: ({cloudWatchLogs, lambdaInsightsUrl}) => {
 			Log.verbose(
 				{indent: false, logLevel},

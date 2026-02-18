@@ -93,12 +93,19 @@ export const renderCommand = async ({
 
 	const region = getAwsRegion();
 
-	const {envVariables, frameRange, inputProps, height, width} =
-		CliInternals.getCliOptions({
-			isStill: false,
-			logLevel,
-			indent: false,
-		});
+	const {
+		envVariables,
+		frameRange,
+		inputProps,
+		height,
+		width,
+		fps,
+		durationInFrames,
+	} = CliInternals.getCliOptions({
+		isStill: false,
+		logLevel,
+		indent: false,
+	});
 
 	const pixelFormat = pixelFormatOption.getValue({
 		commandLine: CliInternals.parsedCli,
@@ -248,6 +255,9 @@ export const renderCommand = async ({
 				chromiumOptions,
 				envVariables,
 				height,
+				width,
+				fps,
+				durationInFrames,
 				indent,
 				serializedInputPropsWithCustomSchema:
 					NoReactInternals.serializeJSONWithSpecialTypes({
@@ -260,7 +270,6 @@ export const renderCommand = async ({
 				serveUrlOrWebpackUrl: serveUrl,
 				timeoutInMilliseconds,
 				logLevel,
-				width,
 				server,
 				offthreadVideoCacheSizeInBytes,
 				offthreadVideoThreads,
@@ -346,6 +355,8 @@ export const renderCommand = async ({
 		encodingMaxRate,
 		forceHeight: height,
 		forceWidth: width,
+		forceFps: fps,
+		forceDurationInFrames: durationInFrames,
 		webhook: parsedLambdaCli.webhook
 			? {
 					url: parsedLambdaCli.webhook,

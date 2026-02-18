@@ -45,7 +45,6 @@ const Home: NextPage = () => {
           />
         </div>
         <section className="flex flex-col gap-4">
-          <h2 className="text-lg font-bold text-foreground">New Render</h2>
           <RenderControls
             text={text}
             setText={setText}

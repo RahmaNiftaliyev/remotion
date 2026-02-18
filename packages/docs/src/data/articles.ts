@@ -6611,6 +6611,15 @@ export const articles = [
 		slug: 'vercel/save-snapshot',
 	},
 	{
+		id: 'vercel-types',
+		title: 'TypeScript Types Reference',
+		relativePath: 'docs/vercel/types.mdx',
+		compId: 'articles-docs-vercel-types',
+		crumb: '@remotion/vercel',
+		noAi: false,
+		slug: 'vercel/types',
+	},
+	{
 		id: 'vercel/upload-to-blob-storage',
 		title: 'uploadToBlobStorage()',
 		relativePath: 'docs/vercel/upload-to-blob-storage.mdx',

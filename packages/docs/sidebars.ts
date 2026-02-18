@@ -476,6 +476,7 @@ const sidebars: SidebarsConfig = {
 				'vercel/render-video-on-vercel',
 				'vercel/render-still-on-vercel',
 				'vercel/upload-to-blob-storage',
+				'vercel/vercel-types',
 			],
 		},
 		{

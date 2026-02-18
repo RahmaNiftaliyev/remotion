@@ -1,0 +1,42 @@
+---
+image: /generated/articles-docs-vercel-types.png
+id: vercel-types
+sidebar_label: Types
+title: TypeScript Types Reference
+slug: /vercel/types
+crumb: '@remotion/vercel'
+---
+
+The following types are part of the API of `@remotion/vercel`:
+
+## `VercelSandbox`
+
+```ts twoslash
+import type {VercelSandbox} from '@remotion/vercel';
+//                ^?
+```
+
+A [`Sandbox`](https://vercel.com/docs/vercel-sandbox/sdk-reference#sandbox-class) with `AsyncDisposable` support. Returned by [`createSandbox()`](/docs/vercel/create-sandbox) and [`getOrCreateSandbox()`](/docs/vercel/get-or-create-sandbox).
+
+## `CreateSandboxOnProgress`
+
+```ts twoslash
+import type {CreateSandboxOnProgress} from '@remotion/vercel';
+//                ^?
+```
+
+- `progress`: A number from `0` to `1` indicating overall progress
+- `message`: A human-readable description of the current phase
+
+## `RenderOnVercelProgress`
+
+```ts twoslash
+import type {RenderOnVercelProgress} from '@remotion/vercel';
+//                ^?
+```
+
+- `{type: 'opening-browser'}`: The browser is being opened
+- `{type: 'selecting-composition'}`: The composition is being selected
+- `{type: 'render-progress', progress: number}`: Rendering is in progress (`0` to `1`)
+- `{type: 'uploading'}`: The rendered file is being uploaded
+- `{type: 'done', url: string, size: number}`: The render is complete

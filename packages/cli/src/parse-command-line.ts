@@ -44,6 +44,8 @@ const {
 	ignoreCertificateErrorsOption,
 	overrideHeightOption,
 	overrideWidthOption,
+	overrideFpsOption,
+	overrideDurationOption,
 } = BrowserSafeApis.options;
 
 export type CommandLineOptions = {
@@ -113,6 +115,8 @@ export type CommandLineOptions = {
 	muted: boolean;
 	[overrideHeightOption.cliFlag]: TypeOfOption<typeof overrideHeightOption>;
 	[overrideWidthOption.cliFlag]: TypeOfOption<typeof overrideWidthOption>;
+	[overrideFpsOption.cliFlag]: TypeOfOption<typeof overrideFpsOption>;
+	[overrideDurationOption.cliFlag]: TypeOfOption<typeof overrideDurationOption>;
 	runs: number;
 	concurrencies: string;
 	[enforceAudioOption.cliFlag]: TypeOfOption<typeof enforceAudioOption>;

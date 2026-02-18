@@ -70,6 +70,13 @@ export const getCliOptions = (options: {
 	const width = BrowserSafeApis.options.overrideWidthOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const fps = BrowserSafeApis.options.overrideFpsOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const durationInFrames =
+		BrowserSafeApis.options.overrideDurationOption.getValue({
+			commandLine: parsedCli,
+		}).value;
 
 	RenderInternals.validateConcurrency({
 		value: concurrency,
@@ -91,5 +98,7 @@ export const getCliOptions = (options: {
 		ffmpegOverride: ConfigInternals.getFfmpegOverrideFunction(),
 		height,
 		width,
+		fps,
+		durationInFrames,
 	};
 };

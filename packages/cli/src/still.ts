@@ -73,7 +73,7 @@ export const still = async (
 		process.exit(1);
 	}
 
-	const {envVariables, height, inputProps, stillFrame, width} = getCliOptions({
+	const {envVariables, height, inputProps, stillFrame, width, fps, durationInFrames} = getCliOptions({
 		isStill: true,
 		logLevel,
 		indent: false,
@@ -160,6 +160,9 @@ export const still = async (
 		chromiumOptions,
 		envVariables,
 		height,
+		width,
+		fps,
+		durationInFrames,
 		serializedInputPropsWithCustomSchema:
 			NoReactInternals.serializeJSONWithSpecialTypes({
 				data: inputProps,
@@ -173,7 +176,6 @@ export const still = async (
 		jpegQuality,
 		scale,
 		stillFrame,
-		width,
 		compositionIdFromUi: null,
 		imageFormatFromUi: null,
 		logLevel,

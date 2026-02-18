@@ -59,7 +59,11 @@ describe('Composition-validation render should throw with invalid props', () => 
 				render(
 					<WrapSequenceContext>
 						{/* @ts-expect-error */}
-						<Sequence from={0} durationInFrames={100} layout={'invalid-value'} />
+						<Sequence
+							from={0}
+							durationInFrames={100}
+							layout={'invalid-value'}
+						/>
 					</WrapSequenceContext>,
 				),
 			/The layout prop of <Sequence \/> expects either "absolute-fill" or "none", but you passed: invalid-value/,

@@ -1,25 +1,26 @@
-import { useCallback, useMemo, useState } from "react";
-import { z } from "zod";
-import { CompositionProps } from "../../types/constants";
-import { SSEMessage } from "../../types/schema";
+import { useCallback, useMemo, useState } from 'react';
+import { z } from 'zod';
+import { CompositionProps } from '../../types/constants';
+import { SSEMessage } from '../../types/schema';
 
 export type State =
   | {
-      status: "init";
+      status: 'init';
     }
   | {
-      status: "invoking";
+      status: 'invoking';
       phase: string;
       progress: number;
+      subtitle: string | null;
     }
   | {
-      status: "error";
+      status: 'error';
       error: Error;
     }
   | {
       url: string;
       size: number;
-      status: "done";
+      status: 'done';
     };
 
 export const useRendering = (
@@ -27,63 +28,65 @@ export const useRendering = (
   inputProps: z.infer<typeof CompositionProps>,
 ) => {
   const [state, setState] = useState<State>({
-    status: "init",
+    status: 'init',
   });
 
   const renderMedia = useCallback(async () => {
     setState({
-      status: "invoking",
-      phase: "Starting...",
+      status: 'invoking',
+      phase: 'Starting...',
       progress: 0,
+      subtitle: null,
     });
 
     try {
-      const response = await fetch("/api/render", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
+      const response = await fetch('/api/render', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id, inputProps }),
       });
 
       if (!response.ok || !response.body) {
-        throw new Error("Failed to start render");
+        throw new Error('Failed to start render');
       }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      let buffer = "";
+      let buffer = '';
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
         buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n\n");
-        buffer = lines.pop() || "";
+        const lines = buffer.split('\n\n');
+        buffer = lines.pop() || '';
 
         for (const line of lines) {
-          if (!line.startsWith("data: ")) continue;
+          if (!line.startsWith('data: ')) continue;
 
           const json = line.slice(6);
           const message = JSON.parse(json) as SSEMessage;
 
-          if (message.type === "phase") {
+          if (message.type === 'phase') {
             setState((prev) => {
-              if (prev.status !== "invoking") return prev;
+              if (prev.status !== 'invoking') return prev;
               return {
                 ...prev,
                 phase: message.phase,
                 progress: message.progress,
+                subtitle: message.subtitle ?? null,
               };
             });
-          } else if (message.type === "done") {
+          } else if (message.type === 'done') {
             setState({
-              status: "done",
+              status: 'done',
               url: message.url,
               size: message.size,
             });
-          } else if (message.type === "error") {
+          } else if (message.type === 'error') {
             setState({
-              status: "error",
+              status: 'error',
               error: new Error(message.message),
             });
           }
@@ -91,14 +94,14 @@ export const useRendering = (
       }
     } catch (err) {
       setState({
-        status: "error",
+        status: 'error',
         error: err as Error,
       });
     }
   }, [id, inputProps]);
 
   const undo = useCallback(() => {
-    setState({ status: "init" });
+    setState({ status: 'init' });
   }, []);
 
   return useMemo(() => {

@@ -1,6 +1,8 @@
 import { createSandbox } from './src/app/api/render/sandbox/create-sandbox';
 import { saveSnapshotCache } from './src/app/api/render/sandbox/snapshots';
 
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+
 const sandbox = await createSandbox({
   onProgress: async (progress) => {
     if (progress.type === 'phase') {
@@ -11,10 +13,18 @@ const sandbox = await createSandbox({
 });
 
 console.log('[create-snapshot] Taking snapshot...');
-const snapshot = await sandbox.snapshot({ expiration: 0 });
+const snapshot = await sandbox.snapshot(
+  process.env.VERCEL ? { expiration: 0 } : undefined,
+);
 
-await saveSnapshotCache(snapshot.snapshotId);
+const expiresAt = process.env.VERCEL
+  ? undefined
+  : new Date(Date.now() + SEVEN_DAYS_MS);
+
+await saveSnapshotCache(snapshot.snapshotId, expiresAt);
 
 console.log(
-  `[create-snapshot] Snapshot saved: ${snapshot.snapshotId} (never expires)`,
+  `[create-snapshot] Snapshot saved: ${snapshot.snapshotId}${
+    expiresAt ? ` (expires ${expiresAt.toISOString()})` : ' (never expires)'
+  }`,
 );

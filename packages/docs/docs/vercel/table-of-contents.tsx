@@ -10,21 +10,13 @@ export const TableOfContents: React.FC = () => {
 					<strong>createSandbox()</strong>
 					<div>Create a sandbox with Remotion installed</div>
 				</TOCItem>
-				<TOCItem link="/docs/vercel/get-or-create-sandbox">
-					<strong>getOrCreateSandbox()</strong>
-					<div>Get a cached sandbox or create a new one</div>
-				</TOCItem>
-				<TOCItem link="/docs/vercel/create-snapshot">
-					<strong>createSnapshot()</strong>
-					<div>Take a snapshot of a sandbox</div>
-				</TOCItem>
 				<TOCItem link="/docs/vercel/save-snapshot">
 					<strong>saveSnapshot()</strong>
-					<div>Save a snapshot ID to Vercel Blob</div>
+					<div>Snapshot a sandbox and save to Vercel Blob</div>
 				</TOCItem>
-				<TOCItem link="/docs/vercel/get-snapshot">
-					<strong>getSnapshot()</strong>
-					<div>Get a cached snapshot ID from Vercel Blob</div>
+				<TOCItem link="/docs/vercel/restore-snapshot">
+					<strong>restoreSnapshot()</strong>
+					<div>Restore a sandbox from a cached snapshot</div>
 				</TOCItem>
 				<TOCItem link="/docs/vercel/render-video-on-vercel">
 					<strong>renderVideoOnVercel()</strong>

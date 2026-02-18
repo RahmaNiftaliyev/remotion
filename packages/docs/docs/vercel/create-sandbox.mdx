@@ -8,7 +8,7 @@ crumb: '@remotion/vercel'
 
 Creates a new [Vercel Sandbox](https://vercel.com/docs/vercel-sandbox) with all Remotion dependencies installed, including system libraries, the compositor, a browser, and your Remotion bundle.
 
-This is a lower-level API. For most use cases, prefer [`getOrCreateSandbox()`](/docs/vercel/get-or-create-sandbox) which handles dev/prod routing automatically.
+Creates a sandbox from scratch. In production, prefer [`restoreSnapshot()`](/docs/vercel/restore-snapshot) to restore from a cached snapshot instead.
 
 ## Example
 
@@ -55,6 +55,6 @@ A `VercelSandbox` object (a [`Sandbox`](https://vercel.com/docs/vercel-sandbox/s
 
 ## See also
 
-- [`getOrCreateSandbox()`](/docs/vercel/get-or-create-sandbox)
-- [`createSnapshot()`](/docs/vercel/create-snapshot)
+- [`restoreSnapshot()`](/docs/vercel/restore-snapshot)
+- [`saveSnapshot()`](/docs/vercel/save-snapshot)
 - [Source code for this function](https://github.com/remotion-dev/remotion/blob/main/packages/vercel/src/create-sandbox.ts)

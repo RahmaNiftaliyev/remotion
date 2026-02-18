@@ -469,10 +469,8 @@ const sidebars: SidebarsConfig = {
 			},
 			items: [
 				'vercel/create-sandbox',
-				'vercel/get-or-create-sandbox',
-				'vercel/create-snapshot',
 				'vercel/save-snapshot',
-				'vercel/get-snapshot',
+				'vercel/restore-snapshot',
 				'vercel/render-video-on-vercel',
 				'vercel/render-still-on-vercel',
 				'vercel/upload-to-blob-storage',

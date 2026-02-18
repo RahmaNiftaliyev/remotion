@@ -1,4 +1,4 @@
-import { createSandbox, createSnapshot, saveSnapshot } from "@remotion/vercel";
+import { createSandbox, saveSnapshot } from "@remotion/vercel";
 
 const sandbox = await createSandbox({
   bundleDir: ".remotion",
@@ -9,7 +9,6 @@ const sandbox = await createSandbox({
 });
 
 console.log("[create-snapshot] Taking snapshot...");
-const { snapshotId } = await createSnapshot({ sandbox });
-await saveSnapshot({ snapshotId });
+const { snapshotId } = await saveSnapshot({ sandbox });
 
 console.log(`[create-snapshot] Snapshot saved: ${snapshotId} (never expires)`);

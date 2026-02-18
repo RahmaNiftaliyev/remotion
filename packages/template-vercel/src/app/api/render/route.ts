@@ -1,6 +1,7 @@
 import {
-  getOrCreateSandbox,
+  createSandbox,
   renderVideoOnVercel,
+  restoreSnapshot,
   uploadToBlobStorage,
 } from "@remotion/vercel";
 import { waitUntil } from "@vercel/functions";
@@ -31,17 +32,19 @@ export async function POST(req: Request) {
 
       await send({ type: "phase", phase: "Creating sandbox...", progress: 0 });
 
-      await using sandbox = await getOrCreateSandbox({
-        bundleDir: ".remotion",
-        onProgress: ({ progress, message }) => {
-          send({
-            type: "phase",
-            phase: message,
-            progress,
-            subtitle: "This is only needed during development.",
+      await using sandbox = process.env.VERCEL
+        ? await restoreSnapshot()
+        : await createSandbox({
+            bundleDir: ".remotion",
+            onProgress: ({ progress, message }) => {
+              send({
+                type: "phase",
+                phase: message,
+                progress,
+                subtitle: "This is only needed during development.",
+              });
+            },
           });
-        },
-      });
 
       const { file } = await renderVideoOnVercel({
         sandbox,

@@ -13,9 +13,8 @@ Uploads a file from the sandbox to [Vercel Blob](https://vercel.com/docs/storage
 ```ts twoslash title="route.ts"
 // @module: es2022
 // @target: es2022
-import type {VercelSandbox} from '@remotion/vercel';
-const uploadToBlobStorage: (options: {sandbox: VercelSandbox; sandboxFilePath: string; blobPath?: string; contentType: string; blobToken: string}) => Promise<{url: string; size: number}> = null as unknown as any;
-declare const sandbox: VercelSandbox;
+import {uploadToBlobStorage, getOrCreateSandbox} from '@remotion/vercel';
+const sandbox = await getOrCreateSandbox({bundleDir: '.remotion'});
 // ---cut---
 const {url, size} = await uploadToBlobStorage({
   sandbox,

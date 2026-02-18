@@ -16,8 +16,7 @@ The primary entry point for getting a sandbox. Automatically handles the dev/pro
 ```ts twoslash title="route.ts"
 // @module: es2022
 // @target: es2022
-import type {OnProgress, VercelSandbox} from '@remotion/vercel';
-const getOrCreateSandbox: (options: {bundleDir: string; onProgress?: OnProgress}) => Promise<VercelSandbox> = null as unknown as (options: {bundleDir: string; onProgress?: OnProgress}) => Promise<VercelSandbox>;
+import {getOrCreateSandbox} from '@remotion/vercel';
 // ---cut---
 await using sandbox = await getOrCreateSandbox({
   bundleDir: '.remotion',

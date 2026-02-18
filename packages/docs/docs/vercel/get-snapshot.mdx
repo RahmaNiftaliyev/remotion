@@ -15,7 +15,7 @@ Used internally by [`getOrCreateSandbox()`](/docs/vercel/get-or-create-sandbox) 
 ```ts twoslash title="route.ts"
 // @module: es2022
 // @target: es2022
-const getSnapshot: () => Promise<string | null> = null as unknown as () => Promise<string | null>;
+import {getSnapshot} from '@remotion/vercel';
 // ---cut---
 const snapshotId = await getSnapshot();
 if (snapshotId) {

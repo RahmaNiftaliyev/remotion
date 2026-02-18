@@ -15,9 +15,8 @@ The rendered file stays inside the sandbox. Use [`uploadToBlobStorage()`](/docs/
 ```ts twoslash title="route.ts"
 // @module: es2022
 // @target: es2022
-import type {RenderOnVercelProgress, VercelSandbox} from '@remotion/vercel';
-const renderVideoOnVercel: (options: {sandbox: VercelSandbox; compositionId: string; inputProps: Record<string, unknown>; codec?: string; outputFile?: string; onProgress?: (progress: RenderOnVercelProgress) => void; bundleDir?: string}) => Promise<{file: string}> = null as unknown as any;
-declare const sandbox: VercelSandbox;
+import {renderVideoOnVercel, getOrCreateSandbox} from '@remotion/vercel';
+const sandbox = await getOrCreateSandbox({bundleDir: '.remotion'});
 // ---cut---
 const {file} = await renderVideoOnVercel({
   sandbox,

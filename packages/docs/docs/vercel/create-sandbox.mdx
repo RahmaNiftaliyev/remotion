@@ -15,8 +15,7 @@ This is a lower-level API. For most use cases, prefer [`getOrCreateSandbox()`](/
 ```ts twoslash title="create-snapshot.ts"
 // @module: es2022
 // @target: es2022
-import type {OnProgress, VercelSandbox} from '@remotion/vercel';
-const createSandbox: (options: {bundleDir: string; onProgress?: OnProgress}) => Promise<VercelSandbox> = null as unknown as (options: {bundleDir: string; onProgress?: OnProgress}) => Promise<VercelSandbox>;
+import {createSandbox} from '@remotion/vercel';
 // ---cut---
 const sandbox = await createSandbox({
   bundleDir: '.remotion',

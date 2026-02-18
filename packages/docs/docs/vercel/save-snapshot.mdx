@@ -13,7 +13,7 @@ Saves a snapshot ID to Vercel Blob storage, keyed by the current `VERCEL_DEPLOYM
 ```ts twoslash title="create-snapshot.ts"
 // @module: es2022
 // @target: es2022
-const saveSnapshot: (options: {snapshotId: string}) => Promise<void> = null as unknown as (options: {snapshotId: string}) => Promise<void>;
+import {saveSnapshot} from '@remotion/vercel';
 // ---cut---
 await saveSnapshot({snapshotId: 'snap_abc123'});
 ```

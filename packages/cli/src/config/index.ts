@@ -118,6 +118,7 @@ const {
 	imageSequenceOption,
 	bundleCacheOption,
 	envFileOption,
+	runsOption,
 } = BrowserSafeApis.options;
 
 declare global {
@@ -596,6 +597,11 @@ type FlatConfig = RemotionConfigObject &
 		 */
 		setChromeMode: (chromeMode: ChromeMode) => void;
 		/**
+		 * Set how many times the video should be rendered during a benchmark.
+		 * Default: 3
+		 */
+		setBenchmarkRuns: (runs: number) => void;
+		/**
 		 * @deprecated 'The config format has changed. Change `Config.Bundling.*()` calls to `Config.*()` in your config file.'
 		 */
 		Bundling: void;
@@ -742,6 +748,7 @@ export const Config: FlatConfig = {
 	setForceNewStudioEnabled: forceNewStudioOption.setConfig,
 	setIPv4: ipv4Option.setConfig,
 	setBundleOutDir: outDirOption.setConfig,
+	setBenchmarkRuns: runsOption.setConfig,
 };
 
 export const ConfigInternals = {

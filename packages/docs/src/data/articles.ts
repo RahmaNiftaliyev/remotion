@@ -6566,15 +6566,6 @@ export const articles = [
 		slug: 'vercel/api',
 	},
 	{
-		id: 'vercel/render-still-on-vercel',
-		title: 'renderStillOnVercel()',
-		relativePath: 'docs/vercel/render-still-on-vercel.mdx',
-		compId: 'articles-docs-vercel-render-still-on-vercel',
-		crumb: '@remotion/vercel',
-		noAi: false,
-		slug: 'vercel/render-still-on-vercel',
-	},
-	{
 		id: 'vercel/render-media-on-vercel',
 		title: 'renderMediaOnVercel()',
 		relativePath: 'docs/vercel/render-media-on-vercel.mdx',
@@ -6582,6 +6573,15 @@ export const articles = [
 		crumb: '@remotion/vercel',
 		noAi: false,
 		slug: 'vercel/render-media-on-vercel',
+	},
+	{
+		id: 'vercel/render-still-on-vercel',
+		title: 'renderStillOnVercel()',
+		relativePath: 'docs/vercel/render-still-on-vercel.mdx',
+		compId: 'articles-docs-vercel-render-still-on-vercel',
+		crumb: '@remotion/vercel',
+		noAi: false,
+		slug: 'vercel/render-still-on-vercel',
 	},
 	{
 		id: 'vercel-types',

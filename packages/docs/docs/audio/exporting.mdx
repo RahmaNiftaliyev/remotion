@@ -79,9 +79,9 @@ await renderMedia({
 });
 ```
 
-### `renderMediaOnLambda()`
+### `renderMediaOnLambda()` / `renderMediaOnVercel()`
 
-To render only the audio via Lambda, use [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda) and set the [`codec`](/docs/lambda/rendermediaonlambda#codec) to an audio codec and [`imageFormat`](/docs/lambda/rendermediaonlambda#imageformat) to `none`.
+To render only the audio via Lambda or Vercel, use [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda) or [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel) and set the [`codec`](/docs/lambda/rendermediaonlambda#codec) to an audio codec and [`imageFormat`](/docs/lambda/rendermediaonlambda#imageformat) to `none`.
 
 ```tsx twoslash
 import {renderMediaOnLambda} from '@remotion/lambda';
@@ -169,9 +169,9 @@ await renderMedia({
 });
 ```
 
-### `renderMediaOnLambda()`
+### `renderMediaOnLambda()` / `renderMediaOnVercel()`
 
-Pass [`muted: true`](/docs/lambda/rendermediaonlambda#muted) to [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda) to mute the render.
+Pass [`muted: true`](/docs/lambda/rendermediaonlambda#muted) to [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda) or [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel) to mute the render.
 
 ```tsx twoslash
 import {renderMediaOnLambda} from '@remotion/lambda';

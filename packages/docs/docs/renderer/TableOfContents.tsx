@@ -44,7 +44,9 @@ export const TableOfContents: React.FC = () => {
 					<div>Create token to later cancel a render</div>
 				</TOCItem>
 				<TOCItem link="/docs/renderer/get-video-metadata">
-					<strong>getVideoMetadata()</strong>
+					<strong style={{textDecoration: 'line-through'}}>
+						getVideoMetadata()
+					</strong>
 					<div>Get metadata from a video file in Node.js</div>
 				</TOCItem>
 				<TOCItem link="/docs/renderer/get-silent-parts">

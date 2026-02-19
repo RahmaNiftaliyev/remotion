@@ -148,6 +148,15 @@ code {
 	text-decoration: underline;
 }
 
+.ts-type-link {
+	text-decoration: none !important;
+	text-underline-position: under;
+}
+
+.ts-type-link:hover {
+	text-decoration: underline !important;
+}
+
 .no-scroll-bar::-webkit-scrollbar {
 	display: none;
 }

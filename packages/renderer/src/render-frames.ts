@@ -157,47 +157,53 @@ export type FrameAndAssets = {
 	inlineAudioAssets: InlineAudioAsset[];
 };
 
-export type RenderFramesOptions = {
-	onStart: (data: OnStartData) => void;
-	onFrameUpdate: (
-		framesRendered: number,
-		frameIndex: number,
-		timeToRenderInMilliseconds: number,
-	) => void;
-	outputDir: string | null;
-	inputProps: Record<string, unknown>;
-	envVariables?: Record<string, string>;
-	imageFormat?: VideoImageFormat;
-	/**
-	 * @deprecated Renamed to "jpegQuality"
-	 */
-	quality?: never;
-	frameRange?: FrameRange | null;
-	everyNthFrame?: number;
-	/**
-	 * @deprecated Use "logLevel": "verbose" instead
-	 */
-	dumpBrowserLogs?: boolean;
-	/**
-	 * @deprecated Use "logLevel" instead
-	 */
-	verbose?: boolean;
-	puppeteerInstance?: HeadlessBrowser;
-	browserExecutable?: BrowserExecutable;
-	onBrowserLog?: (log: BrowserLog) => void;
-	onFrameBuffer?: (buffer: Buffer, frame: number) => void;
-	onDownload?: RenderMediaOnDownload;
-	timeoutInMilliseconds?: number;
-	chromiumOptions?: ChromiumOptions;
-	scale?: number;
-	port?: number | null;
-	cancelSignal?: CancelSignal;
-	composition: VideoConfig;
-	muted?: boolean;
-	concurrency?: number | string | null;
-	onArtifact?: OnArtifact | null;
-	serveUrl: string;
-} & Partial<ToOptions<typeof optionsMap.renderFrames>>;
+type Prettify<T> = {
+	[K in keyof T]: T[K];
+} & {};
+
+export type RenderFramesOptions = Prettify<
+	{
+		onStart: (data: OnStartData) => void;
+		onFrameUpdate: (
+			framesRendered: number,
+			frameIndex: number,
+			timeToRenderInMilliseconds: number,
+		) => void;
+		outputDir: string | null;
+		inputProps: Record<string, unknown>;
+		envVariables?: Record<string, string>;
+		imageFormat?: VideoImageFormat;
+		/**
+		 * @deprecated Renamed to "jpegQuality"
+		 */
+		quality?: never;
+		frameRange?: FrameRange | null;
+		everyNthFrame?: number;
+		/**
+		 * @deprecated Use "logLevel": "verbose" instead
+		 */
+		dumpBrowserLogs?: boolean;
+		/**
+		 * @deprecated Use "logLevel" instead
+		 */
+		verbose?: boolean;
+		puppeteerInstance?: HeadlessBrowser;
+		browserExecutable?: BrowserExecutable;
+		onBrowserLog?: (log: BrowserLog) => void;
+		onFrameBuffer?: (buffer: Buffer, frame: number) => void;
+		onDownload?: RenderMediaOnDownload;
+		timeoutInMilliseconds?: number;
+		chromiumOptions?: ChromiumOptions;
+		scale?: number;
+		port?: number | null;
+		cancelSignal?: CancelSignal;
+		composition: VideoConfig;
+		muted?: boolean;
+		concurrency?: number | string | null;
+		onArtifact?: OnArtifact | null;
+		serveUrl: string;
+	} & Partial<ToOptions<typeof optionsMap.renderFrames>>
+>;
 
 const innerRenderFrames = async ({
 	onFrameUpdate,

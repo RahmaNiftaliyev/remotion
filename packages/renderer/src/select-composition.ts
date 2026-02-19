@@ -39,20 +39,26 @@ type InternalSelectCompositionsConfig = {
 	onServeUrlVisited: () => void;
 } & ToOptions<typeof optionsMap.selectComposition>;
 
-export type SelectCompositionOptions = RequiredInputPropsInV5 & {
-	envVariables?: Record<string, string>;
-	puppeteerInstance?: HeadlessBrowser;
-	onBrowserLog?: (log: BrowserLog) => void;
-	browserExecutable?: BrowserExecutable;
-	chromiumOptions?: ChromiumOptions;
-	port?: number | null;
-	/**
-	 * @deprecated Use `logLevel` instead.
-	 */
-	verbose?: boolean;
-	serveUrl: string;
-	id: string;
-} & Partial<ToOptions<typeof optionsMap.selectComposition>>;
+type Prettify<T> = {
+	[K in keyof T]: T[K];
+} & {};
+
+export type SelectCompositionOptions = Prettify<
+	RequiredInputPropsInV5 & {
+		envVariables?: Record<string, string>;
+		puppeteerInstance?: HeadlessBrowser;
+		onBrowserLog?: (log: BrowserLog) => void;
+		browserExecutable?: BrowserExecutable;
+		chromiumOptions?: ChromiumOptions;
+		port?: number | null;
+		/**
+		 * @deprecated Use `logLevel` instead.
+		 */
+		verbose?: boolean;
+		serveUrl: string;
+		id: string;
+	} & Partial<ToOptions<typeof optionsMap.selectComposition>>
+>;
 
 type CleanupFn = () => Promise<unknown>;
 

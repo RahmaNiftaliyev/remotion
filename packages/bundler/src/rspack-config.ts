@@ -113,6 +113,11 @@ export const rspackConfig = async ({
 		optimization: {
 			minimize: false,
 		},
+		ignoreWarnings: [
+			/Circular dependency between chunks with runtime/,
+			/Critical dependency: the request of a dependency is an expression/,
+			/"__dirname" is used and has been mocked/,
+		],
 		experiments: {
 			lazyCompilation: isBun
 				? false

@@ -5,6 +5,7 @@ import {NoReactInternals} from 'remotion/no-react';
 import type {Configuration} from 'webpack';
 import webpack, {ProgressPlugin} from 'webpack';
 import {CaseSensitivePathsPlugin} from './case-sensitive-paths';
+import {getDefinePluginDefinitions} from './define-plugin-definitions';
 import type {LoaderOptions} from './esbuild-loader/interfaces';
 import {ReactFreshWebpackPlugin} from './fast-refresh';
 import {AllowDependencyExpressionPlugin} from './hide-expression-dependency';
@@ -82,15 +83,15 @@ export const webpackConfig = async ({
 
 	const isBun = typeof Bun !== 'undefined';
 
-	const define = new webpack.DefinePlugin({
-		'process.env.MAX_TIMELINE_TRACKS': maxTimelineTracks,
-		'process.env.ASK_AI_ENABLED': askAIEnabled,
-		'process.env.KEYBOARD_SHORTCUTS_ENABLED': keyboardShortcutsEnabled,
-		'process.env.BUFFER_STATE_DELAY_IN_MILLISECONDS':
+	const define = new webpack.DefinePlugin(
+		getDefinePluginDefinitions({
+			maxTimelineTracks,
+			askAIEnabled,
+			keyboardShortcutsEnabled,
 			bufferStateDelayInMilliseconds,
-		'process.env.EXPERIMENTAL_CLIENT_SIDE_RENDERING_ENABLED':
 			experimentalClientSideRenderingEnabled,
-	});
+		}),
+	);
 
 	const conf: WebpackConfiguration = await webpackOverride({
 		optimization: {

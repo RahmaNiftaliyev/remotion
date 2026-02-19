@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto';
 import path from 'node:path';
 import ReactDOM from 'react-dom';
 import {NoReactInternals} from 'remotion/no-react';
+import {getDefinePluginDefinitions} from './define-plugin-definitions';
 import {jsonStringifyWithCircularReferences} from './stringify-with-circular-references';
 import {getWebpackCacheName} from './webpack-cache';
 import type {WebpackOverrideFn} from './webpack-config';
@@ -61,16 +62,15 @@ export const rspackConfig = async ({
 
 	const isBun = typeof Bun !== 'undefined';
 
-	const define = new DefinePlugin({
-		'process.env.MAX_TIMELINE_TRACKS': maxTimelineTracks as unknown as string,
-		'process.env.ASK_AI_ENABLED': askAIEnabled as unknown as string,
-		'process.env.KEYBOARD_SHORTCUTS_ENABLED':
-			keyboardShortcutsEnabled as unknown as string,
-		'process.env.BUFFER_STATE_DELAY_IN_MILLISECONDS':
-			bufferStateDelayInMilliseconds as unknown as string,
-		'process.env.EXPERIMENTAL_CLIENT_SIDE_RENDERING_ENABLED':
-			experimentalClientSideRenderingEnabled as unknown as string,
-	});
+	const define = new DefinePlugin(
+		getDefinePluginDefinitions({
+			maxTimelineTracks,
+			askAIEnabled,
+			keyboardShortcutsEnabled,
+			bufferStateDelayInMilliseconds,
+			experimentalClientSideRenderingEnabled,
+		}) as unknown as Record<string, string>,
+	);
 
 	const swcLoaderRule = {
 		loader: 'builtin:swc-loader',

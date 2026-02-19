@@ -6,7 +6,9 @@ export const versionFlagOption = {
 	name: 'Version',
 	cliFlag,
 	description: () => (
-		<>Install a specific version. Also enables downgrading to an older version.</>
+		<>
+			Install a specific version. Also enables downgrading to an older version.
+		</>
 	),
 	ssrName: null,
 	docLink: 'https://www.remotion.dev/docs/cli/upgrade#--version',

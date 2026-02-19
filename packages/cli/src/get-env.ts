@@ -150,8 +150,7 @@ export const getEnvironmentVariables = (
 	const remotionRoot = RenderInternals.findRemotionRoot();
 
 	if (envFileValue && envFileSource !== 'default') {
-		const baseDir =
-			envFileSource === 'cli' ? process.cwd() : remotionRoot;
+		const baseDir = envFileSource === 'cli' ? process.cwd() : remotionRoot;
 		const envFile = path.resolve(baseDir, envFileValue);
 		if (!fs.existsSync(envFile)) {
 			Log.error(

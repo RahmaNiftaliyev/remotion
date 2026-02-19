@@ -34,6 +34,7 @@ export const bundleCacheOption = {
 				`Value for "${cliFlag}" must be a boolean, but got ${typeof value}.`,
 			);
 		}
+
 		cachingEnabled = value;
 	},
 	type: true as boolean,

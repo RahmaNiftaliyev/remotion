@@ -119,7 +119,9 @@ export const cli = async () => {
 			await upgradeCommand({
 				remotionRoot,
 				packageManager: packageManager ?? undefined,
-				version: versionFlagOption.getValue({commandLine: parsedCli}).value ?? undefined,
+				version:
+					versionFlagOption.getValue({commandLine: parsedCli}).value ??
+					undefined,
 				logLevel,
 				args,
 			});

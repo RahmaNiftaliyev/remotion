@@ -1,5 +1,5 @@
-import type {AnyRemotionOption} from './option';
 import {validateConcurrency} from '../validate-concurrency';
+import type {AnyRemotionOption} from './option';
 
 export type Concurrency = number | string | null;
 

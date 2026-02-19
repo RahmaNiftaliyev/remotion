@@ -71,9 +71,10 @@ export const getCliOptions = (options: {
 			options.logLevel,
 			options.indent,
 		),
-		stillFrame: BrowserSafeApis.options.stillFrameOption.getValue({
-			commandLine: parsedCli,
-		}).value ?? 0,
+		stillFrame:
+			BrowserSafeApis.options.stillFrameOption.getValue({
+				commandLine: parsedCli,
+			}).value ?? 0,
 		ffmpegOverride: ConfigInternals.getFfmpegOverrideFunction(),
 	};
 };

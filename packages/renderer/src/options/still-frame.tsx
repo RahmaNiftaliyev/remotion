@@ -1,8 +1,17 @@
+import {NoReactInternals} from 'remotion/no-react';
 import type {AnyRemotionOption} from './option';
 
 const cliFlag = 'frame' as const;
 
 let currentFrame: number | null = null;
+
+const validate = (frame: number) => {
+	NoReactInternals.validateFrame({
+		frame,
+		durationInFrames: Infinity,
+		allowFloats: false,
+	});
+};
 
 export const stillFrameOption = {
 	name: 'Frame',
@@ -18,9 +27,11 @@ export const stillFrameOption = {
 	docLink: 'https://www.remotion.dev/docs/cli/still#--frame',
 	getValue: ({commandLine}) => {
 		if (commandLine[cliFlag] !== undefined) {
+			const frame = Number(commandLine[cliFlag]);
+			validate(frame);
 			return {
 				source: 'cli',
-				value: Number(commandLine[cliFlag]),
+				value: frame,
 			};
 		}
 
@@ -37,6 +48,10 @@ export const stillFrameOption = {
 		};
 	},
 	setConfig: (value: number | null) => {
+		if (value !== null) {
+			validate(value);
+		}
+
 		currentFrame = value;
 	},
 	type: 0 as number | null,

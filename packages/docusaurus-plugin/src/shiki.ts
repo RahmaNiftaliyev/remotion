@@ -210,7 +210,7 @@ const remarkVisitor =
 
 		// Inject title bar if fence has a title attribute
 		if (fence.meta.title && typeof fence.meta.title === 'string') {
-			const title = fence.meta.title;
+			const {title} = fence.meta;
 			shikiHTML = shikiHTML.replace(
 				'<pre class="shiki',
 				'<pre class="shiki with-title',

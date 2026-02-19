@@ -3,6 +3,14 @@ import {CliInternals} from '@remotion/cli';
 import type {Privacy} from '../defaults';
 import type {GcpRegion} from '../pricing/gcp-regions';
 
+const CloudrunBooleanFlags = [
+	...CliInternals.BooleanFlags,
+	'force',
+	'yes',
+	'y',
+	'onlyAllocateCpuDuringRequestProcessing',
+];
+
 type servicesCommandLineOptions = {
 	help: boolean;
 	region: GcpRegion;
@@ -24,7 +32,7 @@ type servicesCommandLineOptions = {
 
 export const parsedCloudrunCli =
 	CliInternals.minimist<servicesCommandLineOptions>(process.argv.slice(2), {
-		boolean: CliInternals.BooleanFlags,
+		boolean: CloudrunBooleanFlags,
 		string: ['_'],
 	});
 

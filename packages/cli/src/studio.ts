@@ -43,6 +43,7 @@ const {
 	audioLatencyHintOption,
 	ipv4Option,
 	webpackPollOption,
+	noOpenOption,
 } = BrowserSafeApis.options;
 
 export const studioCommand = async (
@@ -148,7 +149,7 @@ export const studioCommand = async (
 		browserArgs: parsedCli['browser-args'],
 		browserFlag: parsedCli.browser,
 		logLevel,
-		configValueShouldOpenBrowser: ConfigInternals.getShouldOpenBrowser(),
+		shouldOpenBrowser: !noOpenOption.getValue({commandLine: parsedCli}).value,
 		fullEntryPath,
 		getCurrentInputProps: () => inputProps,
 		getEnvVariables: () => envVariables,
@@ -170,9 +171,6 @@ export const studioCommand = async (
 			cancelJob,
 			removeJob,
 		},
-		// Minimist quirk: Adding `--no-open` flag will result in {['no-open']: false, open: true}
-		// @ts-expect-error
-		parsedCliOpen: parsedCli.open,
 		gitSource,
 		bufferStateDelayInMilliseconds:
 			ConfigInternals.getBufferStateDelayInMilliseconds(),

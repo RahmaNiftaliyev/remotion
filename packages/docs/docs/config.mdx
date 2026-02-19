@@ -202,7 +202,7 @@ The [command line flag](/docs/cli/studio#--number-of-shared-audio-tags) `--numbe
 
 ## `setShouldOpenBrowser()`<AvailableFrom v="3.3.19" />
 
-Whether Remotion should open a browser when starting the Studio. Default `true`.
+<Options id="no-open" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -210,6 +210,8 @@ import {Config} from '@remotion/cli/config';
 // ---cut---
 Config.setShouldOpenBrowser(false);
 ```
+
+The [command line flag](/docs/cli/studio#--no-open) `--no-open` will take precedence over this option.
 
 ## `setBrowserExecutable()`<AvailableFrom v="1.5.0" />
 

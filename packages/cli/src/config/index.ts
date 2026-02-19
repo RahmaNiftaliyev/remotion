@@ -44,7 +44,6 @@ import {
 } from './ffmpeg-override';
 import {setFrameRange} from './frame-range';
 import {getMetadata, setMetadata} from './metadata';
-import {getShouldOpenBrowser, setShouldOpenBrowser} from './open-browser';
 import {setOutputLocation} from './output-location';
 import type {WebpackOverrideFn} from './override-webpack';
 import {overrideWebpackConfig} from './override-webpack';
@@ -119,6 +118,7 @@ const {
 	bundleCacheOption,
 	envFileOption,
 	runsOption,
+	noOpenOption,
 } = BrowserSafeApis.options;
 
 declare global {
@@ -664,7 +664,7 @@ export const Config: FlatConfig = {
 		experimentalClientSideRenderingOption.setConfig,
 	setNumberOfSharedAudioTags: numberOfSharedAudioTagsOption.setConfig,
 	setWebpackPollingInMilliseconds: webpackPollOption.setConfig,
-	setShouldOpenBrowser,
+	setShouldOpenBrowser: noOpenOption.setConfig,
 	setBufferStateDelayInMilliseconds,
 	overrideWebpackConfig,
 	setCachingEnabled: bundleCacheOption.setConfig,
@@ -772,7 +772,6 @@ export const ConfigInternals = {
 	getMetadata,
 	getEntryPoint,
 	getWebpackPolling,
-	getShouldOpenBrowser,
 	getBufferStateDelayInMilliseconds,
 	getOutputCodecOrUndefined: BrowserSafeApis.getOutputCodecOrUndefined,
 };

@@ -79,6 +79,7 @@ pre.shiki .meta-line {
 pre.shiki > code {
 	padding: var(--ifm-pre-padding) 0;
 	display: block;
+	overflow: auto;
 }
 
 /* Also support old .code-container wrapper if rendererClassic produces it */

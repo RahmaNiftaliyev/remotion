@@ -141,7 +141,7 @@ Config.setMaxTimelineTracks(20);
 
 ## `setKeyboardShortcutsEnabled()`<AvailableFrom v="3.2.11" />
 
-Whether the Studio should react to keyboard shortcuts. Default `true`.
+<Options id="disable-keyboard-shortcuts" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -153,7 +153,7 @@ The [command line flag](/docs/cli/studio#--disable-keyboard-shortcuts) `--disabl
 
 ## `setExperimentalClientSideRenderingEnabled()`<AvailableFrom v="4.0.387" />
 
-Enable experimental [client-side rendering](/docs/client-side-rendering) in the Remotion Studio. Default `false`.
+<Options id="enable-experimental-client-side-rendering" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -165,8 +165,7 @@ The [command line flag](/docs/cli/studio#--enable-experimental-client-side-rende
 
 ## `setWebpackPollingInMilliseconds()`<AvailableFrom v="3.3.11" />
 
-Enables Webpack polling instead of the file system event listeners for hot reloading.
-This is useful if you are inside a virtual machine or have a remote file system.
+<Options id="webpack-poll" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -1105,20 +1104,14 @@ The old way is deprecated, but will work for the foreseeable future.
 
 - [Encoding guide](/docs/encoding)
 
-### setImageSequencePattern(pattern)
+### `setImageSequencePattern()`
 
-Set the pattern for naming image sequence files when rendering an image sequence.
+<Options id="image-sequence-pattern" />
 
-- `[frame]` will be replaced with the zero-padded frame number (e.g. 0001, 0002, ...)
-- `[ext]` will be replaced with the image format extension (e.g. jpeg, png)
-
-**Example:**
-
-```js
-// remotion.config.ts
-import {Config} from 'remotion';
-
+```ts twoslash title="remotion.config.ts"
+import {Config} from '@remotion/cli/config';
+// ---cut---
 Config.setImageSequencePattern('frame_[frame]_custom.[ext]');
 ```
 
-This will produce files like `frame_0001_custom.jpeg`, `frame_0002_custom.jpeg`, ...
+The [command line flag](/docs/cli/render#--image-sequence-pattern) `--image-sequence-pattern` will take precedence over this option.

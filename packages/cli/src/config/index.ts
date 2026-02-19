@@ -52,10 +52,7 @@ import type {WebpackOverrideFn} from './override-webpack';
 import {overrideWebpackConfig} from './override-webpack';
 import {setPort, setRendererPort, setStudioPort} from './preview-server';
 import {setWebpackCaching} from './webpack-caching';
-import {
-	getWebpackPolling,
-	setWebpackPollingInMilliseconds,
-} from './webpack-poll';
+import {getWebpackPolling} from './webpack-poll';
 
 export type {Concurrency, WebpackConfiguration, WebpackOverrideFn};
 
@@ -120,6 +117,7 @@ const {
 	overrideFpsOption,
 	overrideDurationOption,
 	outDirOption,
+	webpackPollOption,
 } = BrowserSafeApis.options;
 
 declare global {
@@ -659,7 +657,7 @@ export const Config: FlatConfig = {
 	setExperimentalClientSideRenderingEnabled:
 		experimentalClientSideRenderingOption.setConfig,
 	setNumberOfSharedAudioTags: numberOfSharedAudioTagsOption.setConfig,
-	setWebpackPollingInMilliseconds,
+	setWebpackPollingInMilliseconds: webpackPollOption.setConfig,
 	setShouldOpenBrowser,
 	setBufferStateDelayInMilliseconds,
 	overrideWebpackConfig,

@@ -48,6 +48,10 @@ const {
 	overrideDurationOption,
 	outDirOption,
 	packageManagerOption,
+	webpackPollOption,
+	keyboardShortcutsOption,
+	experimentalClientSideRenderingOption,
+	imageSequencePatternOption,
 } = BrowserSafeApis.options;
 
 export type CommandLineOptions = {
@@ -112,8 +116,12 @@ export type CommandLineOptions = {
 	port: number;
 	frame: string | number;
 	['disable-headless']: boolean;
-	['disable-keyboard-shortcuts']: boolean;
-	['enable-experimental-client-side-rendering']: boolean;
+	[keyboardShortcutsOption.cliFlag]: TypeOfOption<
+		typeof keyboardShortcutsOption
+	>;
+	[experimentalClientSideRenderingOption.cliFlag]: TypeOfOption<
+		typeof experimentalClientSideRenderingOption
+	>;
 	muted: boolean;
 	[overrideHeightOption.cliFlag]: TypeOfOption<typeof overrideHeightOption>;
 	[overrideWidthOption.cliFlag]: TypeOfOption<typeof overrideWidthOption>;
@@ -124,7 +132,7 @@ export type CommandLineOptions = {
 	[enforceAudioOption.cliFlag]: TypeOfOption<typeof enforceAudioOption>;
 	gl: OpenGlRenderer;
 	[packageManagerOption.cliFlag]: TypeOfOption<typeof packageManagerOption>;
-	['webpack-poll']: number;
+	[webpackPollOption.cliFlag]: TypeOfOption<typeof webpackPollOption>;
 	['no-open']: boolean;
 	['browser']: string;
 	['browser-args']: string;
@@ -138,7 +146,9 @@ export type CommandLineOptions = {
 		typeof enableMultiprocessOnLinuxOption
 	>;
 	repro: boolean;
-	'image-sequence-pattern': string;
+	[imageSequencePatternOption.cliFlag]: TypeOfOption<
+		typeof imageSequencePatternOption
+	>;
 	'license-key': string;
 	[publicLicenseKeyOption.cliFlag]: string;
 	[forceNewStudioOption.cliFlag]: TypeOfOption<typeof forceNewStudioOption>;
@@ -172,9 +182,5 @@ export const parseCommandLine = () => {
 		parsedCli['license-key'].startsWith('rm_pub_')
 	) {
 		Config.setPublicLicenseKey(parsedCli['license-key']);
-	}
-
-	if (typeof parsedCli['webpack-poll'] !== 'undefined') {
-		Config.setWebpackPollingInMilliseconds(parsedCli['webpack-poll']);
 	}
 };

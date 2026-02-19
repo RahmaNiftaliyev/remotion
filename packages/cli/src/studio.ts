@@ -42,6 +42,7 @@ const {
 	numberOfSharedAudioTagsOption,
 	audioLatencyHintOption,
 	ipv4Option,
+	webpackPollOption,
 } = BrowserSafeApis.options;
 
 export const studioCommand = async (
@@ -158,7 +159,7 @@ export const studioCommand = async (
 		remotionRoot,
 		relativePublicDir,
 		webpackOverride: ConfigInternals.getWebpackOverrideFn(),
-		poll: ConfigInternals.getWebpackPolling(),
+		poll: webpackPollOption.getValue({commandLine: parsedCli}).value,
 		getRenderDefaults,
 		getRenderQueue,
 		numberOfAudioTags: numberOfSharedAudioTagsOption.getValue({

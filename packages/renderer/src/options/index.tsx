@@ -70,6 +70,7 @@ import {mediaCacheSizeInBytesOption} from './video-cache-size';
 import {videoCodecOption} from './video-codec';
 import {videoImageFormatOption} from './video-image-format';
 import {webhookCustomDataOption} from './webhook-custom-data';
+import {webpackPollOption} from './webpack-poll';
 import {x264Option} from './x264-preset';
 
 export const allOptions = {
@@ -145,6 +146,7 @@ export const allOptions = {
 	overrideDurationOption,
 	outDirOption,
 	packageManagerOption,
+	webpackPollOption,
 };
 
 export type AvailableOptions = keyof typeof allOptions;

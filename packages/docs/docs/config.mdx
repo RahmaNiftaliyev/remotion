@@ -202,7 +202,7 @@ The [command line flag](/docs/cli/studio#--number-of-shared-audio-tags) `--numbe
 
 ## `setShouldOpenBrowser()`<AvailableFrom v="3.3.19" />
 
-Whether Remotion should open a browser when starting the Studio. Default `true`.
+<Options id="no-open" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -210,6 +210,8 @@ import {Config} from '@remotion/cli/config';
 // ---cut---
 Config.setShouldOpenBrowser(false);
 ```
+
+The [command line flag](/docs/cli/studio#--no-open) `--no-open` will take precedence over this option.
 
 ## `setBrowserExecutable()`<AvailableFrom v="1.5.0" />
 
@@ -1092,6 +1094,18 @@ Config.overrideWebpackConfig(async (currentConfiguration) => {
 });
 ```
 
+### `setImageSequencePattern()`
+
+<Options id="image-sequence-pattern" />
+
+```ts twoslash title="remotion.config.ts"
+import {Config} from '@remotion/cli/config';
+// ---cut---
+Config.setImageSequencePattern('frame_[frame]_custom.[ext]');
+```
+
+The [command line flag](/docs/cli/render#--image-sequence-pattern) `--image-sequence-pattern` will take precedence over this option.
+
 ## Old config file format
 
 In v3.3.39, a new config file format was introduced which flattens the options so they can more easily be discovered using TypeScript autocompletion.
@@ -1115,15 +1129,3 @@ The old way is deprecated, but will work for the foreseeable future.
 ## See also
 
 - [Encoding guide](/docs/encoding)
-
-### `setImageSequencePattern()`
-
-<Options id="image-sequence-pattern" />
-
-```ts twoslash title="remotion.config.ts"
-import {Config} from '@remotion/cli/config';
-// ---cut---
-Config.setImageSequencePattern('frame_[frame]_custom.[ext]');
-```
-
-The [command line flag](/docs/cli/render#--image-sequence-pattern) `--image-sequence-pattern` will take precedence over this option.

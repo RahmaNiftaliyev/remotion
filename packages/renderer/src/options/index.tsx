@@ -42,6 +42,7 @@ import {licenseKeyOption} from './license-key';
 import {logLevelOption} from './log-level';
 import {metadataOption} from './metadata';
 import {mutedOption} from './mute';
+import {noOpenOption} from './no-open';
 import {numberOfGifLoopsOption} from './number-of-gif-loops';
 import {numberOfSharedAudioTagsOption} from './number-of-shared-audio-tags';
 import {offthreadVideoCacheSizeInBytesOption} from './offthreadvideo-cache-size';
@@ -109,6 +110,7 @@ export const allOptions = {
 	numberOfGifLoopsOption,
 	reproOption,
 	runsOption,
+	noOpenOption,
 	pixelFormatOption,
 	preferLosslessOption: preferLosslessAudioOption,
 	proResProfileOption,

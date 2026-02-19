@@ -28,7 +28,7 @@ export type StartStudioResult = {type: 'restarted'} | {type: 'already-running'};
 export const startStudio = async ({
 	browserArgs,
 	browserFlag,
-	configValueShouldOpenBrowser,
+	shouldOpenBrowser,
 	fullEntryPath,
 	logLevel,
 	getCurrentInputProps,
@@ -45,7 +45,6 @@ export const startStudio = async ({
 	getRenderQueue,
 	numberOfAudioTags,
 	queueMethods,
-	parsedCliOpen,
 	previewEntry,
 	gitSource,
 	bufferStateDelayInMilliseconds,
@@ -59,7 +58,7 @@ export const startStudio = async ({
 	browserArgs: string;
 	browserFlag: string;
 	logLevel: LogLevel;
-	configValueShouldOpenBrowser: boolean;
+	shouldOpenBrowser: boolean;
 	fullEntryPath: string;
 	getCurrentInputProps: () => object;
 	getEnvVariables: () => Record<string, string>;
@@ -78,7 +77,6 @@ export const startStudio = async ({
 	audioLatencyHint: AudioContextLatencyCategory | null;
 	enableCrossSiteIsolation: boolean;
 	queueMethods: QueueMethods;
-	parsedCliOpen: boolean;
 	previewEntry: string;
 	gitSource: GitSource | null;
 	binariesDirectory: string | null;
@@ -170,8 +168,7 @@ export const startStudio = async ({
 		const res = await maybeOpenBrowser({
 			browserArgs,
 			browserFlag,
-			configValueShouldOpenBrowser,
-			parsedCliOpen,
+			shouldOpenBrowser,
 			url: `http://localhost:${result.port}`,
 			logLevel,
 		});
@@ -207,8 +204,7 @@ export const startStudio = async ({
 	await maybeOpenBrowser({
 		browserArgs,
 		browserFlag,
-		configValueShouldOpenBrowser,
-		parsedCliOpen,
+		shouldOpenBrowser,
 		url: `http://localhost:${port}`,
 		logLevel,
 	});

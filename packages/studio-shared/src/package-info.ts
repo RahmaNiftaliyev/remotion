@@ -128,7 +128,7 @@ export const descriptions: {[key in Pkgs]: string | null} = {
 	preload: 'Preloads assets for use in Remotion',
 	shapes: 'Generate SVG shapes',
 	'zod-types': 'Zod types for Remotion',
-	'zod-types-v3': 'Zod v3 types for Remotion',
+	'zod-types-v3': 'Zod 3.22.3 types for Remotion',
 	gif: 'Embed GIFs in a Remotion video',
 	'eslint-plugin': 'Rules for writing Remotion code',
 	'eslint-config': 'Default configuration for Remotion templates (ESLint <= 8)',

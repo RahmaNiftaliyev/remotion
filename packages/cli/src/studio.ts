@@ -145,6 +145,13 @@ export const studioCommand = async (
 
 	const useRspack = rspackOption.getValue({commandLine: parsedCli}).value;
 
+	if (useRspack) {
+		Log.warn(
+			{indent: false, logLevel},
+			'Enabling experimental Rspack bundler.',
+		);
+	}
+
 	const result = await StudioServerInternals.startStudio({
 		previewEntry: require.resolve('@remotion/studio/previewEntry'),
 		browserArgs: parsedCli['browser-args'],

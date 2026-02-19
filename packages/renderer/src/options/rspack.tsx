@@ -2,10 +2,10 @@ import type {AnyRemotionOption} from './option';
 
 let rspackEnabled = false;
 
-const cliFlag = 'rspack' as const;
+const cliFlag = 'experimental-rspack' as const;
 
 export const rspackOption = {
-	name: 'Rspack',
+	name: 'Experimental Rspack',
 	cliFlag,
 	description: () => (
 		<>Uses Rspack instead of Webpack as the bundler for the Studio or bundle.</>

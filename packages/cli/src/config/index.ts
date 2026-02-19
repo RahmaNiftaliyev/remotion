@@ -119,6 +119,7 @@ const {
 	overrideWidthOption,
 	overrideFpsOption,
 	overrideDurationOption,
+	rspackOption,
 } = BrowserSafeApis.options;
 
 declare global {
@@ -184,6 +185,12 @@ declare global {
 		readonly setExperimentalClientSideRenderingEnabled: (
 			enabled: boolean,
 		) => void;
+		/**
+		 * Enable experimental Rspack bundler instead of Webpack.
+		 * @param enabled Boolean whether to enable the Rspack bundler
+		 * @default false
+		 */
+		readonly setExperimentalRspackEnabled: (enabled: boolean) => void;
 		/**
 		 * Set number of shared audio tags. https://www.remotion.dev/docs/player/autoplay#using-the-numberofsharedaudiotags-prop
 		 * @param numberOfAudioTags
@@ -652,6 +659,7 @@ export const Config: FlatConfig = {
 	setKeyboardShortcutsEnabled: keyboardShortcutsOption.setConfig,
 	setExperimentalClientSideRenderingEnabled:
 		experimentalClientSideRenderingOption.setConfig,
+	setExperimentalRspackEnabled: rspackOption.setConfig,
 	setNumberOfSharedAudioTags: numberOfSharedAudioTagsOption.setConfig,
 	setWebpackPollingInMilliseconds,
 	setShouldOpenBrowser,

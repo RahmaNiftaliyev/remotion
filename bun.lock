@@ -2292,7 +2292,6 @@
         "eslint": "catalog:",
       },
       "peerDependencies": {
-        "@vercel/blob": ">=2.0.0",
         "@vercel/sandbox": ">=1.0.0",
       },
     },

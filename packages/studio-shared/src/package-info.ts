@@ -306,7 +306,7 @@ export const apiDocs: {[key in Pkgs]: string | null} = {
 	preload: 'https://www.remotion.dev/docs/preload',
 	shapes: 'https://www.remotion.dev/docs/shapes',
 	'zod-types': 'https://www.remotion.dev/docs/zod-types',
-	'zod-types-v3': 'https://www.remotion.dev/docs/zod-types',
+	'zod-types-v3': 'https://www.remotion.dev/docs/zod-types/v3',
 	gif: 'https://www.remotion.dev/docs/gif',
 	'eslint-plugin':
 		'https://www.remotion.dev/docs/brownfield#install-the-eslint-plugin',

@@ -1,5 +1,4 @@
 import type {LogLevel} from '@remotion/renderer';
-import {RenderInternals} from '@remotion/renderer';
 import {BrowserSafeApis} from '@remotion/renderer/client';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -63,32 +62,7 @@ export const getCliOptions = (options: {
 		? true
 		: imageSequence || typeof frameRange === 'number';
 
-	const concurrency = BrowserSafeApis.options.concurrencyOption.getValue({
-		commandLine: parsedCli,
-	}).value;
-
-	const height = BrowserSafeApis.options.overrideHeightOption.getValue({
-		commandLine: parsedCli,
-	}).value;
-	const width = BrowserSafeApis.options.overrideWidthOption.getValue({
-		commandLine: parsedCli,
-	}).value;
-	const fps = BrowserSafeApis.options.overrideFpsOption.getValue({
-		commandLine: parsedCli,
-	}).value;
-	const durationInFrames =
-		BrowserSafeApis.options.overrideDurationOption.getValue({
-			commandLine: parsedCli,
-		}).value;
-
-	RenderInternals.validateConcurrency({
-		value: concurrency,
-		setting: 'concurrency',
-		checkIfValidForCurrentMachine: false,
-	});
-
 	return {
-		concurrency,
 		frameRange,
 		shouldOutputImageSequence,
 		inputProps: getInputProps(null, options.logLevel),
@@ -101,9 +75,5 @@ export const getCliOptions = (options: {
 			commandLine: parsedCli,
 		}).value ?? 0,
 		ffmpegOverride: ConfigInternals.getFfmpegOverrideFunction(),
-		height,
-		width,
-		fps,
-		durationInFrames,
 	};
 };

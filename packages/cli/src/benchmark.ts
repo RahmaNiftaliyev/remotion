@@ -67,6 +67,11 @@ const {
 	userAgentOption,
 	disableWebSecurityOption,
 	ignoreCertificateErrorsOption,
+	concurrencyOption,
+	overrideHeightOption,
+	overrideWidthOption,
+	overrideFpsOption,
+	overrideDurationOption,
 } = BrowserSafeApis.options;
 
 const getValidConcurrency = (cliConcurrency: number | string | null) => {
@@ -209,16 +214,25 @@ export const benchmarkCommand = async (
 		envVariables,
 		frameRange: defaultFrameRange,
 		ffmpegOverride,
-		height,
-		width,
-		fps,
-		durationInFrames,
-		concurrency: unparsedConcurrency,
 	} = getCliOptions({
 		isStill: false,
 		logLevel,
 		indent: false,
 	});
+
+	const unparsedConcurrency = concurrencyOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const height = overrideHeightOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const width = overrideWidthOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const fps = overrideFpsOption.getValue({commandLine: parsedCli}).value;
+	const durationInFrames = overrideDurationOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	const pixelFormat = pixelFormatOption.getValue({
 		commandLine: parsedCli,

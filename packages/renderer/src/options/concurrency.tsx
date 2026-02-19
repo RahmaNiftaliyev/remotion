@@ -1,4 +1,5 @@
 import type {AnyRemotionOption} from './option';
+import {validateConcurrency} from '../validate-concurrency';
 
 export type Concurrency = number | string | null;
 
@@ -21,9 +22,16 @@ export const concurrencyOption = {
 	type: null as Concurrency,
 	getValue: ({commandLine}) => {
 		if (commandLine[cliFlag] !== undefined) {
+			const value = commandLine[cliFlag] as Concurrency;
+			validateConcurrency({
+				value,
+				setting: 'concurrency',
+				checkIfValidForCurrentMachine: false,
+			});
+
 			return {
 				source: 'cli',
-				value: commandLine[cliFlag] as Concurrency,
+				value,
 			};
 		}
 

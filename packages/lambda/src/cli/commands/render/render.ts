@@ -65,6 +65,10 @@ const {
 	ignoreCertificateErrorsOption,
 	audioCodecOption,
 	videoCodecOption,
+	overrideHeightOption,
+	overrideWidthOption,
+	overrideFpsOption,
+	overrideDurationOption,
 } = BrowserSafeApis.options;
 
 export const renderCommand = async ({
@@ -95,19 +99,24 @@ export const renderCommand = async ({
 
 	const region = getAwsRegion();
 
-	const {
-		envVariables,
-		frameRange,
-		inputProps,
-		height,
-		width,
-		fps,
-		durationInFrames,
-	} = CliInternals.getCliOptions({
+	const {envVariables, frameRange, inputProps} = CliInternals.getCliOptions({
 		isStill: false,
 		logLevel,
 		indent: false,
 	});
+
+	const height = overrideHeightOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
+	const width = overrideWidthOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
+	const fps = overrideFpsOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
+	const durationInFrames = overrideDurationOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
 
 	const pixelFormat = pixelFormatOption.getValue({
 		commandLine: CliInternals.parsedCli,

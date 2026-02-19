@@ -34,6 +34,10 @@ const {
 	userAgentOption,
 	disableWebSecurityOption,
 	ignoreCertificateErrorsOption,
+	overrideHeightOption,
+	overrideWidthOption,
+	overrideFpsOption,
+	overrideDurationOption,
 } = BrowserSafeApis.options;
 
 export const still = async (
@@ -73,19 +77,22 @@ export const still = async (
 		process.exit(1);
 	}
 
-	const {
-		envVariables,
-		height,
-		inputProps,
-		stillFrame,
-		width,
-		fps,
-		durationInFrames,
-	} = getCliOptions({
+	const {envVariables, inputProps, stillFrame} = getCliOptions({
 		isStill: true,
 		logLevel,
 		indent: false,
 	});
+
+	const height = overrideHeightOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const width = overrideWidthOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const fps = overrideFpsOption.getValue({commandLine: parsedCli}).value;
+	const durationInFrames = overrideDurationOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	const browserExecutable = browserExecutableOption.getValue({
 		commandLine: parsedCli,

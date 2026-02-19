@@ -3,9 +3,9 @@ import minimist from 'minimist';
 import type {CommandLineOptions} from './parse-command-line';
 
 export const BooleanFlags = [
-	'overwrite',
+	BrowserSafeApis.options.overwriteOption.cliFlag,
 	'force',
-	'sequence',
+	BrowserSafeApis.options.imageSequenceOption.cliFlag,
 	'help',
 	'quiet',
 	'q',
@@ -23,7 +23,8 @@ export const BooleanFlags = [
 	BrowserSafeApis.options.darkModeOption.cliFlag,
 	BrowserSafeApis.options.ignoreCertificateErrorsOption.cliFlag,
 	'disable-headless',
-	'disable-keyboard-shortcuts',
+	BrowserSafeApis.options.keyboardShortcutsOption.cliFlag,
+	BrowserSafeApis.options.experimentalClientSideRenderingOption.cliFlag,
 	'default-only',
 	'no-open',
 	BrowserSafeApis.options.ipv4Option.cliFlag,
@@ -37,12 +38,14 @@ export const BooleanFlags = [
 	'onlyAllocateCpuDuringRequestProcessing',
 	BrowserSafeApis.options.isProductionOption.cliFlag,
 	BrowserSafeApis.options.forceNewStudioOption.cliFlag,
+	BrowserSafeApis.options.bundleCacheOption.cliFlag,
 ];
 
 export const parsedCli = minimist<CommandLineOptions>(process.argv.slice(2), {
 	boolean: BooleanFlags,
 	default: {
 		overwrite: true,
+		[BrowserSafeApis.options.bundleCacheOption.cliFlag]: null,
 		muted: null,
 	},
 }) as CommandLineOptions & {

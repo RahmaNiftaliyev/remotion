@@ -33,6 +33,7 @@ const {
 	userAgentOption,
 	disableWebSecurityOption,
 	ignoreCertificateErrorsOption,
+	bundleCacheOption,
 } = BrowserSafeApis.options;
 
 export const listCompositionsCommand = async (
@@ -135,6 +136,9 @@ export const listCompositionsCommand = async (
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const shouldCache = bundleCacheOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	if (experimentalClientSideRenderingEnabled) {
 		Log.warn(
@@ -168,6 +172,7 @@ export const listCompositionsCommand = async (
 			experimentalClientSideRenderingEnabled,
 			askAIEnabled,
 			keyboardShortcutsEnabled,
+			shouldCache,
 		});
 
 	registerCleanupJob(`Cleanup bundle`, () => cleanupBundle());

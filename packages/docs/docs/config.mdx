@@ -41,7 +41,7 @@ Config.overrideWebpackConfig((currentConfiguration) => {
 
 ## `setCachingEnabled()`<AvailableFrom v="2.0.0" />
 
-Enable or disable Webpack caching. Default is `true` which will make the Webpack step in the first run a bit slower but will massively speed up subsequent runs.
+<Options id="bundle-cache" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -87,6 +87,18 @@ Config.setPublicDir('./custom-public-dir');
 
 The [command line flag](/docs/cli/render#--public-dir) `--public-dir` will take precedence over this option.
 
+## `setBundleOutDir()`<AvailableFrom v="4.0.426" />
+
+<Options id="out-dir" />
+
+```ts twoslash title="remotion.config.ts"
+import {Config} from '@remotion/cli/config';
+// ---cut---
+Config.setBundleOutDir('./custom-build-dir');
+```
+
+The [command line flag](/docs/cli/bundle#--out-dir) `--out-dir` will take precedence over this option.
+
 ## `setEntryPoint()`<AvailableFrom v="3.2.40" />
 
 Sets the Remotion [entry point](/docs/terminology/entry-point), you don't have to specify it for CLI commands.
@@ -129,7 +141,7 @@ Config.setMaxTimelineTracks(20);
 
 ## `setKeyboardShortcutsEnabled()`<AvailableFrom v="3.2.11" />
 
-Whether the Studio should react to keyboard shortcuts. Default `true`.
+<Options id="disable-keyboard-shortcuts" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -141,7 +153,7 @@ The [command line flag](/docs/cli/studio#--disable-keyboard-shortcuts) `--disabl
 
 ## `setExperimentalClientSideRenderingEnabled()`<AvailableFrom v="4.0.387" />
 
-Enable experimental [client-side rendering](/docs/client-side-rendering) in the Remotion Studio. Default `false`.
+<Options id="enable-experimental-client-side-rendering" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -153,8 +165,7 @@ The [command line flag](/docs/cli/studio#--enable-experimental-client-side-rende
 
 ## `setWebpackPollingInMilliseconds()`<AvailableFrom v="3.3.11" />
 
-Enables Webpack polling instead of the file system event listeners for hot reloading.
-This is useful if you are inside a virtual machine or have a remote file system.
+<Options id="webpack-poll" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -454,7 +465,7 @@ The [command line flag](/docs/cli/render#--jpeg-quality) `--jpeg-quality` will t
 
 ## `setDotEnvLocation()`
 
-Set a custom location for a [`.env`](https://www.npmjs.com/package/dotenv) file. You can specify an absolute path or a relative path in which case it gets resolved based on the current working directory.
+<Options id="env-file" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -598,7 +609,7 @@ The [command line flag](/docs/cli/render#--x264-preset) `--x264-preset` will tak
 
 ## `setImageSequence()`<AvailableFrom v="1.4.0" />
 
-Set to true if you want to output an image sequence instead of a video.
+<Options id="sequence" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
@@ -1093,20 +1104,14 @@ The old way is deprecated, but will work for the foreseeable future.
 
 - [Encoding guide](/docs/encoding)
 
-### setImageSequencePattern(pattern)
+### `setImageSequencePattern()`
 
-Set the pattern for naming image sequence files when rendering an image sequence.
+<Options id="image-sequence-pattern" />
 
-- `[frame]` will be replaced with the zero-padded frame number (e.g. 0001, 0002, ...)
-- `[ext]` will be replaced with the image format extension (e.g. jpeg, png)
-
-**Example:**
-
-```js
-// remotion.config.ts
-import {Config} from 'remotion';
-
+```ts twoslash title="remotion.config.ts"
+import {Config} from '@remotion/cli/config';
+// ---cut---
 Config.setImageSequencePattern('frame_[frame]_custom.[ext]');
 ```
 
-This will produce files like `frame_0001_custom.jpeg`, `frame_0002_custom.jpeg`, ...
+The [command line flag](/docs/cli/render#--image-sequence-pattern) `--image-sequence-pattern` will take precedence over this option.

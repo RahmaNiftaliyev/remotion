@@ -38,24 +38,18 @@ import {
 } from './buffer-state-delay-in-milliseconds';
 import type {Concurrency} from './concurrency';
 import {getEntryPoint, setEntryPoint} from './entry-point';
-import {setDotEnvLocation} from './env-file';
 import {
 	getFfmpegOverrideFunction,
 	setFfmpegOverrideFunction,
 } from './ffmpeg-override';
 import {setFrameRange} from './frame-range';
-import {setImageSequence} from './image-sequence';
 import {getMetadata, setMetadata} from './metadata';
 import {getShouldOpenBrowser, setShouldOpenBrowser} from './open-browser';
 import {setOutputLocation} from './output-location';
 import type {WebpackOverrideFn} from './override-webpack';
 import {overrideWebpackConfig} from './override-webpack';
 import {setPort, setRendererPort, setStudioPort} from './preview-server';
-import {setWebpackCaching} from './webpack-caching';
-import {
-	getWebpackPolling,
-	setWebpackPollingInMilliseconds,
-} from './webpack-poll';
+import {getWebpackPolling} from './webpack-poll';
 
 export type {Concurrency, WebpackConfiguration, WebpackOverrideFn};
 
@@ -119,6 +113,11 @@ const {
 	overrideWidthOption,
 	overrideFpsOption,
 	overrideDurationOption,
+	outDirOption,
+	webpackPollOption,
+	imageSequenceOption,
+	bundleCacheOption,
+	envFileOption,
 } = BrowserSafeApis.options;
 
 declare global {
@@ -588,6 +587,11 @@ type FlatConfig = RemotionConfigObject &
 		 */
 		setIPv4: (ipv4: boolean) => void;
 		/**
+		 * Define the output directory for `npx remotion bundle`.
+		 * Default: `build` in the Remotion root.
+		 */
+		setBundleOutDir: (outDir: string | null) => void;
+		/**
 		 * Choose between using Chrome Headless Shell or Chrome for Testing
 		 */
 		setChromeMode: (chromeMode: ChromeMode) => void;
@@ -653,11 +657,11 @@ export const Config: FlatConfig = {
 	setExperimentalClientSideRenderingEnabled:
 		experimentalClientSideRenderingOption.setConfig,
 	setNumberOfSharedAudioTags: numberOfSharedAudioTagsOption.setConfig,
-	setWebpackPollingInMilliseconds,
+	setWebpackPollingInMilliseconds: webpackPollOption.setConfig,
 	setShouldOpenBrowser,
 	setBufferStateDelayInMilliseconds,
 	overrideWebpackConfig,
-	setCachingEnabled: setWebpackCaching,
+	setCachingEnabled: bundleCacheOption.setConfig,
 	setPort,
 	setStudioPort,
 	setRendererPort,
@@ -673,7 +677,7 @@ export const Config: FlatConfig = {
 	setChromiumHeadlessMode: headlessOption.setConfig,
 	setChromiumOpenGlRenderer: glOption.setConfig,
 	setChromiumUserAgent: userAgentOption.setConfig,
-	setDotEnvLocation,
+	setDotEnvLocation: envFileOption.setConfig,
 	setConcurrency: concurrencyOption.setConfig,
 	setChromiumMultiProcessOnLinux: enableMultiprocessOnLinuxOption.setConfig,
 	setChromiumDarkMode: darkModeOption.setConfig,
@@ -705,7 +709,7 @@ export const Config: FlatConfig = {
 	setPixelFormat: pixelFormatOption.setConfig,
 	setCodec: videoCodecOption.setConfig,
 	setCrf: crfOption.setConfig,
-	setImageSequence,
+	setImageSequence: imageSequenceOption.setConfig,
 	setProResProfile: proResProfileOption.setConfig,
 	setX264Preset: x264Option.setConfig,
 	setAudioBitrate: audioBitrateOption.setConfig,
@@ -718,9 +722,8 @@ export const Config: FlatConfig = {
 	overrideDuration: overrideDurationOption.setConfig,
 	overrideFfmpegCommand: setFfmpegOverrideFunction,
 	setAudioCodec: audioCodecOption.setConfig,
-	setOffthreadVideoCacheSizeInBytes: (size) => {
-		offthreadVideoCacheSizeInBytesOption.setConfig(size);
-	},
+	setOffthreadVideoCacheSizeInBytes:
+		offthreadVideoCacheSizeInBytesOption.setConfig,
 	setDeleteAfter: deleteAfterOption.setConfig,
 	setColorSpace: colorSpaceOption.setConfig,
 	setDisallowParallelEncoding: disallowParallelEncodingOption.setConfig,
@@ -738,6 +741,7 @@ export const Config: FlatConfig = {
 	setPublicLicenseKey: publicLicenseKeyOption.setConfig,
 	setForceNewStudioEnabled: forceNewStudioOption.setConfig,
 	setIPv4: ipv4Option.setConfig,
+	setBundleOutDir: outDirOption.setConfig,
 };
 
 export const ConfigInternals = {

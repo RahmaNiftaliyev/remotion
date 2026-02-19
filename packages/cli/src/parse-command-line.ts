@@ -1,6 +1,5 @@
 import type {
 	AudioCodec,
-	Codec,
 	OpenGlRenderer,
 	StillImageFormat,
 	VideoImageFormat,
@@ -46,6 +45,22 @@ const {
 	overrideWidthOption,
 	overrideFpsOption,
 	overrideDurationOption,
+	outDirOption,
+	packageManagerOption,
+	webpackPollOption,
+	keyboardShortcutsOption,
+	experimentalClientSideRenderingOption,
+	imageSequencePatternOption,
+	scaleOption,
+	overwriteOption,
+	crfOption,
+	logLevelOption,
+	videoCodecOption,
+	stillFrameOption,
+	imageSequenceOption,
+	versionFlagOption,
+	bundleCacheOption,
+	envFileOption,
 } = BrowserSafeApis.options;
 
 export type CommandLineOptions = {
@@ -56,8 +71,8 @@ export type CommandLineOptions = {
 	['image-format']: VideoImageFormat | StillImageFormat;
 	[proResProfileOption.cliFlag]: TypeOfOption<typeof proResProfileOption>;
 	[x264Option.cliFlag]: TypeOfOption<typeof x264Option>;
-	['bundle-cache']: string;
-	['env-file']: string;
+	[bundleCacheOption.cliFlag]: TypeOfOption<typeof bundleCacheOption>;
+	[envFileOption.cliFlag]: TypeOfOption<typeof envFileOption>;
 	[ignoreCertificateErrorsOption.cliFlag]: TypeOfOption<
 		typeof ignoreCertificateErrorsOption
 	>;
@@ -78,8 +93,8 @@ export type CommandLineOptions = {
 		typeof disallowParallelEncodingOption
 	>;
 	[beepOnFinishOption.cliFlag]: TypeOfOption<typeof beepOnFinishOption>;
-	version: string;
-	codec: Codec;
+	[versionFlagOption.cliFlag]: TypeOfOption<typeof versionFlagOption>;
+	[videoCodecOption.cliFlag]: TypeOfOption<typeof videoCodecOption>;
 	[concurrencyOption.cliFlag]: TypeOfOption<typeof concurrencyOption>;
 	timeout: number;
 	config: string;
@@ -92,26 +107,30 @@ export type CommandLineOptions = {
 	[encodingMaxRateOption.cliFlag]: TypeOfOption<typeof encodingMaxRateOption>;
 	[audioCodecOption.cliFlag]: AudioCodec;
 	[publicPathOption.cliFlag]: string;
-	crf: number;
+	[crfOption.cliFlag]: TypeOfOption<typeof crfOption>;
 	force: boolean;
 	output: string | undefined;
-	overwrite: boolean;
+	[overwriteOption.cliFlag]: TypeOfOption<typeof overwriteOption>;
 	png: boolean;
 	props: string;
 	quality: number;
 	[jpegQualityOption.cliFlag]: TypeOfOption<typeof jpegQualityOption>;
 	frames: string | number;
-	scale: number;
-	sequence: boolean;
+	[scaleOption.cliFlag]: TypeOfOption<typeof scaleOption>;
+	[imageSequenceOption.cliFlag]: TypeOfOption<typeof imageSequenceOption>;
 	quiet: boolean;
 	q: boolean;
-	log: string;
+	[logLevelOption.cliFlag]: TypeOfOption<typeof logLevelOption>;
 	help: boolean;
 	port: number;
-	frame: string | number;
+	[stillFrameOption.cliFlag]: TypeOfOption<typeof stillFrameOption>;
 	['disable-headless']: boolean;
-	['disable-keyboard-shortcuts']: boolean;
-	['enable-experimental-client-side-rendering']: boolean;
+	[keyboardShortcutsOption.cliFlag]: TypeOfOption<
+		typeof keyboardShortcutsOption
+	>;
+	[experimentalClientSideRenderingOption.cliFlag]: TypeOfOption<
+		typeof experimentalClientSideRenderingOption
+	>;
 	muted: boolean;
 	[overrideHeightOption.cliFlag]: TypeOfOption<typeof overrideHeightOption>;
 	[overrideWidthOption.cliFlag]: TypeOfOption<typeof overrideWidthOption>;
@@ -121,13 +140,13 @@ export type CommandLineOptions = {
 	concurrencies: string;
 	[enforceAudioOption.cliFlag]: TypeOfOption<typeof enforceAudioOption>;
 	gl: OpenGlRenderer;
-	['package-manager']: string;
-	['webpack-poll']: number;
+	[packageManagerOption.cliFlag]: TypeOfOption<typeof packageManagerOption>;
+	[webpackPollOption.cliFlag]: TypeOfOption<typeof webpackPollOption>;
 	['no-open']: boolean;
 	['browser']: string;
 	['browser-args']: string;
 	[userAgentOption.cliFlag]: TypeOfOption<typeof userAgentOption>;
-	['out-dir']: string;
+	[outDirOption.cliFlag]: TypeOfOption<typeof outDirOption>;
 	[audioLatencyHintOption.cliFlag]: AudioContextLatencyCategory;
 	[ipv4Option.cliFlag]: TypeOfOption<typeof ipv4Option>;
 	[deleteAfterOption.cliFlag]: TypeOfOption<typeof deleteAfterOption>;
@@ -136,23 +155,17 @@ export type CommandLineOptions = {
 		typeof enableMultiprocessOnLinuxOption
 	>;
 	repro: boolean;
-	'image-sequence-pattern': string;
+	[imageSequencePatternOption.cliFlag]: TypeOfOption<
+		typeof imageSequencePatternOption
+	>;
 	'license-key': string;
 	[publicLicenseKeyOption.cliFlag]: string;
 	[forceNewStudioOption.cliFlag]: TypeOfOption<typeof forceNewStudioOption>;
 };
 
 export const parseCommandLine = () => {
-	if (typeof parsedCli['bundle-cache'] !== 'undefined') {
-		Config.setCachingEnabled(parsedCli['bundle-cache'] !== 'false');
-	}
-
 	if (parsedCli.frames) {
 		ConfigInternals.setFrameRangeFromCli(parsedCli.frames);
-	}
-
-	if (parsedCli.frame) {
-		ConfigInternals.setStillFrame(Number(parsedCli.frame));
 	}
 
 	if (parsedCli.png) {
@@ -161,18 +174,10 @@ export const parseCommandLine = () => {
 		);
 	}
 
-	if (parsedCli.sequence) {
-		Config.setImageSequence(true);
-	}
-
 	if (
 		parsedCli['license-key'] &&
 		parsedCli['license-key'].startsWith('rm_pub_')
 	) {
 		Config.setPublicLicenseKey(parsedCli['license-key']);
-	}
-
-	if (typeof parsedCli['webpack-poll'] !== 'undefined') {
-		Config.setWebpackPollingInMilliseconds(parsedCli['webpack-poll']);
 	}
 };

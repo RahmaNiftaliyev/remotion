@@ -1,5 +1,4 @@
 import type {LogLevel} from '@remotion/renderer';
-import {RenderInternals} from '@remotion/renderer';
 import {BrowserSafeApis} from '@remotion/renderer/client';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -56,36 +55,14 @@ export const getCliOptions = (options: {
 }) => {
 	const frameRange = getAndValidateFrameRange(options.logLevel, false);
 
+	const imageSequence = BrowserSafeApis.options.imageSequenceOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	const shouldOutputImageSequence = options.isStill
 		? true
-		: ConfigInternals.getShouldOutputImageSequence(frameRange);
-
-	const concurrency = BrowserSafeApis.options.concurrencyOption.getValue({
-		commandLine: parsedCli,
-	}).value;
-
-	const height = BrowserSafeApis.options.overrideHeightOption.getValue({
-		commandLine: parsedCli,
-	}).value;
-	const width = BrowserSafeApis.options.overrideWidthOption.getValue({
-		commandLine: parsedCli,
-	}).value;
-	const fps = BrowserSafeApis.options.overrideFpsOption.getValue({
-		commandLine: parsedCli,
-	}).value;
-	const durationInFrames =
-		BrowserSafeApis.options.overrideDurationOption.getValue({
-			commandLine: parsedCli,
-		}).value;
-
-	RenderInternals.validateConcurrency({
-		value: concurrency,
-		setting: 'concurrency',
-		checkIfValidForCurrentMachine: false,
-	});
+		: imageSequence || typeof frameRange === 'number';
 
 	return {
-		concurrency,
 		frameRange,
 		shouldOutputImageSequence,
 		inputProps: getInputProps(null, options.logLevel),
@@ -94,11 +71,10 @@ export const getCliOptions = (options: {
 			options.logLevel,
 			options.indent,
 		),
-		stillFrame: ConfigInternals.getStillFrame(),
+		stillFrame:
+			BrowserSafeApis.options.stillFrameOption.getValue({
+				commandLine: parsedCli,
+			}).value ?? 0,
 		ffmpegOverride: ConfigInternals.getFfmpegOverrideFunction(),
-		height,
-		width,
-		fps,
-		durationInFrames,
 	};
 };

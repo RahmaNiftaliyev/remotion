@@ -87,6 +87,7 @@ export const renderStillFlow = async ({
 	askAIEnabled,
 	experimentalClientSideRenderingEnabled,
 	keyboardShortcutsEnabled,
+	shouldCache,
 }: {
 	remotionRoot: string;
 	fullEntryPoint: string;
@@ -126,6 +127,7 @@ export const renderStillFlow = async ({
 	askAIEnabled: boolean;
 	experimentalClientSideRenderingEnabled: boolean;
 	keyboardShortcutsEnabled: boolean;
+	shouldCache: boolean;
 }) => {
 	const isVerbose = RenderInternals.isEqualOrBelowLogLevel(logLevel, 'verbose');
 	Log.verbose(
@@ -229,6 +231,7 @@ export const renderStillFlow = async ({
 			experimentalClientSideRenderingEnabled,
 			askAIEnabled,
 			keyboardShortcutsEnabled,
+			shouldCache,
 		},
 	);
 

@@ -1,4 +1,3 @@
-import {validateConcurrency} from '../validate-concurrency';
 import type {AnyRemotionOption} from './option';
 
 export type Concurrency = number | string | null;
@@ -6,6 +5,30 @@ export type Concurrency = number | string | null;
 let currentConcurrency: Concurrency = null;
 
 const cliFlag = 'concurrency' as const;
+
+// Browser-safe validation that does not pull in Node.js modules
+// (validate-concurrency.ts imports node:child_process via get-cpu-count.ts)
+const validateConcurrencyValue = (value: unknown, setting: string) => {
+	if (typeof value === 'undefined' || value === null) {
+		return;
+	}
+
+	if (typeof value !== 'number' && typeof value !== 'string') {
+		throw new Error(setting + ' must a number or a string but is ' + value);
+	}
+
+	if (typeof value === 'number') {
+		if (value % 1 !== 0) {
+			throw new Error(setting + ' must be an integer, but is ' + value);
+		}
+	} else if (!/^\d+(\.\d+)?%$/.test(value)) {
+		throw new Error(
+			`${setting} must be a number or percentage, but is ${JSON.stringify(
+				value,
+			)}`,
+		);
+	}
+};
 
 export const concurrencyOption = {
 	name: 'Concurrency',
@@ -23,11 +46,7 @@ export const concurrencyOption = {
 	getValue: ({commandLine}) => {
 		if (commandLine[cliFlag] !== undefined) {
 			const value = commandLine[cliFlag] as Concurrency;
-			validateConcurrency({
-				value,
-				setting: 'concurrency',
-				checkIfValidForCurrentMachine: false,
-			});
+			validateConcurrencyValue(value, 'concurrency');
 
 			return {
 				source: 'cli',
@@ -48,11 +67,7 @@ export const concurrencyOption = {
 		};
 	},
 	setConfig: (value) => {
-		validateConcurrency({
-			value,
-			setting: 'Config.setConcurrency',
-			checkIfValidForCurrentMachine: false,
-		});
+		validateConcurrencyValue(value, 'Config.setConcurrency');
 
 		currentConcurrency = value;
 	},

@@ -2,7 +2,6 @@ import type {MandatoryLegacyBundleOptions} from '@remotion/bundler';
 import {BundlerInternals} from '@remotion/bundler';
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
-import {BrowserSafeApis} from '@remotion/renderer/client';
 import type {BundlingState, CopyingState} from '@remotion/studio-server';
 import type {GitSource} from '@remotion/studio-shared';
 import {existsSync} from 'fs';
@@ -36,6 +35,7 @@ export const bundleOnCliOrTakeServeUrl = async ({
 	experimentalClientSideRenderingEnabled,
 	askAIEnabled,
 	keyboardShortcutsEnabled,
+	shouldCache,
 }: {
 	fullPath: string;
 	remotionRoot: string;
@@ -58,6 +58,7 @@ export const bundleOnCliOrTakeServeUrl = async ({
 	experimentalClientSideRenderingEnabled: boolean;
 	askAIEnabled: boolean;
 	keyboardShortcutsEnabled: boolean;
+	shouldCache: boolean;
 }): Promise<{
 	urlOrBundle: string;
 	cleanup: () => void;
@@ -101,6 +102,7 @@ export const bundleOnCliOrTakeServeUrl = async ({
 		experimentalClientSideRenderingEnabled,
 		askAIEnabled,
 		keyboardShortcutsEnabled,
+		shouldCache,
 	});
 
 	return {
@@ -128,6 +130,7 @@ export const bundleOnCli = async ({
 	experimentalClientSideRenderingEnabled,
 	askAIEnabled,
 	keyboardShortcutsEnabled,
+	shouldCache,
 }: {
 	fullPath: string;
 	remotionRoot: string;
@@ -150,11 +153,8 @@ export const bundleOnCli = async ({
 	experimentalClientSideRenderingEnabled: boolean;
 	keyboardShortcutsEnabled: boolean;
 	askAIEnabled: boolean;
+	shouldCache: boolean;
 }) => {
-	const shouldCache = BrowserSafeApis.options.bundleCacheOption.getValue({
-		commandLine: {},
-	}).value;
-
 	const symlinkState: SymbolicLinksState = {
 		symlinks: [],
 	};

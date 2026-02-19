@@ -60,6 +60,7 @@ const {
 	overrideWidthOption,
 	overrideFpsOption,
 	overrideDurationOption,
+	bundleCacheOption,
 } = BrowserSafeApis.options;
 
 export const render = async (
@@ -246,6 +247,9 @@ export const render = async (
 	const mediaCacheSizeInBytes = mediaCacheSizeInBytesOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const shouldCache = bundleCacheOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	await renderVideoFlow({
 		fullEntryPoint,
@@ -321,5 +325,6 @@ export const render = async (
 			experimentalClientSideRenderingOption.getValue({commandLine: parsedCli})
 				.value,
 		keyboardShortcutsEnabled,
+		shouldCache,
 	});
 };

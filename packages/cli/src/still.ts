@@ -38,6 +38,7 @@ const {
 	overrideWidthOption,
 	overrideFpsOption,
 	overrideDurationOption,
+	bundleCacheOption,
 } = BrowserSafeApis.options;
 
 export const still = async (
@@ -154,6 +155,9 @@ export const still = async (
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const shouldCache = bundleCacheOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	const chromiumOptions: Required<ChromiumOptions> = {
 		disableWebSecurity,
@@ -213,5 +217,6 @@ export const still = async (
 			experimentalClientSideRenderingOption.getValue({commandLine: parsedCli})
 				.value,
 		keyboardShortcutsEnabled,
+		shouldCache,
 	});
 };

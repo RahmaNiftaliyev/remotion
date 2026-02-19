@@ -72,6 +72,7 @@ const {
 	overrideWidthOption,
 	overrideFpsOption,
 	overrideDurationOption,
+	bundleCacheOption,
 } = BrowserSafeApis.options;
 
 const getValidConcurrency = (cliConcurrency: number | string | null) => {
@@ -280,6 +281,9 @@ export const benchmarkCommand = async (
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const shouldCache = bundleCacheOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	if (experimentalClientSideRenderingEnabled) {
 		Log.warn(
@@ -352,6 +356,7 @@ export const benchmarkCommand = async (
 			experimentalClientSideRenderingEnabled,
 			askAIEnabled,
 			keyboardShortcutsEnabled,
+			shouldCache,
 		});
 
 	registerCleanupJob(`Deleting bundle`, () => cleanupBundle());

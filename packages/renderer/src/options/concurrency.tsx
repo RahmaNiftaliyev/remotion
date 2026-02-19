@@ -48,6 +48,12 @@ export const concurrencyOption = {
 		};
 	},
 	setConfig: (value) => {
+		validateConcurrency({
+			value,
+			setting: 'Config.setConcurrency',
+			checkIfValidForCurrentMachine: false,
+		});
+
 		currentConcurrency = value;
 	},
 	id: cliFlag,

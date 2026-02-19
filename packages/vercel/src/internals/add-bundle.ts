@@ -54,7 +54,7 @@ export const addBundleToSandbox = async ({
 	sandbox,
 	bundleDir,
 }: {
-	sandbox: Sandbox & AsyncDisposable;
+	sandbox: Sandbox;
 	bundleDir: string;
 }) => {
 	ensureLocalBundle(bundleDir);

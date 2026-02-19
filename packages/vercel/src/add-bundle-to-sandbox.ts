@@ -1,11 +1,11 @@
+import type {Sandbox} from '@vercel/sandbox';
 import {addBundleToSandbox as addBundleInternal} from './internals/add-bundle';
-import type {VercelSandbox} from './types';
 
 export async function addBundleToSandbox({
 	sandbox,
 	bundleDir,
 }: {
-	sandbox: VercelSandbox;
+	sandbox: Sandbox;
 	bundleDir: string;
 }): Promise<void> {
 	await addBundleInternal({sandbox, bundleDir});

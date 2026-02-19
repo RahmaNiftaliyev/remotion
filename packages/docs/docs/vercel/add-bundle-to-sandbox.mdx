@@ -35,11 +35,12 @@ An object with the following properties:
 
 ### `sandbox`
 
-A [`VercelSandbox`](/docs/vercel/types#vercelsandbox) instance, typically obtained from [`createSandbox()`](/docs/vercel/create-sandbox).
+A [`Sandbox`](https://vercel.com/docs/vercel-sandbox/sdk-reference#sandbox-class) instance, typically obtained from [`createSandbox()`](/docs/vercel/create-sandbox).
 
 ### `bundleDir`
 
-The path to your Remotion bundle directory, relative to the current working directory. This is the output of [`npx remotion bundle`](/docs/cli/bundle).
+The path to your Remotion bundle directory, relative to the current working directory.  
+A bundle can be created using the [`npx remotion bundle`](/docs/cli/bundle) command, or using the [`bundle()`](/docs/bundle) API.
 
 ## Return value
 

@@ -49,7 +49,9 @@ Props to pass to the composition.
 
 ### `codec?`
 
-The video codec to use. Default: `"h264"`.
+_"h264" | "h265" | "vp8" | "vp9" | "mp3" | "aac" | "wav" | "prores" | "h264-mkv" | "gif"_
+
+Choose a suitable codec for your output media. Refer to the [Encoding guide](/docs/encoding) to find the best codec for your use case. Default: `"h264"`.
 
 ### `outputFile?`
 
@@ -57,47 +59,67 @@ The output file path inside the sandbox. Default: `"/tmp/video.mp4"`.
 
 ### `crf?`
 
-The Constant Rate Factor, controlling quality. See [`renderMedia() → crf`](/docs/renderer/render-media#crf). Default: `null` (codec default).
+_number | null_
+
+The constant rate factor, controlling the quality. See: [Controlling quality using the CRF setting.](/docs/encoding/#controlling-quality-using-the-crf-setting)
 
 ### `imageFormat?`
 
-The image format for intermediate frames. `"png"`, `"jpeg"`, or `"none"`. Default: `null` (codec default).
+_"jpeg" | "png" | "none"_
+
+In which image format the frames should be rendered.
+
+- `jpeg` is the default and is fastest
+- `png` if you want to [render transparent videos](/docs/transparent-videos/)
+- `none` if you are rendering audio
 
 ### `pixelFormat?`
 
-The pixel format for the output video. Default: `null` (codec default).
+_string_
+
+[A custom pixel format to use.](/docs/transparent-videos/) Usually used for special use cases like transparent videos.
 
 ### `envVariables?`
 
-Environment variables to set during rendering. Default: `{}`.
+`Record<string, string>`
+
+An object containing environment variables to be injected in your project.
+
+See: [Environment variables](/docs/env-variables/)
 
 ### `frameRange?`
 
-A specific frame range to render. Can be a single frame number, a `[start, end]` tuple, or `[start, null]` for open-ended. Default: `null` (render all frames).
+_number | [number, number] | [number, null]_
+
+Specify a single frame (passing a `number`) or a range of frames (passing a tuple `[number, number]`) to be rendered. By passing `null` (default) all frames of a composition get rendered.
 
 ### `everyNthFrame?`
 
-Render only every nth frame. Default: `1`.
+Renders only every nth frame. For example only every second frame, every third frame and so on. Only works for rendering GIFs. [See here for more details.](/docs/render-as-gif) Default: `1`.
 
 ### `overwrite?`
 
-Whether to overwrite existing output files. Default: `true`.
+_boolean_
+
+If set to false, the output file will not be written if a file already exists. Default: `true`.
 
 ### `proResProfile?`
 
-The ProRes profile to use when `codec` is `"prores"`. One of `"4444-xq"`, `"4444"`, `"hq"`, `"standard"`, `"light"`, `"proxy"`.
+_string_
+
+Sets a ProRes profile. Only applies to videos rendered with `prores` codec. See [Encoding guide](/docs/encoding/#controlling-quality-using-prores-profile) for possible options.
 
 ### `chromiumOptions?`
 
-Options for the headless Chrome instance. See [`renderMedia() → chromiumOptions`](/docs/renderer/render-media#chromiumoptions). Default: `{}`.
+Allows you to set certain Chromium / Google Chrome flags. See: [Chromium flags](/docs/chromium-flags).
 
 ### `scale?`
 
-Scaling factor for the output. Default: `1`.
+<Options id="scale" />
 
 ### `browserExecutable?`
 
-Custom path to a Chrome executable. Default: `null` (use installed browser).
+A string defining the absolute path on disk of the browser executable that should be used. By default Remotion will try to detect it automatically and download one if none is available.
 
 ### `preferLossless?`
 
@@ -105,107 +127,124 @@ Prefer lossless audio encoding when possible. Default: `false`.
 
 ### `enforceAudioTrack?`
 
-Enforce an audio track even if the video has no audio. Default: `false`.
+_boolean_
+
+Render a silent audio track if there wouldn't be any otherwise. Default: `false`.
 
 ### `disallowParallelEncoding?`
 
-Disable parallel encoding. Default: `false`.
+Disallows the renderer from doing rendering frames and encoding at the same time. This makes the rendering process more memory-efficient, but possibly slower. Default: `false`.
 
 ### `concurrency?`
 
-Number of frames to render concurrently. Default: `null` (auto).
+A `number` specifying how many render processes should be started in parallel, a `string` specifying the percentage of the CPU threads to use, or `null` to let Remotion decide based on the CPU of the host machine. Default: `null`.
 
 ### `metadata?`
 
-Key-value metadata to embed in the output file. Default: `null`.
+<Options id="metadata" />
 
 ### `logLevel?`
 
-Log level for the render process. `"trace"`, `"verbose"`, `"info"`, `"warn"`, or `"error"`. Default: `"info"`.
+<Options id="log" />
 
 ### `timeoutInMilliseconds?`
 
-Timeout for delayRender() calls in milliseconds. Default: `30000`.
+A number describing how long the render may take to resolve all [`delayRender()`](/docs/delay-render) calls [before it times out](/docs/timeout). Default: `30000`.
 
 ### `videoBitrate?`
 
-Target video bitrate, e.g. `"1000k"` or `"10M"`. Default: `null`.
+<Options id="video-bitrate" />
 
 ### `audioBitrate?`
 
-Target audio bitrate, e.g. `"128k"`. Default: `null`.
+<Options id="audio-bitrate" />
 
 ### `audioCodec?`
 
-The audio codec. `"pcm-16"`, `"aac"`, `"mp3"`, or `"opus"`. Default: `null` (derived from video codec).
+_"pcm-16" | "aac" | "mp3" | "opus"_
+
+Choose the encoding of your audio.
+
+- The default is dependent on the chosen `codec`.
+- Choose `pcm-16` if you need uncompressed audio.
+- Not all video containers support all audio codecs.
+- This option takes precedence if the `codec` option also specifies an audio codec.
+
+Refer to the [Encoding guide](/docs/encoding/#audio-codec) to see defaults and supported combinations.
 
 ### `encodingMaxRate?`
 
-Maximum encoding bitrate for VBR encoding. Default: `null`.
+<Options id="max-rate" />
 
 ### `encodingBufferSize?`
 
-Encoding buffer size for VBR encoding. Default: `null`.
+<Options id="buffer-size" />
 
 ### `muted?`
 
-Render without audio. Default: `false`.
+_boolean_
+
+If set to true, no audio is being rendered. Default: `false`.
 
 ### `numberOfGifLoops?`
 
-Number of loops for GIF output. Default: `null`.
+<Options id="number-of-gif-loops" />
 
 ### `x264Preset?`
 
-The x264 preset when using H.264 codec. Default: `null`.
+<Options id="x264-preset" />
 
 ### `colorSpace?`
 
-The color space. `"default"`, `"bt601"`, `"bt709"`, or `"bt2020-ncl"`. Default: `"default"`.
+<Options id="color-space" />
 
 ### `jpegQuality?`
 
-JPEG quality for intermediate frames (0–100). Default: `80`.
+_number_
+
+Sets the quality of the generated JPEG images. Must be an integer between 0 and 100. Default is `80`.
+
+Only applies if `imageFormat` is `'jpeg'`, otherwise this option is invalid.
 
 ### `forSeamlessAacConcatenation?`
 
-Optimize AAC audio for seamless concatenation. Default: `false`.
+<Options id="for-seamless-aac-concatenation" />
 
 ### `separateAudioTo?`
 
-Write the audio track to a separate file. Default: `null`.
+<Options cli id="separate-audio-to" />
 
 ### `hardwareAcceleration?`
 
-Hardware acceleration mode. `"disable"`, `"if-possible"`, or `"required"`. Default: `"disable"`.
+<Options id="hardware-acceleration" />
 
 ### `chromeMode?`
 
-Chrome mode. `"headless-shell"` or `"chrome-for-testing"`. Default: `"headless-shell"`.
+<Options id="chrome-mode" />
 
 ### `offthreadVideoCacheSizeInBytes?`
 
-Cache size for `<OffthreadVideo>` in bytes. Default: `null`.
+<Options id="offthreadvideo-cache-size-in-bytes" />
 
 ### `mediaCacheSizeInBytes?`
 
-Cache size for media assets in bytes. Default: `null`.
+<Options id="media-cache-size-in-bytes" />
 
 ### `offthreadVideoThreads?`
 
-Number of threads for `<OffthreadVideo>` decoding. Default: `null`.
+<Options id="offthreadvideo-video-threads" />
 
 ### `repro?`
 
-Enable repro mode for debugging. Default: `false`.
+<Options id="repro" />
 
 ### `binariesDirectory?`
 
-Custom directory for FFmpeg binaries. Default: `null`.
+<Options id="binaries-directory" />
 
 ### `licenseKey?`
 
-Remotion license key. Default: `null`.
+<Options id="license-key" />
 
 ### `onProgress?`
 

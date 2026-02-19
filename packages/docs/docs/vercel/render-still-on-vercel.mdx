@@ -45,7 +45,7 @@ Props to pass to the composition.
 
 ### `imageFormat?`
 
-The output image format. `"png"`, `"jpeg"`, `"pdf"`, or `"webp"`. Default: `"png"`.
+Which output format the image should have, either `"png"`, `"jpeg"`, `"webp"` or `"pdf"`. Default: `"png"`.
 
 ### `outputFile?`
 
@@ -53,63 +53,63 @@ The output file path inside the sandbox. Default: `"/tmp/still.png"`.
 
 ### `frame?`
 
-The frame number to render. Default: `0`.
+Which frame should be rendered based on its number. Default: `0`. Frames are zero-indexed.
 
 ### `jpegQuality?`
 
-JPEG quality (0–100). Only applicable when `imageFormat` is `"jpeg"`. Default: `80`.
+Sets the JPEG quality - must be an integer between 0 and 100 and can only be passed if `imageFormat` is set to `"jpeg"`. Default: `80`.
 
 ### `envVariables?`
 
-Environment variables to set during rendering. Default: `{}`.
+An object containing key-value pairs of environment variables which will be injected into your Remotion project and which can be accessed by reading the global `process.env` object. Default: `{}`.
 
 ### `overwrite?`
 
-Whether to overwrite existing output files. Default: `true`.
+Whether the file should be overwritten if the output already exists. Default: `true`.
 
 ### `browserExecutable?`
 
-Custom path to a Chrome executable. Default: `null` (use installed browser).
+A string defining the absolute path on disk of the browser executable that should be used. By default Remotion will try to detect it automatically and download one if none is available.
 
 ### `chromiumOptions?`
 
-Options for the headless Chrome instance. See [`renderStill() → chromiumOptions`](/docs/renderer/render-still#chromiumoptions). Default: `{}`.
+Allows you to set certain Chromium / Google Chrome flags. See: [Chromium flags](/docs/chromium-flags).
 
 ### `scale?`
 
-Scaling factor for the output. Default: `1`.
+<Options id="scale" />
 
 ### `logLevel?`
 
-Log level for the render process. `"trace"`, `"verbose"`, `"info"`, `"warn"`, or `"error"`. Default: `"info"`.
+<Options id="log" />
 
 ### `timeoutInMilliseconds?`
 
-Timeout for delayRender() calls in milliseconds. Default: `30000`.
+A number describing how long the render may take to resolve all [`delayRender()`](/docs/delay-render) calls [before it times out](/docs/timeout). Default: `30000`.
 
 ### `chromeMode?`
 
-Chrome mode. `"headless-shell"` or `"chrome-for-testing"`. Default: `"headless-shell"`.
+<Options id="chrome-mode" />
 
 ### `offthreadVideoCacheSizeInBytes?`
 
-Cache size for `<OffthreadVideo>` in bytes. Default: `null`.
+<Options id="offthreadvideo-cache-size-in-bytes" />
 
 ### `mediaCacheSizeInBytes?`
 
-Cache size for media assets in bytes. Default: `null`.
+<Options id="media-cache-size-in-bytes" />
 
 ### `offthreadVideoThreads?`
 
-Number of threads for `<OffthreadVideo>` decoding. Default: `null`.
+<Options id="offthreadvideo-video-threads" />
 
 ### `binariesDirectory?`
 
-Custom directory for FFmpeg binaries. Default: `null`.
+<Options id="binaries-directory" />
 
 ### `licenseKey?`
 
-Remotion license key. Default: `null`.
+<Options id="license-key" />
 
 ### `onProgress?`
 

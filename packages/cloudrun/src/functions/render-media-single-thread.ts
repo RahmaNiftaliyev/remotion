@@ -140,7 +140,8 @@ export const renderMediaSingleThread = async (
 				height: body.forceHeight ?? composition.height,
 				width: body.forceWidth ?? composition.width,
 				fps: body.forceFps ?? composition.fps,
-				durationInFrames: body.forceDurationInFrames ?? composition.durationInFrames,
+				durationInFrames:
+					body.forceDurationInFrames ?? composition.durationInFrames,
 			},
 			serveUrl: body.serveUrl,
 			codec: body.codec,

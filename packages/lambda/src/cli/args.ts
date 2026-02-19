@@ -17,10 +17,7 @@ type LambdaCommandLineOptions = {
 	force: boolean;
 	f: boolean;
 	['default-only']: boolean;
-
 	['site-name']: string | undefined;
-	['disable-chunk-optimization']: boolean;
-	['save-browser-logs']: boolean;
 	['disable-cloudwatch']: boolean;
 	[BrowserSafeApis.options.enableLambdaInsights.cliFlag]: boolean;
 	['max-retries']?: number;

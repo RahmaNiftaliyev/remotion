@@ -13,8 +13,6 @@ export const BooleanFlags = [
 	BrowserSafeApis.options.enforceAudioOption.cliFlag,
 	// Lambda flags
 	'force',
-	'disable-chunk-optimization',
-	'save-browser-logs',
 	'disable-cloudwatch',
 	'enable-lambda-insights',
 	'yes',
@@ -32,7 +30,7 @@ export const BooleanFlags = [
 	BrowserSafeApis.options.disableGitSourceOption.cliFlag,
 	BrowserSafeApis.options.disallowParallelEncodingOption.cliFlag,
 	BrowserSafeApis.options.forSeamlessAacConcatenationOption.cliFlag,
-	'repro',
+	BrowserSafeApis.options.reproOption.cliFlag,
 	'compatible-only',
 	'force-path-style',
 	'onlyAllocateCpuDuringRequestProcessing',

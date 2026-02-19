@@ -12,7 +12,10 @@
   - Run `git log v<previous_version>..v<new_version> --oneline` to get all commits
   - Extract PR numbers from merge commits
   - For each PR, run `gh pr view <number> --json title,author,number,url --jq '"* \(.title) by @\(.author.login) in \(.url)"'`
-  - Categorize PRs into sections: "What's Changed" (features, fixes, improvements), "Internal" (dependency upgrades, tooling, infra), "Docs" (documentation changes), "Templates" (template changes)
-  - Check for new contributors by comparing authors against known contributors
+  - Categorize PRs into sections: "What's Changed", "Templates", "Docs", "Internal"
+  - In "What's Changed", group items by package using `### \`package-name\`` subheadings
+  - Strip redundant prefixes from PR titles (e.g. remove "Docs:" from items in the Docs section, remove package names from items already grouped under that package)
+  - "Templates" is a separate section for any template-* changes
+  - Do NOT add a "New Contributors" section - contributors may appear new in a version range but not actually be first-time contributors
   - Add `**Full Changelog**: https://github.com/remotion-dev/remotion/compare/v<previous_version>...v<new_version>` at the bottom
   - Use the same format as previous GitHub releases (check with `gh release view v<previous_version>`)

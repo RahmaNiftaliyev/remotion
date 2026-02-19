@@ -15,6 +15,7 @@ export const rspackOption = {
 	type: false as boolean,
 	getValue: ({commandLine}) => {
 		if (commandLine[cliFlag] !== undefined) {
+			rspackEnabled = true;
 			return {
 				value: commandLine[cliFlag] as boolean,
 				source: 'cli',

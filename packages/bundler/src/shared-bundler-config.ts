@@ -65,9 +65,7 @@ export const getResolveConfig = () => ({
 	},
 });
 
-export const getOutputConfig = (
-	environment: 'development' | 'production',
-) => ({
+export const getOutputConfig = (environment: 'development' | 'production') => ({
 	hashFunction: 'xxhash64' as const,
 	filename: NoReactInternals.bundleName,
 	devtoolModuleFilenameTemplate: '[resource-path]',

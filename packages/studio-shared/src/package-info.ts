@@ -101,6 +101,12 @@ export const extraPackages: ExtraPackage[] = [
 		description: 'Multimedia library used by Remotion',
 		docsUrl: 'https://www.remotion.dev/docs/mediabunny/version',
 	},
+	{
+		name: 'zod',
+		version: '4.3.6',
+		description: 'TypeScript-first schema validation',
+		docsUrl: 'https://zod.dev',
+	},
 ];
 
 export const descriptions: {[key in Pkgs]: string | null} = {

@@ -1,7 +1,7 @@
 {
 	"name": "@remotion/zod-types-v3",
 	"version": "4.0.424",
-	"description": "Zod v3 types for Remotion",
+	"description": "Zod 3.22.3 types for Remotion",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"module": "dist/esm/index.mjs",
@@ -51,5 +51,5 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"homepage": "https://www.remotion.dev/docs/zod-types"
+	"homepage": "https://www.remotion.dev/docs/zod-types/v3"
 }

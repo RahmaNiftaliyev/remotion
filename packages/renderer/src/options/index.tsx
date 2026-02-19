@@ -42,6 +42,8 @@ import {mutedOption} from './mute';
 import {numberOfGifLoopsOption} from './number-of-gif-loops';
 import {numberOfSharedAudioTagsOption} from './number-of-shared-audio-tags';
 import {offthreadVideoCacheSizeInBytesOption} from './offthreadvideo-cache-size';
+import {outDirOption} from './out-dir';
+import {packageManagerOption} from './package-manager';
 import {offthreadVideoThreadsOption} from './offthreadvideo-threads';
 import {onBrowserDownloadOption} from './on-browser-download';
 import type {AnyRemotionOption} from './option';
@@ -141,6 +143,8 @@ export const allOptions = {
 	overrideWidthOption,
 	overrideFpsOption,
 	overrideDurationOption,
+	outDirOption,
+	packageManagerOption,
 };
 
 export type AvailableOptions = keyof typeof allOptions;

@@ -87,6 +87,18 @@ Config.setPublicDir('./custom-public-dir');
 
 The [command line flag](/docs/cli/render#--public-dir) `--public-dir` will take precedence over this option.
 
+## `setOutDir()`<AvailableFrom v="4.0.426" />
+
+<Options id="out-dir" />
+
+```ts twoslash title="remotion.config.ts"
+import {Config} from '@remotion/cli/config';
+// ---cut---
+Config.setOutDir('./custom-build-dir');
+```
+
+The [command line flag](/docs/cli/bundle#--out-dir) `--out-dir` will take precedence over this option.
+
 ## `setEntryPoint()`<AvailableFrom v="3.2.40" />
 
 Sets the Remotion [entry point](/docs/terminology/entry-point), you don't have to specify it for CLI commands.

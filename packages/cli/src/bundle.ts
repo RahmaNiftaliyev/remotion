@@ -21,6 +21,7 @@ const {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	outDirOption,
 } = BrowserSafeApis.options;
 
 export const bundleCommand = async (
@@ -90,8 +91,9 @@ export const bundleCommand = async (
 		commandLine: parsedCli,
 	}).value;
 
-	const outputPath = parsedCli['out-dir']
-		? path.resolve(process.cwd(), parsedCli['out-dir'])
+	const outDir = outDirOption.getValue({commandLine: parsedCli}).value;
+	const outputPath = outDir
+		? path.resolve(process.cwd(), outDir)
 		: path.join(remotionRoot, 'build');
 
 	const gitignoreFolder = BundlerInternals.findClosestFolderWithItem(

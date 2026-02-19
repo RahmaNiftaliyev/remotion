@@ -46,6 +46,8 @@ const {
 	overrideWidthOption,
 	overrideFpsOption,
 	overrideDurationOption,
+	outDirOption,
+	packageManagerOption,
 } = BrowserSafeApis.options;
 
 export type CommandLineOptions = {
@@ -121,13 +123,13 @@ export type CommandLineOptions = {
 	concurrencies: string;
 	[enforceAudioOption.cliFlag]: TypeOfOption<typeof enforceAudioOption>;
 	gl: OpenGlRenderer;
-	['package-manager']: string;
+	[packageManagerOption.cliFlag]: TypeOfOption<typeof packageManagerOption>;
 	['webpack-poll']: number;
 	['no-open']: boolean;
 	['browser']: string;
 	['browser-args']: string;
 	[userAgentOption.cliFlag]: TypeOfOption<typeof userAgentOption>;
-	['out-dir']: string;
+	[outDirOption.cliFlag]: TypeOfOption<typeof outDirOption>;
 	[audioLatencyHintOption.cliFlag]: AudioContextLatencyCategory;
 	[ipv4Option.cliFlag]: TypeOfOption<typeof ipv4Option>;
 	[deleteAfterOption.cliFlag]: TypeOfOption<typeof deleteAfterOption>;

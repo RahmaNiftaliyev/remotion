@@ -6561,7 +6561,7 @@ export const articles = [
 		title: '@remotion/vercel',
 		relativePath: 'docs/vercel/index.mdx',
 		compId: 'articles-docs-vercel-index',
-		crumb: null,
+		crumb: 'API',
 		noAi: false,
 		slug: 'vercel/api',
 	},

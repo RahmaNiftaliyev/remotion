@@ -87,14 +87,14 @@ Config.setPublicDir('./custom-public-dir');
 
 The [command line flag](/docs/cli/render#--public-dir) `--public-dir` will take precedence over this option.
 
-## `setOutDir()`<AvailableFrom v="4.0.426" />
+## `setBundleOutDir()`<AvailableFrom v="4.0.426" />
 
 <Options id="out-dir" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';
 // ---cut---
-Config.setOutDir('./custom-build-dir');
+Config.setBundleOutDir('./custom-build-dir');
 ```
 
 The [command line flag](/docs/cli/bundle#--out-dir) `--out-dir` will take precedence over this option.

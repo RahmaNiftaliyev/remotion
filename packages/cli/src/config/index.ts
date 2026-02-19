@@ -590,7 +590,7 @@ type FlatConfig = RemotionConfigObject &
 		 * Define the output directory for `npx remotion bundle`.
 		 * Default: `build` in the Remotion root.
 		 */
-		setOutDir: (outDir: string | null) => void;
+		setBundleOutDir: (outDir: string | null) => void;
 		/**
 		 * Choose between using Chrome Headless Shell or Chrome for Testing
 		 */
@@ -742,7 +742,7 @@ export const Config: FlatConfig = {
 	setPublicLicenseKey: publicLicenseKeyOption.setConfig,
 	setForceNewStudioEnabled: forceNewStudioOption.setConfig,
 	setIPv4: ipv4Option.setConfig,
-	setOutDir: outDirOption.setConfig,
+	setBundleOutDir: outDirOption.setConfig,
 };
 
 export const ConfigInternals = {

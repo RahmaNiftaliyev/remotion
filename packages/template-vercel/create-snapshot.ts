@@ -1,4 +1,8 @@
-import { addBundleToSandbox, createSandbox, saveSnapshot } from "@remotion/vercel";
+import { put } from "@vercel/blob";
+import { addBundleToSandbox, createSandbox } from "@remotion/vercel";
+
+const getSnapshotBlobKey = () =>
+  `snapshot-cache/${process.env.VERCEL_DEPLOYMENT_ID ?? "local"}.json`;
 
 const sandbox = await createSandbox({
   onProgress: ({ progress, message }) => {
@@ -11,6 +15,13 @@ console.log("[create-snapshot] Adding Remotion bundle...");
 await addBundleToSandbox({ sandbox, bundleDir: ".remotion" });
 
 console.log("[create-snapshot] Taking snapshot...");
-const { snapshotId } = await saveSnapshot({ sandbox });
+const snapshot = await sandbox.snapshot({ expiration: 0 });
+const { snapshotId } = snapshot;
+
+await put(getSnapshotBlobKey(), JSON.stringify({ snapshotId }), {
+  access: "public",
+  contentType: "application/json",
+  addRandomSuffix: false,
+});
 
 console.log(`[create-snapshot] Snapshot saved: ${snapshotId} (never expires)`);

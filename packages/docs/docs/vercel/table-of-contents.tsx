@@ -14,14 +14,6 @@ export const TableOfContents: React.FC = () => {
 					<strong>addBundleToSandbox()</strong>
 					<div>Copy a Remotion bundle into a sandbox</div>
 				</TOCItem>
-				<TOCItem link="/docs/vercel/save-snapshot">
-					<strong>saveSnapshot()</strong>
-					<div>Snapshot a sandbox and save to Vercel Blob</div>
-				</TOCItem>
-				<TOCItem link="/docs/vercel/restore-snapshot">
-					<strong>restoreSnapshot()</strong>
-					<div>Restore a sandbox from a cached snapshot</div>
-				</TOCItem>
 				<TOCItem link="/docs/vercel/render-video-on-vercel">
 					<strong>renderVideoOnVercel()</strong>
 					<div>Render a video in a sandbox</div>

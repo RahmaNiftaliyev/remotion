@@ -727,8 +727,6 @@ const sidebars: SidebarsConfig = {
 			items: [
 				'vercel/create-sandbox',
 				'vercel/add-bundle-to-sandbox',
-				'vercel/save-snapshot',
-				'vercel/restore-snapshot',
 				'vercel/render-video-on-vercel',
 				'vercel/render-still-on-vercel',
 				'vercel/upload-to-vercel-blob',

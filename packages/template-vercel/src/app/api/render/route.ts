@@ -2,9 +2,10 @@ import {
   addBundleToSandbox,
   createSandbox,
   renderVideoOnVercel,
-  restoreSnapshot,
   uploadToVercelBlob,
 } from "@remotion/vercel";
+import { head } from "@vercel/blob";
+import { Sandbox } from "@vercel/sandbox";
 import { waitUntil } from "@vercel/functions";
 import { COMP_NAME } from "../../../../types/constants";
 import { RenderRequest } from "../../../../types/schema";
@@ -13,6 +14,41 @@ import {
   formatSSE,
   type RenderProgress,
 } from "./helpers";
+
+const SANDBOX_CREATING_TIMEOUT = 5 * 60 * 1000;
+
+const getSnapshotBlobKey = () =>
+  `snapshot-cache/${process.env.VERCEL_DEPLOYMENT_ID ?? "local"}.json`;
+
+async function restoreSnapshot() {
+  let snapshotId: string | null = null;
+
+  try {
+    const metadata = await head(getSnapshotBlobKey());
+    const response = await fetch(metadata.url);
+    const cache: { snapshotId: string } = await response.json();
+    snapshotId = cache.snapshotId;
+  } catch {
+    // ignore
+  }
+
+  if (!snapshotId) {
+    throw new Error(
+      "No sandbox snapshot found. Run `bun run create-snapshot` as part of the build process.",
+    );
+  }
+
+  const sandbox = await Sandbox.create({
+    source: { type: "snapshot", snapshotId },
+    timeout: SANDBOX_CREATING_TIMEOUT,
+  });
+
+  return Object.assign(sandbox, {
+    [Symbol.asyncDispose]: async () => {
+      await sandbox.stop().catch(() => {});
+    },
+  });
+}
 
 export async function POST(req: Request) {
   const encoder = new TextEncoder();
@@ -54,7 +90,6 @@ export async function POST(req: Request) {
         sandbox,
         compositionId: COMP_NAME,
         inputProps: body.inputProps,
-        bundleDir: ".remotion",
         onProgress: (update) => {
           switch (update.type) {
             case "opening-browser":

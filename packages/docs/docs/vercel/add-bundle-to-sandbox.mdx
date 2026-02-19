@@ -6,9 +6,7 @@ crumb: '@remotion/vercel'
 
 # addBundleToSandbox()<AvailableFrom v="4.0.426" />
 
-Copies your Remotion bundle into a sandbox. Call this after [`createSandbox()`](/docs/vercel/create-sandbox) during development to add your bundle files.
-
-In production, prefer [`restoreSnapshot()`](/docs/vercel/restore-snapshot) which already includes the bundle.
+Copies your Remotion bundle into a sandbox. Call this after [`createSandbox()`](/docs/vercel/create-sandbox) to add your bundle files.
 
 ## Example
 
@@ -49,5 +47,4 @@ A bundle can be created using the [`npx remotion bundle`](/docs/cli/bundle) comm
 ## See also
 
 - [`createSandbox()`](/docs/vercel/create-sandbox)
-- [`restoreSnapshot()`](/docs/vercel/restore-snapshot)
 - [Source code for this function](https://github.com/remotion-dev/remotion/blob/main/packages/vercel/src/add-bundle-to-sandbox.ts)

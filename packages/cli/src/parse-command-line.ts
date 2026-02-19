@@ -46,6 +46,7 @@ const {
 	overrideWidthOption,
 	overrideFpsOption,
 	overrideDurationOption,
+	rspackOption,
 } = BrowserSafeApis.options;
 
 export type CommandLineOptions = {
@@ -140,6 +141,7 @@ export type CommandLineOptions = {
 	'license-key': string;
 	[publicLicenseKeyOption.cliFlag]: string;
 	[forceNewStudioOption.cliFlag]: TypeOfOption<typeof forceNewStudioOption>;
+	[rspackOption.cliFlag]: TypeOfOption<typeof rspackOption>;
 };
 
 export const parseCommandLine = () => {

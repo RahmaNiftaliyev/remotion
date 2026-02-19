@@ -57,6 +57,7 @@ import {publicDirOption} from './public-dir';
 import {publicLicenseKeyOption} from './public-license-key';
 import {publicPathOption} from './public-path';
 import {reproOption} from './repro';
+import {rspackOption} from './rspack';
 import {scaleOption} from './scale';
 import {separateAudioOption} from './separate-audio';
 import {stillImageFormatOption} from './still-image-format';
@@ -141,6 +142,7 @@ export const allOptions = {
 	overrideWidthOption,
 	overrideFpsOption,
 	overrideDurationOption,
+	rspackOption,
 };
 
 export type AvailableOptions = keyof typeof allOptions;

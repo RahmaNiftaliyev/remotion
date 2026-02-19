@@ -37,6 +37,7 @@ export const BooleanFlags = [
 	'onlyAllocateCpuDuringRequestProcessing',
 	BrowserSafeApis.options.isProductionOption.cliFlag,
 	BrowserSafeApis.options.forceNewStudioOption.cliFlag,
+	BrowserSafeApis.options.rspackOption.cliFlag,
 ];
 
 export const parsedCli = minimist<CommandLineOptions>(process.argv.slice(2), {

@@ -1,6 +1,7 @@
 import {findClosestFolderWithItem, getConfig, internalBundle} from './bundle';
 import {indexHtml} from './index-html';
 import {readRecursively} from './read-recursively';
+import {createRspackCompiler, rspackConfig} from './rspack-config';
 import {cacheExists, clearCache} from './webpack-cache';
 import {webpackConfig} from './webpack-config';
 import esbuild = require('esbuild');
@@ -9,6 +10,8 @@ import webpack = require('webpack');
 export const BundlerInternals = {
 	esbuild,
 	webpackConfig,
+	rspackConfig,
+	createRspackCompiler,
 	indexHtml,
 	cacheExists,
 	clearCache,

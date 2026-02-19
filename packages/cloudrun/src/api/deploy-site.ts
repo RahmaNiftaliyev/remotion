@@ -110,6 +110,7 @@ export const internalDeploySiteRaw = async ({
 			renderDefaults: null,
 			askAIEnabled: options?.askAIEnabled ?? true,
 			keyboardShortcutsEnabled: options?.keyboardShortcutsEnabled ?? true,
+			rspack: false,
 		}),
 	]);
 

@@ -214,6 +214,7 @@ export const bundleOnCli = async ({
 		publicPath,
 		askAIEnabled,
 		keyboardShortcutsEnabled,
+		rspack: false,
 	};
 
 	const [hash] = await BundlerInternals.getConfig({

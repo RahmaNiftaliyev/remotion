@@ -42,6 +42,7 @@ const {
 	numberOfSharedAudioTagsOption,
 	audioLatencyHintOption,
 	ipv4Option,
+	rspackOption,
 } = BrowserSafeApis.options;
 
 export const studioCommand = async (
@@ -142,6 +143,8 @@ export const studioCommand = async (
 
 	const gitSource = getGitSource({remotionRoot, disableGitSource, logLevel});
 
+	const useRspack = rspackOption.getValue({commandLine: parsedCli}).value;
+
 	const result = await StudioServerInternals.startStudio({
 		previewEntry: require.resolve('@remotion/studio/previewEntry'),
 		browserArgs: parsedCli['browser-args'],
@@ -183,6 +186,7 @@ export const studioCommand = async (
 		enableCrossSiteIsolation,
 		askAIEnabled,
 		forceNew: forceNewStudioOption.getValue({commandLine: parsedCli}).value,
+		rspack: useRspack,
 	});
 
 	if (result.type === 'already-running') {

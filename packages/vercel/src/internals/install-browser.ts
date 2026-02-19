@@ -1,5 +1,5 @@
 import type {Sandbox} from '@vercel/sandbox';
-import {script as ensureBrowserScript} from './ensure-browser-script';
+import {script as ensureBrowserScript} from '../generated/ensure-browser-script';
 
 export async function installBrowser({
 	sandbox,

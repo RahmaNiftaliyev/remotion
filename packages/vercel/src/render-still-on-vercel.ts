@@ -1,5 +1,5 @@
 import type {Sandbox} from '@vercel/sandbox';
-import {script as renderStillScript} from './internals/render-still-script';
+import {script as renderStillScript} from './generated/render-still-script';
 import type {
 	ChromeMode,
 	ChromiumOptions,

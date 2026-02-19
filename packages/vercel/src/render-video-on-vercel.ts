@@ -1,5 +1,5 @@
 import type {Sandbox} from '@vercel/sandbox';
-import {script as renderVideoScript} from './internals/render-video-script';
+import {script as renderVideoScript} from './generated/render-video-script';
 import type {
 	AudioCodec,
 	Bitrate,

@@ -13,8 +13,8 @@
   - Extract PR numbers from merge commits
   - For each PR, run `gh pr view <number> --json title,author,number,url --jq '"* \(.title) by @\(.author.login) in \(.url)"'`
   - Categorize PRs into sections: "What's Changed", "Templates", "Docs", "Internal"
-  - In "What's Changed", group items by package using `### \`package-name\`` subheadings
-  - Strip redundant prefixes from PR titles (e.g. remove "Docs:" from items in the Docs section, remove package names from items already grouped under that package)
+  - In "What's Changed", sort items so that entries for the same package are adjacent (no subheadings, just sorted order)
+  - Strip redundant prefixes from PR titles (e.g. remove "Docs:" from items in the Docs section)
   - "Templates" is a separate section for any template-* changes
   - Do NOT add a "New Contributors" section - contributors may appear new in a version range but not actually be first-time contributors
   - Add `**Full Changelog**: https://github.com/remotion-dev/remotion/compare/v<previous_version>...v<new_version>` at the bottom

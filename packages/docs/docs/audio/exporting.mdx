@@ -79,9 +79,9 @@ await renderMedia({
 });
 ```
 
-### `renderMediaOnLambda()` / `renderMediaOnVercel()`
+### `renderMediaOnLambda()`
 
-To render only the audio via Lambda or Vercel, use [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda) or [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel) and set the [`codec`](/docs/lambda/rendermediaonlambda#codec) to an audio codec and [`imageFormat`](/docs/lambda/rendermediaonlambda#imageformat) to `none`.
+To render only the audio via Lambda, use [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda) and set the [`codec`](/docs/lambda/rendermediaonlambda#codec) to an audio codec and [`imageFormat`](/docs/lambda/rendermediaonlambda#imageformat) to `none`.
 
 ```tsx twoslash
 import {renderMediaOnLambda} from '@remotion/lambda';
@@ -92,6 +92,26 @@ const {bucketName, renderId} = await renderMediaOnLambda({
   functionName: 'remotion-render-bds9aab',
   composition: 'MyVideo',
   serveUrl: 'https://remotionlambda-qg35eyp1s1.s3.eu-central-1.amazonaws.com/sites/bf2jrbfkw',
+  inputProps: {},
+  codec: 'mp3',
+  imageFormat: 'none',
+});
+```
+
+### `renderMediaOnVercel()`
+
+To render only the audio via Vercel, use [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel) and set the [`codec`](/docs/vercel/render-media-on-vercel#codec) to an audio codec and [`imageFormat`](/docs/vercel/render-media-on-vercel#imageformat) to `none`.
+
+```tsx twoslash
+// @module: es2022
+// @target: es2022
+import {renderMediaOnVercel, createSandbox} from '@remotion/vercel';
+const sandbox = await createSandbox();
+// ---cut---
+
+const {file} = await renderMediaOnVercel({
+  sandbox,
+  compositionId: 'MyVideo',
   inputProps: {},
   codec: 'mp3',
   imageFormat: 'none',
@@ -169,9 +189,9 @@ await renderMedia({
 });
 ```
 
-### `renderMediaOnLambda()` / `renderMediaOnVercel()`
+### `renderMediaOnLambda()`
 
-Pass [`muted: true`](/docs/lambda/rendermediaonlambda#muted) to [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda) or [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel) to mute the render.
+Pass [`muted: true`](/docs/lambda/rendermediaonlambda#muted) to [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda) to mute the render.
 
 ```tsx twoslash
 import {renderMediaOnLambda} from '@remotion/lambda';
@@ -182,6 +202,26 @@ const {bucketName, renderId} = await renderMediaOnLambda({
   functionName: 'remotion-render-bds9aab',
   composition: 'MyVideo',
   serveUrl: 'https://remotionlambda-qg35eyp1s1.s3.eu-central-1.amazonaws.com/sites/bf2jrbfkw',
+  inputProps: {},
+  codec: 'h264',
+  muted: true,
+});
+```
+
+### `renderMediaOnVercel()`
+
+Pass [`muted: true`](/docs/vercel/render-media-on-vercel#muted) to [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel) to mute the render.
+
+```tsx twoslash
+// @module: es2022
+// @target: es2022
+import {renderMediaOnVercel, createSandbox} from '@remotion/vercel';
+const sandbox = await createSandbox();
+// ---cut---
+
+const {file} = await renderMediaOnVercel({
+  sandbox,
+  compositionId: 'MyVideo',
   inputProps: {},
   codec: 'h264',
   muted: true,

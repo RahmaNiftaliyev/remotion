@@ -555,6 +555,7 @@ const sidebars: SidebarsConfig = {
 				'renderer/get-silent-parts',
 				'renderer/combine-chunks',
 				'renderer/extract-audio',
+				'renderer/renderer-types',
 			],
 		},
 		{

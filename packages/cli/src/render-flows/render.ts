@@ -197,6 +197,12 @@ export const renderVideoFlow = async ({
 	keyboardShortcutsEnabled: boolean;
 	shouldCache: boolean;
 }) => {
+	RenderInternals.validateConcurrency({
+		value: concurrency,
+		setting: 'concurrency',
+		checkIfValidForCurrentMachine: true,
+	});
+
 	let bundlingProgress: BundlingState | null = null;
 	let renderingProgress: RenderingProgressInput | null = null;
 	let stitchingProgress: StitchingProgressInput | null = null;

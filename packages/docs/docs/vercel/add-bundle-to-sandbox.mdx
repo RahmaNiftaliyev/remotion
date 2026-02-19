@@ -1,0 +1,52 @@
+---
+image: /generated/articles-docs-vercel-add-bundle-to-sandbox.png
+title: addBundleToSandbox()
+crumb: '@remotion/vercel'
+---
+
+# addBundleToSandbox()<AvailableFrom v="4.0.426" />
+
+Copies your Remotion bundle into a sandbox. Call this after [`createSandbox()`](/docs/vercel/create-sandbox) during development to add your bundle files.
+
+In production, prefer [`restoreSnapshot()`](/docs/vercel/restore-snapshot) which already includes the bundle.
+
+## Example
+
+```ts twoslash title="create-snapshot.ts"
+// @module: es2022
+// @target: es2022
+import {addBundleToSandbox, createSandbox} from '@remotion/vercel';
+// ---cut---
+const sandbox = await createSandbox();
+
+await addBundleToSandbox({
+  sandbox,
+  bundleDir: '.remotion',
+});
+
+// ... use the sandbox
+
+await sandbox.stop();
+```
+
+## Arguments
+
+An object with the following properties:
+
+### `sandbox`
+
+A [`VercelSandbox`](/docs/vercel/types#vercelsandbox) instance, typically obtained from [`createSandbox()`](/docs/vercel/create-sandbox).
+
+### `bundleDir`
+
+The path to your Remotion bundle directory, relative to the current working directory. This is the output of [`npx remotion bundle`](/docs/cli/bundle).
+
+## Return value
+
+`Promise<void>` — resolves when the bundle has been copied into the sandbox.
+
+## See also
+
+- [`createSandbox()`](/docs/vercel/create-sandbox)
+- [`restoreSnapshot()`](/docs/vercel/restore-snapshot)
+- [Source code for this function](https://github.com/remotion-dev/remotion/blob/main/packages/vercel/src/add-bundle-to-sandbox.ts)

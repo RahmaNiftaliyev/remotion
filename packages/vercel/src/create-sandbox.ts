@@ -1,4 +1,3 @@
-import {addBundleToSandbox} from './internals/add-bundle';
 import {createDisposableSandbox} from './internals/disposable';
 import {installBrowser} from './internals/install-browser';
 import {installJsDependencies} from './internals/install-js-dependencies';
@@ -9,12 +8,10 @@ import type {CreateSandboxOnProgress, VercelSandbox} from './types';
 export const SANDBOX_CREATING_TIMEOUT = 5 * 60 * 1000;
 
 export async function createSandbox({
-	bundleDir,
 	onProgress,
 }: {
-	bundleDir: string;
 	onProgress?: CreateSandboxOnProgress;
-}): Promise<VercelSandbox> {
+} = {}): Promise<VercelSandbox> {
 	const report = (progress: number, message: string) => {
 		onProgress?.({progress, message});
 	};
@@ -25,17 +22,15 @@ export async function createSandbox({
 		timeout: SANDBOX_CREATING_TIMEOUT,
 	});
 
-	// Preparation has 3 stages with weights:
-	// - System dependencies: 60%
-	// - Copying bundle: 20%
-	// - Downloading browser: 20%
-	const WEIGHT_SYS_DEPS = 0.6;
-	const WEIGHT_BUNDLE = 0.2;
-	const WEIGHT_BROWSER = 0.2;
+	// Preparation has 2 stages with weights:
+	// - System dependencies: 75%
+	// - Downloading browser: 25%
+	const WEIGHT_SYS_DEPS = 0.75;
+	const WEIGHT_BROWSER = 0.25;
 
 	report(0, 'Installing system dependencies...');
 
-	// Stage 1: Install system dependencies (60%)
+	// Stage 1: Install system dependencies (75%)
 	await installSystemDependencies({
 		sandbox,
 		onProgress: (stageProgress: number) => {
@@ -47,12 +42,7 @@ export async function createSandbox({
 		},
 	});
 
-	report(WEIGHT_SYS_DEPS, 'Adding Remotion bundle to sandbox...');
-
-	// Stage 2: Copy Remotion bundle (20%)
-	await addBundleToSandbox({sandbox, bundleDir});
-
-	report(WEIGHT_SYS_DEPS + WEIGHT_BUNDLE, 'Installing JS dependencies...');
+	report(WEIGHT_SYS_DEPS, 'Installing JS dependencies...');
 
 	// Install renderer and blob SDK
 	await installJsDependencies({sandbox});
@@ -60,13 +50,13 @@ export async function createSandbox({
 	// Patch compositor binary for glibc 2.34 compatibility (Amazon Linux 2023)
 	await patchCompositor({sandbox});
 
-	// Stage 3: Download browser (20%)
-	report(WEIGHT_SYS_DEPS + WEIGHT_BUNDLE, 'Downloading browser...');
+	// Stage 2: Download browser (25%)
+	report(WEIGHT_SYS_DEPS, 'Downloading browser...');
 	await installBrowser({
 		sandbox,
 		onProgress: (browserProgress: number) => {
 			report(
-				WEIGHT_SYS_DEPS + WEIGHT_BUNDLE + browserProgress * WEIGHT_BROWSER,
+				WEIGHT_SYS_DEPS + browserProgress * WEIGHT_BROWSER,
 				'Downloading browser...',
 			);
 			return Promise.resolve();

@@ -15,8 +15,9 @@ Typically called during the build step (e.g. in `create-snapshot.ts`) to cache t
 ```ts twoslash title="create-snapshot.ts"
 // @module: es2022
 // @target: es2022
-import {createSandbox, saveSnapshot} from '@remotion/vercel';
-const sandbox = await createSandbox({bundleDir: '.remotion'});
+import {addBundleToSandbox, createSandbox, saveSnapshot} from '@remotion/vercel';
+const sandbox = await createSandbox();
+await addBundleToSandbox({sandbox, bundleDir: '.remotion'});
 // ---cut---
 const {snapshotId} = await saveSnapshot({sandbox});
 console.log(`Snapshot saved: ${snapshotId}`);

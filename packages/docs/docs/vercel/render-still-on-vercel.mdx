@@ -15,8 +15,9 @@ The rendered file stays inside the sandbox. Use [`uploadToVercelBlob()`](/docs/v
 ```ts twoslash title="route.ts"
 // @module: es2022
 // @target: es2022
-import {renderStillOnVercel, createSandbox} from '@remotion/vercel';
-const sandbox = await createSandbox({bundleDir: '.remotion'});
+import {renderStillOnVercel, addBundleToSandbox, createSandbox} from '@remotion/vercel';
+const sandbox = await createSandbox();
+await addBundleToSandbox({sandbox, bundleDir: '.remotion'});
 // ---cut---
 const {file} = await renderStillOnVercel({
   sandbox,

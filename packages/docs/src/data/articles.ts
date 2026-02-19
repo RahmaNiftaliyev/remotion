@@ -6539,6 +6539,15 @@ export const articles = [
 		slug: 'vercel',
 	},
 	{
+		id: 'vercel/add-bundle-to-sandbox',
+		title: 'addBundleToSandbox()',
+		relativePath: 'docs/vercel/add-bundle-to-sandbox.mdx',
+		compId: 'articles-docs-vercel-add-bundle-to-sandbox',
+		crumb: '@remotion/vercel',
+		noAi: false,
+		slug: 'vercel/add-bundle-to-sandbox',
+	},
+	{
 		id: 'vercel/create-sandbox',
 		title: 'createSandbox()',
 		relativePath: 'docs/vercel/create-sandbox.mdx',

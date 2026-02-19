@@ -15,11 +15,15 @@ This is the production counterpart to [`createSandbox()`](/docs/vercel/create-sa
 ```ts twoslash title="route.ts"
 // @module: es2022
 // @target: es2022
-import {createSandbox, restoreSnapshot} from '@remotion/vercel';
+import {addBundleToSandbox, createSandbox, restoreSnapshot} from '@remotion/vercel';
 // ---cut---
 const sandbox = process.env.VERCEL
   ? await restoreSnapshot()
-  : await createSandbox({bundleDir: '.remotion'});
+  : await createSandbox();
+
+if (!process.env.VERCEL) {
+  await addBundleToSandbox({sandbox, bundleDir: '.remotion'});
+}
 
 // ... use the sandbox
 
@@ -41,11 +45,15 @@ You can use `await using` to automatically clean up the sandbox when it goes out
 ```ts twoslash title="route.ts"
 // @module: es2022
 // @target: es2022
-import {createSandbox, restoreSnapshot} from '@remotion/vercel';
+import {addBundleToSandbox, createSandbox, restoreSnapshot} from '@remotion/vercel';
 // ---cut---
 await using sandbox = process.env.VERCEL
   ? await restoreSnapshot()
-  : await createSandbox({bundleDir: '.remotion'});
+  : await createSandbox();
+
+if (!process.env.VERCEL) {
+  await addBundleToSandbox({sandbox, bundleDir: '.remotion'});
+}
 ```
 
 ## See also

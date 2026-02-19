@@ -6,7 +6,9 @@ crumb: '@remotion/vercel'
 
 # createSandbox()<AvailableFrom v="4.0.426" />
 
-Creates a new [Vercel Sandbox](https://vercel.com/docs/vercel-sandbox) with all Remotion dependencies installed, including system libraries, the compositor, a browser, and your Remotion bundle.
+Creates a new [Vercel Sandbox](https://vercel.com/docs/vercel-sandbox) with all Remotion dependencies installed, including system libraries, the compositor, and a browser.
+
+After creating the sandbox, call [`addBundleToSandbox()`](/docs/vercel/add-bundle-to-sandbox) to copy your Remotion bundle into it.
 
 Creates a sandbox from scratch. In production, prefer [`restoreSnapshot()`](/docs/vercel/restore-snapshot) to restore from a cached snapshot instead.
 
@@ -15,14 +17,18 @@ Creates a sandbox from scratch. In production, prefer [`restoreSnapshot()`](/doc
 ```ts twoslash title="create-snapshot.ts"
 // @module: es2022
 // @target: es2022
-import {createSandbox} from '@remotion/vercel';
+import {addBundleToSandbox, createSandbox} from '@remotion/vercel';
 import type {CreateSandboxOnProgress} from '@remotion/vercel';
 // ---cut---
 const sandbox = await createSandbox({
-  bundleDir: '.remotion',
   onProgress: ({progress, message}) => {
     console.log(`${message} (${Math.round(progress * 100)}%)`);
   },
+});
+
+await addBundleToSandbox({
+  sandbox,
+  bundleDir: '.remotion',
 });
 
 // ... use the sandbox
@@ -33,10 +39,6 @@ await sandbox.stop();
 ## Arguments
 
 An object with the following properties:
-
-### `bundleDir`
-
-The path to your Remotion bundle directory, relative to the current working directory. This is the output of [`npx remotion bundle`](/docs/cli/bundle).
 
 ### `onProgress?`
 
@@ -66,13 +68,12 @@ You can use `await using` to automatically clean up the sandbox when it goes out
 // @target: es2022
 import {createSandbox} from '@remotion/vercel';
 // ---cut---
-await using sandbox = await createSandbox({
-  bundleDir: '.remotion',
-});
+await using sandbox = await createSandbox();
 ```
 
 ## See also
 
+- [`addBundleToSandbox()`](/docs/vercel/add-bundle-to-sandbox)
 - [`restoreSnapshot()`](/docs/vercel/restore-snapshot)
 - [`saveSnapshot()`](/docs/vercel/save-snapshot)
 - [Source code for this function](https://github.com/remotion-dev/remotion/blob/main/packages/vercel/src/create-sandbox.ts)

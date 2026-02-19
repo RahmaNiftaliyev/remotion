@@ -1,4 +1,5 @@
 import {
+  addBundleToSandbox,
   createSandbox,
   renderVideoOnVercel,
   restoreSnapshot,
@@ -35,7 +36,6 @@ export async function POST(req: Request) {
       await using sandbox = process.env.VERCEL
         ? await restoreSnapshot()
         : await createSandbox({
-            bundleDir: ".remotion",
             onProgress: ({ progress, message }) => {
               send({
                 type: "phase",
@@ -45,6 +45,10 @@ export async function POST(req: Request) {
               });
             },
           });
+
+      if (!process.env.VERCEL) {
+        await addBundleToSandbox({ sandbox, bundleDir: ".remotion" });
+      }
 
       const { file } = await renderVideoOnVercel({
         sandbox,

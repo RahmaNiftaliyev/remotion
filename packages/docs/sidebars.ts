@@ -462,24 +462,6 @@ const sidebars: SidebarsConfig = {
 		},
 		{
 			type: 'category',
-			label: '@remotion/vercel',
-			link: {
-				type: 'doc',
-				id: 'vercel/vercel-api',
-			},
-			items: [
-				'vercel/create-sandbox',
-				'vercel/add-bundle-to-sandbox',
-				'vercel/save-snapshot',
-				'vercel/restore-snapshot',
-				'vercel/render-video-on-vercel',
-				'vercel/render-still-on-vercel',
-				'vercel/upload-to-vercel-blob',
-				'vercel/vercel-types',
-			],
-		},
-		{
-			type: 'category',
 			label: '@remotion/openai-whisper',
 			link: {
 				type: 'doc',
@@ -735,6 +717,24 @@ const sidebars: SidebarsConfig = {
 			],
 		},
 
+		{
+			type: 'category',
+			label: '@remotion/vercel',
+			link: {
+				type: 'doc',
+				id: 'vercel/vercel-api',
+			},
+			items: [
+				'vercel/create-sandbox',
+				'vercel/add-bundle-to-sandbox',
+				'vercel/save-snapshot',
+				'vercel/restore-snapshot',
+				'vercel/render-video-on-vercel',
+				'vercel/render-still-on-vercel',
+				'vercel/upload-to-vercel-blob',
+				'vercel/vercel-types',
+			],
+		},
 		{
 			type: 'category',
 			label: '@remotion/web-renderer',

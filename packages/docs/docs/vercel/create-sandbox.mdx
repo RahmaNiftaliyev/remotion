@@ -6,11 +6,8 @@ crumb: '@remotion/vercel'
 
 # createSandbox()<AvailableFrom v="4.0.426" />
 
-Creates a new [Vercel Sandbox](https://vercel.com/docs/vercel-sandbox) with all Remotion dependencies installed, including system libraries, the compositor, and a browser.
-
+Creates a new [Vercel Sandbox](https://vercel.com/docs/vercel-sandbox) with all Remotion dependencies installed, including system libraries, the compositor, and a browser.  
 After creating the sandbox, call [`addBundleToSandbox()`](/docs/vercel/add-bundle-to-sandbox) to copy your Remotion bundle into it.
-
-Creates a sandbox from scratch. In production, prefer [`restoreSnapshot()`](/docs/vercel/restore-snapshot) to restore from a cached snapshot instead.
 
 ## Example
 
@@ -46,29 +43,49 @@ A callback that receives progress updates during sandbox creation.
 
 ```ts twoslash
 import type {CreateSandboxOnProgress} from '@remotion/vercel';
-```
-
-```ts
-type CreateSandboxOnProgress = (update: {
-  progress: number; // 0 to 1
-  message: string; // Human-readable phase description
-}) => void;
+// ---cut---
+const onProgress: CreateSandboxOnProgress = ({progress, message}) => {
+  console.log(`${message} (${Math.round(progress * 100)}%)`);
+};
 ```
 
 ## Return value
 
-A `VercelSandbox` object (a [`Sandbox`](https://vercel.com/docs/vercel-sandbox/sdk-reference#sandbox-class) with `AsyncDisposable` support). Call `sandbox.stop()` when you are done with the sandbox.
+A [`VercelSandbox`](/docs/vercel/vercel-types#vercelsandbox) object (a [`Sandbox`](https://vercel.com/docs/vercel-sandbox/sdk-reference#sandbox-class) with `AsyncDisposable` support).
 
-## Using `await using`
+## Stopping the sandbox
 
-You can use `await using` to automatically clean up the sandbox when it goes out of scope:
+When you are done with the sandbox, you need to stop it to free resources. There are two ways to do this:
 
-```ts twoslash title="create-snapshot.ts"
+### Using `sandbox.stop()`
+
+Manually call `sandbox.stop()` when you are done:
+
+```ts twoslash title="manual-cleanup.ts"
+// @module: es2022
+// @target: es2022
+import {createSandbox} from '@remotion/vercel';
+// ---cut---
+const sandbox = await createSandbox();
+
+// ... use the sandbox
+
+await sandbox.stop();
+```
+
+### Using `await using`
+
+Use `await using` to automatically stop the sandbox when it goes out of scope:
+
+```ts twoslash title="auto-cleanup.ts"
 // @module: es2022
 // @target: es2022
 import {createSandbox} from '@remotion/vercel';
 // ---cut---
 await using sandbox = await createSandbox();
+
+// ... use the sandbox
+// sandbox.stop() is called automatically
 ```
 
 ## See also

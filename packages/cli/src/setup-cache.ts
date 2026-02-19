@@ -35,6 +35,7 @@ export const bundleOnCliOrTakeServeUrl = async ({
 	experimentalClientSideRenderingEnabled,
 	askAIEnabled,
 	keyboardShortcutsEnabled,
+	rspack,
 }: {
 	fullPath: string;
 	remotionRoot: string;
@@ -57,6 +58,7 @@ export const bundleOnCliOrTakeServeUrl = async ({
 	experimentalClientSideRenderingEnabled: boolean;
 	askAIEnabled: boolean;
 	keyboardShortcutsEnabled: boolean;
+	rspack: boolean;
 }): Promise<{
 	urlOrBundle: string;
 	cleanup: () => void;
@@ -100,6 +102,7 @@ export const bundleOnCliOrTakeServeUrl = async ({
 		experimentalClientSideRenderingEnabled,
 		askAIEnabled,
 		keyboardShortcutsEnabled,
+		rspack,
 	});
 
 	return {
@@ -127,6 +130,7 @@ export const bundleOnCli = async ({
 	experimentalClientSideRenderingEnabled,
 	askAIEnabled,
 	keyboardShortcutsEnabled,
+	rspack,
 }: {
 	fullPath: string;
 	remotionRoot: string;
@@ -149,6 +153,7 @@ export const bundleOnCli = async ({
 	experimentalClientSideRenderingEnabled: boolean;
 	keyboardShortcutsEnabled: boolean;
 	askAIEnabled: boolean;
+	rspack: boolean;
 }) => {
 	const shouldCache = ConfigInternals.getWebpackCaching();
 
@@ -214,7 +219,7 @@ export const bundleOnCli = async ({
 		publicPath,
 		askAIEnabled,
 		keyboardShortcutsEnabled,
-		rspack: false,
+		rspack,
 	};
 
 	const [hash] = await BundlerInternals.getConfig({

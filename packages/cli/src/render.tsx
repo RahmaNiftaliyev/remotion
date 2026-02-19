@@ -48,6 +48,7 @@ const {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	rspackOption,
 	pixelFormatOption,
 	browserExecutableOption,
 	everyNthFrameOption,
@@ -207,6 +208,7 @@ export const render = async (
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const rspack = rspackOption.getValue({commandLine: parsedCli}).value;
 
 	const chromiumOptions: Required<ChromiumOptions> = {
 		disableWebSecurity,
@@ -307,5 +309,6 @@ export const render = async (
 			experimentalClientSideRenderingOption.getValue({commandLine: parsedCli})
 				.value,
 		keyboardShortcutsEnabled,
+		rspack,
 	});
 };

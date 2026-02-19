@@ -29,6 +29,7 @@ const {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	rspackOption,
 	browserExecutableOption,
 	userAgentOption,
 	disableWebSecurityOption,
@@ -135,6 +136,7 @@ export const listCompositionsCommand = async (
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const rspack = rspackOption.getValue({commandLine: parsedCli}).value;
 
 	if (experimentalClientSideRenderingEnabled) {
 		Log.warn(
@@ -168,6 +170,7 @@ export const listCompositionsCommand = async (
 			experimentalClientSideRenderingEnabled,
 			askAIEnabled,
 			keyboardShortcutsEnabled,
+			rspack,
 		});
 
 	registerCleanupJob(`Cleanup bundle`, () => cleanupBundle());

@@ -31,6 +31,7 @@ type Options = {
 	keyboardShortcutsEnabled?: boolean;
 	askAIEnabled?: boolean;
 	experimentalClientSideRenderingEnabled?: boolean;
+	rspack?: boolean;
 };
 
 type OptionalParameters = {
@@ -110,7 +111,7 @@ export const internalDeploySiteRaw = async ({
 			renderDefaults: null,
 			askAIEnabled: options?.askAIEnabled ?? true,
 			keyboardShortcutsEnabled: options?.keyboardShortcutsEnabled ?? true,
-			rspack: false,
+			rspack: options?.rspack ?? false,
 		}),
 	]);
 

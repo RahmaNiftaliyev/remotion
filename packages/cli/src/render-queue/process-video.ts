@@ -12,6 +12,7 @@ const {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	rspackOption,
 	browserExecutableOption,
 } = BrowserSafeApis.options;
 
@@ -123,5 +124,6 @@ export const processVideoJob = async ({
 			experimentalClientSideRenderingOption.getValue({commandLine: parsedCli})
 				.value,
 		keyboardShortcutsEnabled,
+		rspack: rspackOption.getValue({commandLine: parsedCli}).value,
 	});
 };

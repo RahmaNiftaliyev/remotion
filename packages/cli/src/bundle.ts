@@ -21,6 +21,7 @@ const {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	rspackOption,
 } = BrowserSafeApis.options;
 
 export const bundleCommand = async (
@@ -73,6 +74,7 @@ export const bundleCommand = async (
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const rspack = rspackOption.getValue({commandLine: parsedCli}).value;
 
 	if (experimentalClientSideRenderingEnabled) {
 		Log.warn(
@@ -160,6 +162,7 @@ export const bundleCommand = async (
 		experimentalClientSideRenderingEnabled,
 		askAIEnabled,
 		keyboardShortcutsEnabled,
+		rspack,
 	});
 
 	Log.info(

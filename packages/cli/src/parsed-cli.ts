@@ -38,12 +38,14 @@ export const BooleanFlags = [
 	'onlyAllocateCpuDuringRequestProcessing',
 	BrowserSafeApis.options.isProductionOption.cliFlag,
 	BrowserSafeApis.options.forceNewStudioOption.cliFlag,
+	BrowserSafeApis.options.bundleCacheOption.cliFlag,
 ];
 
 export const parsedCli = minimist<CommandLineOptions>(process.argv.slice(2), {
 	boolean: BooleanFlags,
 	default: {
 		overwrite: true,
+		[BrowserSafeApis.options.bundleCacheOption.cliFlag]: null,
 		muted: null,
 	},
 }) as CommandLineOptions & {

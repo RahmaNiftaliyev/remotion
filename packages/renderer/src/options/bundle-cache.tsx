@@ -16,10 +16,10 @@ export const bundleCacheOption = {
 	ssrName: null,
 	docLink: 'https://www.remotion.dev/docs/config#setcachingenabled',
 	getValue: ({commandLine}) => {
-		if (commandLine[cliFlag] !== undefined) {
+		if (commandLine[cliFlag] !== undefined && commandLine[cliFlag] !== null) {
 			return {
 				source: 'cli',
-				value: commandLine[cliFlag] !== 'false',
+				value: Boolean(commandLine[cliFlag]),
 			};
 		}
 

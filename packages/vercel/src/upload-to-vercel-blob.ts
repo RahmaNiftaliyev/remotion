@@ -9,42 +9,6 @@ function getExtension(filePath: string): string {
 	return filePath.slice(lastDot);
 }
 
-function getUploadScript({
-	sandboxFilePath,
-	blobPath,
-	contentType,
-	blobToken,
-}: {
-	sandboxFilePath: string;
-	blobPath: string;
-	contentType: string;
-	blobToken: string;
-}): string {
-	return `\
-import { put } from "@vercel/blob";
-import { readFileSync, statSync } from "fs";
-
-try {
-  const fileBuffer = readFileSync(${JSON.stringify(sandboxFilePath)});
-  const size = statSync(${JSON.stringify(sandboxFilePath)}).size;
-  const blob = await put(${JSON.stringify(blobPath)}, fileBuffer, {
-    access: "public",
-    contentType: ${JSON.stringify(contentType)},
-    token: ${JSON.stringify(blobToken)},
-  });
-
-  console.log(JSON.stringify({
-    type: "done",
-    url: blob.downloadUrl,
-    size,
-  }));
-} catch (err) {
-  console.error(err.message);
-  process.exit(1);
-}
-`;
-}
-
 export async function uploadToVercelBlob({
 	sandbox,
 	sandboxFilePath,
@@ -62,23 +26,16 @@ export async function uploadToVercelBlob({
 		blobPath ??
 		`renders/${crypto.randomUUID()}${getExtension(sandboxFilePath)}`;
 
-	const uploadScript = getUploadScript({
+	const uploadConfig = {
 		sandboxFilePath,
 		blobPath: actualBlobPath,
 		contentType,
 		blobToken,
-	});
-
-	await sandbox.writeFiles([
-		{
-			path: 'upload.ts',
-			content: Buffer.from(uploadScript),
-		},
-	]);
+	};
 
 	const uploadCmd = await sandbox.runCommand({
 		cmd: 'node',
-		args: ['--strip-types', 'upload.ts'],
+		args: ['--strip-types', 'upload-blob.ts', JSON.stringify(uploadConfig)],
 		detached: true,
 	});
 

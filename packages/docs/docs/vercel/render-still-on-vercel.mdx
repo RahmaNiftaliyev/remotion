@@ -6,7 +6,7 @@ crumb: '@remotion/vercel'
 
 # renderStillOnVercel()<AvailableFrom v="4.0.426" />
 
-Renders a still image inside a Vercel Sandbox using [`RenderInternals.internalRenderStill()`](/docs/renderer/render-still). Writes a render script to the sandbox, executes it, and returns the output file path.
+Renders a still image inside a Vercel Sandbox.
 
 The rendered file stays inside the sandbox. Use [`uploadToVercelBlob()`](/docs/vercel/upload-to-vercel-blob) to upload it to Vercel Blob.
 
@@ -17,7 +17,6 @@ The rendered file stays inside the sandbox. Use [`uploadToVercelBlob()`](/docs/v
 // @target: es2022
 import {renderStillOnVercel, addBundleToSandbox, createSandbox} from '@remotion/vercel';
 const sandbox = await createSandbox();
-await addBundleToSandbox({sandbox, bundleDir: '/path/to/bundle'});
 // ---cut---
 const {file} = await renderStillOnVercel({
   sandbox,

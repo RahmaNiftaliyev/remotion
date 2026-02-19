@@ -1,5 +1,4 @@
 import type {Sandbox} from '@vercel/sandbox';
-import {script as renderVideoScript} from './generated/render-video-script';
 import {REMOTION_SANDBOX_BUNDLE_DIR} from './internals/add-bundle';
 import type {
 	AudioCodec,
@@ -156,13 +155,6 @@ export async function renderVideoOnVercel({
 		offthreadVideoThreads: offthreadVideoThreads ?? null,
 		repro,
 	};
-
-	await sandbox.writeFiles([
-		{
-			path: 'render-video.ts',
-			content: Buffer.from(renderVideoScript),
-		},
-	]);
 
 	const renderCmd = await sandbox.runCommand({
 		cmd: 'node',

@@ -1,3 +1,6 @@
+import {script as renderStillScript} from './generated/render-still-script';
+import {script as renderVideoScript} from './generated/render-video-script';
+import {script as uploadBlobScript} from './generated/upload-blob-script';
 import {createDisposableSandbox} from './internals/disposable';
 import {installBrowser} from './internals/install-browser';
 import {installJsDependencies} from './internals/install-js-dependencies';
@@ -63,11 +66,23 @@ export async function createSandbox({
 		},
 	});
 
-	// Write package.json (module type) so scripts can use ESM imports
+	// Write package.json and scripts so they're ready to use
 	await sandbox.writeFiles([
 		{
 			path: 'package.json',
 			content: Buffer.from(JSON.stringify({type: 'module'})),
+		},
+		{
+			path: 'render-video.ts',
+			content: Buffer.from(renderVideoScript),
+		},
+		{
+			path: 'render-still.ts',
+			content: Buffer.from(renderStillScript),
+		},
+		{
+			path: 'upload-blob.ts',
+			content: Buffer.from(uploadBlobScript),
 		},
 	]);
 

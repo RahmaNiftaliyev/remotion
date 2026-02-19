@@ -1,5 +1,4 @@
 import type {Sandbox} from '@vercel/sandbox';
-import {script as renderStillScript} from './generated/render-still-script';
 import {REMOTION_SANDBOX_BUNDLE_DIR} from './internals/add-bundle';
 import type {
 	ChromeMode,
@@ -78,13 +77,6 @@ export async function renderStillOnVercel({
 		offthreadVideoThreads: offthreadVideoThreads ?? null,
 		licenseKey: licenseKey ?? null,
 	};
-
-	await sandbox.writeFiles([
-		{
-			path: 'render-still.ts',
-			content: Buffer.from(renderStillScript),
-		},
-	]);
 
 	const renderCmd = await sandbox.runCommand({
 		cmd: 'node',

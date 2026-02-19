@@ -6,7 +6,7 @@ crumb: '@remotion/vercel'
 
 # renderVideoOnVercel()<AvailableFrom v="4.0.426" />
 
-Renders a video inside a Vercel Sandbox using [`RenderInternals.internalRenderMedia()`](/docs/renderer/render-media). Writes a render script to the sandbox, executes it, and returns the output file path.
+Renders a video inside a Vercel Sandbox.
 
 The rendered file stays inside the sandbox. Use [`uploadToVercelBlob()`](/docs/vercel/upload-to-vercel-blob) to upload it to Vercel Blob.
 
@@ -17,7 +17,6 @@ The rendered file stays inside the sandbox. Use [`uploadToVercelBlob()`](/docs/v
 // @target: es2022
 import {renderVideoOnVercel, addBundleToSandbox, createSandbox} from '@remotion/vercel';
 const sandbox = await createSandbox();
-await addBundleToSandbox({sandbox, bundleDir: '/path/to/bundle'});
 // ---cut---
 const {file} = await renderVideoOnVercel({
   sandbox,
@@ -248,24 +247,16 @@ Only applies if `imageFormat` is `'jpeg'`, otherwise this option is invalid.
 
 ### `onProgress?`
 
-A callback that receives render progress updates.
+A callback that receives [`RenderOnVercelProgress`](/docs/vercel/vercel-types#renderonvercelprogress) updates.
 
-```ts
-type RenderOnVercelProgress =
-  | {type: 'opening-browser'}
-  | {type: 'selecting-composition'}
-  | {
-      type: 'render-progress';
-      renderedFrames: number;
-      encodedFrames: number;
-      encodedDoneIn: number | null;
-      renderedDoneIn: number | null;
-      renderEstimatedTime: number;
-      progress: number;
-      stitchStage: 'encoding' | 'muxing';
-    }
-  | {type: 'uploading'}
-  | {type: 'done'; url: string; size: number};
+```ts twoslash
+import type {RenderOnVercelProgress} from '@remotion/vercel';
+// ---cut---
+const onProgress = (update: RenderOnVercelProgress) => {
+  if (update.type === 'render-progress') {
+    console.log(`Rendering: ${Math.round(update.progress * 100)}%`);
+  }
+};
 ```
 
 ## Return value

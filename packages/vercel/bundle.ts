@@ -12,6 +12,7 @@ const scriptMap: Record<string, string> = {
 	'render-video-script': 'src/scripts/render-video.ts',
 	'render-still-script': 'src/scripts/render-still.ts',
 	'ensure-browser-script': 'src/scripts/ensure-browser.ts',
+	'upload-blob-script': 'src/scripts/upload-blob.ts',
 };
 
 const generatedDir = path.join('src', 'generated');
@@ -41,11 +42,11 @@ const output = await build({
 				build.onResolve(
 					{
 						filter:
-							/(render-video-script|render-still-script|ensure-browser-script)$/,
+							/(render-video-script|render-still-script|ensure-browser-script|upload-blob-script)$/,
 					},
 					(args) => {
 						const name = args.path.match(
-							/(render-video-script|render-still-script|ensure-browser-script)$/,
+							/(render-video-script|render-still-script|ensure-browser-script|upload-blob-script)$/,
 						)?.[1];
 						return {
 							path: name!,

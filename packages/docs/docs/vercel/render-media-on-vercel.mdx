@@ -48,7 +48,7 @@ Props to pass to the composition.
 
 ### `codec?`
 
-_"h264" | "h265" | "vp8" | "vp9" | "mp3" | "aac" | "wav" | "prores" | "h264-mkv" | "gif"_
+_string_ <TsType type="Codec" source="@remotion/renderer" href="/docs/renderer/types#codec" />
 
 Choose a suitable codec for your output media. Refer to the [Encoding guide](/docs/encoding) to find the best codec for your use case. Default: `"h264"`.
 
@@ -58,13 +58,13 @@ The output file path inside the sandbox. Default: `"/tmp/video.mp4"`.
 
 ### `crf?`
 
-_number | null_
+_number | null_ <TsType type="Crf" source="@remotion/renderer" href="/docs/renderer/types#crf" />
 
 The constant rate factor, controlling the quality. See: [Controlling quality using the CRF setting.](/docs/encoding/#controlling-quality-using-the-crf-setting)
 
 ### `imageFormat?`
 
-_"jpeg" | "png" | "none"_
+_string_ <TsType type="VideoImageFormat" source="@remotion/renderer" href="/docs/renderer/types#videoimageformat" />
 
 In which image format the frames should be rendered.
 
@@ -74,7 +74,7 @@ In which image format the frames should be rendered.
 
 ### `pixelFormat?`
 
-_string_
+_string_ <TsType type="PixelFormat" source="@remotion/renderer" href="/docs/renderer/types#pixelformat" />
 
 [A custom pixel format to use.](/docs/transparent-videos/) Usually used for special use cases like transparent videos.
 
@@ -88,7 +88,7 @@ See: [Environment variables](/docs/env-variables/)
 
 ### `frameRange?`
 
-_number | [number, number] | [number, null]_
+_number | [number, number] | [number, null]_ <TsType type="FrameRange" source="@remotion/renderer" href="/docs/renderer/types#framerange" />
 
 Specify a single frame (passing a `number`) or a range of frames (passing a tuple `[number, number]`) to be rendered. By passing `null` (default) all frames of a composition get rendered.
 
@@ -104,7 +104,7 @@ If set to false, the output file will not be written if a file already exists. D
 
 ### `proResProfile?`
 
-_string_
+_string_ <TsType type="ProResProfile" source="@remotion/renderer" href="/docs/renderer/types#proresprofile" />
 
 Sets a ProRes profile. Only applies to videos rendered with `prores` codec. See [Encoding guide](/docs/encoding/#controlling-quality-using-prores-profile) for possible options.
 
@@ -136,6 +136,8 @@ Disallows the renderer from doing rendering frames and encoding at the same time
 
 ### `concurrency?`
 
+_number | string | null_ <TsType type="Concurrency" source="@remotion/renderer" href="/docs/renderer/types#concurrency" />
+
 A `number` specifying how many render processes should be started in parallel, a `string` specifying the percentage of the CPU threads to use, or `null` to let Remotion decide based on the CPU of the host machine. Default: `null`.
 
 ### `metadata?`
@@ -160,7 +162,7 @@ A number describing how long the render may take to resolve all [`delayRender()`
 
 ### `audioCodec?`
 
-_"pcm-16" | "aac" | "mp3" | "opus"_
+_string_ <TsType type="AudioCodec" source="@remotion/renderer" href="/docs/renderer/types#audiocodec" />
 
 Choose the encoding of your audio.
 
@@ -247,7 +249,9 @@ Only applies if `imageFormat` is `'jpeg'`, otherwise this option is invalid.
 
 ### `onProgress?`
 
-A callback that receives [`RenderOnVercelProgress`](/docs/vercel/types#renderonvercelprogress) updates.
+_function_ <TsType type="RenderOnVercelProgress" source="@remotion/vercel" href="/docs/vercel/types#renderonvercelprogress" />
+
+A callback that receives progress updates.
 
 ```ts twoslash
 import type {RenderOnVercelProgress} from '@remotion/vercel';

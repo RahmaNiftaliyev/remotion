@@ -44,6 +44,8 @@ Props to pass to the composition.
 
 ### `imageFormat?`
 
+_string_ <TsType type="StillImageFormat" source="@remotion/renderer" href="/docs/renderer/types#stillimageformat" />
+
 Which output format the image should have, either `"png"`, `"jpeg"`, `"webp"` or `"pdf"`. Default: `"png"`.
 
 ### `outputFile?`
@@ -111,6 +113,8 @@ A number describing how long the render may take to resolve all [`delayRender()`
 <Options id="license-key" />
 
 ### `onProgress?`
+
+_function_ <TsType type="RenderOnVercelProgress" source="@remotion/vercel" href="/docs/vercel/types#renderonvercelprogress" />
 
 A callback that receives render progress updates. See [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel#onprogress) for the type definition.
 

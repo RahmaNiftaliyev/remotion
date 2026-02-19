@@ -5116,7 +5116,7 @@ export const articles = [
 		slug: 'renderer/stitch-frames-to-video',
 	},
 	{
-		id: 'renderer-types',
+		id: 'types',
 		title: 'TypeScript Types Reference',
 		relativePath: 'docs/renderer/types.mdx',
 		compId: 'articles-docs-renderer-types',

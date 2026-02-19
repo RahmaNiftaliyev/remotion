@@ -99,6 +99,18 @@ Config.setBundleOutDir('./custom-build-dir');
 
 The [command line flag](/docs/cli/bundle#--out-dir) `--out-dir` will take precedence over this option.
 
+## `setBenchmarkRuns()`
+
+<Options id="runs" />
+
+```ts twoslash title="remotion.config.ts"
+import {Config} from '@remotion/cli/config';
+// ---cut---
+Config.setBenchmarkRuns(5);
+```
+
+The [command line flag](/docs/cli/benchmark#--runs) `--runs` will take precedence over this option.
+
 ## `setEntryPoint()`<AvailableFrom v="3.2.40" />
 
 Sets the Remotion [entry point](/docs/terminology/entry-point), you don't have to specify it for CLI commands.

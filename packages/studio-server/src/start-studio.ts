@@ -55,7 +55,7 @@ export const startStudio = async ({
 	enableCrossSiteIsolation,
 	askAIEnabled,
 	forceNew,
-	rspack: useRspack,
+	rspack,
 }: {
 	browserArgs: string;
 	browserFlag: string;
@@ -162,7 +162,7 @@ export const startStudio = async ({
 		enableCrossSiteIsolation,
 		askAIEnabled,
 		forceNew,
-		rspack: useRspack,
+		rspack,
 	});
 
 	if (result.type === 'already-running') {

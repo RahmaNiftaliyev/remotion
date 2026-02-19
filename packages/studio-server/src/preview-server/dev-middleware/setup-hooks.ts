@@ -40,7 +40,7 @@ export function setupHooks(context: DevMiddlewareContext, logLevel: LogLevel) {
 				.map((a) => {
 					if (
 						a.startsWith('webpack compiled') ||
-						a.startsWith('rspack compiled')
+						a.startsWith('Rspack compiled')
 					) {
 						return `Built in ${stats.endTime - stats.startTime}ms`;
 					}

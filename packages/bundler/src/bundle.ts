@@ -74,8 +74,8 @@ export const getConfig = ({
 	bufferStateDelayInMilliseconds: number | null;
 	experimentalClientSideRenderingEnabled: boolean;
 	maxTimelineTracks: number | null;
-	onProgress?: (progress: number) => void;
-	options?: LegacyBundleOptions;
+	onProgress: (progress: number) => void;
+	options: MandatoryLegacyBundleOptions;
 }) => {
 	const configArgs = {
 		entry: path.join(
@@ -101,7 +101,7 @@ export const getConfig = ({
 		askAIEnabled: options?.askAIEnabled ?? true,
 	};
 
-	if (options?.rspack) {
+	if (options.rspack) {
 		return rspackConfig(configArgs);
 	}
 

@@ -1,31 +1,17 @@
 import type {Configuration} from '@rspack/core';
 import {DefinePlugin, ProgressPlugin, rspack} from '@rspack/core';
 import ReactRefreshPlugin from '@rspack/plugin-react-refresh';
-import {createHash} from 'node:crypto';
-import path from 'node:path';
-import ReactDOM from 'react-dom';
-import {NoReactInternals} from 'remotion/no-react';
 import {getDefinePluginDefinitions} from './define-plugin-definitions';
-import {jsonStringifyWithCircularReferences} from './stringify-with-circular-references';
-import {getWebpackCacheName} from './webpack-cache';
+import {
+	computeHashAndFinalConfig,
+	getBaseConfig,
+	getOutputConfig,
+	getResolveConfig,
+	getSharedModuleRules,
+} from './shared-bundler-config';
 import type {WebpackOverrideFn} from './webpack-config';
 
 export type RspackConfiguration = Configuration;
-
-if (!ReactDOM?.version) {
-	throw new Error('Could not find "react-dom" package. Did you install it?');
-}
-
-const reactDomVersion = ReactDOM.version.split('.')[0];
-if (reactDomVersion === '0') {
-	throw new Error(
-		`Version ${reactDomVersion} of "react-dom" is not supported by Remotion`,
-	);
-}
-
-const shouldUseReactDomClient = NoReactInternals.ENABLE_V5_BREAKING_CHANGES
-	? true
-	: parseInt(reactDomVersion, 10) >= 18;
 
 export const rspackConfig = async ({
 	entry,
@@ -59,8 +45,6 @@ export const rspackConfig = async ({
 	experimentalClientSideRenderingEnabled: boolean;
 }): Promise<[string, RspackConfiguration]> => {
 	let lastProgress = 0;
-
-	const isBun = typeof Bun !== 'undefined';
 
 	const define = new DefinePlugin(
 		getDefinePluginDefinitions({
@@ -110,30 +94,12 @@ export const rspackConfig = async ({
 	// but the TypeScript types differ. Cast through `any` for the override.
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const conf = (await webpackOverride({
-		optimization: {
-			minimize: false,
-		},
+		...getBaseConfig(environment, poll),
 		ignoreWarnings: [
 			/Circular dependency between chunks with runtime/,
 			/Critical dependency: the request of a dependency is an expression/,
 			/"__dirname" is used and has been mocked/,
 		],
-		experiments: {
-			lazyCompilation: isBun
-				? false
-				: environment === 'production'
-					? false
-					: {
-							entries: false,
-						},
-		},
-		watchOptions: {
-			poll: poll ?? undefined,
-			aggregateTimeout: 0,
-			ignored: ['**/.git/**', '**/.turbo/**', '**/node_modules/**'],
-		},
-		devtool:
-			environment === 'development' ? 'source-map' : 'cheap-module-source-map',
 		entry: [
 			require.resolve('./setup-environment'),
 			userDefinedComponent,
@@ -159,70 +125,14 @@ export const rspackConfig = async ({
 						}),
 						define,
 					],
-		output: {
-			hashFunction: 'xxhash64',
-			filename: NoReactInternals.bundleName,
-			devtoolModuleFilenameTemplate: '[resource-path]',
-			assetModuleFilename:
-				environment === 'development' ? '[path][name][ext]' : '[hash][ext]',
-		},
-		resolve: {
-			extensions: ['.ts', '.tsx', '.web.js', '.js', '.jsx', '.mjs', '.cjs'],
-			alias: {
-				'react/jsx-runtime': require.resolve('react/jsx-runtime'),
-				'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime'),
-				react: require.resolve('react'),
-				'remotion/no-react': path.resolve(
-					require.resolve('remotion'),
-					'..',
-					'..',
-					'esm',
-					'no-react.mjs',
-				),
-				'remotion/version': path.resolve(
-					require.resolve('remotion'),
-					'..',
-					'..',
-					'esm',
-					'version.mjs',
-				),
-				remotion: path.resolve(
-					require.resolve('remotion'),
-					'..',
-					'..',
-					'esm',
-					'index.mjs',
-				),
-				'@remotion/media-parser/worker': path.resolve(
-					require.resolve('@remotion/media-parser'),
-					'..',
-					'esm',
-					'worker.mjs',
-				),
-				'@remotion/studio': require.resolve('@remotion/studio'),
-				'react-dom/client': shouldUseReactDomClient
-					? require.resolve('react-dom/client')
-					: require.resolve('react-dom'),
-			},
-		},
+		output: getOutputConfig(environment),
+		resolve: getResolveConfig(),
 		module: {
 			rules: [
-				{
-					test: /\.css$/i,
-					use: [require.resolve('style-loader'), require.resolve('css-loader')],
-					type: 'javascript/auto',
-				},
-				{
-					test: /\.(png|svg|jpg|jpeg|webp|gif|bmp|webm|mp4|mov|mp3|m4a|wav|aac)$/,
-					type: 'asset/resource',
-				},
+				...getSharedModuleRules(),
 				{
 					test: /\.tsx?$/,
 					use: [swcLoaderRule],
-				},
-				{
-					test: /\.(woff(2)?|otf|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
-					type: 'asset/resource',
 				},
 				{
 					test: /\.jsx?$/,
@@ -234,25 +144,13 @@ export const rspackConfig = async ({
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} as any)) as RspackConfiguration;
 
-	const hash = createHash('md5')
-		.update(jsonStringifyWithCircularReferences(conf))
-		.digest('hex');
-	const finalConf: RspackConfiguration = {
-		...conf,
-		cache: (enableCaching
-			? {
-					type: 'filesystem',
-					name: getWebpackCacheName(environment, hash),
-					version: hash,
-				}
-			: false) as unknown as RspackConfiguration['cache'],
-		output: {
-			...conf.output,
-			...(outDir ? {path: outDir} : {}),
-		},
-		context: remotionRoot,
-	};
-	return [hash, finalConf];
+	const [hash, finalConf] = computeHashAndFinalConfig(conf, {
+		enableCaching,
+		environment,
+		outDir,
+		remotionRoot,
+	});
+	return [hash, finalConf as unknown as RspackConfiguration];
 };
 
 export const createRspackCompiler = (config: RspackConfiguration) => {

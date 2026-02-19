@@ -1,7 +1,3 @@
-import {createHash} from 'node:crypto';
-import path from 'node:path';
-import ReactDOM from 'react-dom';
-import {NoReactInternals} from 'remotion/no-react';
 import type {Configuration} from 'webpack';
 import webpack, {ProgressPlugin} from 'webpack';
 import {CaseSensitivePathsPlugin} from './case-sensitive-paths';
@@ -11,29 +7,19 @@ import {ReactFreshWebpackPlugin} from './fast-refresh';
 import {AllowDependencyExpressionPlugin} from './hide-expression-dependency';
 import {IgnorePackFileCacheWarningsPlugin} from './ignore-packfilecache-warnings';
 import {AllowOptionalDependenciesPlugin} from './optional-dependencies';
-import {jsonStringifyWithCircularReferences} from './stringify-with-circular-references';
-import {getWebpackCacheName} from './webpack-cache';
+import {
+	computeHashAndFinalConfig,
+	getBaseConfig,
+	getOutputConfig,
+	getResolveConfig,
+	getSharedModuleRules,
+} from './shared-bundler-config';
 import esbuild = require('esbuild');
 export type WebpackConfiguration = Configuration;
 
 export type WebpackOverrideFn = (
 	currentConfiguration: WebpackConfiguration,
 ) => WebpackConfiguration | Promise<WebpackConfiguration>;
-
-if (!ReactDOM?.version) {
-	throw new Error('Could not find "react-dom" package. Did you install it?');
-}
-
-const reactDomVersion = ReactDOM.version.split('.')[0];
-if (reactDomVersion === '0') {
-	throw new Error(
-		`Version ${reactDomVersion} of "react-dom" is not supported by Remotion`,
-	);
-}
-
-const shouldUseReactDomClient = NoReactInternals.ENABLE_V5_BREAKING_CHANGES
-	? true
-	: parseInt(reactDomVersion, 10) >= 18;
 
 type Truthy<T> = T extends false | '' | 0 | null | undefined ? never : T;
 
@@ -81,8 +67,6 @@ export const webpackConfig = async ({
 
 	let lastProgress = 0;
 
-	const isBun = typeof Bun !== 'undefined';
-
 	const define = new webpack.DefinePlugin(
 		getDefinePluginDefinitions({
 			maxTimelineTracks,
@@ -94,26 +78,7 @@ export const webpackConfig = async ({
 	);
 
 	const conf: WebpackConfiguration = await webpackOverride({
-		optimization: {
-			minimize: false,
-		},
-		experiments: {
-			lazyCompilation: isBun
-				? false
-				: environment === 'production'
-					? false
-					: {
-							entries: false,
-						},
-		},
-		watchOptions: {
-			poll: poll ?? undefined,
-			aggregateTimeout: 0,
-			ignored: ['**/.git/**', '**/.turbo/**', '**/node_modules/**'],
-		},
-		// Higher source map quality in development to power line numbers for stack traces
-		devtool:
-			environment === 'development' ? 'source-map' : 'cheap-module-source-map',
+		...getBaseConfig(environment, poll),
 		entry: [
 			// Fast Refresh must come first,
 			// because setup-environment imports ReactDOM.
@@ -152,67 +117,11 @@ export const webpackConfig = async ({
 						new AllowDependencyExpressionPlugin(),
 						new IgnorePackFileCacheWarningsPlugin(),
 					],
-		output: {
-			hashFunction: 'xxhash64',
-			filename: NoReactInternals.bundleName,
-			devtoolModuleFilenameTemplate: '[resource-path]',
-			assetModuleFilename:
-				environment === 'development' ? '[path][name][ext]' : '[hash][ext]',
-		},
-		resolve: {
-			extensions: ['.ts', '.tsx', '.web.js', '.js', '.jsx', '.mjs', '.cjs'],
-			alias: {
-				// Only one version of react
-				'react/jsx-runtime': require.resolve('react/jsx-runtime'),
-				'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime'),
-				react: require.resolve('react'),
-				// Needed to not fail on this: https://github.com/remotion-dev/remotion/issues/5045
-				'remotion/no-react': path.resolve(
-					require.resolve('remotion'),
-					'..',
-					'..',
-					'esm',
-					'no-react.mjs',
-				),
-				'remotion/version': path.resolve(
-					require.resolve('remotion'),
-					'..',
-					'..',
-					'esm',
-					'version.mjs',
-				),
-				remotion: path.resolve(
-					require.resolve('remotion'),
-					'..',
-					'..',
-					'esm',
-					'index.mjs',
-				),
-
-				'@remotion/media-parser/worker': path.resolve(
-					require.resolve('@remotion/media-parser'),
-					'..',
-					'esm',
-					'worker.mjs',
-				),
-				// test visual controls before removing this
-				'@remotion/studio': require.resolve('@remotion/studio'),
-				'react-dom/client': shouldUseReactDomClient
-					? require.resolve('react-dom/client')
-					: require.resolve('react-dom'),
-			},
-		},
+		output: getOutputConfig(environment),
+		resolve: getResolveConfig(),
 		module: {
 			rules: [
-				{
-					test: /\.css$/i,
-					use: [require.resolve('style-loader'), require.resolve('css-loader')],
-					type: 'javascript/auto',
-				},
-				{
-					test: /\.(png|svg|jpg|jpeg|webp|gif|bmp|webm|mp4|mov|mp3|m4a|wav|aac)$/,
-					type: 'asset/resource',
-				},
+				...getSharedModuleRules(),
 				{
 					test: /\.tsx?$/,
 					use: [
@@ -227,10 +136,6 @@ export const webpackConfig = async ({
 								}
 							: null,
 					].filter(truthy),
-				},
-				{
-					test: /\.(woff(2)?|otf|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
-					type: 'asset/resource',
 				},
 				{
 					test: /\.jsx?$/,
@@ -250,25 +155,11 @@ export const webpackConfig = async ({
 			],
 		},
 	});
-	const hash = createHash('md5')
-		.update(jsonStringifyWithCircularReferences(conf))
-		.digest('hex');
-	return [
-		hash,
-		{
-			...conf,
-			cache: enableCaching
-				? {
-						type: 'filesystem',
-						name: getWebpackCacheName(environment, hash),
-						version: hash,
-					}
-				: false,
-			output: {
-				...conf.output,
-				...(outDir ? {path: outDir} : {}),
-			},
-			context: remotionRoot,
-		},
-	];
+
+	return computeHashAndFinalConfig(conf, {
+		enableCaching,
+		environment,
+		outDir,
+		remotionRoot,
+	});
 };

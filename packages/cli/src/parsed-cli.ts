@@ -131,7 +131,7 @@ export type CommandLineOptions = {
 	help: boolean;
 	port: number;
 	[stillFrameOption.cliFlag]: TypeOfOption<typeof stillFrameOption>;
-	['disable-headless']: boolean;
+	[headlessOption.cliFlag]: TypeOfOption<typeof headlessOption>;
 	[keyboardShortcutsOption.cliFlag]: TypeOfOption<
 		typeof keyboardShortcutsOption
 	>;

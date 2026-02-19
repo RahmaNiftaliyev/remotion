@@ -6575,13 +6575,13 @@ export const articles = [
 		slug: 'vercel/render-still-on-vercel',
 	},
 	{
-		id: 'vercel/render-video-on-vercel',
-		title: 'renderVideoOnVercel()',
-		relativePath: 'docs/vercel/render-video-on-vercel.mdx',
-		compId: 'articles-docs-vercel-render-video-on-vercel',
+		id: 'vercel/render-media-on-vercel',
+		title: 'renderMediaOnVercel()',
+		relativePath: 'docs/vercel/render-media-on-vercel.mdx',
+		compId: 'articles-docs-vercel-render-media-on-vercel',
 		crumb: '@remotion/vercel',
 		noAi: false,
-		slug: 'vercel/render-video-on-vercel',
+		slug: 'vercel/render-media-on-vercel',
 	},
 	{
 		id: 'vercel-types',

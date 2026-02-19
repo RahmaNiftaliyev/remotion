@@ -1,7 +1,7 @@
 export {addBundleToSandbox} from './add-bundle-to-sandbox';
 export {createSandbox} from './create-sandbox';
 export {renderStillOnVercel} from './render-still-on-vercel';
-export {renderVideoOnVercel} from './render-video-on-vercel';
+export {renderMediaOnVercel} from './render-media-on-vercel';
 export type {
 	AudioCodec,
 	Bitrate,

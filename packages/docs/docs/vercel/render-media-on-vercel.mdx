@@ -1,10 +1,10 @@
 ---
-image: /generated/articles-docs-vercel-render-video-on-vercel.png
-title: renderVideoOnVercel()
+image: /generated/articles-docs-vercel-render-media-on-vercel.png
+title: renderMediaOnVercel()
 crumb: '@remotion/vercel'
 ---
 
-# renderVideoOnVercel()<AvailableFrom v="4.0.426" />
+# renderMediaOnVercel()<AvailableFrom v="4.0.426" />
 
 Renders a video inside a Vercel Sandbox.
 
@@ -15,10 +15,10 @@ The rendered file stays inside the sandbox. Use [`uploadToVercelBlob()`](/docs/v
 ```ts twoslash title="route.ts"
 // @module: es2022
 // @target: es2022
-import {renderVideoOnVercel, addBundleToSandbox, createSandbox} from '@remotion/vercel';
+import {renderMediaOnVercel, addBundleToSandbox, createSandbox} from '@remotion/vercel';
 const sandbox = await createSandbox();
 // ---cut---
-const {file} = await renderVideoOnVercel({
+const {file} = await renderMediaOnVercel({
   sandbox,
   compositionId: 'MyComp',
   inputProps: {title: 'Hello World'},
@@ -271,4 +271,4 @@ The path to the rendered video inside the sandbox.
 
 - [`renderStillOnVercel()`](/docs/vercel/render-still-on-vercel)
 - [`uploadToVercelBlob()`](/docs/vercel/upload-to-vercel-blob)
-- [Source code for this function](https://github.com/remotion-dev/remotion/blob/main/packages/vercel/src/render-video-on-vercel.ts)
+- [Source code for this function](https://github.com/remotion-dev/remotion/blob/main/packages/vercel/src/render-media-on-vercel.ts)

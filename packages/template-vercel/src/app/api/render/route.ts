@@ -1,7 +1,7 @@
 import {
   addBundleToSandbox,
   createSandbox,
-  renderVideoOnVercel,
+  renderMediaOnVercel,
   uploadToVercelBlob,
 } from "@remotion/vercel";
 import { head } from "@vercel/blob";
@@ -86,7 +86,7 @@ export async function POST(req: Request) {
         await addBundleToSandbox({ sandbox, bundleDir: ".remotion" });
       }
 
-      const { file } = await renderVideoOnVercel({
+      const { file } = await renderMediaOnVercel({
         sandbox,
         compositionId: COMP_NAME,
         inputProps: body.inputProps,

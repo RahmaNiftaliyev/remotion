@@ -14,8 +14,8 @@ export const TableOfContents: React.FC = () => {
 					<strong>addBundleToSandbox()</strong>
 					<div>Copy a Remotion bundle into a sandbox</div>
 				</TOCItem>
-				<TOCItem link="/docs/vercel/render-video-on-vercel">
-					<strong>renderVideoOnVercel()</strong>
+				<TOCItem link="/docs/vercel/render-media-on-vercel">
+					<strong>renderMediaOnVercel()</strong>
 					<div>Render a video in a sandbox</div>
 				</TOCItem>
 				<TOCItem link="/docs/vercel/render-still-on-vercel">

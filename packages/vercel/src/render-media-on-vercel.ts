@@ -17,7 +17,7 @@ import type {
 	X264Preset,
 } from './types';
 
-export async function renderVideoOnVercel({
+export async function renderMediaOnVercel({
 	sandbox,
 	compositionId,
 	inputProps,

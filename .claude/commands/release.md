@@ -15,7 +15,7 @@
   - Categorize PRs into sections: "What's Changed", "Templates", "Docs", "Internal"
   - In "What's Changed", sort items so that entries for the same package are adjacent (no subheadings, just sorted order)
   - Strip redundant prefixes from PR titles (e.g. remove "Docs:" from items in the Docs section)
-  - "Templates" is a separate section for any template-* changes
-  - Do NOT add a "New Contributors" section - contributors may appear new in a version range but not actually be first-time contributors
+  - "Templates" is a separate section for any template-\* changes
+  - Check for genuinely new contributors by running `gh api repos/remotion-dev/remotion/contributors --paginate --jq '.[].login'` and comparing against PR authors. Only add a "New Contributors" section for authors not in that list
   - Add `**Full Changelog**: https://github.com/remotion-dev/remotion/compare/v<previous_version>...v<new_version>` at the bottom
   - Use the same format as previous GitHub releases (check with `gh release view v<previous_version>`)

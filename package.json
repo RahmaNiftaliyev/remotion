@@ -8,7 +8,7 @@
 		"ts-build": "tsc -b --verbose --watch",
 		"stylecheck": "turbo run lint formatting --no-update-notifier",
 		"build": "turbo run make --no-update-notifier",
-		"build-docs": "turbo run build-docs --no-update-notifier",
+		"build-docs": "TURBO_TELEMETRY_DISABLED=1 turbo run build-docs --no-update-notifier",
 		"testssr": "turbo run testssr --no-update-notifier",
 		"testwebcodecs": "turbo run testwebcodecs --no-update-notifier",
 		"testwebrenderer": "turbo run testwebrenderer --concurrency=1 --no-update-notifier",

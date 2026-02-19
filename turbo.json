@@ -24,6 +24,11 @@
 		"testwebrenderer": {
 			"dependsOn": ["@remotion/web-renderer#make"]
 		},
+		"build": {
+			"dependsOn": ["^make"],
+			"outputs": ["dist"],
+			"outputLogs": "new-only"
+		},
 		"make": {
 			"dependsOn": ["^make"],
 			"outputs": ["dist"],

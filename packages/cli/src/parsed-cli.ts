@@ -3,9 +3,9 @@ import minimist from 'minimist';
 import type {CommandLineOptions} from './parse-command-line';
 
 export const BooleanFlags = [
-	'overwrite',
+	BrowserSafeApis.options.overwriteOption.cliFlag,
 	'force',
-	'sequence',
+	BrowserSafeApis.options.imageSequenceOption.cliFlag,
 	'help',
 	'quiet',
 	'q',

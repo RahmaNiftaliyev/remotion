@@ -38,20 +38,17 @@ import {
 } from './buffer-state-delay-in-milliseconds';
 import type {Concurrency} from './concurrency';
 import {getEntryPoint, setEntryPoint} from './entry-point';
-import {setDotEnvLocation} from './env-file';
 import {
 	getFfmpegOverrideFunction,
 	setFfmpegOverrideFunction,
 } from './ffmpeg-override';
 import {setFrameRange} from './frame-range';
-import {setImageSequence} from './image-sequence';
 import {getMetadata, setMetadata} from './metadata';
 import {getShouldOpenBrowser, setShouldOpenBrowser} from './open-browser';
 import {setOutputLocation} from './output-location';
 import type {WebpackOverrideFn} from './override-webpack';
 import {overrideWebpackConfig} from './override-webpack';
 import {setPort, setRendererPort, setStudioPort} from './preview-server';
-import {setWebpackCaching} from './webpack-caching';
 import {getWebpackPolling} from './webpack-poll';
 
 export type {Concurrency, WebpackConfiguration, WebpackOverrideFn};
@@ -118,6 +115,9 @@ const {
 	overrideDurationOption,
 	outDirOption,
 	webpackPollOption,
+	imageSequenceOption,
+	bundleCacheOption,
+	envFileOption,
 } = BrowserSafeApis.options;
 
 declare global {
@@ -661,7 +661,7 @@ export const Config: FlatConfig = {
 	setShouldOpenBrowser,
 	setBufferStateDelayInMilliseconds,
 	overrideWebpackConfig,
-	setCachingEnabled: setWebpackCaching,
+	setCachingEnabled: bundleCacheOption.setConfig,
 	setPort,
 	setStudioPort,
 	setRendererPort,
@@ -677,7 +677,7 @@ export const Config: FlatConfig = {
 	setChromiumHeadlessMode: headlessOption.setConfig,
 	setChromiumOpenGlRenderer: glOption.setConfig,
 	setChromiumUserAgent: userAgentOption.setConfig,
-	setDotEnvLocation,
+	setDotEnvLocation: envFileOption.setConfig,
 	setConcurrency: concurrencyOption.setConfig,
 	setChromiumMultiProcessOnLinux: enableMultiprocessOnLinuxOption.setConfig,
 	setChromiumDarkMode: darkModeOption.setConfig,
@@ -709,7 +709,7 @@ export const Config: FlatConfig = {
 	setPixelFormat: pixelFormatOption.setConfig,
 	setCodec: videoCodecOption.setConfig,
 	setCrf: crfOption.setConfig,
-	setImageSequence,
+	setImageSequence: imageSequenceOption.setConfig,
 	setProResProfile: proResProfileOption.setConfig,
 	setX264Preset: x264Option.setConfig,
 	setAudioBitrate: audioBitrateOption.setConfig,

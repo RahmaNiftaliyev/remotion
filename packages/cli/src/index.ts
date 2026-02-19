@@ -50,7 +50,7 @@ import {
 	versionsCommand,
 } from './versions';
 
-const {packageManagerOption} = BrowserSafeApis.options;
+const {packageManagerOption, versionFlagOption} = BrowserSafeApis.options;
 
 export const cli = async () => {
 	const [command, ...args] = parsedCli._;
@@ -119,7 +119,7 @@ export const cli = async () => {
 			await upgradeCommand({
 				remotionRoot,
 				packageManager: packageManager ?? undefined,
-				version: parsedCli.version,
+				version: versionFlagOption.getValue({commandLine: parsedCli}).value ?? undefined,
 				logLevel,
 				args,
 			});

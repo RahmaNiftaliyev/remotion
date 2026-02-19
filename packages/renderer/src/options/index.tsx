@@ -4,6 +4,7 @@ import {audioBitrateOption} from './audio-bitrate';
 import {audioCodecOption} from './audio-codec';
 import {beepOnFinishOption} from './beep-on-finish';
 import {binariesDirectoryOption} from './binaries-directory';
+import {bundleCacheOption} from './bundle-cache';
 import {browserExecutableOption} from './browser-executable';
 import {chromeModeOption} from './chrome-mode';
 import {colorSpaceOption} from './color-space';
@@ -16,6 +17,7 @@ import {disableGitSourceOption} from './disable-git-source';
 import {disableWebSecurityOption} from './disable-web-security';
 import {disallowParallelEncodingOption} from './disallow-parallel-encoding';
 import {enableLambdaInsights} from './enable-lambda-insights';
+import {envFileOption} from './env-file';
 import {enableMultiprocessOnLinuxOption} from './enable-multiprocess-on-linux';
 import {encodingBufferSizeOption} from './encoding-buffer-size';
 import {encodingMaxRateOption} from './encoding-max-rate';
@@ -27,6 +29,7 @@ import {forSeamlessAacConcatenationOption} from './for-seamless-aac-concatenatio
 import {forceNewStudioOption} from './force-new-studio';
 import {glOption} from './gl';
 import {hardwareAccelerationOption} from './hardware-acceleration';
+import {imageSequenceOption} from './image-sequence';
 import {headlessOption} from './headless';
 import {ignoreCertificateErrorsOption} from './ignore-certificate-errors';
 import {imageSequencePatternOption} from './image-sequence-pattern';
@@ -60,11 +63,13 @@ import {publicLicenseKeyOption} from './public-license-key';
 import {publicPathOption} from './public-path';
 import {reproOption} from './repro';
 import {scaleOption} from './scale';
+import {stillFrameOption} from './still-frame';
 import {separateAudioOption} from './separate-audio';
 import {stillImageFormatOption} from './still-image-format';
 import {throwIfSiteExistsOption} from './throw-if-site-exists';
 import {delayRenderTimeoutInMillisecondsOption} from './timeout';
 import {userAgentOption} from './user-agent';
+import {versionFlagOption} from './version-flag';
 import {videoBitrateOption} from './video-bitrate';
 import {mediaCacheSizeInBytesOption} from './video-cache-size';
 import {videoCodecOption} from './video-codec';
@@ -147,6 +152,11 @@ export const allOptions = {
 	outDirOption,
 	packageManagerOption,
 	webpackPollOption,
+	stillFrameOption,
+	imageSequenceOption,
+	versionFlagOption,
+	bundleCacheOption,
+	envFileOption,
 };
 
 export type AvailableOptions = keyof typeof allOptions;

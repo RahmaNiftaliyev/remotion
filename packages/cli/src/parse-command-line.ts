@@ -1,6 +1,5 @@
 import type {
 	AudioCodec,
-	Codec,
 	OpenGlRenderer,
 	StillImageFormat,
 	VideoImageFormat,
@@ -52,6 +51,16 @@ const {
 	keyboardShortcutsOption,
 	experimentalClientSideRenderingOption,
 	imageSequencePatternOption,
+	scaleOption,
+	overwriteOption,
+	crfOption,
+	logLevelOption,
+	videoCodecOption,
+	stillFrameOption,
+	imageSequenceOption,
+	versionFlagOption,
+	bundleCacheOption,
+	envFileOption,
 } = BrowserSafeApis.options;
 
 export type CommandLineOptions = {
@@ -62,8 +71,8 @@ export type CommandLineOptions = {
 	['image-format']: VideoImageFormat | StillImageFormat;
 	[proResProfileOption.cliFlag]: TypeOfOption<typeof proResProfileOption>;
 	[x264Option.cliFlag]: TypeOfOption<typeof x264Option>;
-	['bundle-cache']: string;
-	['env-file']: string;
+	[bundleCacheOption.cliFlag]: TypeOfOption<typeof bundleCacheOption>;
+	[envFileOption.cliFlag]: TypeOfOption<typeof envFileOption>;
 	[ignoreCertificateErrorsOption.cliFlag]: TypeOfOption<
 		typeof ignoreCertificateErrorsOption
 	>;
@@ -84,8 +93,8 @@ export type CommandLineOptions = {
 		typeof disallowParallelEncodingOption
 	>;
 	[beepOnFinishOption.cliFlag]: TypeOfOption<typeof beepOnFinishOption>;
-	version: string;
-	codec: Codec;
+	[versionFlagOption.cliFlag]: TypeOfOption<typeof versionFlagOption>;
+	[videoCodecOption.cliFlag]: TypeOfOption<typeof videoCodecOption>;
 	[concurrencyOption.cliFlag]: TypeOfOption<typeof concurrencyOption>;
 	timeout: number;
 	config: string;
@@ -98,23 +107,23 @@ export type CommandLineOptions = {
 	[encodingMaxRateOption.cliFlag]: TypeOfOption<typeof encodingMaxRateOption>;
 	[audioCodecOption.cliFlag]: AudioCodec;
 	[publicPathOption.cliFlag]: string;
-	crf: number;
+	[crfOption.cliFlag]: TypeOfOption<typeof crfOption>;
 	force: boolean;
 	output: string | undefined;
-	overwrite: boolean;
+	[overwriteOption.cliFlag]: TypeOfOption<typeof overwriteOption>;
 	png: boolean;
 	props: string;
 	quality: number;
 	[jpegQualityOption.cliFlag]: TypeOfOption<typeof jpegQualityOption>;
 	frames: string | number;
-	scale: number;
-	sequence: boolean;
+	[scaleOption.cliFlag]: TypeOfOption<typeof scaleOption>;
+	[imageSequenceOption.cliFlag]: TypeOfOption<typeof imageSequenceOption>;
 	quiet: boolean;
 	q: boolean;
-	log: string;
+	[logLevelOption.cliFlag]: TypeOfOption<typeof logLevelOption>;
 	help: boolean;
 	port: number;
-	frame: string | number;
+	[stillFrameOption.cliFlag]: TypeOfOption<typeof stillFrameOption>;
 	['disable-headless']: boolean;
 	[keyboardShortcutsOption.cliFlag]: TypeOfOption<
 		typeof keyboardShortcutsOption
@@ -155,26 +164,14 @@ export type CommandLineOptions = {
 };
 
 export const parseCommandLine = () => {
-	if (typeof parsedCli['bundle-cache'] !== 'undefined') {
-		Config.setCachingEnabled(parsedCli['bundle-cache'] !== 'false');
-	}
-
 	if (parsedCli.frames) {
 		ConfigInternals.setFrameRangeFromCli(parsedCli.frames);
-	}
-
-	if (parsedCli.frame) {
-		ConfigInternals.setStillFrame(Number(parsedCli.frame));
 	}
 
 	if (parsedCli.png) {
 		throw new Error(
 			'The --png flag has been removed. Use --sequence --image-format=png from now on.',
 		);
-	}
-
-	if (parsedCli.sequence) {
-		Config.setImageSequence(true);
 	}
 
 	if (

@@ -1,14 +1,16 @@
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
+import {BrowserSafeApis} from '@remotion/renderer/client';
 import {StudioServerInternals} from '@remotion/studio-server';
 import dotenv from 'dotenv';
 import fs, {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {chalk} from './chalk';
-import {ConfigInternals} from './config';
 import {makeHyperlink} from './hyperlinks/make-link';
 import {Log} from './log';
 import {parsedCli} from './parsed-cli';
+
+const {envFileOption} = BrowserSafeApis.options;
 
 function getProcessEnv(): Record<string, string> {
 	const env: Record<string, string> = {};
@@ -141,8 +143,11 @@ export const getEnvironmentVariables = (
 ): Record<string, string> => {
 	const processEnv = getProcessEnv();
 
-	if (parsedCli['env-file']) {
-		const envFile = path.resolve(process.cwd(), parsedCli['env-file']);
+	const {value: envFileValue, source: envFileSource} = envFileOption.getValue({
+		commandLine: parsedCli,
+	});
+	if (envFileValue && envFileSource === 'cli') {
+		const envFile = path.resolve(process.cwd(), envFileValue);
 		if (!fs.existsSync(envFile)) {
 			Log.error(
 				{indent: false, logLevel},
@@ -165,7 +170,7 @@ export const getEnvironmentVariables = (
 
 	const remotionRoot = RenderInternals.findRemotionRoot();
 
-	const configFileSetting = ConfigInternals.getDotEnvLocation();
+	const configFileSetting = envFileValue && envFileSource === 'config' ? envFileValue : null;
 	if (configFileSetting) {
 		const envFile = path.resolve(remotionRoot, configFileSetting);
 		if (!fs.existsSync(envFile)) {

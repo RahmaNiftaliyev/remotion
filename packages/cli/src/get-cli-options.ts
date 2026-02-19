@@ -56,9 +56,12 @@ export const getCliOptions = (options: {
 }) => {
 	const frameRange = getAndValidateFrameRange(options.logLevel, false);
 
+	const imageSequence = BrowserSafeApis.options.imageSequenceOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	const shouldOutputImageSequence = options.isStill
 		? true
-		: ConfigInternals.getShouldOutputImageSequence(frameRange);
+		: imageSequence || typeof frameRange === 'number';
 
 	const concurrency = BrowserSafeApis.options.concurrencyOption.getValue({
 		commandLine: parsedCli,
@@ -94,7 +97,9 @@ export const getCliOptions = (options: {
 			options.logLevel,
 			options.indent,
 		),
-		stillFrame: ConfigInternals.getStillFrame(),
+		stillFrame: BrowserSafeApis.options.stillFrameOption.getValue({
+			commandLine: parsedCli,
+		}).value ?? 0,
 		ffmpegOverride: ConfigInternals.getFfmpegOverrideFunction(),
 		height,
 		width,

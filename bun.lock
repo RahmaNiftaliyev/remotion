@@ -2279,7 +2279,7 @@
     },
     "packages/vercel": {
       "name": "@remotion/vercel",
-      "version": "4.0.425",
+      "version": "4.0.426",
       "dependencies": {
         "remotion": "workspace:*",
       },

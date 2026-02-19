@@ -4,6 +4,8 @@ import {existsSync} from 'fs';
 import {readdir, readFile} from 'fs/promises';
 import path from 'path';
 
+export const REMOTION_SANDBOX_BUNDLE_DIR = 'remotion-bundle';
+
 function ensureLocalBundle(bundleDir: string): void {
 	if (process.env.VERCEL) {
 		return;
@@ -67,12 +69,12 @@ export const addBundleToSandbox = async ({
 	}
 
 	for (const dir of Array.from(dirs).sort()) {
-		await sandbox.mkDir(bundleDir + '/' + dir);
+		await sandbox.mkDir(REMOTION_SANDBOX_BUNDLE_DIR + '/' + dir);
 	}
 
 	await sandbox.writeFiles(
 		bundleFiles.map((file) => ({
-			path: bundleDir + '/' + file.path,
+			path: REMOTION_SANDBOX_BUNDLE_DIR + '/' + file.path,
 			content: file.content,
 		})),
 	);

@@ -15,7 +15,7 @@ Uploads a file from the sandbox to [Vercel Blob](https://vercel.com/docs/storage
 // @target: es2022
 import {uploadToVercelBlob, addBundleToSandbox, createSandbox} from '@remotion/vercel';
 const sandbox = await createSandbox();
-await addBundleToSandbox({sandbox, bundleDir: '.remotion'});
+await addBundleToSandbox({sandbox, bundleDir: '/path/to/bundle'});
 // ---cut---
 const {url, size} = await uploadToVercelBlob({
   sandbox,

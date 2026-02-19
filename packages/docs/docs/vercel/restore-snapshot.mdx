@@ -22,7 +22,7 @@ const sandbox = process.env.VERCEL
   : await createSandbox();
 
 if (!process.env.VERCEL) {
-  await addBundleToSandbox({sandbox, bundleDir: '.remotion'});
+  await addBundleToSandbox({sandbox, bundleDir: '/path/to/bundle'});
 }
 
 // ... use the sandbox
@@ -52,7 +52,7 @@ await using sandbox = process.env.VERCEL
   : await createSandbox();
 
 if (!process.env.VERCEL) {
-  await addBundleToSandbox({sandbox, bundleDir: '.remotion'});
+  await addBundleToSandbox({sandbox, bundleDir: '/path/to/bundle'});
 }
 ```
 

@@ -17,7 +17,7 @@ The rendered file stays inside the sandbox. Use [`uploadToVercelBlob()`](/docs/v
 // @target: es2022
 import {renderStillOnVercel, addBundleToSandbox, createSandbox} from '@remotion/vercel';
 const sandbox = await createSandbox();
-await addBundleToSandbox({sandbox, bundleDir: '.remotion'});
+await addBundleToSandbox({sandbox, bundleDir: '/path/to/bundle'});
 // ---cut---
 const {file} = await renderStillOnVercel({
   sandbox,
@@ -114,10 +114,6 @@ Remotion license key. Default: `null`.
 ### `onProgress?`
 
 A callback that receives render progress updates. See [`renderVideoOnVercel()`](/docs/vercel/render-video-on-vercel#onprogress) for the type definition.
-
-### `bundleDir?`
-
-The bundle directory name in the sandbox. Default: `".remotion"`.
 
 ## Return value
 

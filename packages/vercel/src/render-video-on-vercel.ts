@@ -1,5 +1,6 @@
 import type {Sandbox} from '@vercel/sandbox';
 import {script as renderVideoScript} from './generated/render-video-script';
+import {REMOTION_SANDBOX_BUNDLE_DIR} from './internals/add-bundle';
 import type {
 	AudioCodec,
 	Bitrate,
@@ -22,7 +23,6 @@ export async function renderVideoOnVercel({
 	compositionId,
 	inputProps,
 	onProgress,
-	bundleDir = '.remotion',
 	outputFile = '/tmp/video.mp4',
 	codec = 'h264',
 	crf,
@@ -68,7 +68,6 @@ export async function renderVideoOnVercel({
 	compositionId: string;
 	inputProps: Record<string, unknown>;
 	onProgress?: (progress: RenderOnVercelProgress) => void;
-	bundleDir?: string;
 	outputFile?: string;
 	codec?: Codec;
 	crf?: number | null;
@@ -110,7 +109,7 @@ export async function renderVideoOnVercel({
 	offthreadVideoThreads?: number | null;
 	repro?: boolean;
 }): Promise<{file: string}> {
-	const serveUrl = `/vercel/sandbox/${bundleDir}`;
+	const serveUrl = `/vercel/sandbox/${REMOTION_SANDBOX_BUNDLE_DIR}`;
 
 	const renderConfig = {
 		serveUrl,

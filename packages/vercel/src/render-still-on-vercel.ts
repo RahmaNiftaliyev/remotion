@@ -1,5 +1,6 @@
 import type {Sandbox} from '@vercel/sandbox';
 import {script as renderStillScript} from './generated/render-still-script';
+import {REMOTION_SANDBOX_BUNDLE_DIR} from './internals/add-bundle';
 import type {
 	ChromeMode,
 	ChromiumOptions,
@@ -13,7 +14,6 @@ export async function renderStillOnVercel({
 	compositionId,
 	inputProps,
 	onProgress,
-	bundleDir = '.remotion',
 	outputFile = '/tmp/still.png',
 	frame = 0,
 	imageFormat = 'png',
@@ -36,7 +36,6 @@ export async function renderStillOnVercel({
 	compositionId: string;
 	inputProps: Record<string, unknown>;
 	onProgress?: (progress: RenderOnVercelProgress) => void;
-	bundleDir?: string;
 	outputFile?: string;
 	frame?: number;
 	imageFormat?: StillImageFormat;
@@ -55,7 +54,7 @@ export async function renderStillOnVercel({
 	offthreadVideoThreads?: number | null;
 	licenseKey?: string | null;
 }): Promise<{file: string}> {
-	const serveUrl = `/vercel/sandbox/${bundleDir}`;
+	const serveUrl = `/vercel/sandbox/${REMOTION_SANDBOX_BUNDLE_DIR}`;
 
 	const renderConfig = {
 		serveUrl,

@@ -1,7 +1,9 @@
 import {BufferTarget, StreamTarget} from 'mediabunny';
-import type {AnyZodObject, CalculateMetadataFunction} from 'remotion';
+import type {CalculateMetadataFunction} from 'remotion';
 import {Internals, type LogLevel} from 'remotion';
 import {VERSION} from 'remotion/version';
+import type {z} from 'zod';
+import type {$ZodObject} from 'zod/v4/core';
 import {addAudioSample, addVideoSampleAndCloseFrame} from './add-sample';
 import {handleArtifacts, type WebRendererOnArtifact} from './artifact';
 import {onlyInlineAudio} from './audio';
@@ -31,10 +33,7 @@ import {
 	type WebRendererVideoCodec,
 } from './mediabunny-mappings';
 import type {WebRendererOutputTarget} from './output-target';
-import type {
-	CompositionCalculateMetadataOrExplicit,
-	InferZodInput,
-} from './props-if-has-props';
+import type {CompositionCalculateMetadataOrExplicit} from './props-if-has-props';
 import {onlyOneRenderAtATimeQueue} from './render-operations-queue';
 import {resolveAudioCodec} from './resolve-audio-codec';
 import {sendUsageEvent} from './send-telemetry-event';
@@ -46,13 +45,13 @@ import {waitForReady} from './wait-for-ready';
 import {cleanupStaleOpfsFiles, createWebFsTarget} from './web-fs-target';
 
 export type InputPropsIfHasProps<
-	Schema extends AnyZodObject,
+	Schema extends $ZodObject,
 	Props,
-> = AnyZodObject extends Schema
+> = $ZodObject extends Schema
 	? {} extends Props
 		? {
 				// Neither props nor schema specified
-				inputProps?: InferZodInput<Schema> & Props;
+				inputProps?: z.input<Schema> & Props;
 			}
 		: {
 				// Only props specified
@@ -61,15 +60,15 @@ export type InputPropsIfHasProps<
 	: {} extends Props
 		? {
 				// Only schema specified
-				inputProps: InferZodInput<Schema>;
+				inputProps: z.input<Schema>;
 			}
 		: {
 				// Props and schema specified
-				inputProps: InferZodInput<Schema> & Props;
+				inputProps: z.input<Schema> & Props;
 			};
 
 type MandatoryRenderMediaOnWebOptions<
-	Schema extends AnyZodObject,
+	Schema extends $ZodObject,
 	Props extends Record<string, unknown>,
 > = {
 	composition: CompositionCalculateMetadataOrExplicit<Schema, Props>;
@@ -95,7 +94,7 @@ export type WebRendererHardwareAcceleration =
 	| 'prefer-hardware'
 	| 'prefer-software';
 
-type OptionalRenderMediaOnWebOptions<Schema extends AnyZodObject> = {
+type OptionalRenderMediaOnWebOptions<Schema extends $ZodObject> = {
 	delayRenderTimeoutInMilliseconds: number;
 	logLevel: LogLevel;
 	schema: Schema | undefined;
@@ -121,14 +120,14 @@ type OptionalRenderMediaOnWebOptions<Schema extends AnyZodObject> = {
 };
 
 export type RenderMediaOnWebOptions<
-	Schema extends AnyZodObject,
+	Schema extends $ZodObject,
 	Props extends Record<string, unknown>,
 > = MandatoryRenderMediaOnWebOptions<Schema, Props> &
 	Partial<OptionalRenderMediaOnWebOptions<Schema>> &
 	InputPropsIfHasProps<Schema, Props>;
 
 type InternalRenderMediaOnWebOptions<
-	Schema extends AnyZodObject,
+	Schema extends $ZodObject,
 	Props extends Record<string, unknown>,
 > = MandatoryRenderMediaOnWebOptions<Schema, Props> &
 	OptionalRenderMediaOnWebOptions<Schema> &
@@ -139,7 +138,7 @@ type InternalRenderMediaOnWebOptions<
 // TODO: Apply defaultCodec
 
 const internalRenderMediaOnWeb = async <
-	Schema extends AnyZodObject,
+	Schema extends $ZodObject,
 	Props extends Record<string, unknown>,
 >({
 	composition,
@@ -534,7 +533,7 @@ const internalRenderMediaOnWeb = async <
 };
 
 export const renderMediaOnWeb = <
-	Schema extends AnyZodObject,
+	Schema extends $ZodObject,
 	Props extends Record<string, unknown>,
 >(
 	options: RenderMediaOnWebOptions<Schema, Props>,

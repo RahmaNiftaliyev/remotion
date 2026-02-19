@@ -1,9 +1,9 @@
-import type {AnyZodObject} from 'remotion';
 import {
 	Internals,
 	type CalculateMetadataFunction,
 	type LogLevel,
 } from 'remotion';
+import type {$ZodObject} from 'zod/v4/core';
 import type {WebRendererOnArtifact} from './artifact';
 import {handleArtifacts} from './artifact';
 import {checkForError, createScaffold} from './create-scaffold';
@@ -20,7 +20,7 @@ import {waitForReady} from './wait-for-ready';
 export type RenderStillOnWebImageFormat = 'png' | 'jpeg' | 'webp';
 
 type MandatoryRenderStillOnWebOptions<
-	Schema extends AnyZodObject,
+	Schema extends $ZodObject,
 	Props extends Record<string, unknown>,
 > = {
 	frame: number;
@@ -29,7 +29,7 @@ type MandatoryRenderStillOnWebOptions<
 	composition: CompositionCalculateMetadataOrExplicit<Schema, Props>;
 };
 
-type OptionalRenderStillOnWebOptions<Schema extends AnyZodObject> = {
+type OptionalRenderStillOnWebOptions<Schema extends $ZodObject> = {
 	delayRenderTimeoutInMilliseconds: number;
 	logLevel: LogLevel;
 	schema: Schema | undefined;
@@ -42,21 +42,21 @@ type OptionalRenderStillOnWebOptions<Schema extends AnyZodObject> = {
 };
 
 type InternalRenderStillOnWebOptions<
-	Schema extends AnyZodObject,
+	Schema extends $ZodObject,
 	Props extends Record<string, unknown>,
 > = MandatoryRenderStillOnWebOptions<Schema, Props> &
 	OptionalRenderStillOnWebOptions<Schema> &
 	InputPropsIfHasProps<Schema, Props>;
 
 export type RenderStillOnWebOptions<
-	Schema extends AnyZodObject,
+	Schema extends $ZodObject,
 	Props extends Record<string, unknown>,
 > = MandatoryRenderStillOnWebOptions<Schema, Props> &
 	Partial<OptionalRenderStillOnWebOptions<Schema>> &
 	InputPropsIfHasProps<Schema, Props>;
 
 async function internalRenderStillOnWeb<
-	Schema extends AnyZodObject,
+	Schema extends $ZodObject,
 	Props extends Record<string, unknown>,
 >({
 	frame,
@@ -187,7 +187,7 @@ async function internalRenderStillOnWeb<
 }
 
 export const renderStillOnWeb = <
-	Schema extends AnyZodObject,
+	Schema extends $ZodObject,
 	Props extends Record<string, unknown>,
 >(
 	options: RenderStillOnWebOptions<Schema, Props>,

@@ -186,8 +186,7 @@ const remarkVisitor =
 				md: 'markdown',
 				txt: 'plaintext',
 			};
-			const resolvedLang =
-				langAliases[fence.lang] || fence.lang || 'plaintext';
+			const resolvedLang = langAliases[fence.lang] || fence.lang || 'plaintext';
 
 			try {
 				shikiHTML = highlighter.codeToHtml(node.value, {
@@ -206,6 +205,19 @@ const remarkVisitor =
 			shikiHTML = shikiHTML.replace(
 				'</pre>',
 				'<button class="copy-button" aria-label="Copy code to clipboard">Copy</button></pre>',
+			);
+		}
+
+		// Inject title bar if fence has a title attribute
+		if (fence.meta.title && typeof fence.meta.title === 'string') {
+			const {title} = fence.meta;
+			shikiHTML = shikiHTML.replace(
+				'<pre class="shiki',
+				'<pre class="shiki with-title',
+			);
+			shikiHTML = shikiHTML.replace(
+				/(<pre[^>]*>)/,
+				`$1<div class="code-title">${title}</div>`,
 			);
 		}
 

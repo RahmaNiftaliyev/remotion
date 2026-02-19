@@ -29,6 +29,11 @@ export const bundleCacheOption = {
 		};
 	},
 	setConfig: (value: boolean) => {
+		if (typeof value !== 'boolean') {
+			throw new TypeError(
+				`Value for "${cliFlag}" must be a boolean, but got ${typeof value}.`,
+			);
+		}
 		cachingEnabled = value;
 	},
 	type: true as boolean,

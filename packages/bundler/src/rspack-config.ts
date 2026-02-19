@@ -92,7 +92,6 @@ export const rspackConfig = async ({
 
 	// Rspack config is structurally compatible with webpack config at runtime,
 	// but the TypeScript types differ. Cast through `any` for the override.
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const conf = (await webpackOverride({
 		...getBaseConfig(environment, poll),
 		ignoreWarnings: [
@@ -110,7 +109,7 @@ export const rspackConfig = async ({
 		plugins:
 			environment === 'development'
 				? [
-						new ReactRefreshPlugin(),
+						new ReactRefreshPlugin({overlay: false}),
 						new rspack.HotModuleReplacementPlugin(),
 						define,
 					]

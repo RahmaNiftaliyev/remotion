@@ -62,6 +62,7 @@ import {publicDirOption} from './public-dir';
 import {publicLicenseKeyOption} from './public-license-key';
 import {publicPathOption} from './public-path';
 import {reproOption} from './repro';
+import {runsOption} from './runs';
 import {scaleOption} from './scale';
 import {separateAudioOption} from './separate-audio';
 import {stillFrameOption} from './still-frame';
@@ -107,6 +108,7 @@ export const allOptions = {
 	beepOnFinishOption,
 	numberOfGifLoopsOption,
 	reproOption,
+	runsOption,
 	pixelFormatOption,
 	preferLosslessOption: preferLosslessAudioOption,
 	proResProfileOption,

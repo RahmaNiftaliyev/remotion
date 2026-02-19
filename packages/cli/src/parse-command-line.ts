@@ -1,6 +1,5 @@
 import type {
 	AudioCodec,
-	OpenGlRenderer,
 	StillImageFormat,
 	VideoImageFormat,
 } from '@remotion/renderer';
@@ -61,6 +60,10 @@ const {
 	versionFlagOption,
 	bundleCacheOption,
 	envFileOption,
+	glOption,
+	runsOption,
+	reproOption,
+	mutedOption,
 } = BrowserSafeApis.options;
 
 export type CommandLineOptions = {
@@ -131,15 +134,15 @@ export type CommandLineOptions = {
 	[experimentalClientSideRenderingOption.cliFlag]: TypeOfOption<
 		typeof experimentalClientSideRenderingOption
 	>;
-	muted: boolean;
+	[mutedOption.cliFlag]: TypeOfOption<typeof mutedOption>;
 	[overrideHeightOption.cliFlag]: TypeOfOption<typeof overrideHeightOption>;
 	[overrideWidthOption.cliFlag]: TypeOfOption<typeof overrideWidthOption>;
 	[overrideFpsOption.cliFlag]: TypeOfOption<typeof overrideFpsOption>;
 	[overrideDurationOption.cliFlag]: TypeOfOption<typeof overrideDurationOption>;
-	runs: number;
+	[runsOption.cliFlag]: TypeOfOption<typeof runsOption>;
 	concurrencies: string;
 	[enforceAudioOption.cliFlag]: TypeOfOption<typeof enforceAudioOption>;
-	gl: OpenGlRenderer;
+	[glOption.cliFlag]: TypeOfOption<typeof glOption>;
 	[packageManagerOption.cliFlag]: TypeOfOption<typeof packageManagerOption>;
 	[webpackPollOption.cliFlag]: TypeOfOption<typeof webpackPollOption>;
 	['no-open']: boolean;
@@ -154,7 +157,7 @@ export type CommandLineOptions = {
 	[enableMultiprocessOnLinuxOption.cliFlag]: TypeOfOption<
 		typeof enableMultiprocessOnLinuxOption
 	>;
-	repro: boolean;
+	[reproOption.cliFlag]: TypeOfOption<typeof reproOption>;
 	[imageSequencePatternOption.cliFlag]: TypeOfOption<
 		typeof imageSequencePatternOption
 	>;

@@ -24,8 +24,6 @@ import {shouldUseNonOverlayingLogger} from './should-use-non-overlaying-logger';
 import {showMultiCompositionsPicker} from './show-compositions-picker';
 import {truthy} from './truthy';
 
-const DEFAULT_RUNS = 3;
-
 const {
 	audioBitrateOption,
 	x264Option,
@@ -73,6 +71,7 @@ const {
 	overrideFpsOption,
 	overrideDurationOption,
 	bundleCacheOption,
+	runsOption,
 } = BrowserSafeApis.options;
 
 const getValidConcurrency = (cliConcurrency: number | string | null) => {
@@ -188,7 +187,7 @@ export const benchmarkCommand = async (
 	args: string[],
 	logLevel: LogLevel,
 ) => {
-	const runs: number = parsedCli.runs ?? DEFAULT_RUNS;
+	const runs = runsOption.getValue({commandLine: parsedCli}).value;
 
 	const {file, reason, remainingArgs} = findEntryPoint({
 		args,

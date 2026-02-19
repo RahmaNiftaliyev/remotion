@@ -722,9 +722,8 @@ export const Config: FlatConfig = {
 	overrideDuration: overrideDurationOption.setConfig,
 	overrideFfmpegCommand: setFfmpegOverrideFunction,
 	setAudioCodec: audioCodecOption.setConfig,
-	setOffthreadVideoCacheSizeInBytes: (size) => {
-		offthreadVideoCacheSizeInBytesOption.setConfig(size);
-	},
+	setOffthreadVideoCacheSizeInBytes:
+		offthreadVideoCacheSizeInBytesOption.setConfig,
 	setDeleteAfter: deleteAfterOption.setConfig,
 	setColorSpace: colorSpaceOption.setConfig,
 	setDisallowParallelEncoding: disallowParallelEncodingOption.setConfig,

@@ -146,37 +146,19 @@ export const getEnvironmentVariables = (
 	const {value: envFileValue, source: envFileSource} = envFileOption.getValue({
 		commandLine: parsedCli,
 	});
-	if (envFileValue && envFileSource === 'cli') {
-		const envFile = path.resolve(process.cwd(), envFileValue);
-		if (!fs.existsSync(envFile)) {
-			Log.error(
-				{indent: false, logLevel},
-				'You passed a --env-file but it could not be found.',
-			);
-			Log.error(
-				{indent: false, logLevel},
-				'We looked for the file at:',
-				envFile,
-			);
-			Log.error(
-				{indent: false, logLevel},
-				'Check that your path is correct and try again.',
-			);
-			process.exit(1);
-		}
-
-		return getEnvForEnvFile({processEnv, envFile, onUpdate, logLevel, indent});
-	}
 
 	const remotionRoot = RenderInternals.findRemotionRoot();
 
-	const configFileSetting = envFileValue && envFileSource === 'config' ? envFileValue : null;
-	if (configFileSetting) {
-		const envFile = path.resolve(remotionRoot, configFileSetting);
+	if (envFileValue && envFileSource !== 'default') {
+		const baseDir =
+			envFileSource === 'cli' ? process.cwd() : remotionRoot;
+		const envFile = path.resolve(baseDir, envFileValue);
 		if (!fs.existsSync(envFile)) {
 			Log.error(
 				{indent: false, logLevel},
-				'You specified a custom .env file using `Config.setDotEnvLocation()` in the config file but it could not be found',
+				envFileSource === 'cli'
+					? 'You passed a --env-file but it could not be found.'
+					: 'You specified a custom .env file using `Config.setDotEnvLocation()` in the config file but it could not be found',
 			);
 			Log.error(
 				{indent: false, logLevel},

@@ -181,6 +181,7 @@ export const AssetSelector: React.FC<{
 						toggleFolder={toggleFolder}
 						dropLocation={dropLocation}
 						setDropLocation={setDropLocation}
+						readOnlyStudio={readOnlyStudio}
 					/>
 				</div>
 			)}

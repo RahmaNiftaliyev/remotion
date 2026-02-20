@@ -1,5 +1,6 @@
 import type {AudioCodec, Quality} from 'mediabunny';
 import {
+	AdtsOutputFormat,
 	MkvOutputFormat,
 	Mp3OutputFormat,
 	Mp4OutputFormat,
@@ -22,6 +23,7 @@ export type WebRendererContainer =
 	| 'mkv'
 	| 'wav'
 	| 'mp3'
+	| 'aac'
 	| 'ogg';
 export type WebRendererAudioCodec =
 	| 'aac'
@@ -39,7 +41,12 @@ export type WebRendererQuality =
 export const isAudioOnlyContainer = (
 	container: WebRendererContainer,
 ): boolean => {
-	return container === 'wav' || container === 'mp3' || container === 'ogg';
+	return (
+		container === 'wav' ||
+		container === 'mp3' ||
+		container === 'aac' ||
+		container === 'ogg'
+	);
 };
 
 export const codecToMediabunnyCodec = (
@@ -75,6 +82,8 @@ export const containerToMediabunnyContainer = (
 			return new WavOutputFormat();
 		case 'mp3':
 			return new Mp3OutputFormat();
+		case 'aac':
+			return new AdtsOutputFormat();
 		case 'ogg':
 			return new OggOutputFormat();
 		default:
@@ -94,6 +103,7 @@ export const getDefaultVideoCodecForContainer = (
 			return 'h264';
 		case 'wav':
 		case 'mp3':
+		case 'aac':
 		case 'ogg':
 			return null;
 		default:
@@ -148,6 +158,8 @@ export const getMimeType = (container: WebRendererContainer): string => {
 			return 'audio/wav';
 		case 'mp3':
 			return 'audio/mpeg';
+		case 'aac':
+			return 'audio/aac';
 		case 'ogg':
 			return 'audio/ogg';
 		default:
@@ -169,6 +181,8 @@ export const getDefaultAudioCodecForContainer = (
 			return 'pcm-s16';
 		case 'mp3':
 			return 'mp3';
+		case 'aac':
+			return 'aac';
 		case 'ogg':
 			return 'opus';
 		default:

@@ -1,5 +1,4 @@
 import {RenderInternals} from '@remotion/renderer';
-import fs from 'node:fs';
 import type {ReadStream} from 'node:fs';
 import type {IncomingMessage, ServerResponse} from 'node:http';
 import path from 'node:path';
@@ -118,58 +117,6 @@ function getFilenameFromUrl(
 	return foundFilename;
 }
 
-// Rspack's native compiler may write HMR update files to disk
-// rather than the in-memory outputFileSystem. Check the real filesystem
-// as a fallback for .hot-update. files.
-function getFilenameFromUrlDiskFallback(
-	context: DevMiddlewareContext,
-	url: string | undefined,
-): {filename: string; fromDisk: true} | undefined {
-	const paths = getPaths(context);
-
-	let urlObject;
-	try {
-		urlObject = memoizedParse(url, false, true);
-	} catch {
-		return;
-	}
-
-	const pathname = urlObject.pathname;
-	if (!pathname || !pathname.includes('.hot-update.')) {
-		return;
-	}
-
-	for (const {publicPath, outputPath} of paths) {
-		let publicPathObject;
-		try {
-			publicPathObject = memoizedParse(
-				publicPath !== 'auto' && publicPath ? publicPath : '/',
-				false,
-				true,
-			);
-		} catch {
-			continue;
-		}
-
-		if (pathname.startsWith(publicPathObject.pathname)) {
-			const stripped = pathname.substr(publicPathObject.pathname.length);
-			const filename = stripped
-				? path.join(outputPath, querystring.unescape(stripped))
-				: outputPath;
-
-			try {
-				if (fs.statSync(filename).isFile()) {
-					return {filename, fromDisk: true};
-				}
-			} catch {
-				continue;
-			}
-		}
-	}
-
-	return undefined;
-}
-
 export function getValueContentRangeHeader(
 	type: string,
 	size: number,
@@ -230,25 +177,6 @@ export function middleware(context: DevMiddlewareContext) {
 			const filename = getFilenameFromUrl(context, req.url);
 
 			if (!filename) {
-				// Rspack may write HMR update files to disk instead of memfs.
-				// Try serving from the real filesystem as a fallback.
-				const diskResult = getFilenameFromUrlDiskFallback(
-					context,
-					req.url,
-				);
-				if (diskResult) {
-					const contentType = RenderInternals.mimeContentType(
-						path.extname(diskResult.filename),
-					);
-					if (contentType) {
-						setHeaderForResponse(res, 'Content-Type', contentType);
-					}
-
-					const content = fs.readFileSync(diskResult.filename);
-					send(req, res, content, content.byteLength);
-					return;
-				}
-
 				goNext();
 
 				return;

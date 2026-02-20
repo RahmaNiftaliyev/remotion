@@ -9,6 +9,7 @@
  */
 import type {HotMiddlewareMessage} from '@remotion/studio-shared';
 import {hotMiddlewareOptions, stripAnsi} from '@remotion/studio-shared';
+import {processUpdate} from './process-update';
 
 function eventSourceWrapper() {
 	let source: EventSource;
@@ -179,20 +180,7 @@ function processMessage(obj: HotMiddlewareMessage) {
 
 			if (applyUpdate) {
 				window.remotion_finishedBuilding?.();
-				if (
-					obj.hash &&
-					obj.hash !== __webpack_hash__ &&
-					__webpack_module__.hot?.status() === 'idle'
-				) {
-					__webpack_module__.hot
-						?.check(true)
-						.catch((err: Error) => {
-							console.warn(
-								'[Fast refresh] Update check failed: ' +
-									(err.stack || err.message),
-							);
-						});
-				}
+				processUpdate(obj.hash, obj.modules, hotMiddlewareOptions);
 			}
 
 			break;

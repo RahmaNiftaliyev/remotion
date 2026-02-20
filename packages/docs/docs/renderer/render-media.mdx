@@ -549,6 +549,7 @@ The return value is an object with the following properties:
 
 - `buffer`: If `outputLocation` is not specified or `null`, contains a buffer, otherwise `null`.
 - `slowestFrames`: An array of the 10 slowest frames in the shape of `{frame:<Frame number>, time:<Time to render frame ms>}`. You can use this information to optimise your render times.
+- `mimeType`: The MIME type of the rendered output, e.g. `"video/mp4"`, `"video/webm"`, `"image/gif"`.
 
 _**from v3.0.26**:_
 

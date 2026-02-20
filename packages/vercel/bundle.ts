@@ -9,11 +9,13 @@ if (process.env.NODE_ENV !== 'production') {
 console.time('Generated.');
 
 const scriptMap: Record<string, string> = {
-	'render-video-script': 'src/scripts/render-video.mjs',
-	'render-still-script': 'src/scripts/render-still.mjs',
-	'ensure-browser-script': 'src/scripts/ensure-browser.mjs',
-	'upload-blob-script': 'src/scripts/upload-blob.mjs',
+	'render-video-script': 'src/scripts/render-video.ts',
+	'render-still-script': 'src/scripts/render-still.ts',
+	'ensure-browser-script': 'src/scripts/ensure-browser.ts',
+	'upload-blob-script': 'src/scripts/upload-blob.ts',
 };
+
+const transpiler = new Bun.Transpiler({loader: 'ts'});
 
 const generatedDir = path.join('src', 'generated');
 mkdirSync(generatedDir, {recursive: true});
@@ -59,9 +61,10 @@ const output = await build({
 					{namespace: 'script-embed', filter: /.*/},
 					async (args) => {
 						const file = scriptMap[args.path];
-						const content = await Bun.file(file).text();
+						const tsContent = await Bun.file(file).text();
+						const jsContent = transpiler.transformSync(tsContent);
 						return {
-							contents: `export const script = ${JSON.stringify(content)};`,
+							contents: `export const script = ${JSON.stringify(jsContent)};`,
 							loader: 'ts',
 						};
 					},

@@ -1,4 +1,5 @@
 import type {Sandbox} from '@vercel/sandbox';
+import type {VercelBlobAccess} from './types';
 
 function getExtension(filePath: string): string {
 	const lastDot = filePath.lastIndexOf('.');
@@ -15,14 +16,14 @@ export async function uploadToVercelBlob({
 	blobPath,
 	contentType,
 	blobToken,
-	access = 'public',
+	access,
 }: {
 	sandbox: Sandbox;
 	sandboxFilePath: string;
 	blobPath?: string;
 	contentType: string;
 	blobToken: string;
-	access?: 'public' | 'private';
+	access: VercelBlobAccess;
 }): Promise<{url: string; size: number}> {
 	const actualBlobPath =
 		blobPath ??

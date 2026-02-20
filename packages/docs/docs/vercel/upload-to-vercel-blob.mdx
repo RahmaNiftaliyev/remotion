@@ -26,6 +26,7 @@ const {url, size} = await uploadToVercelBlob({
   sandboxFilePath: '/tmp/video.mp4',
   contentType: 'video/mp4',
   blobToken: process.env.BLOB_READ_WRITE_TOKEN!,
+  access: 'public',
 });
 
 console.log(`Uploaded ${size} bytes to ${url}`);
@@ -54,6 +55,12 @@ The MIME type of the file, e.g. `"video/mp4"` or `"image/png"`.
 ### `blobToken`
 
 Your Vercel Blob read/write token. Typically `process.env.BLOB_READ_WRITE_TOKEN`.
+
+### `access`
+
+<TsType type="VercelBlobAccess" source="@remotion/vercel" href="/docs/vercel/types#vercelblobaccess" />
+
+The access level of the uploaded blob. Set to `"public"` for a publicly accessible URL, or `"private"` if you want to restrict access.
 
 ## Return value
 

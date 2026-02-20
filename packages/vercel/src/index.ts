@@ -20,6 +20,7 @@ export type {
 	RenderOnVercelProgress,
 	StillImageFormat,
 	StitchingState,
+	VercelBlobAccess,
 	VercelSandbox,
 	VideoImageFormat,
 	X264Preset,

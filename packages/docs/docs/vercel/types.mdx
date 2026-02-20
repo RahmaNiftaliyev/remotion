@@ -47,6 +47,15 @@ A discriminated union with the following members:
 
 Used as the `onProgress` callback type for [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel).
 
+## `VercelBlobAccess`
+
+```ts twoslash
+import type {VercelBlobAccess} from '@remotion/vercel';
+//                ^?
+```
+
+Either `"public"` or `"private"`. Used as the `access` parameter for [`uploadToVercelBlob()`](/docs/vercel/upload-to-vercel-blob).
+
 ## `RenderMediaOnProgress`
 
 Re-exported from [`@remotion/renderer`](/docs/renderer/render-media#onprogress).

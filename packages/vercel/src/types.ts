@@ -36,6 +36,8 @@ export type {
 	ProResProfile,
 } from '@remotion/renderer/client';
 
+export type VercelBlobAccess = 'public' | 'private';
+
 export type SandboxRenderMediaMessage =
 	| {type: 'opening-browser'}
 	| {type: 'selecting-composition'}

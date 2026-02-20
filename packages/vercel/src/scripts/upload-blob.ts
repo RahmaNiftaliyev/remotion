@@ -1,7 +1,15 @@
 import {put} from '@vercel/blob';
 import {readFileSync, statSync} from 'fs';
 
-const config = JSON.parse(process.argv[2]);
+type UploadBlobConfig = {
+	sandboxFilePath: string;
+	blobPath: string;
+	contentType: string;
+	blobToken: string;
+	access: 'public' | 'private';
+};
+
+const config: UploadBlobConfig = JSON.parse(process.argv[2]);
 
 try {
 	const fileBuffer = readFileSync(config.sandboxFilePath);
@@ -20,6 +28,6 @@ try {
 		}),
 	);
 } catch (err) {
-	console.error(err.message);
+	console.error((err as Error).message);
 	process.exit(1);
 }

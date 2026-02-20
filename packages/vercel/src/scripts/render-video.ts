@@ -1,8 +1,56 @@
+import type {InternalRenderMediaOptions} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
 import {statSync} from 'fs';
 import {NoReactInternals} from 'remotion/no-react';
 
-const config = JSON.parse(process.argv[2]);
+type RenderVideoConfig = {
+	compositionId: string;
+	inputProps: Record<string, unknown>;
+	outputLocation: InternalRenderMediaOptions['outputLocation'];
+	serveUrl: InternalRenderMediaOptions['serveUrl'];
+	crf: InternalRenderMediaOptions['crf'];
+	imageFormat: InternalRenderMediaOptions['imageFormat'];
+	pixelFormat: InternalRenderMediaOptions['pixelFormat'];
+	envVariables: InternalRenderMediaOptions['envVariables'];
+	frameRange: InternalRenderMediaOptions['frameRange'];
+	everyNthFrame: InternalRenderMediaOptions['everyNthFrame'];
+	proResProfile: NonNullable<
+		InternalRenderMediaOptions['proResProfile']
+	> | null;
+	chromiumOptions: InternalRenderMediaOptions['chromiumOptions'];
+	scale: InternalRenderMediaOptions['scale'];
+	browserExecutable: InternalRenderMediaOptions['browserExecutable'];
+	preferLossless: InternalRenderMediaOptions['preferLossless'];
+	enforceAudioTrack: InternalRenderMediaOptions['enforceAudioTrack'];
+	disallowParallelEncoding: InternalRenderMediaOptions['disallowParallelEncoding'];
+	concurrency: InternalRenderMediaOptions['concurrency'];
+	binariesDirectory: InternalRenderMediaOptions['binariesDirectory'];
+	metadata: InternalRenderMediaOptions['metadata'];
+	licenseKey: InternalRenderMediaOptions['licenseKey'];
+	codec: InternalRenderMediaOptions['codec'];
+	videoBitrate: InternalRenderMediaOptions['videoBitrate'];
+	audioBitrate: InternalRenderMediaOptions['audioBitrate'];
+	encodingMaxRate: InternalRenderMediaOptions['encodingMaxRate'];
+	encodingBufferSize: InternalRenderMediaOptions['encodingBufferSize'];
+	muted: InternalRenderMediaOptions['muted'];
+	numberOfGifLoops: InternalRenderMediaOptions['numberOfGifLoops'];
+	x264Preset: InternalRenderMediaOptions['x264Preset'];
+	colorSpace: InternalRenderMediaOptions['colorSpace'];
+	jpegQuality: InternalRenderMediaOptions['jpegQuality'];
+	audioCodec: InternalRenderMediaOptions['audioCodec'];
+	logLevel: InternalRenderMediaOptions['logLevel'];
+	timeoutInMilliseconds: InternalRenderMediaOptions['timeoutInMilliseconds'];
+	forSeamlessAacConcatenation: InternalRenderMediaOptions['forSeamlessAacConcatenation'];
+	separateAudioTo: InternalRenderMediaOptions['separateAudioTo'];
+	hardwareAcceleration: InternalRenderMediaOptions['hardwareAcceleration'];
+	chromeMode: InternalRenderMediaOptions['chromeMode'];
+	offthreadVideoCacheSizeInBytes: InternalRenderMediaOptions['offthreadVideoCacheSizeInBytes'];
+	mediaCacheSizeInBytes: InternalRenderMediaOptions['mediaCacheSizeInBytes'];
+	offthreadVideoThreads: InternalRenderMediaOptions['offthreadVideoThreads'];
+	repro: InternalRenderMediaOptions['repro'];
+};
+
+const config: RenderVideoConfig = JSON.parse(process.argv[2]);
 
 const noop = () => undefined;
 
@@ -152,6 +200,6 @@ try {
 	const {size} = statSync(config.outputLocation ?? '/tmp/video.mp4');
 	console.log(JSON.stringify({type: 'done', size, contentType}));
 } catch (err) {
-	console.error(err.message);
+	console.error((err as Error).message);
 	process.exit(1);
 }

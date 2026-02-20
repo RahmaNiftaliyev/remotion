@@ -1,11 +1,7 @@
-import {Config, ConfigInternals} from './config';
+import {Config} from './config';
 import {parsedCli} from './parsed-cli';
 
 export const parseCommandLine = () => {
-	if (parsedCli.frames) {
-		ConfigInternals.setFrameRangeFromCli(parsedCli.frames);
-	}
-
 	if (parsedCli.png) {
 		throw new Error(
 			'The --png flag has been removed. Use --sequence --image-format=png from now on.',

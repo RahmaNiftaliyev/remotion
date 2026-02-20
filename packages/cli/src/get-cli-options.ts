@@ -9,7 +9,9 @@ import {Log} from './log';
 import {parsedCli} from './parsed-cli';
 
 const getAndValidateFrameRange = (logLevel: LogLevel, indent: boolean) => {
-	const frameRange = ConfigInternals.getRange();
+	const frameRange = BrowserSafeApis.options.framesOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	if (typeof frameRange === 'number') {
 		Log.warn(
 			{logLevel, indent},

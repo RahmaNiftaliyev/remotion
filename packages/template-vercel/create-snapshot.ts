@@ -1,6 +1,6 @@
 import { put } from "@vercel/blob";
 import { addBundleToSandbox, createSandbox } from "@remotion/vercel";
-import { ensureLocalBundle } from "./src/app/api/render/helpers";
+import { bundleRemotionProject } from "./src/app/api/render/helpers";
 
 const getSnapshotBlobKey = () =>
   `snapshot-cache/${process.env.VERCEL_DEPLOYMENT_ID ?? "local"}.json`;
@@ -13,7 +13,7 @@ const sandbox = await createSandbox({
 });
 
 console.log("[create-snapshot] Adding Remotion bundle...");
-ensureLocalBundle(".remotion");
+bundleRemotionProject(".remotion");
 await addBundleToSandbox({ sandbox, bundleDir: ".remotion" });
 
 console.log("[create-snapshot] Taking snapshot...");

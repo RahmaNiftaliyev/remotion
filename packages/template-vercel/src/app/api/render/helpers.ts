@@ -1,19 +1,14 @@
 import { execSync } from "child_process";
-import { existsSync } from "fs";
-import path from "path";
 
-export function ensureLocalBundle(bundleDir: string): void {
-  const fullBundleDir = path.join(process.cwd(), bundleDir);
-  if (!existsSync(fullBundleDir)) {
-    try {
-      execSync(`node_modules/.bin/remotion bundle --out-dir ./${bundleDir}`, {
-        cwd: process.cwd(),
-        stdio: "pipe",
-      });
-    } catch (e) {
-      const stderr = (e as { stderr?: Buffer }).stderr?.toString() ?? "";
-      throw new Error(`Remotion bundle failed: ${stderr}`);
-    }
+export function bundleRemotionProject(bundleDir: string): void {
+  try {
+    execSync(`node_modules/.bin/remotion bundle --out-dir ./${bundleDir}`, {
+      cwd: process.cwd(),
+      stdio: "inherit",
+    });
+  } catch (e) {
+    const stderr = (e as { stderr?: Buffer }).stderr?.toString() ?? "";
+    throw new Error(`Remotion bundle failed: ${stderr}`);
   }
 }
 

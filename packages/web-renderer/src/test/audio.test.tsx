@@ -240,7 +240,7 @@ test('explicit Opus selection produces Opus in MP4 output', async () => {
 	expect(audioCodec).toBe('opus');
 });
 
-test('should render AAC container with web-fs target (audio-only)', async (t) => {
+test('should render AAC container with web-fs (audio-only)', async (t) => {
 	if (t.task.file.projectName === 'firefox') {
 		// Firefox cannot encode AAC
 		t.skip();

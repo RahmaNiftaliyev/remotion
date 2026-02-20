@@ -84,7 +84,8 @@ export const framesOption = {
 	description: () => (
 		<>
 			Render a subset of a video. Pass a single number to render a still, or a
-			range (e.g. <code>0-9</code>) to render a subset of frames.
+			range (e.g. <code>0-9</code>) to render a subset of frames. Pass{' '}
+			<code>100-</code> to render from frame 100 to the end.
 		</>
 	),
 	ssrName: 'frameRange' as const,
@@ -95,6 +96,7 @@ export const framesOption = {
 			const value = parseFrameRangeFromCli(
 				commandLine[cliFlag] as string | number,
 			);
+			validateFrameRange(value);
 			return {
 				source: 'cli',
 				value,

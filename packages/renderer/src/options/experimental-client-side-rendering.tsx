@@ -17,10 +17,9 @@ export const experimentalClientSideRenderingOption = {
 	docLink: 'https://www.remotion.dev/docs/client-side-rendering',
 	type: false as boolean,
 	getValue: ({commandLine}) => {
-		if (commandLine[cliFlag] !== undefined) {
-			experimentalClientSideRenderingEnabled = true;
+		if (commandLine[cliFlag] !== null) {
 			return {
-				value: experimentalClientSideRenderingEnabled,
+				value: commandLine[cliFlag] as boolean,
 				source: 'cli',
 			};
 		}

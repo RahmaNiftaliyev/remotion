@@ -22,10 +22,7 @@ If `composition-id` is also not passed, Remotion will let you select a compositi
 
 ### `--props`
 
-[Input Props to pass to the selected composition of your video.](/docs/passing-props#passing-input-props-in-the-cli).  
-Must be a serialized JSON string (`--props='{"hello": "world"}'`) or a path to a JSON file (`./path/to/props.json`).  
-From the root component the props can be read using [`getInputProps()`](/docs/get-input-props).  
-You may transform input props using [`calculateMetadata()`](/docs/calculate-metadata).
+<Options id="props" />
 
 :::note
 Inline JSON string isn't supported on Windows shells because it removes the `"` character, use a file name instead.
@@ -37,11 +34,11 @@ Inline JSON string isn't supported on Windows shells because it removes the `"` 
 
 ### `--config`
 
-Specify a location for the Remotion config file.
+<Options id="config" />
 
 ### `--env-file`
 
-Specify a location for a dotenv file - Default `.env`. [Read about how environment variables work in Remotion.](/docs/env-variables)
+<Options id="env-file" />
 
 ### `--jpeg-quality` <AvailableFrom v="4.0.0" />
 
@@ -69,12 +66,11 @@ Sets the output file path, as an alternative to the `output-location` positional
 
 ### `--frame`
 
-Which frame should be rendered. Example `--frame=10`. Default `0`.  
-From v3.2.27, negative values are allowed, with `-1` being the last frame.
+<Options id="frame" />
 
 ### `--bundle-cache`
 
-[Enable or disable Webpack caching](/docs/config#setcachingenabled). This flag is enabled by default, use `--bundle-cache=false` to disable caching.
+<Options id="bundle-cache" />
 
 ### `--log`
 
@@ -82,7 +78,7 @@ From v3.2.27, negative values are allowed, with `-1` being the last frame.
 
 ### `--port`
 
-[Set a custom HTTP server port to serve the Webpack bundle](/docs/config#setport). If not defined, Remotion will try to find a free port.
+<Options id="port" />
 
 ### `--public-dir`<AvailableFrom v="3.2.13" />
 

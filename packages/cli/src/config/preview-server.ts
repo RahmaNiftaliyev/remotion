@@ -1,4 +1,7 @@
+import {BrowserSafeApis} from '@remotion/renderer/client';
 import {parsedCli} from '../parsed-cli';
+
+const {portOption} = BrowserSafeApis.options;
 
 let studioPort: number | undefined;
 let rendererPort: number | undefined;
@@ -53,5 +56,7 @@ export const getRendererPortFromConfigFile = () => {
 };
 
 export const getRendererPortFromConfigFileAndCliFlag = (): number | null => {
-	return parsedCli.port ?? rendererPort ?? null;
+	return (
+		portOption.getValue({commandLine: parsedCli}).value ?? rendererPort ?? null
+	);
 };

@@ -63,6 +63,12 @@ const {
 	userAgentOption,
 	disableWebSecurityOption,
 	ignoreCertificateErrorsOption,
+	audioCodecOption,
+	videoCodecOption,
+	overrideHeightOption,
+	overrideWidthOption,
+	overrideFpsOption,
+	overrideDurationOption,
 } = BrowserSafeApis.options;
 
 export const renderCommand = async ({
@@ -93,19 +99,24 @@ export const renderCommand = async ({
 
 	const region = getAwsRegion();
 
-	const {
-		envVariables,
-		frameRange,
-		inputProps,
-		height,
-		width,
-		fps,
-		durationInFrames,
-	} = CliInternals.getCliOptions({
+	const {envVariables, frameRange, inputProps} = CliInternals.getCliOptions({
 		isStill: false,
 		logLevel,
 		indent: false,
 	});
+
+	const height = overrideHeightOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
+	const width = overrideWidthOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
+	const fps = overrideFpsOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
+	const durationInFrames = overrideDurationOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
 
 	const pixelFormat = pixelFormatOption.getValue({
 		commandLine: CliInternals.parsedCli,
@@ -206,6 +217,9 @@ export const renderCommand = async ({
 	const darkMode = darkModeOption.getValue({
 		commandLine: CliInternals.parsedCli,
 	}).value;
+	const audioCodec = audioCodecOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
 
 	const chromiumOptions: Required<ChromiumOptions> = {
 		disableWebSecurity,
@@ -289,19 +303,18 @@ export const renderCommand = async ({
 	const outName = parsedLambdaCli['out-name'];
 	const downloadName = args[2] ?? null;
 
-	const {value: codec, source: reason} =
-		BrowserSafeApis.options.videoCodecOption.getValue(
-			{
-				commandLine: CliInternals.parsedCli,
-			},
-			{
-				downloadName,
-				outName: outName ?? null,
-				configFile: ConfigInternals.getOutputCodecOrUndefined() ?? null,
-				uiCodec: null,
-				compositionCodec: null,
-			},
-		);
+	const {value: codec, source: reason} = videoCodecOption.getValue(
+		{
+			commandLine: CliInternals.parsedCli,
+		},
+		{
+			downloadName,
+			outName: outName ?? null,
+			configFile: ConfigInternals.getOutputCodecOrUndefined() ?? null,
+			uiCodec: null,
+			compositionCodec: null,
+		},
+	);
 
 	const imageFormat = CliInternals.getVideoImageFormat({
 		codec,
@@ -366,8 +379,7 @@ export const renderCommand = async ({
 			: null,
 		rendererFunctionName: parsedLambdaCli['renderer-function-name'] ?? null,
 		forceBucketName: parsedLambdaCli['force-bucket-name'] ?? null,
-		audioCodec:
-			CliInternals.parsedCli[BrowserSafeApis.options.audioCodecOption.cliFlag],
+		audioCodec,
 		deleteAfter: deleteAfter ?? null,
 		colorSpace,
 		downloadBehavior: {type: 'play-in-browser'},

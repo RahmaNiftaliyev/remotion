@@ -21,6 +21,8 @@ const {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	outDirOption,
+	bundleCacheOption,
 } = BrowserSafeApis.options;
 
 export const bundleCommand = async (
@@ -73,6 +75,9 @@ export const bundleCommand = async (
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const shouldCache = bundleCacheOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	if (experimentalClientSideRenderingEnabled) {
 		Log.warn(
@@ -90,8 +95,9 @@ export const bundleCommand = async (
 		commandLine: parsedCli,
 	}).value;
 
-	const outputPath = parsedCli['out-dir']
-		? path.resolve(process.cwd(), parsedCli['out-dir'])
+	const outDir = outDirOption.getValue({commandLine: parsedCli}).value;
+	const outputPath = outDir
+		? path.resolve(process.cwd(), outDir)
 		: path.join(remotionRoot, 'build');
 
 	const gitignoreFolder = BundlerInternals.findClosestFolderWithItem(
@@ -160,6 +166,7 @@ export const bundleCommand = async (
 		experimentalClientSideRenderingEnabled,
 		askAIEnabled,
 		keyboardShortcutsEnabled,
+		shouldCache,
 	});
 
 	Log.info(

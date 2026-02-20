@@ -1,4 +1,5 @@
 import {RenderInternals} from '@remotion/renderer';
+import {BrowserSafeApis} from '@remotion/renderer/client';
 import {StudioServerInternals} from '@remotion/studio-server';
 import minimist from 'minimist';
 import {addCommand} from './add';
@@ -49,8 +50,14 @@ import {
 	versionsCommand,
 } from './versions';
 
+const {packageManagerOption, versionFlagOption} = BrowserSafeApis.options;
+
 export const cli = async () => {
 	const [command, ...args] = parsedCli._;
+
+	const packageManager = packageManagerOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	const remotionRoot = RenderInternals.findRemotionRoot();
 	if (command !== VERSIONS_COMMAND && !parsedCli.help) {
@@ -111,8 +118,10 @@ export const cli = async () => {
 		} else if (command === 'upgrade') {
 			await upgradeCommand({
 				remotionRoot,
-				packageManager: parsedCli['package-manager'],
-				version: parsedCli.version,
+				packageManager: packageManager ?? undefined,
+				version:
+					versionFlagOption.getValue({commandLine: parsedCli}).value ??
+					undefined,
 				logLevel,
 				args,
 			});
@@ -130,7 +139,7 @@ export const cli = async () => {
 
 			await addCommand({
 				remotionRoot,
-				packageManager: parsedCli['package-manager'],
+				packageManager: packageManager ?? undefined,
 				packageNames,
 				logLevel,
 				args: additionalArgs,

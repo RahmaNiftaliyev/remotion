@@ -41,7 +41,7 @@ test(
 	async () => {
 		await ensureBrowser();
 
-		const {buffer} = await renderStill({
+		const {buffer, mimeType} = await renderStill({
 			composition: {
 				width: 1000,
 				height: 1000,
@@ -62,6 +62,7 @@ test(
 			verbose: false,
 		});
 		expect(buffer?.length).toBeGreaterThan(1000);
+		expect(mimeType).toBe('image/png');
 	},
 	{
 		timeout: 30000,

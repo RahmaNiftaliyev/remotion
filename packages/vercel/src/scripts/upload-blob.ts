@@ -1,12 +1,13 @@
 import {put} from '@vercel/blob';
 import {readFileSync, statSync} from 'fs';
+import type {VercelBlobAccess} from '../types';
 
 type UploadBlobConfig = {
 	sandboxFilePath: string;
 	blobPath: string;
 	contentType: string;
 	blobToken: string;
-	access: 'public';
+	access: VercelBlobAccess;
 };
 
 const config: UploadBlobConfig = JSON.parse(process.argv[2]);

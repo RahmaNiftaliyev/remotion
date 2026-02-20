@@ -83,7 +83,7 @@ const publish = async (template: MinimalTemplate) => {
 	await $`git push origin ${defaultBranch.trim()}`.cwd(workingDir);
 };
 
-const CONCURRENCY = 4;
+const CONCURRENCY = 1;
 
 const results: PromiseSettledResult<void>[] = [];
 

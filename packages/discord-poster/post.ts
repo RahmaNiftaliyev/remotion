@@ -1,15 +1,20 @@
 const DISCORD_MAX_LENGTH = 2000;
 
-const latestRelease = await fetch(
-	'https://api.github.com/repos/remotion-dev/remotion/releases?per_page=1',
-);
+const tag = process.argv[2];
 
-const json = await latestRelease.json();
+const url = tag
+	? `https://api.github.com/repos/remotion-dev/remotion/releases/tags/${tag}`
+	: 'https://api.github.com/repos/remotion-dev/remotion/releases?per_page=1';
+
+const latestRelease = await fetch(url);
+
+const response = await latestRelease.json();
+const release = tag ? response : response[0];
 
 const markdown = [
-	`${json[0].tag_name} has been released!`,
-	`<:merge:909914451447259177> ${json[0].html_url}`,
-	...json[0].body.split('\n').map((s: string) => {
+	`${release.tag_name} has been released!`,
+	`<:merge:909914451447259177> ${release.html_url}`,
+	...release.body.split('\n').map((s: string) => {
 		if (s.startsWith('## ')) {
 			return s.replace('## ', '**<:love:989990489824559104> ') + '**';
 		}

@@ -331,6 +331,11 @@ export const getAvailableFonts = () => [
 		load: () => import('./AlumniSansSC') as Promise<GoogleFont>,
 	},
 	{
+		fontFamily: 'Alyamama',
+		importName: 'Alyamama',
+		load: () => import('./Alyamama') as Promise<GoogleFont>,
+	},
+	{
 		fontFamily: 'Amarante',
 		importName: 'Amarante',
 		load: () => import('./Amarante') as Promise<GoogleFont>,
@@ -1284,6 +1289,21 @@ export const getAvailableFonts = () => [
 		fontFamily: 'Bowlby One SC',
 		importName: 'BowlbyOneSC',
 		load: () => import('./BowlbyOneSC') as Promise<GoogleFont>,
+	},
+	{
+		fontFamily: 'Bpmf Huninn',
+		importName: 'BpmfHuninn',
+		load: () => import('./BpmfHuninn') as Promise<GoogleFont>,
+	},
+	{
+		fontFamily: 'Bpmf Iansui',
+		importName: 'BpmfIansui',
+		load: () => import('./BpmfIansui') as Promise<GoogleFont>,
+	},
+	{
+		fontFamily: 'Bpmf Zihi Kai Std',
+		importName: 'BpmfZihiKaiStd',
+		load: () => import('./BpmfZihiKaiStd') as Promise<GoogleFont>,
 	},
 	{
 		fontFamily: 'Braah One',

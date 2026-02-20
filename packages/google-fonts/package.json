@@ -3,7 +3,7 @@
 		"url": "https://github.com/remotion-dev/remotion/tree/main/packages/google-fonts"
 	},
 	"name": "@remotion/google-fonts",
-	"version": "4.0.425",
+	"version": "4.0.426",
 	"description": "Use Google Fonts in Remotion",
 	"main": "dist/cjs/index.js",
 	"module": "dist/esm/index.mjs",
@@ -199,6 +199,9 @@
 			],
 			"AlumniSansSC": [
 				"dist/cjs/AlumniSansSC.d.ts"
+			],
+			"Alyamama": [
+				"dist/cjs/Alyamama.d.ts"
 			],
 			"Amarante": [
 				"dist/cjs/Amarante.d.ts"
@@ -772,6 +775,15 @@
 			],
 			"BowlbyOneSC": [
 				"dist/cjs/BowlbyOneSC.d.ts"
+			],
+			"BpmfHuninn": [
+				"dist/cjs/BpmfHuninn.d.ts"
+			],
+			"BpmfIansui": [
+				"dist/cjs/BpmfIansui.d.ts"
+			],
+			"BpmfZihiKaiStd": [
+				"dist/cjs/BpmfZihiKaiStd.d.ts"
 			],
 			"BraahOne": [
 				"dist/cjs/BraahOne.d.ts"

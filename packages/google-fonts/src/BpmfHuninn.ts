@@ -1,21 +1,21 @@
 import {loadFonts} from './base';
 
 export const getInfo = () => ({
-	fontFamily: 'Huninn',
-	importName: 'Huninn',
-	version: 'v6',
-	url: 'https://fonts.googleapis.com/css2?family=Huninn:ital,wght@0,400',
+	fontFamily: 'Bpmf Huninn',
+	importName: 'BpmfHuninn',
+	version: 'v2',
+	url: 'https://fonts.googleapis.com/css2?family=Bpmf+Huninn:ital,wght@0,400',
 	unicodeRanges: {
 		'[0]':
 			'U+1f921-1f930, U+1f932-1f935, U+1f937-1f939, U+1f940-1f944, U+1f947-1f94a, U+1f950-1f95f, U+1f962-1f967, U+1f969-1f96a, U+1f980-1f981, U+1f984-1f98d, U+1f990-1f992, U+1f994-1f996, U+1f9c0, U+1f9d0, U+1f9d2, U+1f9d4, U+1f9d6, U+1f9d8, U+1f9da, U+1f9dc-1f9dd, U+1f9df-1f9e2, U+1f9e5-1f9e6, U+20024, U+20487, U+20779, U+20c41, U+20c78, U+20d71, U+20e98, U+20ef9, U+2107b, U+210c1, U+22c51, U+233b4, U+24a12, U+2512b, U+2546e, U+25683, U+267cc, U+269f2, U+27657, U+282e2, U+2898d, U+29d5a, U+f0001-f0005, U+f0019, U+f009b, U+f0101-f0104, U+f012b, U+f01ba, U+f01d6, U+f0209, U+f0217, U+f0223-f0224, U+fc355, U+fe327, U+fe517, U+feb97, U+fffb4',
-		'[4]':
-			'U+1f3ad-1f3af, U+1f3b1-1f3b2, U+1f3b5-1f3be, U+1f3c0-1f3c8, U+1f3ca-1f3cb, U+1f3cd-1f3ce, U+1f3d0, U+1f3d3-1f3d6, U+1f3d8-1f3de, U+1f3e0-1f3e2, U+1f3e5-1f3ec, U+1f3ee-1f3f0, U+1f3f3-1f3f5, U+1f3f7-1f3f9, U+1f3fc-1f3ff, U+1f402-1f416, U+1f418-1f429, U+1f42c-1f448, U+1f44a-1f44b',
 		'[6]':
 			'U+ff78-ff7e, U+ff80-ff86, U+ff89-ff94, U+ff97-ff9e, U+ffb9, U+ffe0-ffe3, U+ffe9, U+ffeb, U+ffed, U+fffc, U+1d7c7, U+1f004, U+1f0cf, U+1f141-1f142, U+1f150, U+1f154, U+1f158, U+1f15b, U+1f15d-1f15e, U+1f162-1f163, U+1f170-1f171, U+1f174, U+1f177-1f178, U+1f17d-1f17f, U+1f192-1f195, U+1f197-1f19a, U+1f1e6-1f1f5, U+1f1f7-1f1ff, U+1f21a, U+1f22f, U+1f232-1f237, U+1f239-1f23a, U+1f250-1f251, U+1f300, U+1f302-1f319',
 		'[7]':
 			'U+fa0a, U+fa0c, U+fa11, U+fa17, U+fa19, U+fa1b, U+fa1d, U+fa26, U+fa2c, U+fb01, U+fdfc, U+fe0e, U+fe33-fe36, U+fe38-fe44, U+fe49-fe51, U+fe54, U+fe56-fe57, U+fe59-fe5c, U+fe5f-fe6a, U+fe8e, U+fe92-fe93, U+feae, U+fecb-fecc, U+fee0, U+feec, U+fef3, U+ff04, U+ff07, U+ff26-ff2c, U+ff31-ff32, U+ff35-ff37, U+ff39-ff3a, U+ff3c, U+ff3e-ff5b, U+ff5d, U+ff61-ff65, U+ff67-ff68, U+ff6a, U+ff6c-ff77',
-		'[8]':
-			'U+f78a-f78c, U+f78e, U+f792-f796, U+f798, U+f79c, U+f7f5, U+f812, U+f815, U+f876, U+f8f5, U+f8f8, U+f8ff, U+f901-f902, U+f904, U+f906, U+f909-f90a, U+f90f, U+f914, U+f918-f919, U+f91b, U+f91d, U+f91f, U+f923, U+f925, U+f92d-f92f, U+f934, U+f937-f938, U+f93d, U+f93f, U+f941, U+f949, U+f94c, U+f94e-f94f, U+f95a, U+f95d-f95e, U+f961-f963, U+f965-f970, U+f974, U+f976-f97a, U+f97c, U+f97e-f97f, U+f981, U+f983, U+f988, U+f98a, U+f98c, U+f98e, U+f996-f997, U+f999-f99a, U+f99c, U+f99f-f9a0, U+f9a3, U+f9a8, U+f9ad, U+f9b2-f9b6, U+f9b9-f9ba, U+f9bd-f9be, U+f9c1, U+f9c4, U+f9c7, U+f9ca, U+f9cd, U+f9d0-f9d1, U+f9d3-f9d4, U+f9d7-f9d8, U+f9dc-f9dd, U+f9df-f9e1, U+f9e4, U+f9e8-f9ea, U+f9f4, U+f9f6-f9f7, U+f9f9-f9fa, U+f9fc-fa01, U+fa03-fa04, U+fa06, U+fa08-fa09',
+		'[9]':
+			'U+f06e-f06f, U+f075-f077, U+f07b, U+f097, U+f09a, U+f0a1, U+f0a4, U+f0a7-f0a8, U+f0b2, U+f0b7, U+f0be, U+f0c9, U+f0d8, U+f0e0, U+f0e6, U+f0fc, U+f104-f105, U+f16a, U+f16d, U+f18a, U+f1e0, U+f232, U+f308, U+f400, U+f442, U+f4df, U+f610-f611, U+f6b1-f6b5, U+f6ba-f6bc, U+f6c7, U+f6dd, U+f6e2, U+f6f3-f6f4, U+f6f8, U+f6fa, U+f6fc, U+f6fe, U+f700-f703, U+f705, U+f707, U+f709-f70b, U+f70d-f70f, U+f711, U+f713, U+f715-f717, U+f719-f71a, U+f71c-f721, U+f724-f725, U+f728, U+f734-f735, U+f737-f738, U+f73a, U+f73e-f742, U+f745, U+f748-f749, U+f74b-f74d, U+f74f-f751, U+f753-f756, U+f758-f75a, U+f75c, U+f75e, U+f760-f764, U+f768-f76a, U+f76c, U+f76f-f774, U+f776-f77a, U+f77c, U+f77e-f780, U+f785, U+f787-f789',
+		'[10]':
+			'U+e658, U+e66c, U+e66e, U+e670, U+e683, U+e689-e68a, U+e68c, U+e68e-e68f, U+e69a, U+e69d, U+e6bc, U+e6c5, U+e6ca, U+e6d5, U+e6db, U+e6dd, U+e6df, U+e6e4, U+e6ea, U+e6ec, U+e6f4, U+e6fb, U+e708, U+e70d, U+e712, U+e725, U+e727, U+e739, U+e741, U+e744, U+e76c, U+e771, U+e77f, U+e7a2, U+e7d2, U+e7d4, U+e7e7-e7f0, U+e7fd-e803, U+e805, U+e80b, U+e80d, U+e838, U+e84f, U+e853, U+e866, U+e876, U+e87a, U+e87e, U+e88a, U+e88c, U+e88f, U+e895, U+e897, U+e8b5-e8b6, U+e8e2, U+e8f8, U+e8ff-e910, U+e912-e913, U+e916, U+e929, U+e931, U+e95d, U+e960, U+e966, U+e968, U+e975-e977, U+e9cb, U+e9d7, U+ea8d, U+eb42, U+eb78, U+eb7b, U+ec23, U+ecb1, U+ecd0-ecd1, U+ecd4, U+ecd8-ecdb, U+ecf3, U+ecf6, U+ed04, U+ed8b, U+edaf, U+edce, U+effd, U+efff, U+f002, U+f015, U+f02e-f02f, U+f038, U+f059, U+f06c',
 		'[19]':
 			'U+9ee5, U+9ee7, U+9eee, U+9ef3-9ef4, U+9ef6-9ef7, U+9ef9, U+9efb-9efd, U+9eff, U+9f07-9f09, U+9f10, U+9f14-9f15, U+9f19, U+9f22, U+9f29, U+9f2c, U+9f2f, U+9f31, U+9f34, U+9f37, U+9f39, U+9f3d-9f3e, U+9f41, U+9f4c-9f50, U+9f54, U+9f57, U+9f59, U+9f5c, U+9f5f-9f60, U+9f62-9f63, U+9f66-9f67, U+9f6a, U+9f6c, U+9f72, U+9f76-9f77, U+9f7f, U+9f84-9f85, U+9f88, U+9f8e, U+9f91, U+9f94-9f96, U+9f98, U+9f9a-9f9b, U+9f9f-9fa0, U+9fa2, U+9fa4, U+9ff0-9fff, U+a1f4, U+a4b0-a4b1, U+a4b3, U+a9c1-a9c2, U+aa31, U+ab34, U+ac00-ac01, U+ac04, U+ac08, U+ac10-ac11, U+ac13-ac16, U+ac19, U+ac1c-ac1d, U+ac24, U+ac70-ac71, U+ac74, U+ac77-ac78, U+ac80-ac81, U+ac83, U+ac8c, U+ac90, U+aca0, U+aca8-aca9, U+acac, U+acb0, U+acb8-acb9, U+acbc-acbd, U+acc1, U+acc4, U+ace0-ace1, U+ace4, U+ace8, U+acf0-acf1, U+acf3, U+acf5, U+acfc',
 		'[20]':
@@ -152,8 +152,6 @@ export const getInfo = () => ({
 			'U+3052, U+305c, U+3062, U+306d, U+307a, U+307c, U+3080, U+308e, U+3090-3091, U+3099-309e, U+30a5, U+30c2, U+30c5, U+30ee, U+30f0-30f2, U+30f4-30f6, U+30fd-30fe, U+3105-3106, U+3108, U+310a-310b, U+310d-3112, U+3115-3117, U+3119, U+3131, U+3134, U+3137, U+3139, U+3141-3142, U+3145, U+3147-3148, U+314b, U+314d-314f, U+3153, U+315c, U+3160-3161, U+3163-3164, U+3181, U+318d, U+3192-3193, U+3196-3198, U+319d-319f, U+3220-3226, U+3231, U+3268, U+3281, U+328b, U+3291-3292, U+3295-3297, U+3299, U+329d, U+329f, U+32a3-32a4, U+32d6, U+32e1, U+3314, U+3322, U+337f, U+338e-338f, U+339c-339e, U+33a1, U+33c4, U+33d1-33d2, U+3440, U+3449, U+3479, U+3551, U+3569, U+35ad, U+35ce, U+36ac, U+373a, U+3863, U+38ec, U+39b8, U+3a02, U+3a17, U+3a52, U+3b22, U+3bd7, U+3bff, U+3ca5, U+3d68, U+3ddb, U+3de7, U+3deb, U+3e03, U+3e74, U+3f08, U+3f0e, U+3f21',
 		'[86]':
 			'U+2748-274f, U+2752-275b, U+275d-275e, U+2761, U+2763, U+2765-2769, U+276e-276f, U+2771, U+2776-277e, U+2780-2782, U+278a-278c, U+2794-2796, U+2798-2799, U+279c-27a6, U+27a8-27ab, U+27ad, U+27af-27b0, U+27b2-27b3, U+27b7-27b9, U+27bc-27bd, U+27bf, U+27e9-27eb, U+27f5-27f6, U+2800, U+28ec, U+2922, U+2934-2935, U+29bf, U+2a2f, U+2b05-2b07, U+2b1b, U+2b50, U+2b55, U+2cf5, U+2e1c-2e1d, U+2f00, U+2f08, U+2f12, U+2f24, U+2f29, U+2f2f, U+2f3c, U+2f3f, U+2f42, U+2f45, U+2f63-2f64, U+2f83, U+2f8f, U+3003-3007, U+3012-3013, U+3016-3019, U+3020-3025, U+3030, U+303d, U+3041, U+3043, U+3045, U+3047, U+3049',
-		'[87]':
-			'U+2649-2656, U+2658-265c, U+265e-2660, U+2662-2664, U+2666-2669, U+266b-266f, U+267b, U+2692-2696, U+2698, U+269b-269c, U+26a0-26a1, U+26a3-26a5, U+26aa-26ac, U+26bd-26be, U+26c4-26c5, U+26c8, U+26d1, U+26d3-26d4, U+26e4, U+26e9-26ea, U+26f0-26f5, U+26f9-26fa, U+26fd, U+2701-2702, U+2704-2706, U+2708, U+270a-2712, U+2714, U+2716-2727, U+2729-273e, U+2740-2747',
 		'[88]':
 			'U+2566-2570, U+2572, U+2574, U+2579, U+2580-258a, U+258c-2595, U+2597, U+25a1, U+25a3-25a4, U+25a6-25ac, U+25b0, U+25b4, U+25b7-25b9, U+25bb, U+25bd, U+25bf-25c2, U+25c7-25ca, U+25cc-25cd, U+25d0-25d9, U+25dc-25e6, U+25ea-25eb, U+25ef, U+25fb-25fe, U+2600-2604, U+2607, U+2609-260b, U+260d-2615, U+2618, U+261a-2623, U+262a, U+262d-2630, U+2638-263e, U+2641-2642, U+2648',
 		'[89]':
@@ -161,17 +159,13 @@ export const getInfo = () => ({
 		'[90]':
 			'U+2139, U+2153, U+2194-2197, U+2199, U+219d-219e, U+21a0, U+21a9-21aa, U+21ac, U+21af-21b1, U+21b3-21b5, U+21ba-21bb, U+21c4, U+21ca, U+21cc, U+21d0, U+21d2-21d4, U+21d8, U+21dd, U+21e2-21e9, U+2200, U+2202, U+2205-2208, U+220e-220f, U+2211-2212, U+2215, U+2217-221a, U+221d-2220, U+2225, U+2227-222b, U+222e, U+2234-2237, U+223c-223d, U+2248, U+2256, U+2260-2261, U+2264-2265, U+226a-226b, U+226e-226f, U+2282-2283, U+2295-2296, U+2299, U+22a5, U+22b0-22b1, U+22b9, U+22bf, U+22c5-22c6, U+22c8, U+22d0-22d1, U+22ee, U+2312-2313, U+2318, U+231a-231b, U+2323, U+2328, U+239d, U+23a0, U+23af, U+23e4, U+23e9-23ea, U+23ec, U+23f0-23f3, U+23fa, U+2445, U+2460-2471, U+2474',
 		'[91]':
-			'U+1ec0-1ec3, U+1ec5-1ec6, U+1ec9, U+1ecb-1ecd, U+1ecf-1ed1, U+1ed3-1ed5, U+1ed7-1edd, U+1edf, U+1ee1, U+1ee3-1ee7, U+1ee9, U+1eeb, U+1eed, U+1eef-1ef1, U+1ef3, U+1ef7, U+1ef9, U+1f62, U+1fa2, U+2001-2006, U+2009-200a, U+200c-200d, U+200f-2012, U+2015-2016, U+201a, U+201e, U+2020-2021, U+2023-2025, U+2028, U+202a-202d, U+202f-2030, U+2032-2033, U+2035, U+2038, U+203e-203f, U+2042-2044, U+2049, U+204d-204e, U+2060-2061, U+2063, U+2070, U+2074-207b, U+207d-207e, U+2080-2083, U+208a, U+208d-208e, U+20a1, U+20a4, U+20a6, U+20a8-20ab, U+20ad-20ae, U+20b1-20b3, U+20b5, U+20b8-20ba, U+20bd, U+20dd, U+20e3, U+2105, U+2109, U+2112-2113, U+2115-2117, U+2120-2121, U+2126, U+212b',
-		'[92]':
-			'U+11af, U+11b7, U+11bc, U+121b, U+122d, U+129b, U+12a0, U+13a6, U+13a9, U+13ac, U+13af, U+13b3, U+13c2, U+13e3, U+141b, U+1555, U+1557, U+15dc, U+15e8, U+1780-1782, U+1784-1785, U+1787, U+178a, U+178e-1791, U+1793-179c, U+179f, U+17a2, U+17b6-17b9, U+17bb-17bc, U+17bf-17c7, U+17c9, U+17cb, U+17d0, U+17d2, U+17db, U+1871, U+18fa, U+1bff, U+1d00, U+1d04-1d05, U+1d07, U+1d0a-1d0b, U+1d0d, U+1d0f, U+1d17-1d18, U+1d1b-1d1c, U+1d20-1d22, U+1d25, U+1d2c, U+1d2e, U+1d30-1d31, U+1d33-1d39, U+1d3c, U+1d3e-1d42, U+1d52, U+1d55, U+1d5b, U+1d5e, U+1d9c, U+1da0, U+1dc4-1dc5, U+1e3b, U+1e43, U+1e45, U+1e47, U+1e63, U+1e6d, U+1e73, U+1ea0, U+1ea2, U+1ea4-1ea9, U+1eab-1eaf, U+1eb1, U+1eb3, U+1eb5, U+1eb7, U+1eb9, U+1ebb, U+1ebd-1ebe',
-		'[96]':
-			'U+5b5-5b9, U+5bb-5be, U+5d0, U+5d2-5d8, U+5da-5e1, U+5e3-5e7, U+5e9, U+5ec, U+5ee, U+5f0-5f1, U+5f4, U+5f6-5f7, U+5fc-5fd, U+60c, U+61f, U+621-626, U+62a-630, U+632, U+634-638, U+63a-63b, U+63e, U+640, U+642-643, U+645-649, U+64b, U+64e-652, U+660-669, U+66b-66c, U+671, U+673, U+676, U+679, U+67c, U+67e, U+686, U+68c, U+698, U+69a, U+6a1, U+6a3, U+6a8-6a9, U+6ab, U+6ad, U+6af-6b1, U+6b3-6b8, U+6ba, U+6bc-6bf, U+6c1, U+6c6-6c7, U+6d5, U+6dd-6de, U+6e1, U+6e5, U+6e7, U+6e9, U+6f0-6f3, U+6f5',
+			'U+1ec0-1ec3, U+1ec5-1ec6, U+1ec9, U+1ecb-1ecd, U+1ecf-1ed1, U+1ed3-1ed5, U+1ed7-1edd, U+1edf, U+1ee1, U+1ee3-1ee7, U+1ee9, U+1eeb, U+1eed, U+1eef-1ef1, U+1ef3, U+1ef7, U+1ef9, U+1f62, U+1fa2, U+2001-2006, U+2009-200a, U+200c-200d, U+200f-2012, U+2015-2016, U+201a, U+201e, U+2020-2021, U+2023-2025, U+2028, U+202a-202d, U+202f-2030, U+2032-2033, U+2035, U+2038, U+203e-203f, U+2042-2044, U+2049, U+204d-204e, U+2060-2061, U+2063, U+2070, U+2074-207b, U+207d-2083, U+208a, U+208d-208e, U+20a1, U+20a4, U+20a6, U+20a8-20ab, U+20ad-20ae, U+20b1-20b3, U+20b5, U+20b8-20ba, U+20bd, U+20dd, U+20e3, U+2105, U+2109, U+2112-2113, U+2115-2117, U+2120-2121, U+2126, U+212b',
 		'[97]':
-			'U+2c8-2c9, U+2cc-2cd, U+2d0, U+2d8, U+2da, U+2dc, U+2e1-2e3, U+2e7, U+2eb, U+2ee, U+2f1-2ff, U+303, U+307-309, U+311, U+31b, U+321, U+323-325, U+328-329, U+32b-32c, U+32e-32f, U+331-33a, U+33c-33f, U+348, U+353, U+359, U+35c, U+35e-35f, U+361, U+363, U+367-368, U+36c, U+36f, U+530-535, U+537-540, U+55e, U+561-565, U+568-56d, U+56f-576, U+578-582, U+584, U+5a1, U+5a3-5a4, U+5aa, U+5ae, U+5b0-5b4',
+			'U+2c8-2c9, U+2cc-2cd, U+2d0, U+2d8, U+2da, U+2dc, U+2e1-2e3, U+2e7, U+2eb, U+2ee, U+2f1-2ff, U+302-304, U+306-309, U+30c-30d, U+311, U+31b, U+321, U+323-325, U+328-329, U+32b-32c, U+32e-32f, U+331-33a, U+33c-33f, U+348, U+353, U+358-359, U+35c, U+35e-35f, U+361, U+363, U+367-368, U+36c, U+36f, U+530-535, U+537-540, U+55e, U+561-565, U+568-56d, U+56f-576, U+578-582, U+584, U+5a1, U+5a3-5a4, U+5aa, U+5ae, U+5b0-5b4',
 		'[98]':
-			'U+1af, U+1b1, U+1b4-1be, U+1da, U+1dc-1dd, U+1e1, U+1e3-1e4, U+1e7, U+1e9, U+1eb-1ec, U+1f0-1f1, U+1f3-1f5, U+1f7, U+1fa-1ff, U+219, U+221, U+225-226, U+228-22b, U+22e-22f, U+231-235, U+239, U+23b, U+23e, U+250-252, U+254-255, U+259-25e, U+261-263, U+268-26b, U+26d, U+26f-277, U+279-27a, U+27d-281, U+283, U+28a-28c, U+28f, U+292, U+294-296, U+298-29a, U+29c, U+29f, U+2a1-2a2, U+2a4-2a7, U+2a9-2aa, U+2ae-2b3, U+2b5-2b7, U+2b9-2bf, U+2c2-2c4, U+2c6-2c7',
+			'U+1af, U+1b1, U+1b4-1be, U+1d0, U+1d2, U+1d4, U+1da, U+1dc-1dd, U+1e1, U+1e3-1e4, U+1e7, U+1e9, U+1eb-1ec, U+1f0-1f1, U+1f3-1f5, U+1f7, U+1f9-1ff, U+219, U+221, U+225-226, U+228-22b, U+22e-22f, U+231-235, U+239, U+23b, U+23e, U+250-252, U+254-255, U+259-25e, U+261-263, U+268-26b, U+26d, U+26f-277, U+279-27a, U+27d-281, U+283, U+28a-28c, U+28f, U+292, U+294-296, U+298-29a, U+29c, U+29f, U+2a1-2a2, U+2a4-2a7, U+2a9-2aa, U+2ae-2b3, U+2b5-2b7, U+2b9-2bf, U+2c2-2c4, U+2c6-2c7',
 		'[99]':
-			'U+a1-a2, U+a4, U+a6-a8, U+aa, U+ac, U+af, U+b1, U+b5-b6, U+b8-ba, U+bc-be, U+c3-c7, U+cb, U+cf-d1, U+d5, U+d8, U+dc-df, U+f0, U+f5, U+f8, U+fe-ff, U+105, U+107, U+109-10b, U+10f, U+117, U+119, U+11f, U+121, U+123-124, U+127, U+129, U+130, U+132-13f, U+141-142, U+14b, U+152-153, U+159-15b, U+15e-160, U+163-166, U+169, U+16e-16f, U+173-17e, U+192, U+1a0, U+1a4, U+1aa, U+1ac-1ad',
+			'U+a1-a2, U+a4, U+a6-a8, U+aa, U+ac, U+af, U+b1, U+b5-b6, U+b8-ba, U+bc-be, U+c0-c8, U+ca-cc, U+ce-d5, U+d8-df, U+f0, U+f5, U+f8, U+fb, U+fe-100, U+102, U+105, U+107, U+109-10b, U+10f, U+112, U+115, U+117, U+119, U+11b, U+11f, U+121, U+123-124, U+127, U+129, U+12c-12d, U+130-13f, U+141-142, U+144, U+148, U+14b-14c, U+14f-153, U+159-15b, U+15e-160, U+163-166, U+169-16a, U+16d-171, U+173-17e, U+192, U+1a0, U+1a4, U+1aa, U+1ac-1ad',
 		'[100]':
 			'U+a3, U+2ca, U+2223, U+2640, U+273f, U+301c-301d, U+3107, U+310c, U+4e30, U+4e3e, U+4e5e, U+4e71, U+4f26, U+4f7c, U+4f83, U+50da, U+5243, U+5267, U+529e, U+5321, U+5352, U+5477, U+548b, U+54a6, U+54b2, U+54c2, U+54c4, U+54c6, U+54cd, U+54ee, U+5543, U+55d1, U+55d3, U+55f0, U+55fd, U+560d, U+5629, U+5660, U+57ae, U+57e0, U+57e4, U+5904, U+592d, U+5965, U+5a31, U+5a7f, U+5b5a, U+5bb8, U+5c14, U+5c3b, U+5c5c, U+5c5e, U+5d10, U+5e10, U+5e4c, U+603b, U+604d, U+611c, U+6137, U+61c8, U+6292, U+62c7, U+6371, U+6382, U+645f, U+64ae, U+64c2, U+651e, U+65f1, U+660a, U+663e, U+673d, U+6784, U+6789, U+67ff, U+6813, U+6854, U+68d8, U+68fa, U+697d, U+6a01, U+6a1e, U+6baf, U+6c08, U+6c17, U+6c2b, U+6c81, U+6cbd, U+6dc6, U+6df9, U+6ed9, U+6ee1, U+6f86, U+6fc1, U+6fdb, U+701f, U+7076, U+715c, U+7194, U+71fb, U+720d, U+72b6, U+7396, U+73af, U+745b, U+746f, U+748b, U+7647, U+7699, U+76bf, U+76ce, U+76de, U+77aa, U+786b, U+7881, U+78ca, U+793c, U+797a, U+79b9, U+79bb, U+79bf, U+7a92, U+7ac7, U+7ae3, U+7b19, U+7b20, U+7b51, U+7b94, U+7cbd, U+7cde, U+7cef, U+7d46, U+7dde, U+7f88, U+80da, U+814b, U+81cd, U+8235, U+8258, U+8282, U+82b9, U+846b, U+84c1, U+84d3, U+8518, U+8611, U+8783, U+8814, U+8a15, U+8aa6, U+8b2c, U+8ba8-8ba9, U+8bc6, U+8be2, U+8be6, U+8c22, U+8d05, U+8d27, U+8dbe, U+8e34, U+8e66, U+8ec0, U+9005, U+9082, U+9091, U+914b, U+916f, U+92c5, U+92f0, U+9318, U+9382, U+938a, U+93e2, U+964b, U+96c1, U+96cc-96cd, U+96db, U+973e, U+97a0, U+9803, U+9876, U+9879, U+9955, U+9986, U+99f1, U+9a5b, U+9abc, U+9c57, U+9c9c, U+9d1b, U+9d26, U+9d51, U+9eef, U+9f99, U+c2a4, U+e253, U+e313-e314, U+e5c7, U+e5c9, U+e8db-e8dc, U+ff25, U+ff2d-ff2e, U+ff34, U+ffe5, U+1f60a, U+1f618, U+1f62d',
 		'[101]':
@@ -211,10 +205,7 @@ export const getInfo = () => ({
 		'[118]':
 			'U+d, U+2b, U+7c, U+a0, U+a9, U+300c-300d, U+4e09, U+4e3b, U+4e4b, U+4e5f, U+4e86, U+4e8b-4e8c, U+4eab, U+4ed6, U+4ee3-4ee4, U+4ef6, U+4f1a, U+4f4d, U+4f60, U+4f7f, U+4f86, U+4fdd, U+4fe1, U+5011, U+50b3, U+5149, U+5167, U+5176, U+518d, U+5229, U+524d, U+529b, U+52a0, U+52d9, U+5316-5317, U+5340, U+539f, U+53ca-53cb, U+5408, U+540c-540d, U+544a, U+548c, U+54c1, U+54e1, U+5546, U+554f, U+55ae, U+56de, U+5716, U+5831, U+5834, U+5916, U+5929, U+5973, U+597d, U+5982, U+5b57, U+5b78, U+5b89, U+5b8c, U+5b9a, U+5ba2, U+5bb9, U+5be6, U+5c07-5c08, U+5c0d, U+5c31, U+5de5, U+5df2, U+5e02, U+5e38, U+5e73-5e74, U+5ea6, U+5f0f, U+5f71, U+5f8c, U+5f97, U+5feb, U+6027, U+60c5, U+60f3, U+610f, U+611b, U+611f, U+61c9, U+6210, U+6216, U+6240, U+624b, U+63a8, U+63d0, U+641c, U+6536, U+6578, U+6599, U+65b9, U+660e, U+661f, U+662d, U+66f4, U+670d, U+671f, U+6771, U+679c, U+682a, U+683c, U+689d, U+696d, U+6a02, U+6a5f, U+6b0a, U+6b21, U+6b3e, U+6b64, U+6c23, U+6c34, U+6c92, U+6cbb, U+6cd5, U+6d3b, U+7063, U+7121, U+71b1, U+7247-7248, U+7269, U+7279, U+73fe, U+7406, U+7522, U+7576, U+767b, U+76ee, U+76f8, U+770b, U+771f, U+77e5, U+793e, U+7a0b, U+7acb, U+7ad9, U+7b2c, U+7b49, U+7cbe, U+7d50, U+7d61, U+7d93, U+7dda, U+7f8e, U+8005, U+806f, U+80fd, U+81ea, U+8207, U+8272, U+865f, U+8868, U+8981, U+898b, U+8996, U+8a00, U+8a08, U+8a0a, U+8a18, U+8a2d, U+8a71, U+8aaa, U+8acb, U+8cbb, U+8cc7, U+8d77, U+8d85, U+8def, U+8eab, U+8eca, U+8f49, U+9019-901a, U+9023, U+9032, U+904a-904b, U+904e, U+9053, U+9078, U+9084, U+90e8, U+90fd, U+91cd, U+91d1, U+9577, U+9580, U+9593, U+9762, U+982d, U+984c, U+985e, U+9996, U+9ad4, U+9ad8, U+9ede, U+ff01, U+ff08-ff09, U+ff1f',
 		'[119]':
-			'U+20-22, U+27-2a, U+2c-3b, U+3f, U+41-5d, U+61-7b, U+7d, U+ab, U+ae, U+b2-b3, U+bb, U+bf-c2, U+c8-ca, U+cc-ce, U+d2-d4, U+d6, U+d9-db, U+e0-ef, U+f1-f4, U+f6, U+f9-fd, U+100-103, U+110-115, U+11a-11b, U+12a-12d, U+131, U+143-144, U+147-148, U+14c-151, U+16a-16d, U+170-171, U+1a1, U+1b0, U+1cd-1d4, U+1f8-1f9, U+300-302, U+304, U+306, U+30b-30d, U+358, U+1d3a, U+1e3e-1e3f, U+1ea1, U+1ea3, U+1ebf, U+1ec7, U+2013-2014, U+2039-203a, U+203c, U+207f, U+2122, U+3001-3002, U+3113-3114, U+3118, U+311a-3129, U+4e00, U+4e0a-4e0b, U+4e0d, U+4e2d, U+4eba, U+4ee5, U+4f5c, U+500b, U+5165, U+5168, U+516c, U+51fa, U+5206, U+5230, U+52d5, U+53ef-53f0, U+570b, U+5728, U+5730, U+591a, U+5927, U+5b50, U+5bb6, U+5c0f, U+5fc3, U+6211, U+6587, U+65b0, U+65bc, U+65e5, U+662f, U+6642, U+6700, U+6703, U+6708-6709, U+672c, U+6b63, U+70b9-70ba, U+751f, U+7528, U+767c, U+7684, U+7db2, U+884c, U+958b, U+95dc, U+96fb, U+9801, U+ff0c, U+ff1a',
-		cyrillic: 'U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116',
-		vietnamese:
-			'U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB',
+			'U+20-22, U+27-2a, U+2c-3b, U+3f, U+41-5d, U+61-7b, U+7d, U+ab, U+ae, U+b2-b3, U+bb, U+bf, U+c9, U+cd, U+d6, U+e0-ef, U+f1-f4, U+f6, U+f9-fa, U+fc-fd, U+101, U+103, U+110-111, U+113, U+12b, U+14d, U+16b, U+1a1, U+1b0, U+1ce, U+300-301, U+1ea1, U+1ea3, U+1ebf, U+1ec7, U+2013-2014, U+2039-203a, U+203c, U+2122, U+3001-3002, U+3113-3114, U+3118, U+311a-3129, U+4e00, U+4e0a-4e0b, U+4e0d, U+4e2d, U+4eba, U+4ee5, U+4f5c, U+500b, U+5165, U+5168, U+516c, U+51fa, U+5206, U+5230, U+52d5, U+53ef-53f0, U+570b, U+5728, U+5730, U+591a, U+5927, U+5b50, U+5bb6, U+5c0f, U+5fc3, U+6211, U+6587, U+65b0, U+65bc, U+65e5, U+662f, U+6642, U+6700, U+6703, U+6708-6709, U+672c, U+6b63, U+70b9-70ba, U+751f, U+7528, U+767c, U+7684, U+7db2, U+884c, U+958b, U+95dc, U+96fb, U+9801, U+ff0c, U+ff1a',
 		'latin-ext':
 			'U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF',
 		latin:
@@ -224,242 +215,221 @@ export const getInfo = () => ({
 		normal: {
 			'400': {
 				'[0]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.0.woff2',
-				'[4]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.4.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.0.woff2',
 				'[6]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.6.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.6.woff2',
 				'[7]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.7.woff2',
-				'[8]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.8.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.7.woff2',
+				'[9]':
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.9.woff2',
+				'[10]':
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.10.woff2',
 				'[19]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.19.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.19.woff2',
 				'[20]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.20.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.20.woff2',
 				'[21]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.21.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.21.woff2',
 				'[22]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.22.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.22.woff2',
 				'[23]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.23.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.23.woff2',
 				'[24]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.24.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.24.woff2',
 				'[25]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.25.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.25.woff2',
 				'[26]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.26.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.26.woff2',
 				'[27]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.27.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.27.woff2',
 				'[28]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.28.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.28.woff2',
 				'[29]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.29.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.29.woff2',
 				'[30]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.30.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.30.woff2',
 				'[31]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.31.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.31.woff2',
 				'[32]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.32.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.32.woff2',
 				'[33]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.33.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.33.woff2',
 				'[34]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.34.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.34.woff2',
 				'[35]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.35.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.35.woff2',
 				'[36]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.36.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.36.woff2',
 				'[37]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.37.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.37.woff2',
 				'[38]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.38.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.38.woff2',
 				'[39]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.39.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.39.woff2',
 				'[40]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.40.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.40.woff2',
 				'[41]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.41.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.41.woff2',
 				'[42]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.42.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.42.woff2',
 				'[43]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.43.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.43.woff2',
 				'[44]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.44.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.44.woff2',
 				'[45]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.45.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.45.woff2',
 				'[46]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.46.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.46.woff2',
 				'[47]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.47.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.47.woff2',
 				'[48]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.48.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.48.woff2',
 				'[49]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.49.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.49.woff2',
 				'[50]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.50.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.50.woff2',
 				'[51]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.51.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.51.woff2',
 				'[52]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.52.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.52.woff2',
 				'[53]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.53.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.53.woff2',
 				'[54]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.54.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.54.woff2',
 				'[55]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.55.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.55.woff2',
 				'[56]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.56.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.56.woff2',
 				'[57]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.57.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.57.woff2',
 				'[58]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.58.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.58.woff2',
 				'[59]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.59.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.59.woff2',
 				'[60]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.60.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.60.woff2',
 				'[61]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.61.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.61.woff2',
 				'[62]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.62.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.62.woff2',
 				'[63]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.63.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.63.woff2',
 				'[64]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.64.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.64.woff2',
 				'[65]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.65.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.65.woff2',
 				'[66]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.66.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.66.woff2',
 				'[67]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.67.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.67.woff2',
 				'[68]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.68.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.68.woff2',
 				'[69]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.69.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.69.woff2',
 				'[70]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.70.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.70.woff2',
 				'[71]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.71.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.71.woff2',
 				'[72]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.72.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.72.woff2',
 				'[73]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.73.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.73.woff2',
 				'[74]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.74.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.74.woff2',
 				'[75]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.75.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.75.woff2',
 				'[76]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.76.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.76.woff2',
 				'[77]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.77.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.77.woff2',
 				'[78]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.78.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.78.woff2',
 				'[79]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.79.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.79.woff2',
 				'[80]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.80.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.80.woff2',
 				'[81]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.81.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.81.woff2',
 				'[82]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.82.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.82.woff2',
 				'[83]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.83.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.83.woff2',
 				'[84]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.84.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.84.woff2',
 				'[85]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.85.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.85.woff2',
 				'[86]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.86.woff2',
-				'[87]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.87.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.86.woff2',
 				'[88]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.88.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.88.woff2',
 				'[89]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.89.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.89.woff2',
 				'[90]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.90.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.90.woff2',
 				'[91]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.91.woff2',
-				'[92]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.92.woff2',
-				'[96]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.96.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.91.woff2',
 				'[97]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.97.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.97.woff2',
 				'[98]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.98.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.98.woff2',
 				'[99]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.99.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.99.woff2',
 				'[100]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.100.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.100.woff2',
 				'[101]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.101.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.101.woff2',
 				'[102]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.102.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.102.woff2',
 				'[103]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.103.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.103.woff2',
 				'[104]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.104.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.104.woff2',
 				'[105]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.105.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.105.woff2',
 				'[106]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.106.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.106.woff2',
 				'[107]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.107.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.107.woff2',
 				'[108]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.108.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.108.woff2',
 				'[109]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.109.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.109.woff2',
 				'[110]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.110.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.110.woff2',
 				'[111]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.111.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.111.woff2',
 				'[112]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.112.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.112.woff2',
 				'[113]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.113.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.113.woff2',
 				'[114]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.114.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.114.woff2',
 				'[115]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.115.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.115.woff2',
 				'[116]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.116.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.116.woff2',
 				'[117]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.117.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.117.woff2',
 				'[118]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.118.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.118.woff2',
 				'[119]':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkpi0nLjDEBLHymojK0W08hMRfHFiwn8U72sdm9NCv5ZSPKUA.119.woff2',
-				cyrillic:
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkZjSvRvis.woff2',
-				vietnamese:
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkZhivRvis.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1K6tu4o7c9vMdQ7ra1YiZa46v68QSTqh51cVgb4ttNvfxBnK.119.woff2',
 				'latin-ext':
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkZhyvRvis.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1J6h2ZAJaQ.woff2',
 				latin:
-					'https://fonts.gstatic.com/s/huninn/v6/OpNNnoINg9bQ4xkZiSvR.woff2',
+					'https://fonts.gstatic.com/s/bpmfhuninn/v2/taiOGmRuFJa3qsALi5gn1J6v2ZA.woff2',
 			},
 		},
 	},
-	subsets: [
-		'chinese-traditional',
-		'cyrillic',
-		'latin',
-		'latin-ext',
-		'vietnamese',
-	],
+	subsets: ['chinese-traditional', 'latin', 'latin-ext'],
 });
 
-export const fontFamily = 'Huninn' as const;
+export const fontFamily = 'Bpmf Huninn' as const;
 
 type Variants = {
 	normal: {
 		weights: '400';
-		subsets:
-			| 'chinese-traditional'
-			| 'cyrillic'
-			| 'latin'
-			| 'latin-ext'
-			| 'vietnamese';
+		subsets: 'chinese-traditional' | 'latin' | 'latin-ext';
 	};
 };
 

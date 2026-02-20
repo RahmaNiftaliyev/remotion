@@ -79,7 +79,7 @@ export const containerToMediabunnyContainer = (
 ): OutputFormat => {
 	switch (container) {
 		case 'mp4':
-			return new Mp4OutputFormat();
+			return new Mp4OutputFormat({fastStart: 'in-memory'});
 		case 'webm':
 			return new WebMOutputFormat();
 		case 'mkv':
@@ -93,7 +93,7 @@ export const containerToMediabunnyContainer = (
 		case 'ogg':
 			return new OggOutputFormat();
 		case 'mov':
-			return new MovOutputFormat();
+			return new MovOutputFormat({fastStart: 'in-memory'});
 		case 'flac':
 			return new FlacOutputFormat();
 		default:

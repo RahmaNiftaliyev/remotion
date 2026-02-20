@@ -29,6 +29,7 @@ import {experimentalClientSideRenderingOption} from './experimental-client-side-
 import {folderExpiryOption} from './folder-expiry';
 import {forSeamlessAacConcatenationOption} from './for-seamless-aac-concatenation';
 import {forceNewStudioOption} from './force-new-studio';
+import {framesOption} from './frames';
 import {glOption} from './gl';
 import {hardwareAccelerationOption} from './hardware-acceleration';
 import {headlessOption} from './headless';
@@ -148,6 +149,7 @@ export const allOptions = {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	framesOption,
 	forceNewStudioOption,
 	numberOfSharedAudioTagsOption,
 	ipv4Option,

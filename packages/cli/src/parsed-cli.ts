@@ -65,6 +65,7 @@ const {
 	mutedOption,
 	headlessOption,
 	disableGitSourceOption,
+	framesOption,
 	forSeamlessAacConcatenationOption,
 	isProductionOption,
 	noOpenOption,
@@ -126,7 +127,7 @@ export type CommandLineOptions = {
 	[propsOption.cliFlag]: TypeOfOption<typeof propsOption>;
 	quality: number;
 	[jpegQualityOption.cliFlag]: TypeOfOption<typeof jpegQualityOption>;
-	frames: string | number;
+	[framesOption.cliFlag]: string | number;
 	[scaleOption.cliFlag]: TypeOfOption<typeof scaleOption>;
 	[imageSequenceOption.cliFlag]: TypeOfOption<typeof imageSequenceOption>;
 	quiet: boolean;

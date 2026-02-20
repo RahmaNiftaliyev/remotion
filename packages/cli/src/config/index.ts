@@ -1,7 +1,6 @@
 import {getBrowser} from './browser';
 import {getConcurrency} from './concurrency';
 import {getDotEnvLocation} from './env-file';
-import {getRange, setFrameRangeFromCli} from './frame-range';
 import {getShouldOutputImageSequence} from './image-sequence';
 import {getOutputLocation} from './output-location';
 import {
@@ -42,7 +41,6 @@ import {
 	getFfmpegOverrideFunction,
 	setFfmpegOverrideFunction,
 } from './ffmpeg-override';
-import {setFrameRange} from './frame-range';
 import {getMetadata, setMetadata} from './metadata';
 import {setOutputLocation} from './output-location';
 import type {WebpackOverrideFn} from './override-webpack';
@@ -84,6 +82,7 @@ const {
 	publicDirOption,
 	binariesDirectoryOption,
 	preferLosslessOption,
+	framesOption,
 	forSeamlessAacConcatenationOption,
 	audioCodecOption,
 	publicPathOption,
@@ -711,7 +710,7 @@ export const Config: FlatConfig = {
 	setMetadata,
 	setEncodingMaxRate: encodingMaxRateOption.setConfig,
 	setEncodingBufferSize: encodingBufferSizeOption.setConfig,
-	setFrameRange,
+	setFrameRange: framesOption.setConfig,
 	setScale: scaleOption.setConfig,
 	setEveryNthFrame: everyNthFrameOption.setConfig,
 	setNumberOfGifLoops: numberOfGifLoopsOption.setConfig,
@@ -760,7 +759,6 @@ export const Config: FlatConfig = {
 };
 
 export const ConfigInternals = {
-	getRange,
 	getBrowser,
 	getStudioPort,
 	getRendererPortFromConfigFile,
@@ -772,7 +770,6 @@ export const ConfigInternals = {
 	getWebpackOverrideFn,
 	getWebpackCaching,
 	getOutputLocation,
-	setFrameRangeFromCli,
 	setStillFrame,
 	getMaxTimelineTracks: StudioServerInternals.getMaxTimelineTracks,
 	defaultOverrideFunction,

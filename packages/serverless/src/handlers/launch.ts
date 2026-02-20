@@ -479,7 +479,7 @@ const innerLaunchHandler = async <Provider extends CloudProvider>({
 					willRetry: false,
 					totalAttempts: 1,
 				});
-				overallProgress.upload();
+				overallProgress.upload('artifactWriteError');
 				RenderInternals.Log.error(
 					{indent: false, logLevel: params.logLevel},
 					'Failed to write artifact to S3',
@@ -684,7 +684,7 @@ export const launchHandler = async <Provider extends CloudProvider>({
 				willRetry: false,
 				totalAttempts: 1,
 			});
-			overallProgress.upload();
+			overallProgress.upload('timeoutWebhookError');
 		}
 	};
 
@@ -777,7 +777,7 @@ export const launchHandler = async <Provider extends CloudProvider>({
 				willRetry: false,
 				totalAttempts: 1,
 			});
-			overallProgress.upload();
+			overallProgress.upload('successWebhookError');
 
 			RenderInternals.Log.error(
 				{indent: false, logLevel: params.logLevel},
@@ -816,7 +816,7 @@ export const launchHandler = async <Provider extends CloudProvider>({
 			willRetry: false,
 			message: (err as Error).message,
 		});
-		await overallProgress.upload();
+		await overallProgress.upload('fatalError');
 
 		runCleanupTasks();
 
@@ -866,7 +866,7 @@ export const launchHandler = async <Provider extends CloudProvider>({
 					willRetry: false,
 					totalAttempts: 1,
 				});
-				overallProgress.upload();
+				overallProgress.upload('errorWebhookError');
 
 				RenderInternals.Log.error(
 					{indent: false, logLevel: params.logLevel},

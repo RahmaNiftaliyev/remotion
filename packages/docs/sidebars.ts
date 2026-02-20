@@ -555,6 +555,7 @@ const sidebars: SidebarsConfig = {
 				'renderer/get-silent-parts',
 				'renderer/combine-chunks',
 				'renderer/extract-audio',
+				'renderer/types',
 			],
 		},
 		{
@@ -766,6 +767,7 @@ const sidebars: SidebarsConfig = {
 				'zod-types/z-color',
 				'zod-types/z-textarea',
 				'zod-types/z-matrix',
+				'zod-types/v3',
 			],
 		},
 		{

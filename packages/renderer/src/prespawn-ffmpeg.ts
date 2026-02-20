@@ -32,6 +32,7 @@ type RunningStatus =
 	| {
 			type: 'quit-with-error';
 			exitCode: number;
+			signal: NodeJS.Signals | null;
 			stderr: string;
 	  };
 
@@ -164,11 +165,12 @@ export const prespawnFfmpeg = (options: PreStitcherOptions) => {
 		type: 'running',
 	};
 
-	task.on('exit', (code) => {
-		if (typeof code === 'number' && code > 0) {
+	task.on('exit', (code, signal) => {
+		if ((typeof code === 'number' && code > 0) || signal) {
 			exitCode = {
 				type: 'quit-with-error',
-				exitCode: code,
+				exitCode: code ?? 1,
+				signal: signal ?? null,
 				stderr: ffmpegOutput,
 			};
 		} else {

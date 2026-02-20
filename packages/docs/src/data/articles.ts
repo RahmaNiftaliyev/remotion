@@ -5116,6 +5116,15 @@ export const articles = [
 		slug: 'renderer/stitch-frames-to-video',
 	},
 	{
+		id: 'types',
+		title: 'TypeScript Types Reference',
+		relativePath: 'docs/renderer/types.mdx',
+		compId: 'articles-docs-renderer-types',
+		crumb: '@remotion/renderer',
+		noAi: false,
+		slug: 'renderer/types',
+	},
+	{
 		id: 'resources',
 		title: 'List of resources',
 		relativePath: 'docs/resources.mdx',
@@ -7086,6 +7095,15 @@ export const articles = [
 		crumb: 'Schema',
 		noAi: false,
 		slug: 'zod-types/index',
+	},
+	{
+		id: 'zod-types/v3',
+		title: '@remotion/zod-types-v3',
+		relativePath: 'docs/zod-types/v3.mdx',
+		compId: 'articles-docs-zod-types-v3',
+		crumb: '@remotion/zod-types',
+		noAi: false,
+		slug: 'zod-types/v3',
 	},
 	{
 		id: 'zod-types/z-color',

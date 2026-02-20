@@ -24,8 +24,6 @@ import {shouldUseNonOverlayingLogger} from './should-use-non-overlaying-logger';
 import {showMultiCompositionsPicker} from './show-compositions-picker';
 import {truthy} from './truthy';
 
-const DEFAULT_RUNS = 3;
-
 const {
 	audioBitrateOption,
 	x264Option,
@@ -67,6 +65,13 @@ const {
 	userAgentOption,
 	disableWebSecurityOption,
 	ignoreCertificateErrorsOption,
+	concurrencyOption,
+	overrideHeightOption,
+	overrideWidthOption,
+	overrideFpsOption,
+	overrideDurationOption,
+	bundleCacheOption,
+	runsOption,
 } = BrowserSafeApis.options;
 
 const getValidConcurrency = (cliConcurrency: number | string | null) => {
@@ -182,7 +187,7 @@ export const benchmarkCommand = async (
 	args: string[],
 	logLevel: LogLevel,
 ) => {
-	const runs: number = parsedCli.runs ?? DEFAULT_RUNS;
+	const runs = runsOption.getValue({commandLine: parsedCli}).value;
 
 	const {file, reason, remainingArgs} = findEntryPoint({
 		args,
@@ -209,16 +214,25 @@ export const benchmarkCommand = async (
 		envVariables,
 		frameRange: defaultFrameRange,
 		ffmpegOverride,
-		height,
-		width,
-		fps,
-		durationInFrames,
-		concurrency: unparsedConcurrency,
 	} = getCliOptions({
 		isStill: false,
 		logLevel,
 		indent: false,
 	});
+
+	const unparsedConcurrency = concurrencyOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const height = overrideHeightOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const width = overrideWidthOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const fps = overrideFpsOption.getValue({commandLine: parsedCli}).value;
+	const durationInFrames = overrideDurationOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	const pixelFormat = pixelFormatOption.getValue({
 		commandLine: parsedCli,
@@ -264,6 +278,9 @@ export const benchmarkCommand = async (
 		}).value;
 	const askAIEnabled = askAIOption.getValue({commandLine: parsedCli}).value;
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const shouldCache = bundleCacheOption.getValue({
 		commandLine: parsedCli,
 	}).value;
 
@@ -338,6 +355,7 @@ export const benchmarkCommand = async (
 			experimentalClientSideRenderingEnabled,
 			askAIEnabled,
 			keyboardShortcutsEnabled,
+			shouldCache,
 		});
 
 	registerCleanupJob(`Deleting bundle`, () => cleanupBundle());

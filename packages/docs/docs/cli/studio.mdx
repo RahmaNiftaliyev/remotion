@@ -19,12 +19,7 @@ You may pass an [entry point](/docs/terminology/entry-point) as an argument, oth
 
 ### `--props`
 
-[Input Props to pass to the selected composition of your video.](/docs/passing-props#passing-input-props-in-the-cli).  
-We don't recommend passing this flag when using the Studio - use [`defaultProps`](/docs/composition#defaultprops) instead.
-
-Must be a serialized JSON string (`--props='{"hello": "world"}'`) or a path to a JSON file (`./path/to/props.json`).  
-From the root component the props can be read using [`getInputProps()`](/docs/get-input-props).  
-You may transform input props using [`calculateMetadata()`](/docs/calculate-metadata).
+<Options id="props" />
 
 :::note
 Inline JSON string isn't supported on Windows shells because it removes the `"` character, use a file name instead.
@@ -32,11 +27,11 @@ Inline JSON string isn't supported on Windows shells because it removes the `"` 
 
 ### `--config`<AvailableFrom v="1.2.0" />
 
-Specify a location for the Remotion config file.
+<Options id="config" />
 
 ### `--env-file`<AvailableFrom v="2.2.0" />
 
-Specify a location for a dotenv file - Default `.env`. [Read about how environment variables work in Remotion.](/docs/env-variables)
+<Options id="env-file" />
 
 ### `--log`
 
@@ -44,7 +39,7 @@ Specify a location for a dotenv file - Default `.env`. [Read about how environme
 
 ### `--port`
 
-[Set a custom HTTP server port to start the server on](/docs/config#setstudioport). If not defined, Remotion will try to find a free port.
+<Options id="port" />
 
 ### `--public-dir`<AvailableFrom v="3.2.13" />
 
@@ -52,28 +47,29 @@ Specify a location for a dotenv file - Default `.env`. [Read about how environme
 
 ### `--disable-keyboard-shortcuts`<AvailableFrom v="3.2.11" />
 
-[Disables all keyboard shortcuts in the Studio](/docs/config#setkeyboardshortcutsenabled).
+<Options id="disable-keyboard-shortcuts" />
 
 ### `--enable-experimental-client-side-rendering`<AvailableFrom v="4.0.387" />
 
-[Enables experimental client-side rendering in the Studio](/docs/config#setexperimentalclientsiderenderingenabled). Default is `false`.
+<Options id="enable-experimental-client-side-rendering" />
 
 ### `--webpack-poll`<AvailableFrom v="3.3.11" />
 
-[Enables Webpack polling](/docs/config#setwebpackpollinginmilliseconds) instead of the file system event listeners for hot reloading. This is useful if you are inside a virtual machine or have a remote file system.
-Pass a value in milliseconds, for example `--webpack-poll=1000`.
+<Options id="webpack-poll" />
 
 ### `--no-open`<AvailableFrom v="3.3.19" />
 
-[Prevents Remotion from trying to open a browser](/docs/config#setshouldopenbrowser). This is useful if you use a different browser for Remotion than the operating system default.
+<Options id="no-open" />
 
 ### `--browser`<AvailableFrom v="3.3.79" />
 
-Specify the browser which should be used for opening tab - using the default browser by default.  
-Pass an absolute string or `"chrome"` to use Chrome.
-If Chrome is selected as the browser and you are on macOS, Remotion will try to reuse an existing tab
+<Options id="browser" />
 
-For backwards compatibility, the `BROWSER` environment variable is also supported.
+You can also configure the browser via environment variables for backwards compatibility:
+
+- `BROWSER` behaves like the `--browser` flag.
+- `BROWSER_ARGS` behaves like the `--browser-args` flag.
+- Setting `BROWSER=none` disables auto-opening of the browser (equivalent to `--no-open`).
 
 ### `--browser-args`<AvailableFrom v="3.3.79" />
 

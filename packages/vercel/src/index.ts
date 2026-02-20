@@ -17,6 +17,7 @@ export type {
 	PixelFormat,
 	ProResProfile,
 	RenderMediaOnProgress,
+	RenderOnVercelProgress,
 	StillImageFormat,
 	StitchingState,
 	VercelSandbox,

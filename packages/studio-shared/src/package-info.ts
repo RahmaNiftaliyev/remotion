@@ -378,5 +378,5 @@ export const apiDocs: {[key in Pkgs]: string | null} = {
 	'web-renderer': 'https://www.remotion.dev/docs/web-renderer/',
 	design: 'https://www.remotion.dev/design',
 	'light-leaks': 'https://www.remotion.dev/docs/light-leaks',
-	vercel: 'https://www.remotion.dev/docs/vercel',
+	vercel: 'https://www.remotion.dev/docs/vercel/api',
 };

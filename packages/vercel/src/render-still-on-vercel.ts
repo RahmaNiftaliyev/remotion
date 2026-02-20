@@ -4,6 +4,7 @@ import type {
 	ChromiumOptions,
 	LogLevel,
 	RenderOnVercelProgress,
+	SandboxRenderStillMessage,
 	StillImageFormat,
 } from './types';
 
@@ -67,7 +68,7 @@ export async function renderStillOnVercel({
 
 	const renderCmd = await sandbox.runCommand({
 		cmd: 'node',
-		args: ['--strip-types', 'render-still.ts', JSON.stringify(renderConfig)],
+		args: ['render-still.mjs', JSON.stringify(renderConfig)],
 		detached: true,
 	});
 
@@ -76,7 +77,7 @@ export async function renderStillOnVercel({
 	for await (const log of renderCmd.logs()) {
 		if (log.stream === 'stdout') {
 			try {
-				const message = JSON.parse(log.data);
+				const message: SandboxRenderStillMessage = JSON.parse(log.data);
 				if (message.type === 'opening-browser') {
 					await onProgress?.({type: 'opening-browser'});
 				} else if (message.type === 'selecting-composition') {

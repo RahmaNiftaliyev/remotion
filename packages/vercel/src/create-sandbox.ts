@@ -71,15 +71,15 @@ export async function createSandbox({
 			content: Buffer.from(JSON.stringify({type: 'module'})),
 		},
 		{
-			path: 'render-video.ts',
+			path: 'render-video.mjs',
 			content: Buffer.from(renderVideoScript),
 		},
 		{
-			path: 'render-still.ts',
+			path: 'render-still.mjs',
 			content: Buffer.from(renderStillScript),
 		},
 		{
-			path: 'upload-blob.ts',
+			path: 'upload-blob.mjs',
 			content: Buffer.from(uploadBlobScript),
 		},
 	]);

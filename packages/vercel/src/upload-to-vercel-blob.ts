@@ -15,12 +15,14 @@ export async function uploadToVercelBlob({
 	blobPath,
 	contentType,
 	blobToken,
+	access = 'public',
 }: {
 	sandbox: Sandbox;
 	sandboxFilePath: string;
 	blobPath?: string;
 	contentType: string;
 	blobToken: string;
+	access?: 'public' | 'private';
 }): Promise<{url: string; size: number}> {
 	const actualBlobPath =
 		blobPath ??
@@ -31,11 +33,12 @@ export async function uploadToVercelBlob({
 		blobPath: actualBlobPath,
 		contentType,
 		blobToken,
+		access,
 	};
 
 	const uploadCmd = await sandbox.runCommand({
 		cmd: 'node',
-		args: ['--strip-types', 'upload-blob.ts', JSON.stringify(uploadConfig)],
+		args: ['upload-blob.mjs', JSON.stringify(uploadConfig)],
 		detached: true,
 	});
 

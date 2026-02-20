@@ -12,6 +12,7 @@ import type {
 	PixelFormat,
 	ProResProfile,
 	RenderOnVercelProgress,
+	SandboxRenderMediaMessage,
 	VideoImageFormat,
 	X264Preset,
 } from './types';
@@ -142,7 +143,7 @@ export async function renderMediaOnVercel({
 
 	const renderCmd = await sandbox.runCommand({
 		cmd: 'node',
-		args: ['--strip-types', 'render-video.ts', JSON.stringify(renderConfig)],
+		args: ['render-video.mjs', JSON.stringify(renderConfig)],
 		detached: true,
 	});
 
@@ -151,7 +152,7 @@ export async function renderMediaOnVercel({
 	for await (const log of renderCmd.logs()) {
 		if (log.stream === 'stdout') {
 			try {
-				const message = JSON.parse(log.data);
+				const message: SandboxRenderMediaMessage = JSON.parse(log.data);
 				if (message.type === 'opening-browser') {
 					await onProgress?.({type: 'opening-browser'});
 				} else if (message.type === 'selecting-composition') {

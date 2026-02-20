@@ -10,14 +10,14 @@ export async function installBrowser({
 }): Promise<void> {
 	await sandbox.writeFiles([
 		{
-			path: 'ensure-browser.ts',
+			path: 'ensure-browser.mjs',
 			content: Buffer.from(ensureBrowserScript),
 		},
 	]);
 
 	const ensureBrowserCmd = await sandbox.runCommand({
 		cmd: 'node',
-		args: ['--strip-types', 'ensure-browser.ts'],
+		args: ['ensure-browser.mjs'],
 		detached: true,
 	});
 

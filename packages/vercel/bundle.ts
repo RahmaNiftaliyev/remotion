@@ -9,10 +9,10 @@ if (process.env.NODE_ENV !== 'production') {
 console.time('Generated.');
 
 const scriptMap: Record<string, string> = {
-	'render-video-script': 'src/scripts/render-video.ts',
-	'render-still-script': 'src/scripts/render-still.ts',
-	'ensure-browser-script': 'src/scripts/ensure-browser.ts',
-	'upload-blob-script': 'src/scripts/upload-blob.ts',
+	'render-video-script': 'src/scripts/render-video.mjs',
+	'render-still-script': 'src/scripts/render-still.mjs',
+	'ensure-browser-script': 'src/scripts/ensure-browser.mjs',
+	'upload-blob-script': 'src/scripts/upload-blob.mjs',
 };
 
 const generatedDir = path.join('src', 'generated');

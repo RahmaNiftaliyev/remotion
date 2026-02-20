@@ -17,19 +17,6 @@ import {
 	removeJob,
 } from './render-queue/queue';
 
-const getPort = () => {
-	if (parsedCli.port) {
-		return parsedCli.port;
-	}
-
-	const serverPort = ConfigInternals.getStudioPort();
-	if (serverPort) {
-		return serverPort;
-	}
-
-	return null;
-};
-
 const {
 	binariesDirectoryOption,
 	publicDirOption,
@@ -44,6 +31,8 @@ const {
 	ipv4Option,
 	webpackPollOption,
 	noOpenOption,
+	portOption,
+	browserOption,
 } = BrowserSafeApis.options;
 
 export const studioCommand = async (
@@ -79,7 +68,10 @@ export const studioCommand = async (
 		process.exit(1);
 	}
 
-	const desiredPort = getPort();
+	const desiredPort =
+		portOption.getValue({commandLine: parsedCli}).value ??
+		ConfigInternals.getStudioPort() ??
+		null;
 
 	const fullEntryPath = convertEntryPointToServeUrl(file);
 
@@ -147,7 +139,7 @@ export const studioCommand = async (
 	const result = await StudioServerInternals.startStudio({
 		previewEntry: require.resolve('@remotion/studio/previewEntry'),
 		browserArgs: parsedCli['browser-args'],
-		browserFlag: parsedCli.browser,
+		browserFlag: browserOption.getValue({commandLine: parsedCli}).value ?? '',
 		logLevel,
 		shouldOpenBrowser: !noOpenOption.getValue({commandLine: parsedCli}).value,
 		fullEntryPath,

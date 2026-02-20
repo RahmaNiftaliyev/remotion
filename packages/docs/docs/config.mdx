@@ -980,6 +980,18 @@ Config.setPublicLicenseKey('your-license-key');
 
 The [command line flag](/docs/cli/studio#--public-license-key) `--public-license-key` will take precedence over this option.
 
+## `setImageSequencePattern()`
+
+<Options id="image-sequence-pattern" />
+
+```ts twoslash title="remotion.config.ts"
+import {Config} from '@remotion/cli/config';
+// ---cut---
+Config.setImageSequencePattern('frame_[frame]_custom.[ext]');
+```
+
+The [command line flag](/docs/cli/render#--image-sequence-pattern) `--image-sequence-pattern` will take precedence over this option.
+
 ## ~~`setQuality()`~~
 
 Renamed to `setJpegQuality` in `v4.0.0`.
@@ -1093,18 +1105,6 @@ Config.overrideWebpackConfig(async (currentConfiguration) => {
   return enableSass(currentConfiguration);
 });
 ```
-
-### `setImageSequencePattern()`
-
-<Options id="image-sequence-pattern" />
-
-```ts twoslash title="remotion.config.ts"
-import {Config} from '@remotion/cli/config';
-// ---cut---
-Config.setImageSequencePattern('frame_[frame]_custom.[ext]');
-```
-
-The [command line flag](/docs/cli/render#--image-sequence-pattern) `--image-sequence-pattern` will take precedence over this option.
 
 ## Old config file format
 

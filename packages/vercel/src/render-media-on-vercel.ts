@@ -96,7 +96,7 @@ export async function renderMediaOnVercel({
 	offthreadVideoCacheSizeInBytes?: number | null;
 	mediaCacheSizeInBytes?: number | null;
 	offthreadVideoThreads?: number | null;
-}): Promise<{sandboxFilePath: string}> {
+}): Promise<{sandboxFilePath: string; mimeType: string}> {
 	const serveUrl = `/vercel/sandbox/${REMOTION_SANDBOX_BUNDLE_DIR}`;
 
 	const renderConfig = {
@@ -146,6 +146,8 @@ export async function renderMediaOnVercel({
 		detached: true,
 	});
 
+	let mimeType: string = 'application/octet-stream';
+
 	for await (const log of renderCmd.logs()) {
 		if (log.stream === 'stdout') {
 			try {
@@ -165,6 +167,8 @@ export async function renderMediaOnVercel({
 						progress: message.progress,
 						stitchStage: message.stitchStage,
 					});
+				} else if (message.type === 'done') {
+					mimeType = message.mimeType;
 				}
 			} catch {
 				// Not JSON, ignore
@@ -179,5 +183,5 @@ export async function renderMediaOnVercel({
 		throw new Error(`Render failed: ${stderr} ${stdout}`);
 	}
 
-	return {sandboxFilePath: outputFile};
+	return {sandboxFilePath: outputFile, mimeType};
 }

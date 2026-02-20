@@ -49,7 +49,7 @@ export async function POST(req: Request) {
         await addBundleToSandbox({ sandbox, bundleDir: ".remotion" });
       }
 
-      const { sandboxFilePath } = await renderMediaOnVercel({
+      const { sandboxFilePath, mimeType: contentType } = await renderMediaOnVercel({
         sandbox,
         compositionId: COMP_NAME,
         inputProps: body.inputProps,
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
       const { url, size } = await uploadToVercelBlob({
         sandbox,
         sandboxFilePath,
-        contentType: "video/mp4",
+        contentType,
         blobToken,
       });
 

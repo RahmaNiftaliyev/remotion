@@ -43,7 +43,7 @@ export async function renderStillOnVercel({
 	mediaCacheSizeInBytes?: number | null;
 	offthreadVideoThreads?: number | null;
 	licenseKey?: string | null;
-}): Promise<{sandboxFilePath: string}> {
+}): Promise<{sandboxFilePath: string; mimeType: string}> {
 	const serveUrl = `/vercel/sandbox/${REMOTION_SANDBOX_BUNDLE_DIR}`;
 
 	const renderConfig = {
@@ -71,6 +71,8 @@ export async function renderStillOnVercel({
 		detached: true,
 	});
 
+	let mimeType: string = 'application/octet-stream';
+
 	for await (const log of renderCmd.logs()) {
 		if (log.stream === 'stdout') {
 			try {
@@ -79,6 +81,8 @@ export async function renderStillOnVercel({
 					await onProgress?.({type: 'opening-browser'});
 				} else if (message.type === 'selecting-composition') {
 					await onProgress?.({type: 'selecting-composition'});
+				} else if (message.type === 'done') {
+					mimeType = message.mimeType;
 				}
 			} catch {
 				// Not JSON, ignore
@@ -93,5 +97,5 @@ export async function renderStillOnVercel({
 		throw new Error(`Render still failed: ${stderr} ${stdout}`);
 	}
 
-	return {sandboxFilePath: outputFile};
+	return {sandboxFilePath: outputFile, mimeType};
 }

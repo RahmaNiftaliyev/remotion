@@ -1,4 +1,4 @@
-import {BufferTarget, StreamTarget} from 'mediabunny';
+import {BufferTarget, StreamTarget, type StreamTargetChunk} from 'mediabunny';
 import type {CalculateMetadataFunction} from 'remotion';
 import {Internals, type LogLevel} from 'remotion';
 import {VERSION} from 'remotion/version';
@@ -282,8 +282,12 @@ const internalRenderMediaOnWeb = async <
 	const webFsTarget =
 		outputTarget === 'web-fs' ? await createWebFsTarget() : null;
 
+	// FileSystemWritableFileStream is directly compatible with StreamTarget
+	// per mediabunny docs — StreamTargetChunk matches FileSystemWriteChunkType.
 	const target = webFsTarget
-		? new StreamTarget(webFsTarget.stream)
+		? new StreamTarget(
+				webFsTarget.writable as unknown as WritableStream<StreamTargetChunk>,
+			)
 		: new BufferTarget()!;
 
 	using outputWithCleanup = makeOutputWithCleanup({
@@ -502,7 +506,7 @@ const internalRenderMediaOnWeb = async <
 				isProduction: isProduction ?? true,
 			});
 
-			await webFsTarget.close();
+			// No explicit close needed — output.finalize() already closed the stream
 			return {
 				getBlob: () => {
 					return webFsTarget.getBlob();

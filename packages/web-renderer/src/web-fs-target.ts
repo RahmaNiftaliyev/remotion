@@ -1,5 +1,3 @@
-import type {StreamTargetChunk} from 'mediabunny';
-
 let sessionId: string | null = null;
 
 const getPrefix = () => {
@@ -33,21 +31,15 @@ export const createWebFsTarget = async () => {
 	const fileHandle = await directoryHandle.getFileHandle(filename, {
 		create: true,
 	});
+	// FileSystemWritableFileStream is directly compatible with StreamTarget —
+	// StreamTargetChunk matches the FileSystemWriteChunkType shape by design.
+	// mediabunny's output.finalize() will close this stream automatically.
 	const writable = await fileHandle.createWritable();
-
-	const stream = new WritableStream({
-		async write(chunk: StreamTargetChunk) {
-			await writable.seek(chunk.position);
-			await writable.write(chunk);
-		},
-	});
 
 	const getBlob = async () => {
 		const handle = await directoryHandle.getFileHandle(filename);
 		return handle.getFile();
 	};
 
-	const close = () => writable.close();
-
-	return {stream, getBlob, close};
+	return {writable, getBlob};
 };

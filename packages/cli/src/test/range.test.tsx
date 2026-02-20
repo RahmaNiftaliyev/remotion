@@ -1,11 +1,9 @@
 import {RenderInternals} from '@remotion/renderer';
+import {BrowserSafeApis} from '@remotion/renderer/client';
 import {describe, expect, test} from 'bun:test';
-import {
-	getRange,
-	setFrameRange,
-	setFrameRangeFromCli,
-} from '../config/frame-range';
 import {expectToThrow} from './expect-to-throw';
+
+const {framesOption} = BrowserSafeApis.options;
 
 describe('Frame range should throw exception with invalid inputs', () => {
 	const testValues: [number | [number, number] | null, RegExp][] = [
@@ -46,7 +44,7 @@ describe('Frame range should throw exception with invalid inputs', () => {
 
 	testValues.forEach((entry) =>
 		test(`test with input ${JSON.stringify(entry[0])}`, () =>
-			expectToThrow(() => setFrameRange(entry[0]), entry[1])),
+			expectToThrow(() => framesOption.setConfig(entry[0]), entry[1])),
 	);
 });
 describe('Frame range tests with valid inputs', () => {
@@ -61,8 +59,8 @@ describe('Frame range tests with valid inputs', () => {
 	];
 	testValues.forEach((entry) =>
 		test(`test with input ${JSON.stringify(entry)}`, () => {
-			setFrameRange(entry);
-			expect(getRange()).toEqual(entry);
+			framesOption.setConfig(entry);
+			expect(framesOption.getValue({commandLine: {}}).value).toEqual(entry);
 		}),
 	);
 });
@@ -92,11 +90,14 @@ describe('Frame range CLI should throw exception with invalid inputs', () => {
 	];
 	testValues.forEach((entry) =>
 		test(`test with input ${entry[0]}`, () =>
-			expectToThrow(() => setFrameRangeFromCli(entry[0]), entry[1])),
+			expectToThrow(
+				() => framesOption.getValue({commandLine: {frames: entry[0]}}),
+				entry[1],
+			)),
 	);
 });
 describe('Frame range CLI tests with valid inputs', () => {
-	setFrameRange(null);
+	framesOption.setConfig(null);
 
 	const testValues: [
 		number | string,
@@ -114,8 +115,9 @@ describe('Frame range CLI tests with valid inputs', () => {
 	];
 	testValues.forEach((entry) =>
 		test(`test with input ${JSON.stringify(entry[0])}`, () => {
-			setFrameRangeFromCli(entry[0]);
-			expect(getRange()).toEqual(entry[1]);
+			expect(
+				framesOption.getValue({commandLine: {frames: entry[0]}}).value,
+			).toEqual(entry[1]);
 		}),
 	);
 });

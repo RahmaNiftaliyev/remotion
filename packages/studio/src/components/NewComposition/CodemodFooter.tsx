@@ -18,6 +18,7 @@ export const CodemodFooter: React.FC<{
 	readonly errorNotification: string;
 	readonly genericSubmitLabel: string;
 	readonly submitLabel: (options: {relativeRootPath: string}) => string;
+	readonly onSuccess?: () => void;
 }> = ({
 	codemod,
 	valid,
@@ -26,6 +27,7 @@ export const CodemodFooter: React.FC<{
 	errorNotification,
 	genericSubmitLabel,
 	submitLabel,
+	onSuccess,
 }) => {
 	const [submitting, setSubmitting] = useState(false);
 	const {setSelectedModal} = useContext(ModalsContext);
@@ -66,6 +68,7 @@ export const CodemodFooter: React.FC<{
 		})
 			.then(() => {
 				notification.replaceContent(successNotification, 2000);
+				onSuccess?.();
 			})
 			.catch((err) => {
 				notification.replaceContent(
@@ -77,6 +80,7 @@ export const CodemodFooter: React.FC<{
 		codemod,
 		errorNotification,
 		loadingNotification,
+		onSuccess,
 		setSelectedModal,
 		successNotification,
 	]);

@@ -91,11 +91,26 @@ export const InitialCompositionLoader: React.FC = () => {
 	const staticFiles = useStaticFiles();
 
 	useEffect(() => {
+		const canvasContentFromUrl = deriveCanvasContentFromUrl();
+
 		if (canvasContent) {
+			if (
+				canvasContentFromUrl &&
+				canvasContentFromUrl.type === 'composition' &&
+				canvasContent.type === 'composition' &&
+				canvasContentFromUrl.compositionId !== canvasContent.compositionId
+			) {
+				const exists = compositions.find(
+					(c) => c.id === canvasContentFromUrl.compositionId,
+				);
+				if (exists) {
+					selectComposition(exists, false);
+				}
+			}
+
 			return;
 		}
 
-		const canvasContentFromUrl = deriveCanvasContentFromUrl();
 		if (canvasContentFromUrl && canvasContentFromUrl.type === 'composition') {
 			const exists = compositions.find(
 				(c) => c.id === canvasContentFromUrl.compositionId,

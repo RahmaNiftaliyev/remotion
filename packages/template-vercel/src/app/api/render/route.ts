@@ -4,84 +4,47 @@ import {
   renderMediaOnVercel,
   uploadToVercelBlob,
 } from "@remotion/vercel";
-import { head } from "@vercel/blob";
-import { Sandbox } from "@vercel/sandbox";
 import { waitUntil } from "@vercel/functions";
 import { COMP_NAME } from "../../../../types/constants";
 import { RenderRequest } from "../../../../types/schema";
-import {
-  createDisposableWriter,
-  formatSSE,
-  type RenderProgress,
-} from "./helpers";
-
-const SANDBOX_CREATING_TIMEOUT = 5 * 60 * 1000;
-
-const getSnapshotBlobKey = () =>
-  `snapshot-cache/${process.env.VERCEL_DEPLOYMENT_ID ?? "local"}.json`;
-
-async function restoreSnapshot() {
-  let snapshotId: string | null = null;
-
-  try {
-    const metadata = await head(getSnapshotBlobKey());
-    const response = await fetch(metadata.url);
-    const cache: { snapshotId: string } = await response.json();
-    snapshotId = cache.snapshotId;
-  } catch {
-    // ignore
-  }
-
-  if (!snapshotId) {
-    throw new Error(
-      "No sandbox snapshot found. Run `bun run create-snapshot` as part of the build process.",
-    );
-  }
-
-  const sandbox = await Sandbox.create({
-    source: { type: "snapshot", snapshotId },
-    timeout: SANDBOX_CREATING_TIMEOUT,
-  });
-
-  return Object.assign(sandbox, {
-    [Symbol.asyncDispose]: async () => {
-      await sandbox.stop().catch(() => {});
-    },
-  });
-}
+import { formatSSE, type RenderProgress } from "./helpers";
+import { restoreSnapshot } from "./restore-snapshot";
 
 export async function POST(req: Request) {
   const encoder = new TextEncoder();
   const stream = new TransformStream();
   const writer = stream.writable.getWriter();
 
+  const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!blobToken) {
+    throw new Error(
+      'BLOB_READ_WRITE_TOKEN is not set. To fix this, go to vercel.com, log in, select Storage, click "Create Database", select "Blob", link it to your project, then add BLOB_READ_WRITE_TOKEN to your .env file.',
+    );
+  }
+
+  const payload = await req.json();
+  const body = RenderRequest.parse(payload);
+
   const send = async (message: RenderProgress) => {
     await writer.write(encoder.encode(formatSSE(message)));
   };
 
   const runRender = async () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    await using _writer = createDisposableWriter(writer);
+    await send({ type: "phase", phase: "Creating sandbox...", progress: 0 });
+    const sandbox = process.env.VERCEL
+      ? await restoreSnapshot()
+      : await createSandbox({
+          onProgress: ({ progress, message }) => {
+            send({
+              type: "phase",
+              phase: message,
+              progress,
+              subtitle: "This is only needed during development.",
+            });
+          },
+        });
 
     try {
-      const payload = await req.json();
-      const body = RenderRequest.parse(payload);
-
-      await send({ type: "phase", phase: "Creating sandbox...", progress: 0 });
-
-      await using sandbox = process.env.VERCEL
-        ? await restoreSnapshot()
-        : await createSandbox({
-            onProgress: ({ progress, message }) => {
-              send({
-                type: "phase",
-                phase: message,
-                progress,
-                subtitle: "This is only needed during development.",
-              });
-            },
-          });
-
       if (!process.env.VERCEL) {
         await addBundleToSandbox({ sandbox, bundleDir: ".remotion" });
       }
@@ -125,11 +88,6 @@ export async function POST(req: Request) {
         progress: 1,
       });
 
-      const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
-      if (!blobToken) {
-        throw new Error("BLOB_READ_WRITE_TOKEN is not set");
-      }
-
       const { url, size } = await uploadToVercelBlob({
         sandbox,
         sandboxFilePath: file,
@@ -141,6 +99,9 @@ export async function POST(req: Request) {
     } catch (err) {
       console.log(err);
       await send({ type: "error", message: (err as Error).message });
+    } finally {
+      await sandbox?.stop().catch(() => {});
+      await writer.close();
     }
   };
 

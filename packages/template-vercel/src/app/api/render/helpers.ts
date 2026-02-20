@@ -1,13 +1,3 @@
-export const createDisposableWriter = (
-  writer: WritableStreamDefaultWriter<Uint8Array>,
-): WritableStreamDefaultWriter<Uint8Array> & AsyncDisposable => {
-  return Object.assign(writer, {
-    [Symbol.asyncDispose]: async () => {
-      await writer.close();
-    },
-  });
-};
-
 export type RenderProgress =
   | { type: "phase"; phase: string; progress: number; subtitle?: string }
   | { type: "done"; url: string; size: number }

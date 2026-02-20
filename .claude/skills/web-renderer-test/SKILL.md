@@ -76,3 +76,4 @@ test('should render background-color', async () => {
 2. **Important**: Add the fixture to `packages/web-renderer/src/test/Root.tsx` to add a way to preview it.
 3. Add a new test in `packages/web-renderer/src/test`.
 4. Run `bunx vitest src/test/video.test.tsx` to execute the test.
+5. **Important**: Update `packages/docs/docs/client-side-rendering/limitations.mdx` to reflect the newly supported property.

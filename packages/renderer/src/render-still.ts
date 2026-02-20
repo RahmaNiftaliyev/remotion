@@ -387,7 +387,7 @@ const innerRenderStill = async ({
 
 	return {
 		buffer: output ? null : buffer,
-		mimeType: mimeLookup(imageFormat) || 'application/octet-stream',
+		mimeType: mimeLookup('file.' + imageFormat) || 'application/octet-stream',
 	};
 };
 

@@ -829,8 +829,9 @@ const internalRenderMediaRaw = ({
 					buffer,
 					slowestFrames,
 					mimeType:
-						mimeLookup(getFileExtensionFromCodec(codec, audioCodec)) ||
-						'application/octet-stream',
+						mimeLookup(
+							'file.' + getFileExtensionFromCodec(codec, audioCodec),
+						) || 'application/octet-stream',
 				};
 
 				const sendTelemetryAndResolve = () => {

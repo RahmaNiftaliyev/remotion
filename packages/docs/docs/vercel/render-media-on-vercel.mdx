@@ -22,12 +22,14 @@ The rendered file stays inside the sandbox. Use [`uploadToVercelBlob()`](/docs/v
 import {renderMediaOnVercel, addBundleToSandbox, createSandbox} from '@remotion/vercel';
 const sandbox = await createSandbox();
 // ---cut---
-const {sandboxFilePath, contentType} = await renderMediaOnVercel({
+const {sandboxFilePath} = await renderMediaOnVercel({
   sandbox,
   compositionId: 'MyComp',
   inputProps: {title: 'Hello World'},
-  onProgress: (progress) => {
-    console.log(`Rendering: ${Math.round(progress.progress * 100)}%`);
+  onProgress: async (update) => {
+    if (update.type === 'render-progress') {
+      console.log(`Rendering: ${Math.round(update.progress * 100)}%`);
+    }
   },
 });
 ```
@@ -198,15 +200,17 @@ Allows you to set certain Chromium / Google Chrome flags. See: [Chromium flags](
 
 ### `onProgress?`
 
-_function_ <TsType type="RenderMediaOnProgress" source="@remotion/renderer" href="/docs/renderer/render-media#onprogress" />
+_function_ <TsType type="RenderOnVercelProgress" source="@remotion/vercel" href="/docs/vercel/types#renderonvercelprogress" />
 
-Same callback as [`renderMedia()`](/docs/renderer/render-media#onprogress). Receives render progress updates.
+A callback that receives progress updates.
 
 ```ts twoslash
-import type {RenderMediaOnProgress} from '@remotion/vercel';
+import type {RenderOnVercelProgress} from '@remotion/vercel';
 // ---cut---
-const onProgress: RenderMediaOnProgress = (progress) => {
-  console.log(`Rendering: ${Math.round(progress.progress * 100)}%`);
+const onProgress = async (update: RenderOnVercelProgress) => {
+  if (update.type === 'render-progress') {
+    console.log(`Rendering: ${Math.round(update.progress * 100)}%`);
+  }
 };
 ```
 

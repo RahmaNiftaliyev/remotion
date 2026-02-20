@@ -3,6 +3,7 @@ import {REMOTION_SANDBOX_BUNDLE_DIR} from './internals/add-bundle';
 import type {
 	ChromiumOptions,
 	LogLevel,
+	RenderOnVercelProgress,
 	StillImageFormat,
 } from './types';
 
@@ -10,6 +11,7 @@ export async function renderStillOnVercel({
 	sandbox,
 	compositionId,
 	inputProps,
+	onProgress,
 	outputFile = '/tmp/still.png',
 	frame = 0,
 	imageFormat = 'png',
@@ -27,6 +29,7 @@ export async function renderStillOnVercel({
 	sandbox: Sandbox;
 	compositionId: string;
 	inputProps: Record<string, unknown>;
+	onProgress?: (progress: RenderOnVercelProgress) => Promise<void> | void;
 	outputFile?: string;
 	frame?: number;
 	imageFormat?: StillImageFormat;
@@ -74,7 +77,11 @@ export async function renderStillOnVercel({
 		if (log.stream === 'stdout') {
 			try {
 				const message = JSON.parse(log.data);
-				if (message.type === 'done') {
+				if (message.type === 'opening-browser') {
+					await onProgress?.({type: 'opening-browser'});
+				} else if (message.type === 'selecting-composition') {
+					await onProgress?.({type: 'selecting-composition'});
+				} else if (message.type === 'done') {
 					contentType = message.contentType;
 				}
 			} catch {

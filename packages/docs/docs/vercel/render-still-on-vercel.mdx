@@ -22,7 +22,7 @@ The rendered file stays inside the sandbox. Use [`uploadToVercelBlob()`](/docs/v
 import {renderStillOnVercel, addBundleToSandbox, createSandbox} from '@remotion/vercel';
 const sandbox = await createSandbox();
 // ---cut---
-const {sandboxFilePath, contentType} = await renderStillOnVercel({
+const {sandboxFilePath} = await renderStillOnVercel({
   sandbox,
   compositionId: 'MyComp',
   inputProps: {title: 'Hello World'},
@@ -97,6 +97,12 @@ Allows you to set certain Chromium / Google Chrome flags. See: [Chromium flags](
 ### `licenseKey?`
 
 <Options id="license-key" />
+
+### `onProgress?`
+
+_function_ <TsType type="RenderOnVercelProgress" source="@remotion/vercel" href="/docs/vercel/types#renderonvercelprogress" />
+
+A callback that receives render progress updates. See [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel#onprogress) for the type definition.
 
 ## Return value
 

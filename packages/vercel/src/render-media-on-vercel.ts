@@ -11,7 +11,7 @@ import type {
 	LogLevel,
 	PixelFormat,
 	ProResProfile,
-	RenderMediaOnProgress,
+	RenderOnVercelProgress,
 	VideoImageFormat,
 	X264Preset,
 } from './types';
@@ -60,7 +60,7 @@ export async function renderMediaOnVercel({
 	sandbox: Sandbox;
 	compositionId: string;
 	inputProps: Record<string, unknown>;
-	onProgress?: RenderMediaOnProgress;
+	onProgress?: (progress: RenderOnVercelProgress) => Promise<void> | void;
 	outputFile?: string;
 	codec?: Codec;
 	crf?: number | null;
@@ -152,8 +152,13 @@ export async function renderMediaOnVercel({
 		if (log.stream === 'stdout') {
 			try {
 				const message = JSON.parse(log.data);
-				if (message.type === 'progress') {
-					onProgress?.({
+				if (message.type === 'opening-browser') {
+					await onProgress?.({type: 'opening-browser'});
+				} else if (message.type === 'selecting-composition') {
+					await onProgress?.({type: 'selecting-composition'});
+				} else if (message.type === 'progress') {
+					await onProgress?.({
+						type: 'render-progress',
 						renderedFrames: message.renderedFrames,
 						encodedFrames: message.encodedFrames,
 						encodedDoneIn: message.encodedDoneIn,

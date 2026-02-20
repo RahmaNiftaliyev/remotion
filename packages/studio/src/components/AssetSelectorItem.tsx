@@ -76,6 +76,7 @@ const AssetFolderItem: React.FC<{
 	) => void;
 	readonly dropLocation: string | null;
 	readonly setDropLocation: React.Dispatch<React.SetStateAction<string | null>>;
+	readonly readOnlyStudio: boolean;
 }> = ({
 	tabIndex,
 	item,
@@ -84,6 +85,7 @@ const AssetFolderItem: React.FC<{
 	toggleFolder,
 	dropLocation,
 	setDropLocation,
+	readOnlyStudio,
 }) => {
 	const [hovered, setHovered] = useState(false);
 	const openFolderTimerRef = useRef<number | null>(null);
@@ -170,6 +172,7 @@ const AssetFolderItem: React.FC<{
 					toggleFolder={toggleFolder}
 					dropLocation={dropLocation}
 					setDropLocation={setDropLocation}
+					readOnlyStudio={readOnlyStudio}
 				/>
 			) : null}
 		</div>
@@ -188,6 +191,7 @@ export const AssetFolderTree: React.FC<{
 	) => void;
 	readonly dropLocation: string | null;
 	readonly setDropLocation: React.Dispatch<React.SetStateAction<string | null>>;
+	readonly readOnlyStudio: boolean;
 }> = ({
 	item,
 	level,
@@ -197,6 +201,7 @@ export const AssetFolderTree: React.FC<{
 	tabIndex,
 	dropLocation,
 	setDropLocation,
+	readOnlyStudio,
 }) => {
 	const combinedParents = useMemo(() => {
 		return [parentFolder, name].filter(NoReactInternals.truthy).join('/');
@@ -214,6 +219,7 @@ export const AssetFolderTree: React.FC<{
 						toggleFolder={toggleFolder}
 						dropLocation={dropLocation}
 						setDropLocation={setDropLocation}
+						readOnlyStudio={readOnlyStudio}
 					/>
 				);
 			})}
@@ -225,6 +231,7 @@ export const AssetFolderTree: React.FC<{
 						tabIndex={tabIndex}
 						level={level}
 						parentFolder={combinedParents}
+						readOnlyStudio={readOnlyStudio}
 					/>
 				);
 			})}
@@ -237,7 +244,8 @@ const AssetSelectorItem: React.FC<{
 	readonly tabIndex: number;
 	readonly level: number;
 	readonly parentFolder: string;
-}> = ({item, tabIndex, level, parentFolder}) => {
+	readonly readOnlyStudio: boolean;
+}> = ({item, tabIndex, level, parentFolder, readOnlyStudio}) => {
 	const isMobileLayout = useMobileLayout();
 	const [hovered, setHovered] = useState(false);
 	const {setSidebarCollapsedState} = useContext(SidebarContext);
@@ -364,12 +372,16 @@ const AssetSelectorItem: React.FC<{
 							renderAction={renderCopyAction}
 							onClick={copyToClipboard}
 						/>
-						<Spacing x={0.5} />
-						<InlineAction
-							title="Open in Explorer"
-							renderAction={renderFileExplorerAction}
-							onClick={revealInExplorer}
-						/>
+						{readOnlyStudio ? null : (
+							<>
+								<Spacing x={0.5} />
+								<InlineAction
+									title="Open in Explorer"
+									renderAction={renderFileExplorerAction}
+									onClick={revealInExplorer}
+								/>
+							</>
+						)}
 					</>
 				) : null}
 			</div>

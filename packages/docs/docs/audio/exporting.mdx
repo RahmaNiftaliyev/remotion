@@ -109,7 +109,7 @@ import {renderMediaOnVercel, createSandbox} from '@remotion/vercel';
 const sandbox = await createSandbox();
 // ---cut---
 
-const {file} = await renderMediaOnVercel({
+const {sandboxFilePath} = await renderMediaOnVercel({
   sandbox,
   compositionId: 'MyVideo',
   inputProps: {},
@@ -219,7 +219,7 @@ import {renderMediaOnVercel, createSandbox} from '@remotion/vercel';
 const sandbox = await createSandbox();
 // ---cut---
 
-const {file} = await renderMediaOnVercel({
+const {sandboxFilePath} = await renderMediaOnVercel({
   sandbox,
   compositionId: 'MyVideo',
   inputProps: {},

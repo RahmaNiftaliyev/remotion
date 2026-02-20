@@ -1,6 +1,7 @@
 import {script as renderStillScript} from './generated/render-still-script';
 import {script as renderVideoScript} from './generated/render-video-script';
 import {script as uploadBlobScript} from './generated/upload-blob-script';
+import type {Sandbox} from '@vercel/sandbox';
 import {createDisposableSandbox} from './internals/disposable';
 import {installBrowser} from './internals/install-browser';
 import {installJsDependencies} from './internals/install-js-dependencies';
@@ -8,12 +9,18 @@ import {installSystemDependencies} from './internals/install-system-dependencies
 import {patchCompositor} from './internals/patch-compositor';
 import type {CreateSandboxOnProgress, VercelSandbox} from './types';
 
+type CreateSandboxResources = NonNullable<
+	NonNullable<Parameters<typeof Sandbox.create>[0]>['resources']
+>;
+
 export const SANDBOX_CREATING_TIMEOUT = 5 * 60 * 1000;
 
 export async function createSandbox({
 	onProgress,
+	resources = {vcpus: 4},
 }: {
 	onProgress?: CreateSandboxOnProgress;
+	resources?: CreateSandboxResources;
 } = {}): Promise<VercelSandbox> {
 	const report = async (progress: number, message: string) => {
 		await onProgress?.({progress, message});
@@ -21,7 +28,7 @@ export async function createSandbox({
 
 	const sandbox = await createDisposableSandbox({
 		runtime: 'node24',
-		resources: {vcpus: 4},
+		resources,
 		timeout: SANDBOX_CREATING_TIMEOUT,
 	});
 

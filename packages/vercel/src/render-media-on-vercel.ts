@@ -155,32 +155,14 @@ export async function renderMediaOnVercel({
 		if (log.stream === 'stdout') {
 			try {
 				const message: SandboxRenderMediaMessage = JSON.parse(log.data);
-				if (message.type === 'opening-browser') {
-					await onProgress?.({
-						stage: 'opening-browser',
-						overallProgress: 0,
-					});
-				} else if (message.type === 'selecting-composition') {
-					await onProgress?.({
-						stage: 'selecting-composition',
-						overallProgress: 0.02,
-					});
-				} else if (message.type === 'progress') {
-					await onProgress?.({
-						stage: 'render-progress',
-						progress: {
-							renderedFrames: message.renderedFrames,
-							encodedFrames: message.encodedFrames,
-							encodedDoneIn: message.encodedDoneIn,
-							renderedDoneIn: message.renderedDoneIn,
-							renderEstimatedTime: message.renderEstimatedTime,
-							progress: message.progress,
-							stitchStage: message.stitchStage,
-						},
-						overallProgress: 0.04 + message.progress * 0.96,
-					});
-				} else if (message.type === 'done') {
+				if (message.stage === 'done') {
 					contentType = message.contentType;
+				} else if (
+					message.stage === 'opening-browser' ||
+					message.stage === 'selecting-composition' ||
+					message.stage === 'render-progress'
+				) {
+					await onProgress?.(message);
 				}
 			} catch {
 				// Not JSON, ignore

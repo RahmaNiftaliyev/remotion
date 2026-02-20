@@ -49,11 +49,15 @@ export type {
 export type VercelBlobAccess = 'public' | 'private';
 
 export type SandboxRenderMediaMessage =
-	| {type: 'opening-browser'}
-	| {type: 'selecting-composition'}
-	| ({type: 'progress'} & RenderMediaProgress)
-	| {type: 'render-complete'}
-	| {type: 'done'; size: number; contentType: string};
+	| {stage: 'opening-browser'; overallProgress: number}
+	| {stage: 'selecting-composition'; overallProgress: number}
+	| {
+			stage: 'render-progress';
+			progress: RenderMediaProgress;
+			overallProgress: number;
+	  }
+	| {stage: 'render-complete'; overallProgress: number}
+	| {stage: 'done'; size: number; contentType: string; overallProgress: number};
 
 export type SandboxRenderStillMessage =
 	| {type: 'opening-browser'}

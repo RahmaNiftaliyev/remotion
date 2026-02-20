@@ -55,26 +55,26 @@ export async function POST(req: Request) {
         compositionId: COMP_NAME,
         inputProps: body.inputProps,
         onProgress: async (update) => {
-          switch (update.type) {
+          switch (update.stage) {
             case "opening-browser":
               await send({
                 type: "phase",
                 phase: "Opening browser...",
-                progress: 0,
+                progress: update.overallProgress,
               });
               break;
             case "selecting-composition":
               await send({
                 type: "phase",
                 phase: "Selecting composition...",
-                progress: 0,
+                progress: update.overallProgress,
               });
               break;
             case "render-progress":
               await send({
                 type: "phase",
                 phase: "Rendering video...",
-                progress: update.progress,
+                progress: update.overallProgress,
               });
               break;
             default:

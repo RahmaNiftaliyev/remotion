@@ -61,7 +61,7 @@ try {
 		staticBase: null,
 	}).serializedString;
 
-	console.log(JSON.stringify({type: 'opening-browser'}));
+	console.log(JSON.stringify({stage: 'opening-browser', overallProgress: 0}));
 
 	const browser = await RenderInternals.internalOpenBrowser({
 		browser: 'chrome',
@@ -78,7 +78,7 @@ try {
 		chromeMode: config.chromeMode,
 	});
 
-	console.log(JSON.stringify({type: 'selecting-composition'}));
+	console.log(JSON.stringify({stage: 'selecting-composition', overallProgress: 0.02}));
 
 	const {metadata: composition} =
 		await RenderInternals.internalSelectComposition({
@@ -164,14 +164,17 @@ try {
 		onProgress: (progress) => {
 			console.log(
 				JSON.stringify({
-					type: 'progress',
-					renderedFrames: progress.renderedFrames,
-					encodedFrames: progress.encodedFrames,
-					encodedDoneIn: progress.encodedDoneIn,
-					renderedDoneIn: progress.renderedDoneIn,
-					renderEstimatedTime: progress.renderEstimatedTime,
-					progress: progress.progress,
-					stitchStage: progress.stitchStage,
+					stage: 'render-progress',
+					progress: {
+						renderedFrames: progress.renderedFrames,
+						encodedFrames: progress.encodedFrames,
+						encodedDoneIn: progress.encodedDoneIn,
+						renderedDoneIn: progress.renderedDoneIn,
+						renderEstimatedTime: progress.renderEstimatedTime,
+						progress: progress.progress,
+						stitchStage: progress.stitchStage,
+					},
+					overallProgress: 0.04 + progress.progress * 0.96,
 				}),
 			);
 		},
@@ -194,11 +197,11 @@ try {
 		}),
 	});
 
-	console.log(JSON.stringify({type: 'render-complete'}));
+	console.log(JSON.stringify({stage: 'render-complete', overallProgress: 1}));
 	await browser.close({silent: false});
 
 	const {size} = statSync(config.outputLocation ?? '/tmp/video.mp4');
-	console.log(JSON.stringify({type: 'done', size, contentType}));
+	console.log(JSON.stringify({stage: 'done', size, contentType, overallProgress: 1}));
 } catch (err) {
 	console.error((err as Error).message);
 	process.exit(1);

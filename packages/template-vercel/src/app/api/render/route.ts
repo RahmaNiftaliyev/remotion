@@ -7,7 +7,7 @@ import {
 import { waitUntil } from "@vercel/functions";
 import { COMP_NAME } from "../../../../types/constants";
 import { RenderRequest } from "../../../../types/schema";
-import { formatSSE, type RenderProgress } from "./helpers";
+import { ensureLocalBundle, formatSSE, type RenderProgress } from "./helpers";
 import { restoreSnapshot } from "./restore-snapshot";
 
 export async function POST(req: Request) {
@@ -46,6 +46,7 @@ export async function POST(req: Request) {
 
     try {
       if (!process.env.VERCEL) {
+        ensureLocalBundle(".remotion");
         await addBundleToSandbox({ sandbox, bundleDir: ".remotion" });
       }
 

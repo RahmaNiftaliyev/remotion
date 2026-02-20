@@ -1,28 +1,7 @@
 import type {Sandbox} from '@vercel/sandbox';
-import {execSync} from 'child_process';
-import {existsSync} from 'fs';
 import {readdir, readFile} from 'fs/promises';
 import path from 'path';
 import {REMOTION_SANDBOX_BUNDLE_DIR} from './internals/add-bundle';
-
-function ensureLocalBundle(bundleDir: string): void {
-	if (process.env.VERCEL) {
-		return;
-	}
-
-	const fullBundleDir = path.join(process.cwd(), bundleDir);
-	if (!existsSync(fullBundleDir)) {
-		try {
-			execSync(`node_modules/.bin/remotion bundle --out-dir ./${bundleDir}`, {
-				cwd: process.cwd(),
-				stdio: 'pipe',
-			});
-		} catch (e) {
-			const stderr = (e as {stderr?: Buffer}).stderr?.toString() ?? '';
-			throw new Error(`Remotion bundle failed: ${stderr}`);
-		}
-	}
-}
 
 async function getRemotionBundleFiles(
 	bundleDir: string,
@@ -56,7 +35,6 @@ export async function addBundleToSandbox({
 	sandbox: Sandbox;
 	bundleDir: string;
 }): Promise<void> {
-	ensureLocalBundle(bundleDir);
 	const bundleFiles = await getRemotionBundleFiles(bundleDir);
 
 	const dirs = new Set<string>();

@@ -94,6 +94,7 @@ export async function POST(req: Request) {
         sandboxFilePath,
         contentType,
         blobToken,
+        access: "public",
       });
 
       await send({ type: "done", url, size });

@@ -3,7 +3,6 @@ import {REMOTION_SANDBOX_BUNDLE_DIR} from './internals/add-bundle';
 import type {
 	ChromiumOptions,
 	LogLevel,
-	RenderOnVercelProgress,
 	StillImageFormat,
 } from './types';
 
@@ -11,7 +10,6 @@ export async function renderStillOnVercel({
 	sandbox,
 	compositionId,
 	inputProps,
-	onProgress,
 	outputFile = '/tmp/still.png',
 	frame = 0,
 	imageFormat = 'png',
@@ -29,7 +27,6 @@ export async function renderStillOnVercel({
 	sandbox: Sandbox;
 	compositionId: string;
 	inputProps: Record<string, unknown>;
-	onProgress?: (progress: RenderOnVercelProgress) => Promise<void> | void;
 	outputFile?: string;
 	frame?: number;
 	imageFormat?: StillImageFormat;
@@ -43,7 +40,7 @@ export async function renderStillOnVercel({
 	mediaCacheSizeInBytes?: number | null;
 	offthreadVideoThreads?: number | null;
 	licenseKey?: string | null;
-}): Promise<{sandboxFilePath: string; mimeType: string}> {
+}): Promise<{sandboxFilePath: string; contentType: string}> {
 	const serveUrl = `/vercel/sandbox/${REMOTION_SANDBOX_BUNDLE_DIR}`;
 
 	const renderConfig = {
@@ -71,18 +68,14 @@ export async function renderStillOnVercel({
 		detached: true,
 	});
 
-	let mimeType: string = 'application/octet-stream';
+	let contentType: string = 'application/octet-stream';
 
 	for await (const log of renderCmd.logs()) {
 		if (log.stream === 'stdout') {
 			try {
 				const message = JSON.parse(log.data);
-				if (message.type === 'opening-browser') {
-					await onProgress?.({type: 'opening-browser'});
-				} else if (message.type === 'selecting-composition') {
-					await onProgress?.({type: 'selecting-composition'});
-				} else if (message.type === 'done') {
-					mimeType = message.mimeType;
+				if (message.type === 'done') {
+					contentType = message.contentType;
 				}
 			} catch {
 				// Not JSON, ignore
@@ -97,5 +90,5 @@ export async function renderStillOnVercel({
 		throw new Error(`Render still failed: ${stderr} ${stdout}`);
 	}
 
-	return {sandboxFilePath: outputFile, mimeType};
+	return {sandboxFilePath: outputFile, contentType};
 }

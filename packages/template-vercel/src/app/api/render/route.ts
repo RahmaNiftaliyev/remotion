@@ -49,36 +49,16 @@ export async function POST(req: Request) {
         await addBundleToSandbox({ sandbox, bundleDir: ".remotion" });
       }
 
-      const { sandboxFilePath, mimeType: contentType } = await renderMediaOnVercel({
+      const { sandboxFilePath, contentType } = await renderMediaOnVercel({
         sandbox,
         compositionId: COMP_NAME,
         inputProps: body.inputProps,
-        onProgress: async (update) => {
-          switch (update.type) {
-            case "opening-browser":
-              await send({
-                type: "phase",
-                phase: "Opening browser...",
-                progress: 0,
-              });
-              break;
-            case "selecting-composition":
-              await send({
-                type: "phase",
-                phase: "Selecting composition...",
-                progress: 0,
-              });
-              break;
-            case "render-progress":
-              await send({
-                type: "phase",
-                phase: "Rendering video...",
-                progress: update.progress,
-              });
-              break;
-            default:
-              break;
-          }
+        onProgress: (update) => {
+          send({
+            type: "phase",
+            phase: "Rendering video...",
+            progress: update.progress,
+          });
         },
       });
 

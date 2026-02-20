@@ -92,7 +92,7 @@ try {
 			staticBase: null,
 		}).serializedString;
 
-	const {mimeType} = await RenderInternals.internalRenderStill({
+	const {contentType} = await RenderInternals.internalRenderStill({
 		output: config.output,
 		composition,
 		serializedInputPropsWithCustomSchema: serializedInputProps,
@@ -135,7 +135,7 @@ try {
 	await browser.close({silent: false});
 
 	const {size} = statSync(config.output ?? '/tmp/still.png');
-	console.log(JSON.stringify({type: 'done', size, mimeType}));
+	console.log(JSON.stringify({type: 'done', size, contentType}));
 } catch (err) {
 	console.error((err as Error).message);
 	process.exit(1);

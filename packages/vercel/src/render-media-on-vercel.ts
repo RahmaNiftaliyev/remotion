@@ -11,7 +11,7 @@ import type {
 	LogLevel,
 	PixelFormat,
 	ProResProfile,
-	RenderOnVercelProgress,
+	RenderMediaOnProgress,
 	VideoImageFormat,
 	X264Preset,
 } from './types';
@@ -60,7 +60,7 @@ export async function renderMediaOnVercel({
 	sandbox: Sandbox;
 	compositionId: string;
 	inputProps: Record<string, unknown>;
-	onProgress?: (progress: RenderOnVercelProgress) => Promise<void> | void;
+	onProgress?: RenderMediaOnProgress;
 	outputFile?: string;
 	codec?: Codec;
 	crf?: number | null;
@@ -96,7 +96,7 @@ export async function renderMediaOnVercel({
 	offthreadVideoCacheSizeInBytes?: number | null;
 	mediaCacheSizeInBytes?: number | null;
 	offthreadVideoThreads?: number | null;
-}): Promise<{sandboxFilePath: string; mimeType: string}> {
+}): Promise<{sandboxFilePath: string; contentType: string}> {
 	const serveUrl = `/vercel/sandbox/${REMOTION_SANDBOX_BUNDLE_DIR}`;
 
 	const renderConfig = {
@@ -146,19 +146,14 @@ export async function renderMediaOnVercel({
 		detached: true,
 	});
 
-	let mimeType: string = 'application/octet-stream';
+	let contentType: string = 'application/octet-stream';
 
 	for await (const log of renderCmd.logs()) {
 		if (log.stream === 'stdout') {
 			try {
 				const message = JSON.parse(log.data);
-				if (message.type === 'opening-browser') {
-					await onProgress?.({type: 'opening-browser'});
-				} else if (message.type === 'selecting-composition') {
-					await onProgress?.({type: 'selecting-composition'});
-				} else if (message.type === 'progress') {
-					await onProgress?.({
-						type: 'render-progress',
+				if (message.type === 'progress') {
+					onProgress?.({
 						renderedFrames: message.renderedFrames,
 						encodedFrames: message.encodedFrames,
 						encodedDoneIn: message.encodedDoneIn,
@@ -168,7 +163,7 @@ export async function renderMediaOnVercel({
 						stitchStage: message.stitchStage,
 					});
 				} else if (message.type === 'done') {
-					mimeType = message.mimeType;
+					contentType = message.contentType;
 				}
 			} catch {
 				// Not JSON, ignore
@@ -183,5 +178,5 @@ export async function renderMediaOnVercel({
 		throw new Error(`Render failed: ${stderr} ${stdout}`);
 	}
 
-	return {sandboxFilePath: outputFile, mimeType};
+	return {sandboxFilePath: outputFile, contentType};
 }

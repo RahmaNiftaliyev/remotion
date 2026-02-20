@@ -114,7 +114,7 @@ try {
 			staticBase: null,
 		}).serializedString;
 
-	const {mimeType} = await RenderInternals.internalRenderMedia({
+	const {contentType} = await RenderInternals.internalRenderMedia({
 		outputLocation: config.outputLocation,
 		composition,
 		serializedInputPropsWithCustomSchema: serializedInputProps,
@@ -198,7 +198,7 @@ try {
 	await browser.close({silent: false});
 
 	const {size} = statSync(config.outputLocation ?? '/tmp/video.mp4');
-	console.log(JSON.stringify({type: 'done', size, mimeType}));
+	console.log(JSON.stringify({type: 'done', size, contentType}));
 } catch (err) {
 	console.error((err as Error).message);
 	process.exit(1);

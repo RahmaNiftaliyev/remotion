@@ -16,7 +16,7 @@ export type {
 	OpenGlRenderer,
 	PixelFormat,
 	ProResProfile,
-	RenderOnVercelProgress,
+	RenderMediaOnProgress,
 	StillImageFormat,
 	StitchingState,
 	VercelSandbox,

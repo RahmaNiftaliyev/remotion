@@ -32,15 +32,6 @@ import type {CreateSandboxOnProgress} from '@remotion/vercel';
 - `progress`: A number from `0` to `1` indicating overall progress
 - `message`: A human-readable description of the current phase
 
-## `RenderOnVercelProgress`
+## `RenderMediaOnProgress`
 
-```ts twoslash
-import type {RenderOnVercelProgress} from '@remotion/vercel';
-//                ^?
-```
-
-- `{type: 'opening-browser'}`: The browser is being opened
-- `{type: 'selecting-composition'}`: The composition is being selected
-- `{type: 'render-progress', ...}`: Rendering is in progress. Includes `progress` (`0` to `1`), `renderedFrames`, `encodedFrames`, `encodedDoneIn`, `renderedDoneIn`, `renderEstimatedTime`, and `stitchStage` (`'encoding'` or `'muxing'`)
-- `{type: 'uploading'}`: The rendered file is being uploaded
-- `{type: 'done', url: string, size: number}`: The render is complete
+Re-exported from [`@remotion/renderer`](/docs/renderer/render-media#onprogress). Used as the `onProgress` callback type for [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel).

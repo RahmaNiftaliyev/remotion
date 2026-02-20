@@ -122,7 +122,7 @@ export const CodemodFooter: React.FC<{
 			aborted = true;
 			abortController.abort();
 		};
-	}, [codemodStatus, getCanApplyCodemod, setSelectedModal]);
+	}, [getCanApplyCodemod]);
 
 	const disabled =
 		!valid ||

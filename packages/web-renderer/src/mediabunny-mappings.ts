@@ -1,7 +1,9 @@
 import type {AudioCodec, Quality} from 'mediabunny';
 import {
 	AdtsOutputFormat,
+	FlacOutputFormat,
 	MkvOutputFormat,
+	MovOutputFormat,
 	Mp3OutputFormat,
 	Mp4OutputFormat,
 	OggOutputFormat,
@@ -21,15 +23,18 @@ export type WebRendererContainer =
 	| 'mp4'
 	| 'webm'
 	| 'mkv'
+	| 'mov'
 	| 'wav'
 	| 'mp3'
 	| 'aac'
-	| 'ogg';
+	| 'ogg'
+	| 'flac';
 export type WebRendererAudioCodec =
 	| 'aac'
 	| 'opus'
 	| 'mp3'
 	| 'vorbis'
+	| 'flac'
 	| 'pcm-s16';
 export type WebRendererQuality =
 	| 'very-low'
@@ -45,7 +50,8 @@ export const isAudioOnlyContainer = (
 		container === 'wav' ||
 		container === 'mp3' ||
 		container === 'aac' ||
-		container === 'ogg'
+		container === 'ogg' ||
+		container === 'flac'
 	);
 };
 
@@ -86,6 +92,10 @@ export const containerToMediabunnyContainer = (
 			return new AdtsOutputFormat();
 		case 'ogg':
 			return new OggOutputFormat();
+		case 'mov':
+			return new MovOutputFormat();
+		case 'flac':
+			return new FlacOutputFormat();
 		default:
 			throw new Error(`Unsupported container: ${container satisfies never}`);
 	}
@@ -100,11 +110,13 @@ export const getDefaultVideoCodecForContainer = (
 		case 'webm':
 			return 'vp8';
 		case 'mkv':
+		case 'mov':
 			return 'h264';
 		case 'wav':
 		case 'mp3':
 		case 'aac':
 		case 'ogg':
+		case 'flac':
 			return null;
 		default:
 			throw new Error(`Unsupported container: ${container satisfies never}`);
@@ -162,6 +174,10 @@ export const getMimeType = (container: WebRendererContainer): string => {
 			return 'audio/aac';
 		case 'ogg':
 			return 'audio/ogg';
+		case 'mov':
+			return 'video/quicktime';
+		case 'flac':
+			return 'audio/flac';
 		default:
 			throw new Error(`Unsupported container: ${container satisfies never}`);
 	}
@@ -185,6 +201,10 @@ export const getDefaultAudioCodecForContainer = (
 			return 'aac';
 		case 'ogg':
 			return 'opus';
+		case 'mov':
+			return 'aac';
+		case 'flac':
+			return 'flac';
 		default:
 			throw new Error(`Unsupported container: ${container satisfies never}`);
 	}
@@ -218,6 +238,7 @@ const WEB_RENDERER_AUDIO_CODECS: WebRendererAudioCodec[] = [
 	'opus',
 	'mp3',
 	'vorbis',
+	'flac',
 	'pcm-s16',
 ];
 
@@ -233,6 +254,8 @@ export const audioCodecToMediabunnyAudioCodec = (
 			return 'mp3';
 		case 'vorbis':
 			return 'vorbis';
+		case 'flac':
+			return 'flac';
 		case 'pcm-s16':
 			return 'pcm-s16';
 		default:

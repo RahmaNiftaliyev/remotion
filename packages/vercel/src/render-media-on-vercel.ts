@@ -141,6 +141,10 @@ export async function renderMediaOnVercel({
 		offthreadVideoCacheSizeInBytes: offthreadVideoCacheSizeInBytes ?? null,
 		mediaCacheSizeInBytes: mediaCacheSizeInBytes ?? null,
 		offthreadVideoThreads: offthreadVideoThreads ?? null,
+		chromeMode: 'headless-shell',
+		browserExecutable: null,
+		binariesDirectory: null,
+		repro: false,
 	};
 
 	const renderCmd = await sandbox.runCommand({

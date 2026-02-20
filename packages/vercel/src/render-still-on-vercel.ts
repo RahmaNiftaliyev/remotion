@@ -66,6 +66,9 @@ export async function renderStillOnVercel({
 		mediaCacheSizeInBytes: mediaCacheSizeInBytes ?? null,
 		offthreadVideoThreads: offthreadVideoThreads ?? null,
 		licenseKey: licenseKey ?? null,
+		chromeMode: 'headless-shell',
+		browserExecutable: null,
+		binariesDirectory: null,
 	};
 
 	const renderCmd = await sandbox.runCommand({

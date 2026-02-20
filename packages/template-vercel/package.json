@@ -4,11 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "bun build.ts",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "remotion": "remotion studio",
-    "bundle": "bun bundle.ts",
     "create-snapshot": "bun create-snapshot.ts",
     "render": "remotion render"
   },

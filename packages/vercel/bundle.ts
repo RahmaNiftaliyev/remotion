@@ -15,15 +15,30 @@ const scriptMap: Record<string, string> = {
 	'upload-blob-script': 'src/scripts/upload-blob.ts',
 };
 
-const transpiler = new Bun.Transpiler({loader: 'ts'});
-
 const generatedDir = path.join('src', 'generated');
 mkdirSync(generatedDir, {recursive: true});
-for (const name of Object.keys(scriptMap)) {
+
+// Bundle each script separately so that `remotion` imports are inlined,
+// while `@remotion/renderer`, `@vercel/blob`, `fs`, etc. stay external.
+const scriptBundles: Record<string, string> = {};
+for (const [name, entrypoint] of Object.entries(scriptMap)) {
 	writeFileSync(
 		path.join(generatedDir, `${name}.d.ts`),
 		'export declare const script: string;\n',
 	);
+
+	const scriptOutput = await build({
+		entrypoints: [entrypoint],
+		target: 'node',
+		external: ['@remotion/renderer', '@vercel/blob', 'fs'],
+	});
+
+	if (!scriptOutput.success) {
+		console.log(scriptOutput.logs.join('\n'));
+		process.exit(1);
+	}
+
+	scriptBundles[name] = await scriptOutput.outputs[0].text();
 }
 
 const output = await build({
@@ -60,9 +75,7 @@ const output = await build({
 				build.onLoad(
 					{namespace: 'script-embed', filter: /.*/},
 					async (args) => {
-						const file = scriptMap[args.path];
-						const tsContent = await Bun.file(file).text();
-						const jsContent = transpiler.transformSync(tsContent);
+						const jsContent = scriptBundles[args.path];
 						return {
 							contents: `export const script = ${JSON.stringify(jsContent)};`,
 							loader: 'ts',

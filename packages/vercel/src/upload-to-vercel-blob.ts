@@ -16,14 +16,14 @@ export async function uploadToVercelBlob({
 	blobPath,
 	contentType,
 	blobToken,
-	access,
+	access = 'private',
 }: {
 	sandbox: Sandbox;
 	sandboxFilePath: string;
 	blobPath?: string;
 	contentType: string;
 	blobToken: string;
-	access: VercelBlobAccess;
+	access?: VercelBlobAccess;
 }): Promise<{url: string; size: number}> {
 	const actualBlobPath =
 		blobPath ??

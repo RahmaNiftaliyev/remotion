@@ -94,6 +94,9 @@ export const InitialCompositionLoader: React.FC = () => {
 		const canvasContentFromUrl = deriveCanvasContentFromUrl();
 
 		if (canvasContent) {
+			// If the URL points to a different composition than the one currently
+			// displayed, switch to it. This handles the case where the URL is
+			// updated externally (e.g. after duplicating a composition).
 			if (
 				canvasContentFromUrl &&
 				canvasContentFromUrl.type === 'composition' &&

@@ -18,7 +18,7 @@ export const CodemodFooter: React.FC<{
 	readonly errorNotification: string;
 	readonly genericSubmitLabel: string;
 	readonly submitLabel: (options: {relativeRootPath: string}) => string;
-	readonly onSuccess?: () => void;
+	readonly onSuccess: (() => void) | null;
 }> = ({
 	codemod,
 	valid,

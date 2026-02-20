@@ -104,6 +104,7 @@ const RenameCompositionLoaded: React.FC<{}> = () => {
 						submitLabel={({relativeRootPath}) => `Modify ${relativeRootPath}`}
 						codemod={codemod}
 						valid={valid}
+						onSuccess={null}
 					/>
 				</ModalFooterContainer>
 			</form>

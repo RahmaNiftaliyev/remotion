@@ -84,6 +84,7 @@ export const renderStillFlow = async ({
 	offthreadVideoThreads,
 	audioLatencyHint,
 	mediaCacheSizeInBytes,
+	rspack,
 	askAIEnabled,
 	experimentalClientSideRenderingEnabled,
 	keyboardShortcutsEnabled,
@@ -124,6 +125,7 @@ export const renderStillFlow = async ({
 	chromeMode: ChromeMode;
 	audioLatencyHint: AudioContextLatencyCategory | null;
 	mediaCacheSizeInBytes: number | null;
+	rspack: boolean;
 	askAIEnabled: boolean;
 	experimentalClientSideRenderingEnabled: boolean;
 	keyboardShortcutsEnabled: boolean;
@@ -231,6 +233,7 @@ export const renderStillFlow = async ({
 			experimentalClientSideRenderingEnabled,
 			askAIEnabled,
 			keyboardShortcutsEnabled,
+			rspack,
 			shouldCache,
 		},
 	);

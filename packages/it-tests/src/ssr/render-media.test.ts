@@ -124,7 +124,7 @@ test('Render video to a buffer', async () => {
 		throw new Error('not found');
 	}
 
-	const {buffer} = await renderMedia({
+	const {buffer, mimeType} = await renderMedia({
 		codec: 'h264',
 		serveUrl:
 			'https://661808694cad562ef2f35be7--incomparable-dasik-a4482b.netlify.app/',
@@ -134,6 +134,7 @@ test('Render video to a buffer', async () => {
 	});
 
 	expect(buffer?.length).toBeGreaterThan(2000);
+	expect(mimeType).toBe('video/mp4');
 });
 
 test('Should fail invalid serve URL', async () => {

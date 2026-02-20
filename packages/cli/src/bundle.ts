@@ -21,6 +21,7 @@ const {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	rspackOption,
 	outDirOption,
 	bundleCacheOption,
 } = BrowserSafeApis.options;
@@ -75,6 +76,7 @@ export const bundleCommand = async (
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const rspack = rspackOption.getValue({commandLine: parsedCli}).value;
 	const shouldCache = bundleCacheOption.getValue({
 		commandLine: parsedCli,
 	}).value;
@@ -166,6 +168,7 @@ export const bundleCommand = async (
 		experimentalClientSideRenderingEnabled,
 		askAIEnabled,
 		keyboardShortcutsEnabled,
+		rspack,
 		shouldCache,
 	});
 

@@ -67,6 +67,7 @@ import {publicDirOption} from './public-dir';
 import {publicLicenseKeyOption} from './public-license-key';
 import {publicPathOption} from './public-path';
 import {reproOption} from './repro';
+import {rspackOption} from './rspack';
 import {runsOption} from './runs';
 import {scaleOption} from './scale';
 import {separateAudioOption} from './separate-audio';
@@ -157,6 +158,7 @@ export const allOptions = {
 	overrideWidthOption,
 	overrideFpsOption,
 	overrideDurationOption,
+	rspackOption,
 	outDirOption,
 	packageManagerOption,
 	webpackPollOption,

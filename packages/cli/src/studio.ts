@@ -29,6 +29,7 @@ const {
 	numberOfSharedAudioTagsOption,
 	audioLatencyHintOption,
 	ipv4Option,
+	rspackOption,
 	webpackPollOption,
 	noOpenOption,
 	portOption,
@@ -136,6 +137,15 @@ export const studioCommand = async (
 
 	const gitSource = getGitSource({remotionRoot, disableGitSource, logLevel});
 
+	const useRspack = rspackOption.getValue({commandLine: parsedCli}).value;
+
+	if (useRspack) {
+		Log.warn(
+			{indent: false, logLevel},
+			'Enabling experimental Rspack bundler.',
+		);
+	}
+
 	const result = await StudioServerInternals.startStudio({
 		previewEntry: require.resolve('@remotion/studio/previewEntry'),
 		browserArgs: parsedCli['browser-args'],
@@ -174,6 +184,7 @@ export const studioCommand = async (
 		enableCrossSiteIsolation,
 		askAIEnabled,
 		forceNew: forceNewStudioOption.getValue({commandLine: parsedCli}).value,
+		rspack: useRspack,
 	});
 
 	if (result.type === 'already-running') {

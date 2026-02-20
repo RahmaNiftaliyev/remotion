@@ -35,6 +35,7 @@ export const bundleOnCliOrTakeServeUrl = async ({
 	experimentalClientSideRenderingEnabled,
 	askAIEnabled,
 	keyboardShortcutsEnabled,
+	rspack,
 	shouldCache,
 }: {
 	fullPath: string;
@@ -58,6 +59,7 @@ export const bundleOnCliOrTakeServeUrl = async ({
 	experimentalClientSideRenderingEnabled: boolean;
 	askAIEnabled: boolean;
 	keyboardShortcutsEnabled: boolean;
+	rspack: boolean;
 	shouldCache: boolean;
 }): Promise<{
 	urlOrBundle: string;
@@ -102,6 +104,7 @@ export const bundleOnCliOrTakeServeUrl = async ({
 		experimentalClientSideRenderingEnabled,
 		askAIEnabled,
 		keyboardShortcutsEnabled,
+		rspack,
 		shouldCache,
 	});
 
@@ -130,6 +133,7 @@ export const bundleOnCli = async ({
 	experimentalClientSideRenderingEnabled,
 	askAIEnabled,
 	keyboardShortcutsEnabled,
+	rspack,
 	shouldCache,
 }: {
 	fullPath: string;
@@ -153,6 +157,7 @@ export const bundleOnCli = async ({
 	experimentalClientSideRenderingEnabled: boolean;
 	keyboardShortcutsEnabled: boolean;
 	askAIEnabled: boolean;
+	rspack: boolean;
 	shouldCache: boolean;
 }) => {
 	const symlinkState: SymbolicLinksState = {
@@ -217,6 +222,7 @@ export const bundleOnCli = async ({
 		publicPath,
 		askAIEnabled,
 		keyboardShortcutsEnabled,
+		rspack,
 	};
 
 	const [hash] = await BundlerInternals.getConfig({

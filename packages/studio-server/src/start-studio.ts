@@ -54,6 +54,7 @@ export const startStudio = async ({
 	enableCrossSiteIsolation,
 	askAIEnabled,
 	forceNew,
+	rspack,
 }: {
 	browserArgs: string;
 	browserFlag: string;
@@ -83,6 +84,7 @@ export const startStudio = async ({
 	forceIPv4: boolean;
 	askAIEnabled: boolean;
 	forceNew: boolean;
+	rspack: boolean;
 }): Promise<StartStudioResult> => {
 	try {
 		if (typeof Bun === 'undefined') {
@@ -158,6 +160,7 @@ export const startStudio = async ({
 		enableCrossSiteIsolation,
 		askAIEnabled,
 		forceNew,
+		rspack,
 	});
 
 	if (result.type === 'already-running') {

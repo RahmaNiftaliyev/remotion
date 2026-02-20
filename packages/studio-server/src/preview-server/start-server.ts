@@ -59,6 +59,7 @@ export const startServer = async (options: {
 	enableCrossSiteIsolation: boolean;
 	askAIEnabled: boolean;
 	forceNew: boolean;
+	rspack: boolean;
 }): Promise<StartServerResult> => {
 	const desiredPort =
 		options?.port ??
@@ -78,11 +79,11 @@ export const startServer = async (options: {
 				return detection.type === 'match' ? 'stop' : 'continue';
 			};
 
-	const [, config] = await BundlerInternals.webpackConfig({
+	const configArgs = {
 		entry: options.entry,
 		userDefinedComponent: options.userDefinedComponent,
 		outDir: null,
-		environment: 'development',
+		environment: 'development' as const,
 		webpackOverride: options?.webpackOverride,
 		maxTimelineTracks: options?.maxTimelineTracks ?? null,
 		remotionRoot: options.remotionRoot,
@@ -92,9 +93,18 @@ export const startServer = async (options: {
 		poll: options.poll,
 		bufferStateDelayInMilliseconds: options.bufferStateDelayInMilliseconds,
 		askAIEnabled: options.askAIEnabled,
-	});
+	};
 
-	const compiler = webpack(config);
+	let compiler: webpack.Compiler;
+	if (options.rspack) {
+		const [, rspackConf] = await BundlerInternals.rspackConfig(configArgs);
+		compiler = BundlerInternals.createRspackCompiler(
+			rspackConf,
+		) as unknown as webpack.Compiler;
+	} else {
+		const [, webpackConf] = await BundlerInternals.webpackConfig(configArgs);
+		compiler = webpack(webpackConf);
+	}
 
 	const wdmMiddleware = wdm(compiler, options.logLevel);
 	const whm = webpackHotMiddleware(compiler, options.logLevel);

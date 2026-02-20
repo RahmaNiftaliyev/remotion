@@ -58,6 +58,7 @@ const {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	rspackOption,
 	pixelFormatOption,
 	browserExecutableOption,
 	everyNthFrameOption,
@@ -280,6 +281,7 @@ export const benchmarkCommand = async (
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const rspack = rspackOption.getValue({commandLine: parsedCli}).value;
 	const shouldCache = bundleCacheOption.getValue({
 		commandLine: parsedCli,
 	}).value;
@@ -355,6 +357,7 @@ export const benchmarkCommand = async (
 			experimentalClientSideRenderingEnabled,
 			askAIEnabled,
 			keyboardShortcutsEnabled,
+			rspack,
 			shouldCache,
 		});
 

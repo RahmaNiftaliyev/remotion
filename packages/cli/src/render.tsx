@@ -48,6 +48,7 @@ const {
 	askAIOption,
 	experimentalClientSideRenderingOption,
 	keyboardShortcutsOption,
+	rspackOption,
 	pixelFormatOption,
 	browserExecutableOption,
 	everyNthFrameOption,
@@ -222,6 +223,7 @@ export const render = async (
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const rspack = rspackOption.getValue({commandLine: parsedCli}).value;
 
 	const chromiumOptions: Required<ChromiumOptions> = {
 		disableWebSecurity,
@@ -250,6 +252,10 @@ export const render = async (
 	const shouldCache = bundleCacheOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const experimentalClientSideRenderingEnabled =
+		experimentalClientSideRenderingOption.getValue({
+			commandLine: parsedCli,
+		}).value;
 
 	await renderVideoFlow({
 		fullEntryPoint,
@@ -321,10 +327,9 @@ export const render = async (
 		audioLatencyHint,
 		imageSequencePattern,
 		askAIEnabled,
-		experimentalClientSideRenderingEnabled:
-			experimentalClientSideRenderingOption.getValue({commandLine: parsedCli})
-				.value,
+		experimentalClientSideRenderingEnabled,
 		keyboardShortcutsEnabled,
+		rspack,
 		shouldCache,
 	});
 };

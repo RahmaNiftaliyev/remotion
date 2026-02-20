@@ -54,6 +54,7 @@ import {backgroundClipText3dTransform} from './fixtures/text/background-clip-tex
 import {letterSpacing} from './fixtures/text/letter-spacing';
 import {paragraphs} from './fixtures/text/paragraphs';
 import {textFixture} from './fixtures/text/text';
+import {textShadow} from './fixtures/text/text-shadow';
 import {textTransform} from './fixtures/text/text-transform';
 import {webkitTextFillColor} from './fixtures/text/webkit-text-fill-color';
 import {threeDoverflow} from './fixtures/three-d-overflow';
@@ -135,6 +136,7 @@ export const Root: React.FC = () => {
 				<Composition {...webkitTextFillColor} />
 				<Composition {...backgroundClipText} />
 				<Composition {...backgroundClipText3dTransform} />
+				<Composition {...textShadow} />
 				<Composition {...whiteSpaceCollapsing} />
 				<Composition {...whiteSpaceCollapsing2} />
 			</Folder>

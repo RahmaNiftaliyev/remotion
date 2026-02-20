@@ -6,7 +6,7 @@ type UploadBlobConfig = {
 	blobPath: string;
 	contentType: string;
 	blobToken: string;
-	access: 'public' | 'private';
+	access: 'public';
 };
 
 const config: UploadBlobConfig = JSON.parse(process.argv[2]);

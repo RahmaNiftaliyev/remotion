@@ -14,7 +14,8 @@ Also, it offers an API to programmatically check the usage in order to implement
 
 Not directly - you can directly pass the `licenseKey` option to track a render.
 
-**For [`@remotion/lambda`](/docs/lambda)**: Pass the `licenseKey` option to [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda#licensekey) and [`renderStillOnLambda()`](/docs/lambda/renderstillonlambda#licensekey) to trigger an event.  
+**For [`@remotion/lambda`](/docs/lambda)**: Pass the `licenseKey` option to [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda#licensekey) and [`renderStillOnLambda()`](/docs/lambda/renderstillonlambda#licensekey) to trigger an event.
+**For [`@remotion/vercel`](/docs/vercel/api)**: Pass the `licenseKey` option to [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel#licensekey) and [`renderStillOnVercel()`](/docs/vercel/render-still-on-vercel#licensekey) to trigger an event.
 **For [`@remotion/renderer`](/docs/renderer)**: Pass the `licenseKey` option to [`renderMedia()`](/docs/renderer/render-media#licensekey) and [`renderStill()`](/docs/renderer/render-still#licensekey) to trigger an event.  
 **For [`@remotion/web-renderer`](/docs/client-side-rendering/telemetry)**: An event is always sent. You must pass a real `licenseKey` or declare your eligibility for the free license using `licenseKey: "free-license"` - see: [Telemetry in client-side rendering](/docs/client-side-rendering/telemetry#setting-a-license-key).  
 **For [`@remotion/cloudrun`](/docs/cloudrun)** (_deprecated_): No telemetry is implemented. Use [`@remotion/licensing`](/docs/licensing) directly to track usage.  

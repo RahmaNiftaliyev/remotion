@@ -17,7 +17,7 @@ Remotion will automatically append the `--user-data-dir` flag.
 
 ### Via Node.JS APIs
 
-In [`getCompositions()`](/docs/renderer/get-compositions), [`renderStill()`](/docs/renderer/render-still#disablewebsecurity), [`renderMedia()`](/docs/renderer/render-media#disablewebsecurity), [`renderFrames()`](/docs/renderer/render-frames#disablewebsecurity), [`getCompositionsOnLambda()`](/docs/lambda/getcompositionsonlambda#disablewebsecurity), [`renderStillOnLambda()`](/docs/lambda/renderstillonlambda#disablewebsecurity) and [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda#disablewebsecurity), you can pass [`chromiumOptions.disableWebSecurity`](/docs/renderer/render-still#disablewebsecurity).
+In [`getCompositions()`](/docs/renderer/get-compositions), [`renderStill()`](/docs/renderer/render-still#disablewebsecurity), [`renderMedia()`](/docs/renderer/render-media#disablewebsecurity), [`renderFrames()`](/docs/renderer/render-frames#disablewebsecurity), [`getCompositionsOnLambda()`](/docs/lambda/getcompositionsonlambda#disablewebsecurity), [`renderStillOnLambda()`](/docs/lambda/renderstillonlambda#disablewebsecurity), [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda#disablewebsecurity), [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel#chromiumoptions) and [`renderStillOnVercel()`](/docs/vercel/render-still-on-vercel#chromiumoptions), you can pass [`chromiumOptions.disableWebSecurity`](/docs/renderer/render-still#disablewebsecurity).
 
 ### Via CLI flag
 
@@ -45,7 +45,7 @@ Results in invalid SSL certificates, such as self-signed ones, being ignored.
 
 ### Via Node.JS APIs
 
-In [`getCompositions()`](/docs/renderer/get-compositions), [`renderStill()`](/docs/renderer/render-still#ignorecertificateerrors), [`renderMedia()`](/docs/renderer/render-media#ignorecertificateerrors), [`renderFrames()`](/docs/renderer/render-frames#ignorecertificateerrors), [`getCompositionsOnLambda()`](/docs/lambda/getcompositionsonlambda#disablewebsecurity), [`renderStillOnLambda()`](/docs/lambda/renderstillonlambda#ignorecertificateerrors) and [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda#ignorecertificateerrors), you can pass [`chromiumOptions.ignoreCertificateErrors`](/docs/renderer/render-still#ignorecertificateerrors).
+In [`getCompositions()`](/docs/renderer/get-compositions), [`renderStill()`](/docs/renderer/render-still#ignorecertificateerrors), [`renderMedia()`](/docs/renderer/render-media#ignorecertificateerrors), [`renderFrames()`](/docs/renderer/render-frames#ignorecertificateerrors), [`getCompositionsOnLambda()`](/docs/lambda/getcompositionsonlambda#disablewebsecurity), [`renderStillOnLambda()`](/docs/lambda/renderstillonlambda#ignorecertificateerrors), [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda#ignorecertificateerrors), [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel#chromiumoptions) and [`renderStillOnVercel()`](/docs/vercel/render-still-on-vercel#chromiumoptions), you can pass [`chromiumOptions.ignoreCertificateErrors`](/docs/renderer/render-still#ignorecertificateerrors).
 
 ### Via CLI flag
 
@@ -101,7 +101,7 @@ Prior to `v3.3.39`, the option was called `Config.Puppeteer.setChromiumHeadlessM
 
 ### Via Node.JS APIs
 
-In [`getCompositions()`](/docs/renderer/get-compositions#chromiumoptions), [`renderStill()`](/docs/renderer/render-still#gl), [`renderMedia()`](/docs/renderer/render-media#gl), [`renderFrames()`](/docs/renderer/render-frames#gl), [`getCompositionsOnLambda()`](/docs/lambda/getcompositionsonlambda#gl), [`renderStillOnLambda()`](/docs/lambda/renderstillonlambda#gl) and [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda#gl), you can pass [`chromiumOptions.gl`](/docs/renderer/render-still#gl).
+In [`getCompositions()`](/docs/renderer/get-compositions#chromiumoptions), [`renderStill()`](/docs/renderer/render-still#gl), [`renderMedia()`](/docs/renderer/render-media#gl), [`renderFrames()`](/docs/renderer/render-frames#gl), [`getCompositionsOnLambda()`](/docs/lambda/getcompositionsonlambda#gl), [`renderStillOnLambda()`](/docs/lambda/renderstillonlambda#gl), [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda#gl), [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel#chromiumoptions) and [`renderStillOnVercel()`](/docs/vercel/render-still-on-vercel#chromiumoptions), you can pass [`chromiumOptions.gl`](/docs/renderer/render-still#gl).
 
 ### Via CLI flag
 
@@ -125,7 +125,7 @@ Prior to `v3.3.39`, the option was called `Config.Puppeteer.setChromiumOpenGlRen
 
 ### Via Node.JS APIs
 
-In [`getCompositions()`](/docs/renderer/get-compositions#chromiumoptions), [`renderStill()`](/docs/renderer/render-still#useragent), [`renderMedia()`](/docs/renderer/render-media#useragent), [`renderFrames()`](/docs/renderer/render-frames#useragent), [`getCompositionsOnLambda()`](/docs/lambda/getcompositionsonlambda#useragent), [`renderStillOnLambda()`](/docs/lambda/renderstillonlambda#useragent) and [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda#chromiumoptions), you can pass [`chromiumOptions.userAgent`](/docs/renderer/render-still#useragent).
+In [`getCompositions()`](/docs/renderer/get-compositions#chromiumoptions), [`renderStill()`](/docs/renderer/render-still#useragent), [`renderMedia()`](/docs/renderer/render-media#useragent), [`renderFrames()`](/docs/renderer/render-frames#useragent), [`getCompositionsOnLambda()`](/docs/lambda/getcompositionsonlambda#useragent), [`renderStillOnLambda()`](/docs/lambda/renderstillonlambda#useragent), [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda#chromiumoptions), [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel#chromiumoptions) and [`renderStillOnVercel()`](/docs/vercel/render-still-on-vercel#chromiumoptions), you can pass [`chromiumOptions.userAgent`](/docs/renderer/render-still#useragent).
 
 ### Via CLI flag
 
@@ -137,7 +137,7 @@ Pass [`--user-agent`](/docs/cli) in one of the following commands: [`remotion re
 
 ### Via Node.JS APIs
 
-In [`getCompositions()`](/docs/renderer/get-compositions#chromiumoptions), [`renderStill()`](/docs/renderer/render-still#darkmode), [`renderMedia()`](/docs/renderer/render-media#darkmode), [`renderFrames()`](/docs/renderer/render-frames#darkmode), [`getCompositionsOnLambda()`](/docs/lambda/getcompositionsonlambda#darkmode), [`renderStillOnLambda()`](/docs/lambda/renderstillonlambda#darkmode) and [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda#chromiumoptions), you can pass [`chromiumOptions.darkMode`](/docs/renderer/render-still#darkmode).
+In [`getCompositions()`](/docs/renderer/get-compositions#chromiumoptions), [`renderStill()`](/docs/renderer/render-still#darkmode), [`renderMedia()`](/docs/renderer/render-media#darkmode), [`renderFrames()`](/docs/renderer/render-frames#darkmode), [`getCompositionsOnLambda()`](/docs/lambda/getcompositionsonlambda#darkmode), [`renderStillOnLambda()`](/docs/lambda/renderstillonlambda#darkmode), [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda#chromiumoptions), [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel#chromiumoptions) and [`renderStillOnVercel()`](/docs/vercel/render-still-on-vercel#chromiumoptions), you can pass [`chromiumOptions.darkMode`](/docs/renderer/render-still#darkmode).
 
 ### Via CLI flag
 

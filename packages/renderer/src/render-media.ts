@@ -87,7 +87,7 @@ const MAX_RECENT_FRAME_TIMINGS = 150;
 
 export type SlowFrame = {frame: number; time: number};
 
-export type RenderMediaOnProgress = (progress: {
+export type RenderMediaProgress = {
 	renderedFrames: number;
 	encodedFrames: number;
 	encodedDoneIn: number | null;
@@ -95,7 +95,9 @@ export type RenderMediaOnProgress = (progress: {
 	renderEstimatedTime: number;
 	progress: number;
 	stitchStage: StitchingState;
-}) => void;
+};
+
+export type RenderMediaOnProgress = (progress: RenderMediaProgress) => void;
 
 type MoreRenderMediaOptions = ToOptions<typeof optionsMap.renderMedia>;
 

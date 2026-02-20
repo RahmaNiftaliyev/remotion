@@ -720,6 +720,22 @@ const sidebars: SidebarsConfig = {
 
 		{
 			type: 'category',
+			label: '@remotion/vercel',
+			link: {
+				type: 'doc',
+				id: 'vercel/vercel-api',
+			},
+			items: [
+				'vercel/create-sandbox',
+				'vercel/add-bundle-to-sandbox',
+				'vercel/render-media-on-vercel',
+				'vercel/render-still-on-vercel',
+				'vercel/upload-to-vercel-blob',
+				'vercel/vercel-types',
+			],
+		},
+		{
+			type: 'category',
 			label: '@remotion/web-renderer',
 			link: {
 				type: 'doc',

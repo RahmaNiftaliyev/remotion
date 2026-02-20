@@ -1,8 +1,8 @@
-import { Sandbox } from "@vercel/sandbox";
+import type {Sandbox} from '@vercel/sandbox';
 
-const GLIBC_DIR = "/tmp/glibc235";
+const GLIBC_DIR = '/tmp/glibc235';
 const LIBC6_DEB_URL =
-  "https://launchpadlibrarian.net/612471225/libc6_2.35-0ubuntu3.1_amd64.deb";
+	'https://launchpadlibrarian.net/612471225/libc6_2.35-0ubuntu3.1_amd64.deb';
 
 /**
  * Remotion does not officially support glibc 2.34, but it can be patched.
@@ -12,14 +12,14 @@ const LIBC6_DEB_URL =
  * We download Ubuntu 22.04's libc6 package and use patchelf to
  * point the compositor at the bundled glibc.
  *
- * Only the `remotion` binary needs patching — ffmpeg/ffprobe work fine on glibc 2.34.
+ * Only the `remotion` binary needs patching - ffmpeg/ffprobe work fine on glibc 2.34.
  */
 export async function patchCompositor({
-  sandbox,
+	sandbox,
 }: {
-  sandbox: Sandbox;
+	sandbox: Sandbox;
 }): Promise<void> {
-  const script = `
+	const script = `
 set -euo pipefail
 
 echo "[patch-compositor] Listing node_modules/@remotion/:"
@@ -87,20 +87,20 @@ patchelf \\
 echo "[patch-compositor] Compositor patched successfully"
 `;
 
-  const cmd = await sandbox.runCommand({
-    cmd: "bash",
-    args: ["-c", script],
-    detached: true,
-  });
+	const cmd = await sandbox.runCommand({
+		cmd: 'bash',
+		args: ['-c', script],
+		detached: true,
+	});
 
-  for await (const _log of cmd.logs()) {
-    console.log(_log.data);
-  }
+	for await (const _log of cmd.logs()) {
+		// consume logs
+	}
 
-  const result = await cmd.wait();
-  if (result.exitCode !== 0) {
-    throw new Error(
-      `Failed to patch compositor: ${await result.stderr()} ${await result.stdout()}`,
-    );
-  }
+	const result = await cmd.wait();
+	if (result.exitCode !== 0) {
+		throw new Error(
+			`Failed to patch compositor: ${await result.stderr()} ${await result.stdout()}`,
+		);
+	}
 }

@@ -120,6 +120,7 @@ export {
 	InternalRenderMediaOptions,
 	RenderMediaOnProgress,
 	RenderMediaOptions,
+	RenderMediaProgress,
 	SlowFrame,
 	StitchingState,
 	renderMedia,

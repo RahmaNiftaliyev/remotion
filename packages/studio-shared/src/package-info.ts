@@ -83,6 +83,7 @@ export const packages = [
 	'web-renderer',
 	'design',
 	'light-leaks',
+	'vercel',
 ] as const;
 
 export type Pkgs = (typeof packages)[number];
@@ -199,6 +200,7 @@ export const descriptions: {[key in Pkgs]: string | null} = {
 	'web-renderer': 'Render videos in the browser (not yet released)',
 	design: 'Design system',
 	'light-leaks': 'Light leak effects for Remotion',
+	vercel: 'Render Remotion videos on Vercel Sandbox',
 };
 export const installableMap: {[key in Pkgs]: boolean} = {
 	'svg-3d-engine': false,
@@ -285,6 +287,7 @@ export const installableMap: {[key in Pkgs]: boolean} = {
 	'web-renderer': false,
 	design: false,
 	'light-leaks': true,
+	vercel: true,
 };
 
 export const apiDocs: {[key in Pkgs]: string | null} = {
@@ -375,4 +378,5 @@ export const apiDocs: {[key in Pkgs]: string | null} = {
 	'web-renderer': 'https://www.remotion.dev/docs/web-renderer/',
 	design: 'https://www.remotion.dev/design',
 	'light-leaks': 'https://www.remotion.dev/docs/light-leaks',
+	vercel: 'https://www.remotion.dev/docs/vercel/api',
 };

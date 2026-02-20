@@ -9,8 +9,8 @@ export const portOption = {
 	cliFlag,
 	description: () => (
 		<>
-			Set a custom HTTP server port for the Studio or the render process. If
-			not defined, Remotion will try to find a free port.
+			Set a custom HTTP server port for the Studio or the render process. If not
+			defined, Remotion will try to find a free port.
 		</>
 	),
 	ssrName: null,

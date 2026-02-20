@@ -78,7 +78,9 @@ try {
 		chromeMode: config.chromeMode,
 	});
 
-	console.log(JSON.stringify({stage: 'selecting-composition', overallProgress: 0.02}));
+	console.log(
+		JSON.stringify({stage: 'selecting-composition', overallProgress: 0.02}),
+	);
 
 	const {metadata: composition} =
 		await RenderInternals.internalSelectComposition({
@@ -201,7 +203,9 @@ try {
 	await browser.close({silent: false});
 
 	const {size} = statSync(config.outputLocation ?? '/tmp/video.mp4');
-	console.log(JSON.stringify({stage: 'done', size, contentType, overallProgress: 1}));
+	console.log(
+		JSON.stringify({stage: 'done', size, contentType, overallProgress: 1}),
+	);
 } catch (err) {
 	console.error((err as Error).message);
 	process.exit(1);

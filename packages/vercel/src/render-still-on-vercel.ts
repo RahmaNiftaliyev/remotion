@@ -30,9 +30,7 @@ export async function renderStillOnVercel({
 	sandbox: Sandbox;
 	compositionId: string;
 	inputProps: Record<string, unknown>;
-	onProgress?: (
-		progress: RenderStillOnVercelProgress,
-	) => Promise<void> | void;
+	onProgress?: (progress: RenderStillOnVercelProgress) => Promise<void> | void;
 	outputFile?: string;
 	frame?: number;
 	imageFormat?: StillImageFormat;

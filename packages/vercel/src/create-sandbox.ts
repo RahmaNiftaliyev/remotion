@@ -1,7 +1,7 @@
+import type {Sandbox} from '@vercel/sandbox';
 import {script as renderStillScript} from './generated/render-still-script';
 import {script as renderVideoScript} from './generated/render-video-script';
 import {script as uploadBlobScript} from './generated/upload-blob-script';
-import type {Sandbox} from '@vercel/sandbox';
 import {createDisposableSandbox} from './internals/disposable';
 import {installBrowser} from './internals/install-browser';
 import {installJsDependencies} from './internals/install-js-dependencies';

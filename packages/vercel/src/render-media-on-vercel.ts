@@ -61,9 +61,7 @@ export async function renderMediaOnVercel({
 	sandbox: Sandbox;
 	compositionId: string;
 	inputProps: Record<string, unknown>;
-	onProgress?: (
-		progress: RenderMediaOnVercelProgress,
-	) => Promise<void> | void;
+	onProgress?: (progress: RenderMediaOnVercelProgress) => Promise<void> | void;
 	outputFile?: string;
 	codec?: Codec;
 	crf?: number | null;

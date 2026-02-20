@@ -68,6 +68,10 @@ const {
 	forSeamlessAacConcatenationOption,
 	isProductionOption,
 	noOpenOption,
+	portOption,
+	propsOption,
+	configOption,
+	browserOption,
 } = BrowserSafeApis.options;
 
 export type CommandLineOptions = {
@@ -104,7 +108,7 @@ export type CommandLineOptions = {
 	[videoCodecOption.cliFlag]: TypeOfOption<typeof videoCodecOption>;
 	[concurrencyOption.cliFlag]: TypeOfOption<typeof concurrencyOption>;
 	timeout: number;
-	config: string;
+	[configOption.cliFlag]: TypeOfOption<typeof configOption>;
 	['public-dir']: string;
 	[audioBitrateOption.cliFlag]: TypeOfOption<typeof audioBitrateOption>;
 	[videoBitrateOption.cliFlag]: TypeOfOption<typeof videoBitrateOption>;
@@ -119,7 +123,7 @@ export type CommandLineOptions = {
 	output: string | undefined;
 	[overwriteOption.cliFlag]: TypeOfOption<typeof overwriteOption>;
 	png: boolean;
-	props: string;
+	[propsOption.cliFlag]: TypeOfOption<typeof propsOption>;
 	quality: number;
 	[jpegQualityOption.cliFlag]: TypeOfOption<typeof jpegQualityOption>;
 	frames: string | number;
@@ -129,7 +133,7 @@ export type CommandLineOptions = {
 	q: boolean;
 	[logLevelOption.cliFlag]: TypeOfOption<typeof logLevelOption>;
 	help: boolean;
-	port: number;
+	[portOption.cliFlag]: TypeOfOption<typeof portOption>;
 	[stillFrameOption.cliFlag]: TypeOfOption<typeof stillFrameOption>;
 	[headlessOption.cliFlag]: TypeOfOption<typeof headlessOption>;
 	[keyboardShortcutsOption.cliFlag]: TypeOfOption<
@@ -150,7 +154,7 @@ export type CommandLineOptions = {
 	[packageManagerOption.cliFlag]: TypeOfOption<typeof packageManagerOption>;
 	[webpackPollOption.cliFlag]: TypeOfOption<typeof webpackPollOption>;
 	[noOpenOption.cliFlag]: TypeOfOption<typeof noOpenOption>;
-	['browser']: string;
+	[browserOption.cliFlag]: TypeOfOption<typeof browserOption>;
 	['browser-args']: string;
 	[userAgentOption.cliFlag]: TypeOfOption<typeof userAgentOption>;
 	[outDirOption.cliFlag]: TypeOfOption<typeof outDirOption>;

@@ -66,10 +66,7 @@ You should use `npx remotion lambda compositions` if you cannot use [`npx remoti
 
 ### `--props`
 
-[Input Props to pass to the selected composition of your video.](/docs/passing-props#passing-input-props-in-the-cli).  
-Must be a serialized JSON string (`--props='{"hello": "world"}'`) or a path to a JSON file (`./path/to/props.json`).  
-From the root component the props can be read using [`getInputProps()`](/docs/get-input-props).  
-You may transform input props using [`calculateMetadata()`](/docs/calculate-metadata).
+<Options id="props" />
 
 :::note
 Inline JSON string isn't supported on Windows shells because it removes the `"` character, use a file name instead.
@@ -77,7 +74,7 @@ Inline JSON string isn't supported on Windows shells because it removes the `"` 
 
 ### `--config`
 
-Specify a location for the Remotion config file.
+<Options id="config" />
 
 ### `--env-file`
 

@@ -4,11 +4,13 @@ import {audioBitrateOption} from './audio-bitrate';
 import {audioCodecOption} from './audio-codec';
 import {beepOnFinishOption} from './beep-on-finish';
 import {binariesDirectoryOption} from './binaries-directory';
+import {browserOption} from './browser';
 import {browserExecutableOption} from './browser-executable';
 import {bundleCacheOption} from './bundle-cache';
 import {chromeModeOption} from './chrome-mode';
 import {colorSpaceOption} from './color-space';
 import {concurrencyOption} from './concurrency';
+import {configOption} from './config';
 import {crfOption} from './crf';
 import {enableCrossSiteIsolationOption} from './cross-site-isolation';
 import {darkModeOption} from './dark-mode';
@@ -57,6 +59,8 @@ import {overrideWidthOption} from './override-width';
 import {overwriteOption} from './overwrite';
 import {packageManagerOption} from './package-manager';
 import {pixelFormatOption} from './pixel-format';
+import {portOption} from './port';
+import {propsOption} from './props';
 import {preferLosslessAudioOption} from './prefer-lossless';
 import {proResProfileOption} from './prores-profile';
 import {publicDirOption} from './public-dir';
@@ -161,6 +165,10 @@ export const allOptions = {
 	versionFlagOption,
 	bundleCacheOption,
 	envFileOption,
+	portOption,
+	propsOption,
+	configOption,
+	browserOption,
 };
 
 export type AvailableOptions = keyof typeof allOptions;

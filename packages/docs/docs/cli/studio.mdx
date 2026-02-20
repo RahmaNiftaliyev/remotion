@@ -19,12 +19,7 @@ You may pass an [entry point](/docs/terminology/entry-point) as an argument, oth
 
 ### `--props`
 
-[Input Props to pass to the selected composition of your video.](/docs/passing-props#passing-input-props-in-the-cli).  
-We don't recommend passing this flag when using the Studio - use [`defaultProps`](/docs/composition#defaultprops) instead.
-
-Must be a serialized JSON string (`--props='{"hello": "world"}'`) or a path to a JSON file (`./path/to/props.json`).  
-From the root component the props can be read using [`getInputProps()`](/docs/get-input-props).  
-You may transform input props using [`calculateMetadata()`](/docs/calculate-metadata).
+<Options id="props" />
 
 :::note
 Inline JSON string isn't supported on Windows shells because it removes the `"` character, use a file name instead.
@@ -32,7 +27,7 @@ Inline JSON string isn't supported on Windows shells because it removes the `"` 
 
 ### `--config`<AvailableFrom v="1.2.0" />
 
-Specify a location for the Remotion config file.
+<Options id="config" />
 
 ### `--env-file`<AvailableFrom v="2.2.0" />
 
@@ -44,7 +39,7 @@ Specify a location for the Remotion config file.
 
 ### `--port`
 
-[Set a custom HTTP server port to start the server on](/docs/config#setstudioport). If not defined, Remotion will try to find a free port.
+<Options id="port" />
 
 ### `--public-dir`<AvailableFrom v="3.2.13" />
 
@@ -68,11 +63,7 @@ Specify a location for the Remotion config file.
 
 ### `--browser`<AvailableFrom v="3.3.79" />
 
-Specify the browser which should be used for opening tab - using the default browser by default.  
-Pass an absolute string or `"chrome"` to use Chrome.
-If Chrome is selected as the browser and you are on macOS, Remotion will try to reuse an existing tab
-
-For backwards compatibility, the `BROWSER` environment variable is also supported.
+<Options id="browser" />
 
 ### `--browser-args`<AvailableFrom v="3.3.79" />
 

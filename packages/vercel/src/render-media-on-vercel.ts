@@ -65,7 +65,7 @@ export async function renderMediaOnVercel({
 	sandbox: Sandbox;
 	compositionId: string;
 	inputProps: Record<string, unknown>;
-	onProgress?: (progress: RenderOnVercelProgress) => void;
+	onProgress?: (progress: RenderOnVercelProgress) => Promise<void> | void;
 	outputFile?: string;
 	codec?: Codec;
 	crf?: number | null;
@@ -105,7 +105,7 @@ export async function renderMediaOnVercel({
 	mediaCacheSizeInBytes?: number | null;
 	offthreadVideoThreads?: number | null;
 	repro?: boolean;
-}): Promise<{file: string}> {
+}): Promise<{sandboxFilePath: string}> {
 	const serveUrl = `/vercel/sandbox/${REMOTION_SANDBOX_BUNDLE_DIR}`;
 
 	const renderConfig = {
@@ -164,11 +164,11 @@ export async function renderMediaOnVercel({
 			try {
 				const message = JSON.parse(log.data);
 				if (message.type === 'opening-browser') {
-					onProgress?.({type: 'opening-browser'});
+					await onProgress?.({type: 'opening-browser'});
 				} else if (message.type === 'selecting-composition') {
-					onProgress?.({type: 'selecting-composition'});
+					await onProgress?.({type: 'selecting-composition'});
 				} else if (message.type === 'progress') {
-					onProgress?.({
+					await onProgress?.({
 						type: 'render-progress',
 						renderedFrames: message.renderedFrames,
 						encodedFrames: message.encodedFrames,
@@ -192,5 +192,5 @@ export async function renderMediaOnVercel({
 		throw new Error(`Render failed: ${stderr} ${stdout}`);
 	}
 
-	return {file: outputFile};
+	return {sandboxFilePath: outputFile};
 }

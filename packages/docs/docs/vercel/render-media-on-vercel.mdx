@@ -22,11 +22,11 @@ The rendered file stays inside the sandbox. Use [`uploadToVercelBlob()`](/docs/v
 import {renderMediaOnVercel, addBundleToSandbox, createSandbox} from '@remotion/vercel';
 const sandbox = await createSandbox();
 // ---cut---
-const {file} = await renderMediaOnVercel({
+const {sandboxFilePath} = await renderMediaOnVercel({
   sandbox,
   compositionId: 'MyComp',
   inputProps: {title: 'Hello World'},
-  onProgress: (update) => {
+  onProgress: async (update) => {
     if (update.type === 'render-progress') {
       console.log(`Rendering: ${Math.round(update.progress * 100)}%`);
     }
@@ -223,7 +223,7 @@ A callback that receives progress updates.
 ```ts twoslash
 import type {RenderOnVercelProgress} from '@remotion/vercel';
 // ---cut---
-const onProgress = (update: RenderOnVercelProgress) => {
+const onProgress = async (update: RenderOnVercelProgress) => {
   if (update.type === 'render-progress') {
     console.log(`Rendering: ${Math.round(update.progress * 100)}%`);
   }
@@ -234,7 +234,7 @@ const onProgress = (update: RenderOnVercelProgress) => {
 
 An object containing:
 
-### `file`
+### `sandboxFilePath`
 
 The path to the rendered video inside the sandbox.
 

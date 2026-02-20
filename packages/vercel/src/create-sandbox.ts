@@ -15,8 +15,8 @@ export async function createSandbox({
 }: {
 	onProgress?: CreateSandboxOnProgress;
 } = {}): Promise<VercelSandbox> {
-	const report = (progress: number, message: string) => {
-		onProgress?.({progress, message});
+	const report = async (progress: number, message: string) => {
+		await onProgress?.({progress, message});
 	};
 
 	const sandbox = await createDisposableSandbox({
@@ -31,21 +31,20 @@ export async function createSandbox({
 	const WEIGHT_SYS_DEPS = 0.75;
 	const WEIGHT_BROWSER = 0.25;
 
-	report(0, 'Installing system dependencies...');
+	await report(0, 'Installing system dependencies...');
 
 	// Stage 1: Install system dependencies (75%)
 	await installSystemDependencies({
 		sandbox,
-		onProgress: (stageProgress: number) => {
-			report(
+		onProgress: async (stageProgress: number) => {
+			await report(
 				stageProgress * WEIGHT_SYS_DEPS,
 				'Installing system dependencies...',
 			);
-			return Promise.resolve();
 		},
 	});
 
-	report(WEIGHT_SYS_DEPS, 'Installing JS dependencies...');
+	await report(WEIGHT_SYS_DEPS, 'Installing JS dependencies...');
 
 	// Install renderer and blob SDK
 	await installJsDependencies({sandbox});
@@ -54,15 +53,14 @@ export async function createSandbox({
 	await patchCompositor({sandbox});
 
 	// Stage 2: Download browser (25%)
-	report(WEIGHT_SYS_DEPS, 'Downloading browser...');
+	await report(WEIGHT_SYS_DEPS, 'Downloading browser...');
 	await installBrowser({
 		sandbox,
-		onProgress: (browserProgress: number) => {
-			report(
+		onProgress: async (browserProgress: number) => {
+			await report(
 				WEIGHT_SYS_DEPS + browserProgress * WEIGHT_BROWSER,
 				'Downloading browser...',
 			);
-			return Promise.resolve();
 		},
 	});
 
@@ -86,7 +84,7 @@ export async function createSandbox({
 		},
 	]);
 
-	report(1, 'Sandbox ready');
+	await report(1, 'Sandbox ready');
 
 	return sandbox;
 }

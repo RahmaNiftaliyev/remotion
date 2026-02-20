@@ -5,7 +5,7 @@ export type VercelSandbox = Sandbox & AsyncDisposable;
 export type CreateSandboxOnProgress = (update: {
 	progress: number;
 	message: string;
-}) => void;
+}) => Promise<void> | void;
 
 export type {
 	AudioCodec,

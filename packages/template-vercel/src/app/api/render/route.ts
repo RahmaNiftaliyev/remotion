@@ -34,8 +34,8 @@ export async function POST(req: Request) {
     const sandbox = process.env.VERCEL
       ? await restoreSnapshot()
       : await createSandbox({
-          onProgress: ({ progress, message }) => {
-            send({
+          onProgress: async ({ progress, message }) => {
+            await send({
               type: "phase",
               phase: message,
               progress,
@@ -49,28 +49,28 @@ export async function POST(req: Request) {
         await addBundleToSandbox({ sandbox, bundleDir: ".remotion" });
       }
 
-      const { file } = await renderMediaOnVercel({
+      const { sandboxFilePath } = await renderMediaOnVercel({
         sandbox,
         compositionId: COMP_NAME,
         inputProps: body.inputProps,
-        onProgress: (update) => {
+        onProgress: async (update) => {
           switch (update.type) {
             case "opening-browser":
-              send({
+              await send({
                 type: "phase",
                 phase: "Opening browser...",
                 progress: 0,
               });
               break;
             case "selecting-composition":
-              send({
+              await send({
                 type: "phase",
                 phase: "Selecting composition...",
                 progress: 0,
               });
               break;
             case "render-progress":
-              send({
+              await send({
                 type: "phase",
                 phase: "Rendering video...",
                 progress: update.progress,
@@ -90,7 +90,7 @@ export async function POST(req: Request) {
 
       const { url, size } = await uploadToVercelBlob({
         sandbox,
-        sandboxFilePath: file,
+        sandboxFilePath,
         contentType: "video/mp4",
         blobToken,
       });

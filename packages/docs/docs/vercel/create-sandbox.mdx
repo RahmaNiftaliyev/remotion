@@ -22,7 +22,7 @@ import {addBundleToSandbox, createSandbox} from '@remotion/vercel';
 import type {CreateSandboxOnProgress} from '@remotion/vercel';
 // ---cut---
 const sandbox = await createSandbox({
-  onProgress: ({progress, message}) => {
+  onProgress: async ({progress, message}) => {
     console.log(`${message} (${Math.round(progress * 100)}%)`);
   },
 });
@@ -48,7 +48,7 @@ A callback that receives progress updates during sandbox creation.
 ```ts twoslash
 import type {CreateSandboxOnProgress} from '@remotion/vercel';
 // ---cut---
-const onProgress: CreateSandboxOnProgress = ({progress, message}) => {
+const onProgress: CreateSandboxOnProgress = async ({progress, message}) => {
   console.log(`${message} (${Math.round(progress * 100)}%)`);
 };
 ```

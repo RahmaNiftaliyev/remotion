@@ -33,7 +33,7 @@ export async function renderStillOnVercel({
 	sandbox: Sandbox;
 	compositionId: string;
 	inputProps: Record<string, unknown>;
-	onProgress?: (progress: RenderOnVercelProgress) => void;
+	onProgress?: (progress: RenderOnVercelProgress) => Promise<void> | void;
 	outputFile?: string;
 	frame?: number;
 	imageFormat?: StillImageFormat;
@@ -50,7 +50,7 @@ export async function renderStillOnVercel({
 	mediaCacheSizeInBytes?: number | null;
 	offthreadVideoThreads?: number | null;
 	licenseKey?: string | null;
-}): Promise<{file: string}> {
+}): Promise<{sandboxFilePath: string}> {
 	const serveUrl = `/vercel/sandbox/${REMOTION_SANDBOX_BUNDLE_DIR}`;
 
 	const renderConfig = {
@@ -86,9 +86,9 @@ export async function renderStillOnVercel({
 			try {
 				const message = JSON.parse(log.data);
 				if (message.type === 'opening-browser') {
-					onProgress?.({type: 'opening-browser'});
+					await onProgress?.({type: 'opening-browser'});
 				} else if (message.type === 'selecting-composition') {
-					onProgress?.({type: 'selecting-composition'});
+					await onProgress?.({type: 'selecting-composition'});
 				}
 			} catch {
 				// Not JSON, ignore
@@ -103,5 +103,5 @@ export async function renderStillOnVercel({
 		throw new Error(`Render still failed: ${stderr} ${stdout}`);
 	}
 
-	return {file: outputFile};
+	return {sandboxFilePath: outputFile};
 }

@@ -2285,11 +2285,11 @@
       "name": "@remotion/vercel",
       "version": "4.0.425",
       "dependencies": {
+        "@remotion/renderer": "workspace:*",
         "remotion": "workspace:*",
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
-        "@remotion/renderer": "workspace:*",
         "@typescript/native-preview": "catalog:",
         "@vercel/blob": "2.0.1",
         "@vercel/sandbox": "1.6.0",

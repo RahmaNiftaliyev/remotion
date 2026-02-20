@@ -640,7 +640,10 @@ export class MediaPlayer {
 		if (delay >= 0) {
 			node.start(this.sharedAudioContext.currentTime + delay);
 		} else {
-			node.start(this.sharedAudioContext.currentTime, -delay);
+			node.start(
+				this.sharedAudioContext.currentTime,
+				-delayWithoutPlaybackRate,
+			);
 		}
 	};
 
@@ -682,6 +685,7 @@ export class MediaPlayer {
 				audioIteratorManager: this.audioIteratorManager,
 				playing: this.playing,
 				videoIteratorManager: this.videoIteratorManager,
+				playbackRate: this.playbackRate * this.globalPlaybackRate,
 			});
 		}
 	};

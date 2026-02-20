@@ -58,25 +58,15 @@ The output file path inside the sandbox. Default: `"/tmp/video.mp4"`.
 
 ### `crf?`
 
-_number | null_ <TsType type="Crf" source="@remotion/renderer" href="/docs/renderer/types#crf" />
-
-The constant rate factor, controlling the quality. See: [Controlling quality using the CRF setting.](/docs/encoding/#controlling-quality-using-the-crf-setting)
+<Options id="crf" />
 
 ### `imageFormat?`
 
-_string_ <TsType type="VideoImageFormat" source="@remotion/renderer" href="/docs/renderer/types#videoimageformat" />
-
-In which image format the frames should be rendered.
-
-- `jpeg` is the default and is fastest
-- `png` if you want to [render transparent videos](/docs/transparent-videos/)
-- `none` if you are rendering audio
+<Options id="video-image-format" />
 
 ### `pixelFormat?`
 
-_string_ <TsType type="PixelFormat" source="@remotion/renderer" href="/docs/renderer/types#pixelformat" />
-
-[A custom pixel format to use.](/docs/transparent-videos/) Usually used for special use cases like transparent videos.
+<Options id="pixel-format" />
 
 ### `envVariables?`
 
@@ -94,19 +84,11 @@ Specify a single frame (passing a `number`) or a range of frames (passing a tupl
 
 ### `everyNthFrame?`
 
-Renders only every nth frame. For example only every second frame, every third frame and so on. Only works for rendering GIFs. [See here for more details.](/docs/render-as-gif) Default: `1`.
-
-### `overwrite?`
-
-_boolean_
-
-If set to false, the output file will not be written if a file already exists. Default: `true`.
+<Options id="every-nth-frame" />
 
 ### `proResProfile?`
 
-_string_ <TsType type="ProResProfile" source="@remotion/renderer" href="/docs/renderer/types#proresprofile" />
-
-Sets a ProRes profile. Only applies to videos rendered with `prores` codec. See [Encoding guide](/docs/encoding/#controlling-quality-using-prores-profile) for possible options.
+<Options id="prores-profile" />
 
 ### `chromiumOptions?`
 
@@ -118,27 +100,23 @@ Allows you to set certain Chromium / Google Chrome flags. See: [Chromium flags](
 
 ### `browserExecutable?`
 
-A string defining the absolute path on disk of the browser executable that should be used. By default Remotion will try to detect it automatically and download one if none is available.
+<Options id="browser-executable" />
 
 ### `preferLossless?`
 
-Prefer lossless audio encoding when possible. Default: `false`.
+<Options id="prefer-lossless" />
 
 ### `enforceAudioTrack?`
 
-_boolean_
-
-Render a silent audio track if there wouldn't be any otherwise. Default: `false`.
+<Options id="enforce-audio-track" />
 
 ### `disallowParallelEncoding?`
 
-Disallows the renderer from doing rendering frames and encoding at the same time. This makes the rendering process more memory-efficient, but possibly slower. Default: `false`.
+<Options id="disallow-parallel-encoding" />
 
 ### `concurrency?`
 
-_number | string | null_ <TsType type="Concurrency" source="@remotion/renderer" href="/docs/renderer/types#concurrency" />
-
-A `number` specifying how many render processes should be started in parallel, a `string` specifying the percentage of the CPU threads to use, or `null` to let Remotion decide based on the CPU of the host machine. Default: `null`.
+<Options id="concurrency" />
 
 ### `metadata?`
 
@@ -150,7 +128,7 @@ A `number` specifying how many render processes should be started in parallel, a
 
 ### `timeoutInMilliseconds?`
 
-A number describing how long the render may take to resolve all [`delayRender()`](/docs/delay-render) calls [before it times out](/docs/timeout). Default: `30000`.
+<Options id="timeout" />
 
 ### `videoBitrate?`
 
@@ -162,16 +140,7 @@ A number describing how long the render may take to resolve all [`delayRender()`
 
 ### `audioCodec?`
 
-_string_ <TsType type="AudioCodec" source="@remotion/renderer" href="/docs/renderer/types#audiocodec" />
-
-Choose the encoding of your audio.
-
-- The default is dependent on the chosen `codec`.
-- Choose `pcm-16` if you need uncompressed audio.
-- Not all video containers support all audio codecs.
-- This option takes precedence if the `codec` option also specifies an audio codec.
-
-Refer to the [Encoding guide](/docs/encoding/#audio-codec) to see defaults and supported combinations.
+<Options id="audio-codec" />
 
 ### `encodingMaxRate?`
 
@@ -183,9 +152,7 @@ Refer to the [Encoding guide](/docs/encoding/#audio-codec) to see defaults and s
 
 ### `muted?`
 
-_boolean_
-
-If set to true, no audio is being rendered. Default: `false`.
+<Options id="muted" />
 
 ### `numberOfGifLoops?`
 
@@ -201,11 +168,7 @@ If set to true, no audio is being rendered. Default: `false`.
 
 ### `jpegQuality?`
 
-_number_
-
-Sets the quality of the generated JPEG images. Must be an integer between 0 and 100. Default is `80`.
-
-Only applies if `imageFormat` is `'jpeg'`, otherwise this option is invalid.
+<Options id="jpeg-quality" />
 
 ### `forSeamlessAacConcatenation?`
 

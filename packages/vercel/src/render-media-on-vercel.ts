@@ -30,7 +30,6 @@ export async function renderMediaOnVercel({
 	envVariables = {},
 	frameRange,
 	everyNthFrame = 1,
-	overwrite = true,
 	proResProfile,
 	chromiumOptions = {},
 	scale = 1,
@@ -75,7 +74,6 @@ export async function renderMediaOnVercel({
 	envVariables?: Record<string, string>;
 	frameRange?: FrameRange | null;
 	everyNthFrame?: number;
-	overwrite?: boolean;
 	proResProfile?: ProResProfile;
 	chromiumOptions?: ChromiumOptions;
 	scale?: number;
@@ -122,7 +120,6 @@ export async function renderMediaOnVercel({
 		envVariables,
 		frameRange: frameRange ?? null,
 		everyNthFrame,
-		overwrite,
 		proResProfile: proResProfile ?? null,
 		chromiumOptions,
 		scale,

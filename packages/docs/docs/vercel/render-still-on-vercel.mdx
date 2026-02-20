@@ -44,9 +44,7 @@ Props to pass to the composition.
 
 ### `imageFormat?`
 
-_string_ <TsType type="StillImageFormat" source="@remotion/renderer" href="/docs/renderer/types#stillimageformat" />
-
-Which output format the image should have, either `"png"`, `"jpeg"`, `"webp"` or `"pdf"`. Default: `"png"`.
+<Options id="still-image-format" />
 
 ### `outputFile?`
 
@@ -54,23 +52,19 @@ The output file path inside the sandbox. Default: `"/tmp/still.png"`.
 
 ### `frame?`
 
-Which frame should be rendered based on its number. Default: `0`. Frames are zero-indexed.
+<Options id="frame" />
 
 ### `jpegQuality?`
 
-Sets the JPEG quality - must be an integer between 0 and 100 and can only be passed if `imageFormat` is set to `"jpeg"`. Default: `80`.
+<Options id="jpeg-quality" />
 
 ### `envVariables?`
 
 An object containing key-value pairs of environment variables which will be injected into your Remotion project and which can be accessed by reading the global `process.env` object. Default: `{}`.
 
-### `overwrite?`
-
-Whether the file should be overwritten if the output already exists. Default: `true`.
-
 ### `browserExecutable?`
 
-A string defining the absolute path on disk of the browser executable that should be used. By default Remotion will try to detect it automatically and download one if none is available.
+<Options id="browser-executable" />
 
 ### `chromiumOptions?`
 
@@ -86,7 +80,7 @@ Allows you to set certain Chromium / Google Chrome flags. See: [Chromium flags](
 
 ### `timeoutInMilliseconds?`
 
-A number describing how long the render may take to resolve all [`delayRender()`](/docs/delay-render) calls [before it times out](/docs/timeout). Default: `30000`.
+<Options id="timeout" />
 
 ### `chromeMode?`
 

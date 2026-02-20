@@ -15,7 +15,6 @@ type RenderStillConfig = {
 	imageFormat: InternalStillOptions['imageFormat'];
 	jpegQuality: InternalStillOptions['jpegQuality'];
 	envVariables: InternalStillOptions['envVariables'];
-	overwrite: InternalStillOptions['overwrite'];
 	browserExecutable: InternalStillOptions['browserExecutable'];
 	chromiumOptions: InternalStillOptions['chromiumOptions'];
 	scale: InternalStillOptions['scale'];
@@ -103,7 +102,7 @@ try {
 		imageFormat: config.imageFormat,
 		jpegQuality: config.jpegQuality,
 		envVariables: config.envVariables,
-		overwrite: config.overwrite,
+		overwrite: true,
 		browserExecutable: config.browserExecutable,
 		chromiumOptions: config.chromiumOptions,
 		scale: config.scale,

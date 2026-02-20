@@ -14,7 +14,6 @@ type RenderVideoConfig = {
 	envVariables: InternalRenderMediaOptions['envVariables'];
 	frameRange: InternalRenderMediaOptions['frameRange'];
 	everyNthFrame: InternalRenderMediaOptions['everyNthFrame'];
-	overwrite: InternalRenderMediaOptions['overwrite'];
 	proResProfile: NonNullable<
 		InternalRenderMediaOptions['proResProfile']
 	> | null;
@@ -128,7 +127,7 @@ try {
 		envVariables: config.envVariables,
 		frameRange: config.frameRange,
 		everyNthFrame: config.everyNthFrame,
-		overwrite: config.overwrite,
+		overwrite: true,
 		proResProfile: config.proResProfile ?? undefined,
 		chromiumOptions: config.chromiumOptions,
 		scale: config.scale,

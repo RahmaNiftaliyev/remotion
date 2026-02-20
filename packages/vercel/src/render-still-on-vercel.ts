@@ -18,7 +18,6 @@ export async function renderStillOnVercel({
 	imageFormat = 'png',
 	jpegQuality = 80,
 	envVariables = {},
-	overwrite = true,
 	browserExecutable,
 	chromiumOptions = {},
 	scale = 1,
@@ -40,7 +39,6 @@ export async function renderStillOnVercel({
 	imageFormat?: StillImageFormat;
 	jpegQuality?: number;
 	envVariables?: Record<string, string>;
-	overwrite?: boolean;
 	browserExecutable?: string | null;
 	chromiumOptions?: ChromiumOptions;
 	scale?: number;
@@ -64,7 +62,6 @@ export async function renderStillOnVercel({
 		imageFormat,
 		jpegQuality,
 		envVariables,
-		overwrite,
 		browserExecutable: browserExecutable ?? null,
 		chromiumOptions,
 		scale,

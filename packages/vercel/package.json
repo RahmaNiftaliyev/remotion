@@ -23,6 +23,7 @@
 		"url": "https://github.com/remotion-dev/remotion/issues"
 	},
 	"dependencies": {
+		"@remotion/renderer": "workspace:*",
 		"remotion": "workspace:*"
 	},
 	"peerDependencies": {
@@ -38,7 +39,6 @@
 	},
 	"devDependencies": {
 		"@remotion/eslint-config-internal": "workspace:*",
-		"@remotion/renderer": "workspace:*",
 		"@vercel/blob": "2.0.1",
 		"@vercel/sandbox": "1.6.0",
 		"eslint": "catalog:",
@@ -53,5 +53,5 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"homepage": "https://www.remotion.dev/docs/vercel"
+	"homepage": "https://www.remotion.dev/docs/vercel/api"
 }

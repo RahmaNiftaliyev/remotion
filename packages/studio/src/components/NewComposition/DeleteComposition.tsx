@@ -65,6 +65,7 @@ const DeleteCompositionLoaded: React.FC<{
 						}
 						codemod={codemod}
 						valid
+						onSuccess={null}
 					/>
 				</ModalFooterContainer>
 			</form>

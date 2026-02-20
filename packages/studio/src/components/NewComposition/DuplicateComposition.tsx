@@ -2,6 +2,7 @@ import type {RecastCodemod} from '@remotion/studio-shared';
 import type {ChangeEventHandler} from 'react';
 import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {Internals} from 'remotion';
+import {pushUrl} from '../../helpers/url-state';
 import {
 	validateCompositionDimension,
 	validateCompositionName,
@@ -210,6 +211,10 @@ const DuplicateCompositionLoaded: React.FC<{
 		type,
 	]);
 
+	const onDuplicateSuccess = useCallback(() => {
+		pushUrl(`/${newId}`);
+	}, [newId]);
+
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = useCallback((e) => {
 		e.preventDefault();
 	}, []);
@@ -363,6 +368,7 @@ const DuplicateCompositionLoaded: React.FC<{
 						submitLabel={({relativeRootPath}) => `Add to ${relativeRootPath}`}
 						codemod={codemod}
 						valid={valid}
+						onSuccess={onDuplicateSuccess}
 					/>
 				</ModalFooterContainer>
 			</form>

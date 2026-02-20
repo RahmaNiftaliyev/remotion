@@ -156,7 +156,7 @@ export const mergeChunksAndFinishRender = async <
 		providerSpecifics: options.providerSpecifics,
 	});
 
-	options.overallProgress.setPostRenderData(postRenderData);
+	await options.overallProgress.setPostRenderData(postRenderData);
 
 	fs.unlinkSync(outfile);
 	await cleanupChunksProm;

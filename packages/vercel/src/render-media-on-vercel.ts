@@ -3,7 +3,6 @@ import {REMOTION_SANDBOX_BUNDLE_DIR} from './internals/add-bundle';
 import type {
 	AudioCodec,
 	Bitrate,
-	ChromeMode,
 	ChromiumOptions,
 	Codec,
 	ColorSpace,
@@ -33,12 +32,10 @@ export async function renderMediaOnVercel({
 	proResProfile,
 	chromiumOptions = {},
 	scale = 1,
-	browserExecutable,
 	preferLossless = false,
 	enforceAudioTrack = false,
 	disallowParallelEncoding = false,
 	concurrency,
-	binariesDirectory,
 	metadata,
 	licenseKey,
 	videoBitrate,
@@ -56,11 +53,9 @@ export async function renderMediaOnVercel({
 	forSeamlessAacConcatenation = false,
 	separateAudioTo,
 	hardwareAcceleration = 'disable',
-	chromeMode = 'headless-shell',
 	offthreadVideoCacheSizeInBytes,
 	mediaCacheSizeInBytes,
 	offthreadVideoThreads,
-	repro = false,
 }: {
 	sandbox: Sandbox;
 	compositionId: string;
@@ -77,12 +72,10 @@ export async function renderMediaOnVercel({
 	proResProfile?: ProResProfile;
 	chromiumOptions?: ChromiumOptions;
 	scale?: number;
-	browserExecutable?: string | null;
 	preferLossless?: boolean;
 	enforceAudioTrack?: boolean;
 	disallowParallelEncoding?: boolean;
 	concurrency?: number | string | null;
-	binariesDirectory?: string | null;
 	metadata?: Record<string, string> | null;
 	licenseKey?: string | null;
 	videoBitrate?: Bitrate | null;
@@ -100,11 +93,9 @@ export async function renderMediaOnVercel({
 	forSeamlessAacConcatenation?: boolean;
 	separateAudioTo?: string | null;
 	hardwareAcceleration?: HardwareAccelerationOption;
-	chromeMode?: ChromeMode;
 	offthreadVideoCacheSizeInBytes?: number | null;
 	mediaCacheSizeInBytes?: number | null;
 	offthreadVideoThreads?: number | null;
-	repro?: boolean;
 }): Promise<{sandboxFilePath: string}> {
 	const serveUrl = `/vercel/sandbox/${REMOTION_SANDBOX_BUNDLE_DIR}`;
 
@@ -123,12 +114,10 @@ export async function renderMediaOnVercel({
 		proResProfile: proResProfile ?? null,
 		chromiumOptions,
 		scale,
-		browserExecutable: browserExecutable ?? null,
 		preferLossless,
 		enforceAudioTrack,
 		disallowParallelEncoding,
 		concurrency: concurrency ?? null,
-		binariesDirectory: binariesDirectory ?? null,
 		metadata: metadata ?? null,
 		licenseKey: licenseKey ?? null,
 		videoBitrate: videoBitrate ?? null,
@@ -146,11 +135,9 @@ export async function renderMediaOnVercel({
 		forSeamlessAacConcatenation,
 		separateAudioTo: separateAudioTo ?? null,
 		hardwareAcceleration,
-		chromeMode,
 		offthreadVideoCacheSizeInBytes: offthreadVideoCacheSizeInBytes ?? null,
 		mediaCacheSizeInBytes: mediaCacheSizeInBytes ?? null,
 		offthreadVideoThreads: offthreadVideoThreads ?? null,
-		repro,
 	};
 
 	const renderCmd = await sandbox.runCommand({

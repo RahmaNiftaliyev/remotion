@@ -1,7 +1,6 @@
 import type {Sandbox} from '@vercel/sandbox';
 import {REMOTION_SANDBOX_BUNDLE_DIR} from './internals/add-bundle';
 import type {
-	ChromeMode,
 	ChromiumOptions,
 	LogLevel,
 	RenderOnVercelProgress,
@@ -18,13 +17,10 @@ export async function renderStillOnVercel({
 	imageFormat = 'png',
 	jpegQuality = 80,
 	envVariables = {},
-	browserExecutable,
 	chromiumOptions = {},
 	scale = 1,
 	logLevel = 'info',
 	timeoutInMilliseconds = 30000,
-	binariesDirectory,
-	chromeMode = 'headless-shell',
 	offthreadVideoCacheSizeInBytes,
 	mediaCacheSizeInBytes,
 	offthreadVideoThreads,
@@ -39,13 +35,10 @@ export async function renderStillOnVercel({
 	imageFormat?: StillImageFormat;
 	jpegQuality?: number;
 	envVariables?: Record<string, string>;
-	browserExecutable?: string | null;
 	chromiumOptions?: ChromiumOptions;
 	scale?: number;
 	logLevel?: LogLevel;
 	timeoutInMilliseconds?: number;
-	binariesDirectory?: string | null;
-	chromeMode?: ChromeMode;
 	offthreadVideoCacheSizeInBytes?: number | null;
 	mediaCacheSizeInBytes?: number | null;
 	offthreadVideoThreads?: number | null;
@@ -62,13 +55,10 @@ export async function renderStillOnVercel({
 		imageFormat,
 		jpegQuality,
 		envVariables,
-		browserExecutable: browserExecutable ?? null,
 		chromiumOptions,
 		scale,
 		logLevel,
 		timeoutInMilliseconds,
-		binariesDirectory: binariesDirectory ?? null,
-		chromeMode,
 		offthreadVideoCacheSizeInBytes: offthreadVideoCacheSizeInBytes ?? null,
 		mediaCacheSizeInBytes: mediaCacheSizeInBytes ?? null,
 		offthreadVideoThreads: offthreadVideoThreads ?? null,

@@ -40,6 +40,7 @@ import {DEFAULT_JPEG_QUALITY, validateJpegQuality} from './jpeg-quality';
 import {Log} from './logger';
 import type {CancelSignal} from './make-cancel-signal';
 import {cancelErrorMessages, makeCancelSignal} from './make-cancel-signal';
+import {mimeLookup} from './mime-types';
 import type {ChromiumOptions} from './open-browser';
 import {DEFAULT_COLOR_SPACE, type ColorSpace} from './options/color-space';
 import {DEFAULT_RENDER_FRAMES_OFFTHREAD_VIDEO_THREADS} from './options/offthreadvideo-threads';
@@ -220,6 +221,7 @@ type Await<T> = T extends PromiseLike<infer U> ? U : T;
 type RenderMediaResult = {
 	buffer: Buffer | null;
 	slowestFrames: SlowFrame[];
+	mimeType: string;
 };
 
 const internalRenderMediaRaw = ({
@@ -826,6 +828,10 @@ const internalRenderMediaRaw = ({
 				const result: RenderMediaResult = {
 					buffer,
 					slowestFrames,
+					mimeType:
+						mimeLookup(
+							'file.' + getFileExtensionFromCodec(codec, audioCodec),
+						) || 'application/octet-stream',
 				};
 
 				const sendTelemetryAndResolve = () => {

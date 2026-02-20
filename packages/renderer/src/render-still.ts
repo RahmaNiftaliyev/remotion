@@ -31,6 +31,7 @@ import {Log} from './logger';
 import type {CancelSignal} from './make-cancel-signal';
 import {cancelErrorMessages} from './make-cancel-signal';
 import {getAvailableMemory} from './memory/get-available-memory';
+import {mimeLookup} from './mime-types';
 import type {ChromiumOptions} from './open-browser';
 import {internalOpenBrowser} from './open-browser';
 import type {ToOptions} from './options/option';
@@ -118,7 +119,7 @@ export type RenderStillOptions = {
 	};
 
 type CleanupFn = () => Promise<unknown>;
-type RenderStillReturnValue = {buffer: Buffer | null};
+type RenderStillReturnValue = {buffer: Buffer | null; mimeType: string};
 
 const innerRenderStill = async ({
 	composition,
@@ -384,7 +385,10 @@ const innerRenderStill = async ({
 
 	await cleanup();
 
-	return {buffer: output ? null : buffer};
+	return {
+		buffer: output ? null : buffer,
+		mimeType: mimeLookup('file.' + imageFormat) || 'application/octet-stream',
+	};
 };
 
 const internalRenderStillRaw = (

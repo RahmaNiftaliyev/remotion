@@ -130,6 +130,7 @@ export const renderVideoFlow = async ({
 	askAIEnabled,
 	experimentalClientSideRenderingEnabled,
 	keyboardShortcutsEnabled,
+	shouldCache,
 }: {
 	remotionRoot: string;
 	fullEntryPoint: string;
@@ -196,7 +197,14 @@ export const renderVideoFlow = async ({
 	askAIEnabled: boolean;
 	experimentalClientSideRenderingEnabled: boolean;
 	keyboardShortcutsEnabled: boolean;
+	shouldCache: boolean;
 }) => {
+	RenderInternals.validateConcurrency({
+		value: concurrency,
+		setting: 'concurrency',
+		checkIfValidForCurrentMachine: true,
+	});
+
 	let bundlingProgress: BundlingState | null = null;
 	let renderingProgress: RenderingProgressInput | null = null;
 	let stitchingProgress: StitchingProgressInput | null = null;
@@ -340,6 +348,7 @@ export const renderVideoFlow = async ({
 			askAIEnabled,
 			keyboardShortcutsEnabled,
 			rspack,
+			shouldCache,
 		},
 	);
 

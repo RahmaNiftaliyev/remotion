@@ -1,14 +1,16 @@
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
+import {BrowserSafeApis} from '@remotion/renderer/client';
 import {StudioServerInternals} from '@remotion/studio-server';
 import dotenv from 'dotenv';
 import fs, {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {chalk} from './chalk';
-import {ConfigInternals} from './config';
 import {makeHyperlink} from './hyperlinks/make-link';
 import {Log} from './log';
 import {parsedCli} from './parsed-cli';
+
+const {envFileOption} = BrowserSafeApis.options;
 
 function getProcessEnv(): Record<string, string> {
 	const env: Record<string, string> = {};
@@ -141,37 +143,21 @@ export const getEnvironmentVariables = (
 ): Record<string, string> => {
 	const processEnv = getProcessEnv();
 
-	if (parsedCli['env-file']) {
-		const envFile = path.resolve(process.cwd(), parsedCli['env-file']);
-		if (!fs.existsSync(envFile)) {
-			Log.error(
-				{indent: false, logLevel},
-				'You passed a --env-file but it could not be found.',
-			);
-			Log.error(
-				{indent: false, logLevel},
-				'We looked for the file at:',
-				envFile,
-			);
-			Log.error(
-				{indent: false, logLevel},
-				'Check that your path is correct and try again.',
-			);
-			process.exit(1);
-		}
-
-		return getEnvForEnvFile({processEnv, envFile, onUpdate, logLevel, indent});
-	}
+	const {value: envFileValue, source: envFileSource} = envFileOption.getValue({
+		commandLine: parsedCli,
+	});
 
 	const remotionRoot = RenderInternals.findRemotionRoot();
 
-	const configFileSetting = ConfigInternals.getDotEnvLocation();
-	if (configFileSetting) {
-		const envFile = path.resolve(remotionRoot, configFileSetting);
+	if (envFileValue && envFileSource !== 'default') {
+		const baseDir = envFileSource === 'cli' ? process.cwd() : remotionRoot;
+		const envFile = path.resolve(baseDir, envFileValue);
 		if (!fs.existsSync(envFile)) {
 			Log.error(
 				{indent: false, logLevel},
-				'You specified a custom .env file using `Config.setDotEnvLocation()` in the config file but it could not be found',
+				envFileSource === 'cli'
+					? 'You passed a --env-file but it could not be found.'
+					: 'You specified a custom .env file using `Config.setDotEnvLocation()` in the config file but it could not be found',
 			);
 			Log.error(
 				{indent: false, logLevel},

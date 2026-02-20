@@ -5,6 +5,18 @@ import type {AwsRegion, DeleteAfter, RuntimePreference} from '../client';
 import {StorageClass} from '@aws-sdk/client-s3';
 import type {Privacy} from '@remotion/serverless';
 
+const LambdaBooleanFlags = [
+	...CliInternals.BooleanFlags,
+	'force',
+	'disable-cloudwatch',
+	'enable-lambda-insights',
+	'yes',
+	'y',
+	'default-only',
+	'compatible-only',
+	'force-path-style',
+];
+
 type LambdaCommandLineOptions = {
 	help: boolean;
 	region: AwsRegion;
@@ -17,10 +29,7 @@ type LambdaCommandLineOptions = {
 	force: boolean;
 	f: boolean;
 	['default-only']: boolean;
-
 	['site-name']: string | undefined;
-	['disable-chunk-optimization']: boolean;
-	['save-browser-logs']: boolean;
 	['disable-cloudwatch']: boolean;
 	[BrowserSafeApis.options.enableLambdaInsights.cliFlag]: boolean;
 	['max-retries']?: number;
@@ -49,7 +58,7 @@ type LambdaCommandLineOptions = {
 export const parsedLambdaCli = CliInternals.minimist<LambdaCommandLineOptions>(
 	process.argv.slice(2),
 	{
-		boolean: CliInternals.BooleanFlags,
+		boolean: LambdaBooleanFlags,
 		string: ['_'],
 	},
 );

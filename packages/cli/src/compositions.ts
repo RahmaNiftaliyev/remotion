@@ -34,6 +34,7 @@ const {
 	userAgentOption,
 	disableWebSecurityOption,
 	ignoreCertificateErrorsOption,
+	bundleCacheOption,
 } = BrowserSafeApis.options;
 
 export const listCompositionsCommand = async (
@@ -137,6 +138,9 @@ export const listCompositionsCommand = async (
 		commandLine: parsedCli,
 	}).value;
 	const rspack = rspackOption.getValue({commandLine: parsedCli}).value;
+	const shouldCache = bundleCacheOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	if (experimentalClientSideRenderingEnabled) {
 		Log.warn(
@@ -171,6 +175,7 @@ export const listCompositionsCommand = async (
 			askAIEnabled,
 			keyboardShortcutsEnabled,
 			rspack,
+			shouldCache,
 		});
 
 	registerCleanupJob(`Cleanup bundle`, () => cleanupBundle());

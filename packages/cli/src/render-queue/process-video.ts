@@ -14,6 +14,7 @@ const {
 	keyboardShortcutsOption,
 	rspackOption,
 	browserExecutableOption,
+	bundleCacheOption,
 } = BrowserSafeApis.options;
 
 export const processVideoJob = async ({
@@ -42,6 +43,9 @@ export const processVideoJob = async ({
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const shouldCache = bundleCacheOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	const {ffmpegOverride} = getCliOptions({
 		isStill: true,
@@ -51,7 +55,9 @@ export const processVideoJob = async ({
 	const browserExecutable = browserExecutableOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const rspack = rspackOption.getValue({commandLine: parsedCli}).value;
 	const fullEntryPoint = convertEntryPointToServeUrl(entryPoint);
+
 	await renderVideoFlow({
 		remotionRoot,
 		browser: 'chrome',
@@ -124,6 +130,7 @@ export const processVideoJob = async ({
 			experimentalClientSideRenderingOption.getValue({commandLine: parsedCli})
 				.value,
 		keyboardShortcutsEnabled,
-		rspack: rspackOption.getValue({commandLine: parsedCli}).value,
+		rspack,
+		shouldCache,
 	});
 };

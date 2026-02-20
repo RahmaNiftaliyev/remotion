@@ -56,6 +56,12 @@ const {
 	userAgentOption,
 	disableWebSecurityOption,
 	ignoreCertificateErrorsOption,
+	concurrencyOption,
+	overrideHeightOption,
+	overrideWidthOption,
+	overrideFpsOption,
+	overrideDurationOption,
+	bundleCacheOption,
 } = BrowserSafeApis.options;
 
 export const render = async (
@@ -96,21 +102,30 @@ export const render = async (
 	}
 
 	const {
-		concurrency,
 		frameRange,
 		shouldOutputImageSequence,
 		inputProps,
 		envVariables,
-		height,
-		width,
-		fps,
-		durationInFrames,
 		ffmpegOverride,
 	} = getCliOptions({
 		isStill: false,
 		logLevel,
 		indent: false,
 	});
+
+	const concurrency = concurrencyOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const height = overrideHeightOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const width = overrideWidthOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const fps = overrideFpsOption.getValue({commandLine: parsedCli}).value;
+	const durationInFrames = overrideDurationOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 
 	const pixelFormat = pixelFormatOption.getValue({
 		commandLine: parsedCli,
@@ -234,6 +249,13 @@ export const render = async (
 	const mediaCacheSizeInBytes = mediaCacheSizeInBytesOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const shouldCache = bundleCacheOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const experimentalClientSideRenderingEnabled =
+		experimentalClientSideRenderingOption.getValue({
+			commandLine: parsedCli,
+		}).value;
 
 	await renderVideoFlow({
 		fullEntryPoint,
@@ -305,10 +327,9 @@ export const render = async (
 		audioLatencyHint,
 		imageSequencePattern,
 		askAIEnabled,
-		experimentalClientSideRenderingEnabled:
-			experimentalClientSideRenderingOption.getValue({commandLine: parsedCli})
-				.value,
+		experimentalClientSideRenderingEnabled,
 		keyboardShortcutsEnabled,
 		rspack,
+		shouldCache,
 	});
 };

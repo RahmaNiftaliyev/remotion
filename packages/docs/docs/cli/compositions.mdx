@@ -19,10 +19,7 @@ You may pass a [Serve URL](/docs/terminology/serve-url) or an [entry point](/doc
 
 ### `--props`
 
-[Input Props to pass to the selected composition of your video.](/docs/passing-props#passing-input-props-in-the-cli).  
-Must be a serialized JSON string (`--props='{"hello": "world"}'`) or a path to a JSON file (`./path/to/props.json`).  
-From the root component the props can be read using [`getInputProps()`](/docs/get-input-props).  
-You may transform input props using [`calculateMetadata()`](/docs/calculate-metadata).
+<Options id="props" />
 
 :::note
 Inline JSON string isn't supported on Windows shells because it removes the `"` character, use a file name instead.
@@ -30,15 +27,15 @@ Inline JSON string isn't supported on Windows shells because it removes the `"` 
 
 ### `--config`
 
-Specify a location for the Remotion config file.
+<Options id="config" />
 
 ### `--env-file`<AvailableFrom v="2.2.0" />
 
-Specify a location for a dotenv file - Default `.env`. [Read about how environment variables work in Remotion.](/docs/env-variables)
+<Options id="env-file" />
 
 ### `--bundle-cache`
 
-[Enable or disable Webpack caching](/docs/config#setcachingenabled). This flag is enabled by default, use `--bundle-cache=false` to disable caching.
+<Options id="bundle-cache" />
 
 ### `--log`
 
@@ -50,7 +47,7 @@ If you don't feel like passing command line flags every time, consider creating 
 
 ### `--port`
 
-[Set a custom HTTP server port to host the Webpack bundle](/docs/config#setport). If not defined, Remotion will try to find a free port.
+<Options id="port" />
 
 ### `--public-dir`<AvailableFrom v="3.2.13" />
 

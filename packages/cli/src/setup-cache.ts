@@ -36,6 +36,7 @@ export const bundleOnCliOrTakeServeUrl = async ({
 	askAIEnabled,
 	keyboardShortcutsEnabled,
 	rspack,
+	shouldCache,
 }: {
 	fullPath: string;
 	remotionRoot: string;
@@ -59,6 +60,7 @@ export const bundleOnCliOrTakeServeUrl = async ({
 	askAIEnabled: boolean;
 	keyboardShortcutsEnabled: boolean;
 	rspack: boolean;
+	shouldCache: boolean;
 }): Promise<{
 	urlOrBundle: string;
 	cleanup: () => void;
@@ -103,6 +105,7 @@ export const bundleOnCliOrTakeServeUrl = async ({
 		askAIEnabled,
 		keyboardShortcutsEnabled,
 		rspack,
+		shouldCache,
 	});
 
 	return {
@@ -131,6 +134,7 @@ export const bundleOnCli = async ({
 	askAIEnabled,
 	keyboardShortcutsEnabled,
 	rspack,
+	shouldCache,
 }: {
 	fullPath: string;
 	remotionRoot: string;
@@ -154,9 +158,8 @@ export const bundleOnCli = async ({
 	keyboardShortcutsEnabled: boolean;
 	askAIEnabled: boolean;
 	rspack: boolean;
+	shouldCache: boolean;
 }) => {
-	const shouldCache = ConfigInternals.getWebpackCaching();
-
 	const symlinkState: SymbolicLinksState = {
 		symlinks: [],
 	};

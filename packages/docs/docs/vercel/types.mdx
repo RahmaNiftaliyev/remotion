@@ -32,20 +32,38 @@ import type {CreateSandboxOnProgress} from '@remotion/vercel';
 - `progress`: A number from `0` to `1` indicating overall progress
 - `message`: A human-readable description of the current phase
 
-## `RenderOnVercelProgress`
+## `RenderMediaOnVercelProgress`
 
 ```ts twoslash
-import type {RenderOnVercelProgress} from '@remotion/vercel';
+import type {RenderMediaOnVercelProgress} from '@remotion/vercel';
 //                ^?
 ```
 
-A discriminated union with the following members:
+A discriminated union (on `stage`) with the following members:
 
-- `{type: 'opening-browser'}` - The browser is being opened.
-- `{type: 'selecting-composition'}` - The composition is being selected.
-- `{type: 'render-progress'}` - The render is in progress. The remaining fields are the same as [`RenderMediaOnProgress`](/docs/renderer/render-media#onprogress) from `@remotion/renderer`.
+- `{stage: 'opening-browser', overallProgress: number}` - The browser is being opened.
+- `{stage: 'selecting-composition', overallProgress: number}` - The composition is being selected.
+- `{stage: 'render-progress', progress: RenderMediaProgress, overallProgress: number}` - The render is in progress. The `progress` field contains the same fields as [`RenderMediaProgress`](#rendermediaprogress).
+
+Every variant includes `overallProgress` — a number from `0` to `1` representing the weighted overall progress.
 
 Used as the `onProgress` callback type for [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel).
+
+## `RenderStillOnVercelProgress`
+
+```ts twoslash
+import type {RenderStillOnVercelProgress} from '@remotion/vercel';
+//                ^?
+```
+
+A discriminated union (on `stage`) with the following members:
+
+- `{stage: 'opening-browser', overallProgress: number}` - The browser is being opened.
+- `{stage: 'selecting-composition', overallProgress: number}` - The composition is being selected.
+
+Every variant includes `overallProgress` — a number from `0` to `1` representing the weighted overall progress.
+
+Used as the `onProgress` callback type for [`renderStillOnVercel()`](/docs/vercel/render-still-on-vercel).
 
 ## `VercelBlobAccess`
 
@@ -55,6 +73,10 @@ import type {VercelBlobAccess} from '@remotion/vercel';
 ```
 
 Either `"public"` or `"private"`. Used as the `access` parameter for [`uploadToVercelBlob()`](/docs/vercel/upload-to-vercel-blob).
+
+## `RenderMediaProgress`
+
+Re-exported from [`@remotion/renderer`](/docs/renderer/render-media). Contains the fields `renderedFrames`, `encodedFrames`, `encodedDoneIn`, `renderedDoneIn`, `renderEstimatedTime`, `progress`, and `stitchStage`.
 
 ## `RenderMediaOnProgress`
 

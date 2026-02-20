@@ -1,4 +1,3 @@
-import type {RenderMediaOnProgress} from '@remotion/renderer';
 import type {Sandbox} from '@vercel/sandbox';
 
 export type VercelSandbox = Sandbox & AsyncDisposable;
@@ -20,16 +19,27 @@ export type {
 	OpenGlRenderer,
 	PixelFormat,
 	RenderMediaOnProgress,
+	RenderMediaProgress,
 	StillImageFormat,
 	StitchingState,
 	VideoImageFormat,
 	X264Preset,
 } from '@remotion/renderer';
 
-export type RenderOnVercelProgress =
-	| {type: 'opening-browser'}
-	| {type: 'selecting-composition'}
-	| ({type: 'render-progress'} & Parameters<RenderMediaOnProgress>[0]);
+import type {RenderMediaProgress} from '@remotion/renderer';
+
+export type RenderMediaOnVercelProgress =
+	| {stage: 'opening-browser'; overallProgress: number}
+	| {stage: 'selecting-composition'; overallProgress: number}
+	| {
+			stage: 'render-progress';
+			progress: RenderMediaProgress;
+			overallProgress: number;
+	  };
+
+export type RenderStillOnVercelProgress =
+	| {stage: 'opening-browser'; overallProgress: number}
+	| {stage: 'selecting-composition'; overallProgress: number};
 
 export type {
 	HardwareAccelerationOption,
@@ -41,7 +51,7 @@ export type VercelBlobAccess = 'public' | 'private';
 export type SandboxRenderMediaMessage =
 	| {type: 'opening-browser'}
 	| {type: 'selecting-composition'}
-	| ({type: 'progress'} & Parameters<RenderMediaOnProgress>[0])
+	| ({type: 'progress'} & RenderMediaProgress)
 	| {type: 'render-complete'}
 	| {type: 'done'; size: number; contentType: string};
 

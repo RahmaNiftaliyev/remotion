@@ -27,8 +27,9 @@ const {sandboxFilePath} = await renderMediaOnVercel({
   compositionId: 'MyComp',
   inputProps: {title: 'Hello World'},
   onProgress: async (update) => {
-    if (update.type === 'render-progress') {
-      console.log(`Rendering: ${Math.round(update.progress * 100)}%`);
+    console.log(`Overall: ${Math.round(update.overallProgress * 100)}%`);
+    if (update.stage === 'render-progress') {
+      console.log(`Rendering: ${Math.round(update.progress.progress * 100)}%`);
     }
   },
 });
@@ -200,16 +201,17 @@ Allows you to set certain Chromium / Google Chrome flags. See: [Chromium flags](
 
 ### `onProgress?`
 
-_function_ <TsType type="RenderOnVercelProgress" source="@remotion/vercel" href="/docs/vercel/types#renderonvercelprogress" />
+_function_ <TsType type="RenderMediaOnVercelProgress" source="@remotion/vercel" href="/docs/vercel/types#rendermediaonvercelprogress" />
 
-A callback that receives progress updates.
+A callback that receives progress updates. Every variant includes `overallProgress` (0–1).
 
 ```ts twoslash
-import type {RenderOnVercelProgress} from '@remotion/vercel';
+import type {RenderMediaOnVercelProgress} from '@remotion/vercel';
 // ---cut---
-const onProgress = async (update: RenderOnVercelProgress) => {
-  if (update.type === 'render-progress') {
-    console.log(`Rendering: ${Math.round(update.progress * 100)}%`);
+const onProgress = async (update: RenderMediaOnVercelProgress) => {
+  console.log(`Overall: ${Math.round(update.overallProgress * 100)}%`);
+  if (update.stage === 'render-progress') {
+    console.log(`Rendering: ${Math.round(update.progress.progress * 100)}%`);
   }
 };
 ```

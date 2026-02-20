@@ -11,7 +11,7 @@ import type {
 	LogLevel,
 	PixelFormat,
 	ProResProfile,
-	RenderOnVercelProgress,
+	RenderMediaOnVercelProgress,
 	SandboxRenderMediaMessage,
 	VideoImageFormat,
 	X264Preset,
@@ -61,7 +61,9 @@ export async function renderMediaOnVercel({
 	sandbox: Sandbox;
 	compositionId: string;
 	inputProps: Record<string, unknown>;
-	onProgress?: (progress: RenderOnVercelProgress) => Promise<void> | void;
+	onProgress?: (
+		progress: RenderMediaOnVercelProgress,
+	) => Promise<void> | void;
 	outputFile?: string;
 	codec?: Codec;
 	crf?: number | null;
@@ -154,19 +156,28 @@ export async function renderMediaOnVercel({
 			try {
 				const message: SandboxRenderMediaMessage = JSON.parse(log.data);
 				if (message.type === 'opening-browser') {
-					await onProgress?.({type: 'opening-browser'});
+					await onProgress?.({
+						stage: 'opening-browser',
+						overallProgress: 0,
+					});
 				} else if (message.type === 'selecting-composition') {
-					await onProgress?.({type: 'selecting-composition'});
+					await onProgress?.({
+						stage: 'selecting-composition',
+						overallProgress: 0.02,
+					});
 				} else if (message.type === 'progress') {
 					await onProgress?.({
-						type: 'render-progress',
-						renderedFrames: message.renderedFrames,
-						encodedFrames: message.encodedFrames,
-						encodedDoneIn: message.encodedDoneIn,
-						renderedDoneIn: message.renderedDoneIn,
-						renderEstimatedTime: message.renderEstimatedTime,
-						progress: message.progress,
-						stitchStage: message.stitchStage,
+						stage: 'render-progress',
+						progress: {
+							renderedFrames: message.renderedFrames,
+							encodedFrames: message.encodedFrames,
+							encodedDoneIn: message.encodedDoneIn,
+							renderedDoneIn: message.renderedDoneIn,
+							renderEstimatedTime: message.renderEstimatedTime,
+							progress: message.progress,
+							stitchStage: message.stitchStage,
+						},
+						overallProgress: 0.04 + message.progress * 0.96,
 					});
 				} else if (message.type === 'done') {
 					contentType = message.contentType;

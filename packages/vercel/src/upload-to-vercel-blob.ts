@@ -23,7 +23,7 @@ export async function uploadToVercelBlob({
 	blobPath?: string;
 	contentType: string;
 	blobToken: string;
-	access: VercelBlobAccess;
+	access?: VercelBlobAccess;
 }): Promise<{url: string; size: number}> {
 	const actualBlobPath =
 		blobPath ??
@@ -34,7 +34,7 @@ export async function uploadToVercelBlob({
 		blobPath: actualBlobPath,
 		contentType,
 		blobToken,
-		access,
+		access: access ?? 'private',
 	};
 
 	const uploadCmd = await sandbox.runCommand({

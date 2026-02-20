@@ -39,7 +39,7 @@
 	},
 	"devDependencies": {
 		"@remotion/eslint-config-internal": "workspace:*",
-		"@vercel/blob": "2.0.1",
+		"@vercel/blob": "2.3.0",
 		"@vercel/sandbox": "1.6.0",
 		"eslint": "catalog:",
 		"@typescript/native-preview": "catalog:"

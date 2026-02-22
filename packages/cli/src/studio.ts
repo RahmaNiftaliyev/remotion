@@ -152,10 +152,7 @@ export const studioCommand = async (
 	}).value;
 
 	if (useVisualMode) {
-		Log.warn(
-			{indent: false, logLevel},
-			'Enabling experimental visual mode.',
-		);
+		Log.warn({indent: false, logLevel}, 'Enabling experimental visual mode.');
 	}
 
 	const result = await StudioServerInternals.startStudio({

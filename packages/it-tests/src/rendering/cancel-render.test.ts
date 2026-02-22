@@ -3,7 +3,7 @@ import execa from 'execa';
 import fs from 'fs';
 import path from 'path';
 
-const outputPath = path.join(process.cwd(), 'packages/example/out.mp4');
+const outputPath = path.join(process.cwd(), 'packages/example/out-cancel.mp4');
 
 beforeEach(() => {
 	if (fs.existsSync(outputPath)) {

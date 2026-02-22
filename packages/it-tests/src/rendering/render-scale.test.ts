@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import {NoReactInternals} from 'remotion/no-react';
 
-const outputPath = path.join(process.cwd(), 'packages/example/out.mp4');
+const outputPath = path.join(process.cwd(), 'packages/example/out-scale.mp4');
 
 beforeEach(() => {
 	if (fs.existsSync(outputPath)) {

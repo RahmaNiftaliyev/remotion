@@ -24,6 +24,7 @@ const {
 	enableCrossSiteIsolationOption,
 	askAIOption,
 	experimentalClientSideRenderingOption,
+	experimentalVisualModeOption,
 	keyboardShortcutsOption,
 	forceNewStudioOption,
 	numberOfSharedAudioTagsOption,
@@ -144,6 +145,14 @@ export const studioCommand = async (
 			{indent: false, logLevel},
 			'Enabling experimental Rspack bundler.',
 		);
+	}
+
+	const useVisualMode = experimentalVisualModeOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+
+	if (useVisualMode) {
+		Log.warn({indent: false, logLevel}, 'Enabling experimental visual mode.');
 	}
 
 	const result = await StudioServerInternals.startStudio({

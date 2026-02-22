@@ -94,6 +94,7 @@ const {
 	askAIOption,
 	publicLicenseKeyOption,
 	experimentalClientSideRenderingOption,
+	experimentalVisualModeOption,
 	keyboardShortcutsOption,
 	forceNewStudioOption,
 	numberOfSharedAudioTagsOption,
@@ -190,6 +191,12 @@ declare global {
 		 * @default false
 		 */
 		readonly setExperimentalRspackEnabled: (enabled: boolean) => void;
+		/**
+		 * Nothing here yet, but this is our playground for experiments.
+		 * @param enabled Boolean whether to enable experimental visual mode
+		 * @default false
+		 */
+		readonly setExperimentalVisualMode: (enabled: boolean) => void;
 		/**
 		 * Set number of shared audio tags. https://www.remotion.dev/docs/player/autoplay#using-the-numberofsharedaudiotags-prop
 		 * @param numberOfAudioTags
@@ -669,6 +676,7 @@ export const Config: FlatConfig = {
 	setExperimentalClientSideRenderingEnabled:
 		experimentalClientSideRenderingOption.setConfig,
 	setExperimentalRspackEnabled: rspackOption.setConfig,
+	setExperimentalVisualMode: experimentalVisualModeOption.setConfig,
 	setNumberOfSharedAudioTags: numberOfSharedAudioTagsOption.setConfig,
 	setWebpackPollingInMilliseconds: webpackPollOption.setConfig,
 	setShouldOpenBrowser: noOpenOption.setConfig,

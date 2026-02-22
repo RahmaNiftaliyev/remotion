@@ -564,7 +564,10 @@ export async function launchEditor({
 			colNumber,
 		});
 		if (result) {
-			return result;
+			const opened = await result;
+			if (opened) {
+				return true;
+			}
 		}
 	}
 

@@ -47,7 +47,8 @@ export const openInEditorViaUrlScheme = ({
 	}
 
 	const filePath = fileName.startsWith('/') ? fileName.substring(1) : fileName;
-	const url = `${urlScheme}://file/${filePath}:${lineNumber}:${colNumber}`;
+	const encodedPath = filePath.split('/').map(encodeURIComponent).join('/');
+	const url = `${urlScheme}://file/${encodedPath}:${lineNumber}:${colNumber}`;
 	return new Promise<boolean>((resolve) => {
 		const proc = child_process.spawn('open', [url], {
 			stdio: 'ignore',

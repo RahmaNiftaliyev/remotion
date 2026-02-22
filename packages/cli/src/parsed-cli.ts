@@ -48,6 +48,7 @@ const {
 	webpackPollOption,
 	keyboardShortcutsOption,
 	experimentalClientSideRenderingOption,
+	experimentalVisualModeOption,
 	imageSequencePatternOption,
 	scaleOption,
 	overwriteOption,
@@ -143,6 +144,9 @@ export type CommandLineOptions = {
 	[experimentalClientSideRenderingOption.cliFlag]: TypeOfOption<
 		typeof experimentalClientSideRenderingOption
 	>;
+	[experimentalVisualModeOption.cliFlag]: TypeOfOption<
+		typeof experimentalVisualModeOption
+	>;
 	[mutedOption.cliFlag]: TypeOfOption<typeof mutedOption>;
 	[overrideHeightOption.cliFlag]: TypeOfOption<typeof overrideHeightOption>;
 	[overrideWidthOption.cliFlag]: TypeOfOption<typeof overrideWidthOption>;
@@ -189,6 +193,7 @@ export const BooleanFlags = [
 	headlessOption.cliFlag,
 	keyboardShortcutsOption.cliFlag,
 	experimentalClientSideRenderingOption.cliFlag,
+	experimentalVisualModeOption.cliFlag,
 	ipv4Option.cliFlag,
 	beepOnFinishOption.cliFlag,
 	disableGitSourceOption.cliFlag,

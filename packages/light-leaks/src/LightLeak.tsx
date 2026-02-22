@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
 	AbsoluteFill,
+	Internals,
 	Sequence,
 	useCurrentFrame,
 	useDelayRender,
@@ -256,8 +257,14 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 	}
 
 	return (
-		<Sequence durationInFrames={resolvedDuration} {...sequenceProps}>
+		<Sequence
+			durationInFrames={resolvedDuration}
+			name="<LightLeak>"
+			{...sequenceProps}
+		>
 			<LightLeakCanvas seed={seed} hueShift={hueShift} />
 		</Sequence>
 	);
 };
+
+Internals.addSequenceStackTraces(LightLeak);

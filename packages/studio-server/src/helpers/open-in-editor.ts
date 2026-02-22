@@ -18,6 +18,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import util from 'node:util';
+import {openInEditorViaUrlScheme} from './open-in-editor-url-scheme';
 
 const {Log} = RenderInternals;
 
@@ -554,6 +555,18 @@ export async function launchEditor({
 
 	const shouldOpenVsCodeNewWindow =
 		isVsCodeDerivative(editor.command) && vsCodeNewWindow;
+
+	if (!shouldOpenVsCodeNewWindow) {
+		const result = openInEditorViaUrlScheme({
+			editor: editor.command,
+			fileName,
+			lineNumber,
+			colNumber,
+		});
+		if (result) {
+			return result;
+		}
+	}
 
 	const args = shouldOpenVsCodeNewWindow
 		? ['--new-window', fileName]

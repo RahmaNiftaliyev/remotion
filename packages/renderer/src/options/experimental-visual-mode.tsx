@@ -14,7 +14,7 @@ export const experimentalVisualModeOption = {
 	docLink: 'https://www.remotion.dev/docs/config#setexperimentalvisualmode',
 	type: false as boolean,
 	getValue: ({commandLine}) => {
-		if (commandLine[cliFlag] !== undefined) {
+		if (commandLine[cliFlag] !== null) {
 			return {
 				value: commandLine[cliFlag] as boolean,
 				source: 'cli',

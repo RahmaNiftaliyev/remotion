@@ -205,6 +205,8 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 
 	const env = useRemotionEnvironment();
 
+	const inheritedStack = (other as any)?.stack ?? null;
+
 	useEffect(() => {
 		if (!env.isStudio) {
 			return;
@@ -221,7 +223,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 			showInTimeline,
 			nonce,
 			loopDisplay,
-			stack: stack ?? null,
+			stack: stack ?? inheritedStack,
 			premountDisplay: premountDisplay ?? null,
 			postmountDisplay: postmountDisplay ?? null,
 		});
@@ -246,6 +248,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 		premountDisplay,
 		postmountDisplay,
 		env.isStudio,
+		inheritedStack,
 	]);
 
 	// Ceil to support floats

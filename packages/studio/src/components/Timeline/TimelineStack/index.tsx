@@ -215,7 +215,7 @@ export const TimelineStack: React.FC<{
 			whiteSpace: 'nowrap',
 			textOverflow: 'ellipsis',
 			overflow: 'hidden',
-			lineHeight: 1,
+			lineHeight: 1.2,
 			color: opening && isCompact ? VERY_LIGHT_TEXT : LIGHT_COLOR,
 			userSelect: 'none',
 			WebkitUserSelect: 'none',

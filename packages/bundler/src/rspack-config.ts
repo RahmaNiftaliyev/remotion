@@ -56,7 +56,7 @@ export const rspackConfig = async ({
 			bufferStateDelayInMilliseconds,
 			experimentalClientSideRenderingEnabled,
 			experimentalVisualModeEnabled,
-		}) as unknown as Record<string, string>,
+		}),
 	);
 
 	const swcLoaderRule = {

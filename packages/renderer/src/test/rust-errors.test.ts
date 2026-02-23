@@ -85,7 +85,9 @@ test(
 			await compositor.executeCommand('DeliberatePanic', {});
 			throw new Error('should not be reached');
 		} catch (err) {
-			expect((err as Error).message).toMatch(/thread 'main'( \(\d+\))? panicked/);
+			expect((err as Error).message).toMatch(
+				/thread 'main'( \(\d+\))? panicked/,
+			);
 		}
 	},
 	{retry: 2},

@@ -401,11 +401,9 @@ export class MediaPlayer {
 				? this.audioIteratorManager?.seek({
 						newTime,
 						nonce,
-						fps: this.fps,
 						playbackRate: this.playbackRate * this.globalPlaybackRate,
 						getIsPlaying: () => this.playing,
 						scheduleAudioNode: this.scheduleAudioNode,
-						bufferState: this.bufferState,
 					})
 				: null,
 		]);

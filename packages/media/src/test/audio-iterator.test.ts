@@ -59,48 +59,30 @@ test('media player should work', async () => {
 		scheduledChunks.push(mediaTimestamp);
 	};
 
-	const {manager, fps, playbackRate, getIsPlaying} = await prepare();
+	const {manager, playbackRate, getIsPlaying} = await prepare();
 
 	await manager.seek({
 		newTime: 9.96,
 		scheduleAudioNode,
-		fps,
 		getIsPlaying,
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
-		bufferState: {
-			delayPlayback: () => ({
-				unblock: () => {},
-			}),
-		},
 	});
 
 	await manager.seek({
 		newTime: 0,
 		scheduleAudioNode,
-		fps,
 		getIsPlaying,
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
-		bufferState: {
-			delayPlayback: () => ({
-				unblock: () => {},
-			}),
-		},
 	});
 
 	await manager.seek({
 		newTime: 0.04,
 		scheduleAudioNode,
-		fps,
 		getIsPlaying,
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
-		bufferState: {
-			delayPlayback: () => ({
-				unblock: () => {},
-			}),
-		},
 	});
 
 	const created = manager.getAudioIteratorsCreated();
@@ -114,7 +96,7 @@ test('media player should work', async () => {
 });
 
 test('should not create too many iterators when the audio ends', async () => {
-	const {manager, fps, playbackRate, getIsPlaying} = await prepare();
+	const {manager, playbackRate, getIsPlaying} = await prepare();
 
 	const scheduledChunks: number[] = [];
 	const scheduleAudioNode = (
@@ -134,41 +116,23 @@ test('should not create too many iterators when the audio ends', async () => {
 	await manager.seek({
 		newTime: 9.97,
 		scheduleAudioNode,
-		fps,
 		getIsPlaying,
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
-		bufferState: {
-			delayPlayback: () => ({
-				unblock: () => {},
-			}),
-		},
 	});
 	await manager.seek({
 		newTime: 9.98,
 		scheduleAudioNode,
-		fps,
 		getIsPlaying,
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
-		bufferState: {
-			delayPlayback: () => ({
-				unblock: () => {},
-			}),
-		},
 	});
 	await manager.seek({
 		newTime: 9.99,
 		scheduleAudioNode,
-		fps,
 		getIsPlaying,
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
-		bufferState: {
-			delayPlayback: () => ({
-				unblock: () => {},
-			}),
-		},
 	});
 
 	const created = manager.getAudioIteratorsCreated();
@@ -178,7 +142,7 @@ test('should not create too many iterators when the audio ends', async () => {
 });
 
 test('should create more iterators when seeking ', async () => {
-	const {manager, fps, playbackRate, getIsPlaying} = await prepare();
+	const {manager, playbackRate, getIsPlaying} = await prepare();
 
 	const scheduledChunks: number[] = [];
 	const scheduleAudioNode = (
@@ -198,28 +162,16 @@ test('should create more iterators when seeking ', async () => {
 	await manager.seek({
 		newTime: 0,
 		scheduleAudioNode,
-		fps,
 		getIsPlaying,
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
-		bufferState: {
-			delayPlayback: () => ({
-				unblock: () => {},
-			}),
-		},
 	});
 	await manager.seek({
 		newTime: 1,
 		scheduleAudioNode,
-		fps,
 		getIsPlaying,
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
-		bufferState: {
-			delayPlayback: () => ({
-				unblock: () => {},
-			}),
-		},
 	});
 
 	const created = manager.getAudioIteratorsCreated();
@@ -290,15 +242,9 @@ test('should not schedule duplicate chunks with playbackRate=0.5', async () => {
 		await manager.seek({
 			newTime: mediaTime,
 			scheduleAudioNode,
-			fps,
 			getIsPlaying: () => true,
 			nonce: makeNonceManager().createAsyncOperation(),
 			playbackRate,
-			bufferState: {
-				delayPlayback: () => ({
-					unblock: () => {},
-				}),
-			},
 		});
 	}
 

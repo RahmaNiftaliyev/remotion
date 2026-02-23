@@ -917,6 +917,7 @@
       "version": "4.0.428",
       "dependencies": {
         "remotion": "workspace:*",
+        "zod": "catalog:",
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",

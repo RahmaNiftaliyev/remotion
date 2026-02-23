@@ -1,10 +1,11 @@
 import React, {useContext, useMemo} from 'react';
+import type {SequenceControls} from 'remotion';
 import type {TrackWithHash} from '../../helpers/get-timeline-sequence-sort-key';
 import {
+	getExpandedTrackHeight,
 	getTimelineLayerHeight,
 	TIMELINE_ITEM_BORDER_BOTTOM,
 	TIMELINE_PADDING,
-	TIMELINE_TRACK_EXPANDED_HEIGHT,
 } from '../../helpers/timeline-layout';
 import {ExpandedTracksContext} from '../ExpandedTracksProvider';
 import {MaxTimelineTracksReached} from './MaxTimelineTracks';
@@ -22,9 +23,11 @@ const timelineContent: React.CSSProperties = {
 	minHeight: '100%',
 };
 
-const expandedPlaceholder: React.CSSProperties = {
-	height: TIMELINE_TRACK_EXPANDED_HEIGHT + TIMELINE_ITEM_BORDER_BOTTOM,
-};
+const getExpandedPlaceholderStyle = (
+	controls: SequenceControls | null,
+): React.CSSProperties => ({
+	height: getExpandedTrackHeight(controls) + TIMELINE_ITEM_BORDER_BOTTOM,
+});
 
 export const TimelineTracks: React.FC<{
 	readonly timeline: TrackWithHash[];
@@ -66,7 +69,9 @@ export const TimelineTracks: React.FC<{
 								<TimelineSequence s={track.sequence} />
 							</div>
 							{visualModeEnabled && isExpanded ? (
-								<div style={expandedPlaceholder} />
+								<div
+									style={getExpandedPlaceholderStyle(track.sequence.controls)}
+								/>
 							) : null}
 						</div>
 					);

@@ -41,7 +41,7 @@ export const updateSequenceProps = async ({
 			});
 
 			if (!attr || attr.type === 'JSXSpreadAttribute') {
-				throw new Error(`Could not find attribute "${key}" on the JSX element`);
+				throw new Error(`Could not find attribute "${key}" on the JSX element at line ${targetLine}`);
 			}
 
 			const parsed = (

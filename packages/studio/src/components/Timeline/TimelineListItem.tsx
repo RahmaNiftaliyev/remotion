@@ -125,12 +125,12 @@ export const TimelineListItem: React.FC<{
 				{sequence.parent && nestedDepth > 0 ? <div style={space} /> : null}
 				{visualModeEnabled ? (
 					<button
-					type="button"
-					style={arrowStyle}
-					onClick={onToggleExpand}
-					aria-expanded={isExpanded}
-					aria-label={`${isExpanded ? 'Collapse' : 'Expand'} track`}
-				>
+						type="button"
+						style={arrowStyle}
+						onClick={onToggleExpand}
+						aria-expanded={isExpanded}
+						aria-label={`${isExpanded ? 'Collapse' : 'Expand'} track`}
+					>
 						<svg
 							width="12"
 							height="12"

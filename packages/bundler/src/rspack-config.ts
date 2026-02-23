@@ -97,10 +97,10 @@ export const rspackConfig = async ({
 	// but the TypeScript types differ. Cast through `any` for the override.
 	const conf = (await webpackOverride({
 		...getBaseConfig(environment, poll),
-		ignoreWarnings: [/"__dirname" is used and has been mocked/],
 		node: {
 			// Suppress the warning in `source-map`
 			__dirname: 'mock',
+			__filename: 'mock',
 		},
 		entry: [
 			require.resolve('./setup-environment'),
@@ -132,6 +132,18 @@ export const rspackConfig = async ({
 		module: {
 			rules: [
 				...getSharedModuleRules(),
+				{
+					// Emscripten's main.js spawns Workers of itself via
+					// new Worker(new URL('./main.js', import.meta.url)).
+					// This creates a circular chunk dependency that breaks HMR when `@remotion/whisper-web` is used.
+					// TODO: whisper-web does not work in Studio with Rspack, also not with Webpack.
+					// Disable Worker detection so rspack doesn't create a
+					// worker chunk; the new URL() is still handled as an asset.
+					test: /[\\/]whisper-web[\\/]main\.js$/,
+					parser: {
+						worker: false,
+					},
+				},
 				{
 					test: /\.tsx?$/,
 					use: [swcLoaderRule],

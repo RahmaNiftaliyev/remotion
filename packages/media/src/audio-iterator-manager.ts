@@ -157,8 +157,8 @@ export const audioIteratorManager = ({
 		audioBufferIterator = iterator;
 
 		try {
-			// Schedule up to 3 buffers ahead of the current time
-			for (let i = 0; i < 3; i++) {
+			// Schedule at least 6 buffers ahead of the current time
+			for (let i = 0; i < 6; i++) {
 				const result = await iterator.getNext();
 
 				if (iterator.isDestroyed()) {

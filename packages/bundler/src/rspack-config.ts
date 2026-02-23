@@ -27,6 +27,7 @@ export const rspackConfig = async ({
 	bufferStateDelayInMilliseconds,
 	poll,
 	experimentalClientSideRenderingEnabled,
+	experimentalVisualModeEnabled,
 	askAIEnabled,
 }: {
 	entry: string;
@@ -43,6 +44,7 @@ export const rspackConfig = async ({
 	poll: number | null;
 	askAIEnabled: boolean;
 	experimentalClientSideRenderingEnabled: boolean;
+	experimentalVisualModeEnabled: boolean;
 }): Promise<[string, RspackConfiguration]> => {
 	let lastProgress = 0;
 
@@ -53,6 +55,7 @@ export const rspackConfig = async ({
 			keyboardShortcutsEnabled,
 			bufferStateDelayInMilliseconds,
 			experimentalClientSideRenderingEnabled,
+			experimentalVisualModeEnabled,
 		}) as unknown as Record<string, string>,
 	);
 

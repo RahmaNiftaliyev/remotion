@@ -29,6 +29,7 @@ const prepare = async () => {
 		},
 		updatePlaybackTime: () => {},
 		initialMuted: false,
+		drawDebugOverlay: () => {},
 	});
 
 	const fps = 30;
@@ -210,6 +211,7 @@ test('should not schedule duplicate chunks with playbackRate=0.5', async () => {
 		},
 		updatePlaybackTime: () => {},
 		initialMuted: false,
+		drawDebugOverlay: () => {},
 	});
 
 	const scheduledChunks: number[] = [];

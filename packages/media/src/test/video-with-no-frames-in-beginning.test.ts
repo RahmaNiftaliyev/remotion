@@ -99,6 +99,7 @@ test('same goes for audio', async () => {
 		},
 		updatePlaybackTime: () => {},
 		initialMuted: false,
+		drawDebugOverlay: () => {},
 	});
 
 	const nonceManager = makeNonceManager();

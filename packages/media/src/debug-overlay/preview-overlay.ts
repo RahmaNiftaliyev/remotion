@@ -42,7 +42,7 @@ export const drawPreviewOverlay = ({
 			?.getNumberOfChunksAfterResuming();
 		if (queuedPeriod && audioTime) {
 			lines.push(
-				`Audio queued until: ${(queuedPeriod.until - (audioTime - audioSyncAnchor) * playbackRate).toFixed(3)}s`,
+				`Audio queued until ${queuedPeriod.until.toFixed(3)}s (${(queuedPeriod.until - (audioTime - audioSyncAnchor) * playbackRate).toFixed(3)}s ahead)`,
 			);
 		} else if (numberOfChunksAfterResuming) {
 			lines.push(

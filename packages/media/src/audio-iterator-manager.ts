@@ -20,6 +20,7 @@ export const audioIteratorManager = ({
 	getStartTime,
 	updatePlaybackTime,
 	initialMuted,
+	drawDebugOverlay,
 }: {
 	audioTrack: InputAudioTrack;
 	delayPlaybackHandleIfNotPremounting: () => DelayPlaybackIfNotPremounting;
@@ -29,6 +30,7 @@ export const audioIteratorManager = ({
 	getStartTime: () => number;
 	initialMuted: boolean;
 	updatePlaybackTime: (time: number) => void;
+	drawDebugOverlay: () => void;
 }) => {
 	let muted = initialMuted;
 	let currentVolume = 1;
@@ -118,6 +120,8 @@ export const audioIteratorManager = ({
 				buffer.timestamp,
 			);
 		}
+
+		drawDebugOverlay();
 	};
 
 	const startAudioIterator = async ({
@@ -287,6 +291,7 @@ export const audioIteratorManager = ({
 
 		await audioBufferIterator.bufferAsFarAsPossible((buffer) => {
 			if (!nonce.isStale()) {
+				console.log('buffering', buffer.timestamp);
 				onAudioChunk({
 					getIsPlaying,
 					buffer,

@@ -1,28 +1,28 @@
 import fs from 'fs';
 import path from 'path';
 
-const REMOTION_PRO_ORIGIN = 'https://www.remotion.pro';
+const REMOTION_PRO_ORIGIN =
+	'https://pro-git-bugfix-prompt-enpdoint-remotion.vercel.app';
 
 type PromptResponse = {
 	items: unknown[];
-	nextCursor: string | null;
+	totalPages: number;
 };
 
 const fetchAllPromptSubmissions = async () => {
 	const allPromptSubmissions: unknown[] = [];
-	let cursor: string | null = null;
+	let page = 1;
+	let totalPages = 1;
 
 	do {
-		const url = cursor
-			? `${REMOTION_PRO_ORIGIN}/api/prompts?cursor=${cursor}`
-			: `${REMOTION_PRO_ORIGIN}/api/prompts`;
-
+		const url = `${REMOTION_PRO_ORIGIN}/api/prompts?page=${page}`;
 		const res = await fetch(url);
 		const data: PromptResponse = await res.json();
 
 		allPromptSubmissions.push(...data.items);
-		cursor = data.nextCursor;
-	} while (cursor);
+		totalPages = data.totalPages;
+		page++;
+	} while (page <= totalPages);
 
 	return allPromptSubmissions;
 };

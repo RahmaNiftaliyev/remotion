@@ -181,6 +181,17 @@ export const audioIteratorManager = ({
 					scheduleAudioNode,
 				});
 			}
+
+			await iterator.bufferAsFarAsPossible((buffer) => {
+				if (!nonce.isStale()) {
+					onAudioChunk({
+						getIsPlaying,
+						buffer,
+						playbackRate,
+						scheduleAudioNode,
+					});
+				}
+			}, startFromSecond + MAX_BUFFER_AHEAD_SECONDS);
 		} catch (e) {
 			if (e instanceof InputDisposedError) {
 				// iterator was disposed by a newer startAudioIterator call
@@ -246,7 +257,6 @@ export const audioIteratorManager = ({
 		if (!currentTimeIsAlreadyQueued) {
 			const audioSatisfyResult = await audioBufferIterator.tryToSatisfySeek(
 				newTime,
-				null,
 				(buffer) => {
 					if (!nonce.isStale()) {
 						onAudioChunk({
@@ -268,12 +278,6 @@ export const audioIteratorManager = ({
 			}
 
 			if (audioSatisfyResult.type === 'not-satisfied') {
-				console.log(
-					'not satisfied currentTime',
-					newTime,
-					queuedPeriod,
-					audioSatisfyResult.reason,
-				);
 				await startAudioIterator({
 					nonce,
 					playbackRate,
@@ -291,7 +295,6 @@ export const audioIteratorManager = ({
 
 		await audioBufferIterator.bufferAsFarAsPossible((buffer) => {
 			if (!nonce.isStale()) {
-				console.log('buffering', buffer.timestamp);
 				onAudioChunk({
 					getIsPlaying,
 					buffer,

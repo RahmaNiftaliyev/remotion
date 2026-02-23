@@ -1,7 +1,6 @@
 import type {WrappedAudioBuffer} from 'mediabunny';
 import {roundTo4Digits} from '../helpers/round-to-4-digits';
 import type {PrewarmedAudioIteratorCache} from '../prewarm-iterator-for-looping';
-import {allowWaitRoutine, type AllowWait} from './allow-wait';
 
 export const HEALTHY_BUFFER_THRESHOLD_SECONDS = 1;
 
@@ -34,22 +33,25 @@ export const makeAudioIterator = (
 		queuedAudioNodes.length = 0;
 	};
 
-	const getNextOrNullIfNotAvailable = async (allowWait: AllowWait | null) => {
-		const next = pendingNext ?? iterator.next();
+	const getNextOrNullIfNotAvailable = async () => {
+		let next = pendingNext;
+
+		if (!next) {
+			next = iterator.next();
+		}
+
 		pendingNext = null;
-		const result = allowWait
-			? await allowWaitRoutine(next, allowWait)
-			: await Promise.race([
-					next,
-					new Promise<void>((resolve) => {
-						Promise.resolve().then(() => resolve());
-					}),
-				]);
+		const result = await Promise.race([
+			next,
+			new Promise<void>((resolve) => {
+				Promise.resolve().then(() => resolve());
+			}),
+		]);
 
 		if (!result) {
+			pendingNext = next;
 			return {
 				type: 'need-to-wait-for-it' as const,
-				pendingPromise: next,
 				waitPromise: async () => {
 					const res = await next;
 					return res.value;
@@ -62,6 +64,8 @@ export const makeAudioIterator = (
 				mostRecentTimestamp,
 				result.value.timestamp + result.value.duration,
 			);
+			// preload next already
+			pendingNext = iterator.next();
 			return {
 				type: 'got-buffer' as const,
 				buffer: result.value,
@@ -76,7 +80,6 @@ export const makeAudioIterator = (
 
 	const tryToSatisfySeek = async (
 		time: number,
-		allowWait: AllowWait | null,
 		onBufferScheduled: (buffer: WrappedAudioBuffer) => void,
 	): Promise<
 		| {
@@ -98,7 +101,7 @@ export const makeAudioIterator = (
 		}
 
 		while (true) {
-			const buffer = await getNextOrNullIfNotAvailable(allowWait);
+			const buffer = await getNextOrNullIfNotAvailable();
 			if (buffer.type === 'need-to-wait-for-it') {
 				return {
 					type: 'not-satisfied' as const,
@@ -159,9 +162,8 @@ export const makeAudioIterator = (
 				return {type: 'max-reached'};
 			}
 
-			const buffer = await getNextOrNullIfNotAvailable(null);
+			const buffer = await getNextOrNullIfNotAvailable();
 			if (buffer.type === 'need-to-wait-for-it') {
-				pendingNext = buffer.pendingPromise;
 				return {type: 'waiting'};
 			}
 

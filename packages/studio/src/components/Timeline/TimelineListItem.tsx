@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useMemo} from 'react';
+import React, {useCallback, useContext, useEffect, useMemo} from 'react';
 import type {TSequence} from 'remotion';
 import {Internals} from 'remotion';
 import {TIMELINE_TRACK_SEPARATOR} from '../../helpers/colors';
@@ -62,6 +62,13 @@ export const TimelineListItem: React.FC<{
 	const {expandedTracks, toggleTrack} = useContext(ExpandedTracksContext);
 
 	const isExpanded = expandedTracks[sequence.id] ?? false;
+
+	useEffect(() => {
+		if (isExpanded && sequence.schema) {
+			// eslint-disable-next-line no-console
+			console.log('Track schema for', sequence.displayName, sequence.schema);
+		}
+	}, [isExpanded, sequence.schema, sequence.displayName]);
 
 	const onToggleExpand = useCallback(() => {
 		toggleTrack(sequence.id);

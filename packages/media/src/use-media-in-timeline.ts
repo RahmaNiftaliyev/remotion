@@ -92,6 +92,7 @@ export const useMediaInTimeline = ({
 				from: 0,
 				duration,
 				id: sequenceId,
+				schema: null,
 			});
 		}
 
@@ -114,6 +115,7 @@ export const useMediaInTimeline = ({
 			stack,
 			premountDisplay: null,
 			postmountDisplay: null,
+			schema: null,
 		});
 
 		return () => {

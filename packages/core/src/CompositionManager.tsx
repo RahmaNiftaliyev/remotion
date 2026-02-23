@@ -100,6 +100,7 @@ export type TSequence = {
 	stack: string | null;
 	premountDisplay: number | null;
 	postmountDisplay: number | null;
+	schema: AnyZodObject | null;
 } & EnhancedTSequenceData;
 
 export type AudioOrVideoAsset = {

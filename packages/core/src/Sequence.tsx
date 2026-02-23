@@ -7,6 +7,7 @@ import React, {
 	useState,
 } from 'react';
 import {AbsoluteFill} from './AbsoluteFill.js';
+import type {AnyZodObject} from './any-zod-type.js';
 import type {LoopDisplay} from './CompositionManager.js';
 import type {SequenceContextType} from './SequenceContext.js';
 import {SequenceContext} from './SequenceContext.js';
@@ -47,6 +48,7 @@ export type SequencePropsWithoutDuration = {
 	readonly from?: number;
 	readonly name?: string;
 	readonly showInTimeline?: boolean;
+	readonly schema?: AnyZodObject;
 	/**
 	 * @deprecated For internal use only.
 	 */
@@ -89,6 +91,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 		height,
 		width,
 		showInTimeline = true,
+		schema,
 		_remotionInternalLoopDisplay: loopDisplay,
 		_remotionInternalStack: stack,
 		_remotionInternalPremountDisplay: premountDisplay,
@@ -226,6 +229,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 			stack: stack ?? inheritedStack,
 			premountDisplay: premountDisplay ?? null,
 			postmountDisplay: postmountDisplay ?? null,
+			schema: schema ?? null,
 		});
 		return () => {
 			unregisterSequence(id);
@@ -249,6 +253,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 		postmountDisplay,
 		env.isStudio,
 		inheritedStack,
+		schema,
 	]);
 
 	// Ceil to support floats

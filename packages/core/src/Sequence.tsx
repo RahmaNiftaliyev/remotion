@@ -9,15 +9,15 @@ import React, {
 import {AbsoluteFill} from './AbsoluteFill.js';
 import type {AnyZodObject} from './any-zod-type.js';
 import type {LoopDisplay} from './CompositionManager.js';
+import {useNonce} from './nonce.js';
 import type {SequenceContextType} from './SequenceContext.js';
 import {SequenceContext} from './SequenceContext.js';
 import {
 	SequenceManager,
 	SequenceVisibilityToggleContext,
 } from './SequenceManager.js';
-import {TimelineContext} from './TimelineContext.js';
-import {useNonce} from './nonce.js';
 import {useTimelinePosition} from './timeline-position-state.js';
+import {TimelineContext} from './TimelineContext.js';
 import {useVideoConfig} from './use-video-config.js';
 
 import {Freeze} from './freeze.js';

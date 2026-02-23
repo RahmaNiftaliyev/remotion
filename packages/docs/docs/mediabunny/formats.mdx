@@ -10,7 +10,7 @@ The following features from Remotion are using [Mediabunny](https://mediabunny.d
 - [`<Video>`](/docs/media/video) from [`@remotion/media`](/docs/media)
 - [`<Audio>`](/docs/media/audio) from [`@remotion/media`](/docs/media)
 
-Therefore, format support is bound to the [formats and codecs supported by Mediabunny](https://mediabunny.dev/guide/supported-formats-and-codecs).  
+Therefore, format support is bound to the [formats and codecs supported by Mediabunny](https://mediabunny.dev/guide/supported-formats-and-codecs).
 Mediabunny's compatibility data is mirrored on this page.
 
 ## Supported container formats
@@ -32,7 +32,7 @@ Mediabunny's compatibility data is mirrored on this page.
 - `'hevc'` - High Efficiency Video Coding (HEVC) / H.265
 
 :::note
-Chrome Headless Shell does not support HEVC in headless mode.  
+Chrome Headless Shell does not support HEVC in headless mode.
 This means that during rendering of Remotion videos server-side, HEVC videos cannot be decoded using [`<Video>`](/docs/media/video) from [`@remotion/media`](/docs/media).
 :::
 
@@ -61,13 +61,23 @@ This means that during rendering of Remotion videos server-side, HEVC videos can
 - `'pcm-f64be'` - 64-bit big-endian float PCM
 - `'ulaw'` - μ-law PCM
 - `'alaw'` - A-law PCM
-- `'ac3'` - Dolby Digital (AC-3)
-- `'eac3'` - Dolby Digital Plus (E-AC-3)
 
-:::note
-AC-3 and E-AC-3 are not natively supported by WebCodecs.
-Remotion registers a software decoder from [`@mediabunny/ac3`](https://www.npmjs.com/package/@mediabunny/ac3) to enable decoding of these codecs.
-:::
+### AC-3 and E-AC-3<AvailableFrom v="4.0.427"/>
+
+AC-3 (Dolby Digital) and E-AC-3 (Dolby Digital Plus) are not natively supported by WebCodecs and are not enabled by default in [`@remotion/media`](/docs/media).
+
+If you need AC-3/E-AC-3 support, [you can enable it yourself](https://mediabunny.dev/guide/extensions/ac3) by installing and registering the decoder:
+
+```bash
+npx remotion add @mediabunny/ac3
+```
+
+```tsx title="src/Root.tsx"
+import {registerAc3Decoder, registerAc3Encoder} from '@mediabunny/ac3';
+
+registerAc3Decoder();
+registerAc3Encoder();
+```
 
 ## Compatibility table
 
@@ -101,6 +111,10 @@ Not all codecs can be used with all containers. The following table specifies th
 |   `'alaw'`    |      |  ✓   |      |       |      |      |  ✓   |      |       |     |
 |    `'ac3'`    |  ✓   |  ✓   |  ✓   |       |      |      |      |      |       |  ✓  |
 |   `'eac3'`    |  ✓   |  ✓   |  ✓   |       |      |      |      |      |       |  ✓  |
+
+:::note
+AC-3 and E-AC-3 entries in the table above require [manual registration](#ac-3-and-e-ac-3) of the `@mediabunny/ac3` decoder.
+:::
 
 ## CORS
 

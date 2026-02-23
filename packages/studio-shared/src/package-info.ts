@@ -103,6 +103,12 @@ export const extraPackages: ExtraPackage[] = [
 		docsUrl: 'https://www.remotion.dev/docs/mediabunny/version',
 	},
 	{
+		name: '@mediabunny/ac3',
+		version: '1.34.4',
+		description: 'AC-3 and E-AC-3 audio codec support for Mediabunny',
+		docsUrl: 'https://www.remotion.dev/docs/mediabunny/formats#ac-3-and-e-ac-3',
+	},
+	{
 		name: 'zod',
 		version: '4.3.6',
 		description: 'TypeScript-first schema validation',

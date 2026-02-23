@@ -97,6 +97,7 @@ export const rspackConfig = async ({
 		node: {
 			// Suppress the warning in `source-map`
 			__dirname: 'mock',
+			__filename: 'mock',
 		},
 		entry: [
 			require.resolve('./setup-environment'),

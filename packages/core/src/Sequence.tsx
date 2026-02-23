@@ -7,17 +7,16 @@ import React, {
 	useState,
 } from 'react';
 import {AbsoluteFill} from './AbsoluteFill.js';
-import type {AnyZodObject} from './any-zod-type.js';
-import type {LoopDisplay} from './CompositionManager.js';
+import type {LoopDisplay, SequenceControls} from './CompositionManager.js';
+import {useNonce} from './nonce.js';
 import type {SequenceContextType} from './SequenceContext.js';
 import {SequenceContext} from './SequenceContext.js';
 import {
 	SequenceManager,
 	SequenceVisibilityToggleContext,
 } from './SequenceManager.js';
-import {TimelineContext} from './TimelineContext.js';
-import {useNonce} from './nonce.js';
 import {useTimelinePosition} from './timeline-position-state.js';
+import {TimelineContext} from './TimelineContext.js';
 import {useVideoConfig} from './use-video-config.js';
 
 import {Freeze} from './freeze.js';
@@ -48,7 +47,7 @@ export type SequencePropsWithoutDuration = {
 	readonly from?: number;
 	readonly name?: string;
 	readonly showInTimeline?: boolean;
-	readonly schema?: AnyZodObject;
+	readonly controls?: SequenceControls;
 	/**
 	 * @deprecated For internal use only.
 	 */
@@ -91,7 +90,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 		height,
 		width,
 		showInTimeline = true,
-		schema,
+		controls,
 		_remotionInternalLoopDisplay: loopDisplay,
 		_remotionInternalStack: stack,
 		_remotionInternalPremountDisplay: premountDisplay,
@@ -229,7 +228,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 			stack: stack ?? inheritedStack,
 			premountDisplay: premountDisplay ?? null,
 			postmountDisplay: postmountDisplay ?? null,
-			schema: schema ?? null,
+			controls: controls ?? null,
 		});
 		return () => {
 			unregisterSequence(id);
@@ -253,7 +252,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 		postmountDisplay,
 		env.isStudio,
 		inheritedStack,
-		schema,
+		controls,
 	]);
 
 	// Ceil to support floats

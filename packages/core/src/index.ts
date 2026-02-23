@@ -7,6 +7,7 @@ import type {
 	AnyComposition,
 	AudioOrVideoAsset,
 	LoopDisplay,
+	SequenceControls,
 	TRenderAsset,
 } from './CompositionManager.js';
 import type {DelayRenderScope} from './delay-render.js';
@@ -264,4 +265,10 @@ export type _InternalTypes = {
 	ProResProfile: ProResProfile;
 };
 
-export type {AnyComposition, DelayRenderScope, LoopDisplay, UseBufferState};
+export type {
+	AnyComposition,
+	DelayRenderScope,
+	LoopDisplay,
+	SequenceControls,
+	UseBufferState,
+};

@@ -187,7 +187,7 @@ export const useMediaInTimeline = ({
 			stack,
 			premountDisplay,
 			postmountDisplay,
-			schema: null,
+			controls: null,
 		});
 
 		return () => {

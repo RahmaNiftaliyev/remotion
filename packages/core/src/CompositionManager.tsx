@@ -87,6 +87,11 @@ export type LoopDisplay = {
 	durationInFrames: number;
 };
 
+export type SequenceControls = {
+	schema: AnyZodObject;
+	currentValue: Record<string, unknown>;
+};
+
 export type TSequence = {
 	from: number;
 	duration: number;
@@ -100,7 +105,7 @@ export type TSequence = {
 	stack: string | null;
 	premountDisplay: number | null;
 	postmountDisplay: number | null;
-	schema: AnyZodObject | null;
+	controls: SequenceControls | null;
 } & EnhancedTSequenceData;
 
 export type AudioOrVideoAsset = {

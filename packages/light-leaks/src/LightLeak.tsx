@@ -266,13 +266,19 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 		);
 	}
 
-	const schema = useMemo(() => lightLeakSchema, []);
+	const controls = useMemo(
+		() => ({
+			schema: lightLeakSchema,
+			currentValue: {seed, hueShift},
+		}),
+		[seed, hueShift],
+	);
 
 	return (
 		<Sequence
 			durationInFrames={resolvedDuration}
 			name="<LightLeak>"
-			schema={schema}
+			controls={controls}
 			{...sequenceProps}
 		>
 			<LightLeakCanvas seed={seed} hueShift={hueShift} />

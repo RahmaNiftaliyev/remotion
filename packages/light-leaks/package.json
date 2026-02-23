@@ -23,12 +23,12 @@
 		"url": "https://github.com/remotion-dev/remotion/issues"
 	},
 	"dependencies": {
-		"remotion": "workspace:*"
+		"remotion": "workspace:*",
+		"zod": "catalog:"
 	},
 	"peerDependencies": {
 		"react": ">=16.8.0",
-		"react-dom": ">=16.8.0",
-		"zod": ">=3.0.0"
+		"react-dom": ">=16.8.0"
 	},
 	"exports": {
 		".": {
@@ -41,7 +41,6 @@
 	"devDependencies": {
 		"react": "catalog:",
 		"react-dom": "catalog:",
-		"zod": "catalog:",
 		"@remotion/eslint-config-internal": "workspace:*",
 		"eslint": "catalog:",
 		"@typescript/native-preview": "catalog:"

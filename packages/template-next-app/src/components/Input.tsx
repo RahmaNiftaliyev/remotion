@@ -26,6 +26,9 @@ export const Input: React.FC<{
 
   return (
     <input
+      id="username"
+      type="text"
+      autoComplete="off"
       disabled={disabled}
       name="title"
       style={textarea}

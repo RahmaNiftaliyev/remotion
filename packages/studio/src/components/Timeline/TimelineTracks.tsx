@@ -64,7 +64,9 @@ export const TimelineTracks: React.FC<{
 							>
 								<TimelineSequence s={track.sequence} />
 							</div>
-							{visualModeEnabled && isExpanded ? <div style={expandedPlaceholder} /> : null}
+							{visualModeEnabled && isExpanded ? (
+								<div style={expandedPlaceholder} />
+							) : null}
 						</div>
 					);
 				})}

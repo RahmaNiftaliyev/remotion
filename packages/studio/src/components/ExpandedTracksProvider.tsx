@@ -15,9 +15,9 @@ export const ExpandedTracksContext = createContext<ExpandedTracksContextValue>({
 export const ExpandedTracksProvider: React.FC<{
 	readonly children: React.ReactNode;
 }> = ({children}) => {
-	const [expandedTracks, setExpandedTracks] = useState<
-		Record<string, boolean>
-	>({});
+	const [expandedTracks, setExpandedTracks] = useState<Record<string, boolean>>(
+		{},
+	);
 
 	const toggleTrack = useCallback((id: string) => {
 		setExpandedTracks((prev) => ({

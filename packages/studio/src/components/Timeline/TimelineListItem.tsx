@@ -125,7 +125,12 @@ export const TimelineListItem: React.FC<{
 				{sequence.parent && nestedDepth > 0 ? <div style={space} /> : null}
 				{visualModeEnabled ? (
 					<button type="button" style={arrowStyle} onClick={onToggleExpand}>
-						<svg width="12" height="12" viewBox="0 0 8 8" style={{display: 'block'}}>
+						<svg
+							width="12"
+							height="12"
+							viewBox="0 0 8 8"
+							style={{display: 'block'}}
+						>
 							<path d="M2 1L6 4L2 7Z" fill="white" />
 						</svg>
 					</button>

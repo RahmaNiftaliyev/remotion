@@ -1,8 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const REMOTION_PRO_ORIGIN =
-	'https://pro-git-bugfix-prompt-enpdoint-remotion.vercel.app';
+const REMOTION_PRO_ORIGIN = 'https://www.remotion.pro';
 
 type PromptResponse = {
 	items: unknown[];

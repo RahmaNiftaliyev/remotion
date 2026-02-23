@@ -119,13 +119,15 @@ export const init = async () => {
 		process.exit(1);
 	}
 
-	if (result.type === 'is-git-repo') {
+	const isInsideGitRepo = result.type === 'is-git-repo';
+
+	if (isInsideGitRepo) {
 		const {shouldContinue} = await prompts({
 			type: 'toggle',
 			name: 'shouldContinue',
 			message: `You are already inside a Git repo (${path.resolve(
 				result.location,
-			)}).\nThis might lead to a Git Submodule being created. Do you want to continue?`,
+			)}).\nA new project will be created without initializing a new Git repository. Do you want to continue?`,
 			initial: false,
 			active: 'Yes',
 			inactive: 'No',
@@ -181,7 +183,9 @@ export const init = async () => {
 		projectRoot,
 	});
 
-	await getGitStatus(projectRoot);
+	if (!isInsideGitRepo) {
+		await getGitStatus(projectRoot);
+	}
 
 	if (shouldInstallSkills) {
 		await installSkills(projectRoot);

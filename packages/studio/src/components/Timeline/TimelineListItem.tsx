@@ -53,8 +53,9 @@ export const TimelineListItem: React.FC<{
 	readonly nestedDepth: number;
 	readonly isCompact: boolean;
 }> = ({nestedDepth, sequence, isCompact}) => {
-	const visualModeEnabled =
-		process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED === 'true';
+	const visualModeEnabled = Boolean(
+		process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED,
+	);
 	const {hidden, setHidden} = useContext(
 		Internals.SequenceVisibilityToggleContext,
 	);

@@ -31,8 +31,9 @@ export const TimelineTracks: React.FC<{
 	readonly hasBeenCut: boolean;
 }> = ({timeline, hasBeenCut}) => {
 	const {expandedTracks} = useContext(ExpandedTracksContext);
-	const visualModeEnabled =
-		process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED === 'true';
+	const visualModeEnabled = Boolean(
+		process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED,
+	);
 
 	const timelineStyle: React.CSSProperties = useMemo(() => {
 		return {

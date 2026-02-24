@@ -1,3 +1,8 @@
+import {beforeAll, expect, test} from 'bun:test';
+import {execSync} from 'node:child_process';
+import {existsSync, readFileSync, unlinkSync, writeFileSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
 import {
 	RenderInternals,
 	renderMedia,
@@ -6,11 +11,6 @@ import {
 	StillImageFormat,
 } from '@remotion/renderer';
 import {$} from 'bun';
-import {beforeAll, expect, test} from 'bun:test';
-import {execSync} from 'node:child_process';
-import {existsSync, readFileSync, unlinkSync, writeFileSync} from 'node:fs';
-import {tmpdir} from 'node:os';
-import path from 'node:path';
 import sharp from 'sharp';
 
 if (process.platform === 'win32') {

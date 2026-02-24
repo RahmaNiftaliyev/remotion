@@ -415,6 +415,7 @@
         "@remotion/renderer": "workspace:*",
         "@remotion/rive": "workspace:*",
         "@remotion/rounded-text-box": "workspace:*",
+        "@remotion/sfx": "workspace:*",
         "@remotion/shapes": "workspace:*",
         "@remotion/skia": "workspace:*",
         "@remotion/studio": "workspace:*",
@@ -623,6 +624,7 @@
         "@remotion/renderer": "workspace:*",
         "@remotion/rive": "workspace:*",
         "@remotion/rounded-text-box": "workspace:*",
+        "@remotion/sfx": "workspace:*",
         "@remotion/shapes": "workspace:*",
         "@remotion/skia": "workspace:*",
         "@remotion/studio": "workspace:*",
@@ -1296,6 +1298,15 @@
         "@typescript/native-preview": "catalog:",
         "eslint": "catalog:",
         "remotion": "workspace:*",
+      },
+    },
+    "packages/sfx": {
+      "name": "@remotion/sfx",
+      "version": "4.0.428",
+      "devDependencies": {
+        "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
+        "eslint": "catalog:",
       },
     },
     "packages/shapes": {
@@ -3801,6 +3812,8 @@
     "@remotion/serverless": ["@remotion/serverless@workspace:packages/serverless"],
 
     "@remotion/serverless-client": ["@remotion/serverless-client@workspace:packages/serverless-client"],
+
+    "@remotion/sfx": ["@remotion/sfx@workspace:packages/sfx"],
 
     "@remotion/shapes": ["@remotion/shapes@workspace:packages/shapes"],
 

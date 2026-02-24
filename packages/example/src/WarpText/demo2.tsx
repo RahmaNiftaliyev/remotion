@@ -1,8 +1,7 @@
+import {getBoundingBox, resetPath, warpPath, WarpPathFn} from '@remotion/paths';
 import opentype from 'opentype.js';
 import {useEffect, useRef, useState} from 'react';
 import {AbsoluteFill, staticFile, useCurrentFrame} from 'remotion';
-
-import {getBoundingBox, resetPath, warpPath, WarpPathFn} from '@remotion/paths';
 
 type FontInfo = {
 	path: string;

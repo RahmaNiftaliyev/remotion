@@ -462,6 +462,23 @@ const sidebars: SidebarsConfig = {
 		},
 		{
 			type: 'category',
+			label: '@remotion/sfx',
+			link: {
+				type: 'doc',
+				id: 'sfx/index',
+			},
+			items: [
+				'sfx/whip',
+				'sfx/whoosh',
+				'sfx/page-turn',
+				'sfx/ui-switch',
+				'sfx/mouse-click',
+				'sfx/shutter-modern',
+				'sfx/shutter-old',
+			],
+		},
+		{
+			type: 'category',
 			label: '@remotion/openai-whisper',
 			link: {
 				type: 'doc',
@@ -921,6 +938,7 @@ const sidebars: SidebarsConfig = {
 				'audio/pitch',
 				'audio/from-video',
 				'audio/visualization',
+				'audio/sfx',
 				'audio/exporting',
 				'audio/order-of-operations',
 			],
@@ -1427,6 +1445,7 @@ const sidebars: SidebarsConfig = {
 				'contributing/rust',
 				'contributing/web-renderer',
 				'contributing/presentation',
+				'contributing/sfx',
 				'authoring-packages',
 				'contributing/ineligible',
 			],

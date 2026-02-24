@@ -6,7 +6,6 @@ import {readFileSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {updateSequenceProps} from '../../codemods/update-sequence-props';
 import type {ApiHandler} from '../api-types';
-import {checkIfTypeScriptFile} from './can-update-default-props';
 
 export const saveSequencePropsHandler: ApiHandler<
 	SaveSequencePropsRequest,
@@ -21,8 +20,6 @@ export const saveSequencePropsHandler: ApiHandler<
 		if (fileRelativeToRoot.startsWith('..')) {
 			throw new Error('Cannot modify a file outside the project');
 		}
-
-		checkIfTypeScriptFile(absolutePath);
 
 		const fileContents = readFileSync(absolutePath, 'utf-8');
 

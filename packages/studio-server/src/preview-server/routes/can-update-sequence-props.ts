@@ -6,7 +6,6 @@ import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {parseAst} from '../../codemods/parse-ast';
 import type {ApiHandler} from '../api-types';
-import {checkIfTypeScriptFile} from './can-update-default-props';
 
 const findJsxElementAtLine = (
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -55,8 +54,6 @@ export const canUpdateSequencePropsHandler: ApiHandler<
 		if (fileRelativeToRoot.startsWith('..')) {
 			throw new Error('Cannot read a file outside the project');
 		}
-
-		checkIfTypeScriptFile(absolutePath);
 
 		const fileContents = readFileSync(absolutePath, 'utf-8');
 		const ast = parseAst(fileContents);

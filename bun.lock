@@ -1408,6 +1408,7 @@
         "@remotion/studio-shared": "workspace:*",
         "memfs": "3.4.3",
         "open": "^8.4.2",
+        "prettier": "catalog:",
         "recast": "0.23.11",
         "remotion": "workspace:*",
         "semver": "7.5.3",

@@ -1,3 +1,4 @@
+import type {CanUpdateSequencePropStatus} from '@remotion/studio-shared';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import type {TSequence} from 'remotion';
 import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
@@ -35,7 +36,15 @@ export const TimelineExpandedSection: React.FC<{
 	readonly sequence: TSequence;
 	readonly originalLocation: OriginalPosition | null;
 }> = ({sequence, originalLocation}) => {
-	const [canUpdate, setCanUpdate] = useState<boolean | null>(null);
+	const [propStatuses, setPropStatuses] = useState<Record<
+		string,
+		CanUpdateSequencePropStatus
+	> | null>(null);
+
+	const schemaFields = useMemo(
+		() => getSchemaFields(sequence.controls),
+		[sequence.controls],
+	);
 
 	const validatedLocation = useMemo(() => {
 		if (
@@ -54,8 +63,8 @@ export const TimelineExpandedSection: React.FC<{
 	}, [originalLocation]);
 
 	useEffect(() => {
-		if (!sequence.controls || !validatedLocation) {
-			setCanUpdate(false);
+		if (!sequence.controls || !validatedLocation || !schemaFields) {
+			setPropStatuses(null);
 			return;
 		}
 
@@ -63,19 +72,19 @@ export const TimelineExpandedSection: React.FC<{
 			fileName: validatedLocation.source,
 			line: validatedLocation.line,
 			column: validatedLocation.column,
+			keys: schemaFields.map((f) => f.key),
 		})
 			.then((result) => {
-				setCanUpdate(result.canUpdate);
+				if (result.canUpdate) {
+					setPropStatuses(result.props);
+				} else {
+					setPropStatuses(null);
+				}
 			})
 			.catch(() => {
-				setCanUpdate(false);
+				setPropStatuses(null);
 			});
-	}, [sequence.controls, validatedLocation]);
-
-	const schemaFields = useMemo(
-		() => getSchemaFields(sequence.controls),
-		[sequence.controls],
-	);
+	}, [sequence.controls, validatedLocation, schemaFields]);
 
 	const expandedHeight = useMemo(
 		() => getExpandedTrackHeight(sequence.controls),
@@ -84,7 +93,12 @@ export const TimelineExpandedSection: React.FC<{
 
 	const onSave = useCallback(
 		(key: string, value: unknown) => {
-			if (!canUpdate || !validatedLocation) {
+			if (!propStatuses || !validatedLocation) {
+				return;
+			}
+
+			const status = propStatuses[key];
+			if (!status || !status.canUpdate) {
 				return;
 			}
 
@@ -100,7 +114,7 @@ export const TimelineExpandedSection: React.FC<{
 				console.error('Failed to save sequence prop:', err);
 			});
 		},
-		[canUpdate, validatedLocation],
+		[propStatuses, validatedLocation],
 	);
 
 	return (
@@ -111,7 +125,7 @@ export const TimelineExpandedSection: React.FC<{
 							<span style={fieldName}>{field.key}</span>
 							<TimelineFieldValue
 								field={field}
-								canUpdate={canUpdate}
+								propStatus={propStatuses?.[field.key] ?? null}
 								onSave={onSave}
 							/>
 						</div>

@@ -1,3 +1,4 @@
+import type {CanUpdateSequencePropStatus} from '@remotion/studio-shared';
 import React, {useCallback} from 'react';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
 import {InputDragger} from '../NewComposition/InputDragger';
@@ -27,7 +28,7 @@ const notEditableBackground: React.CSSProperties = {
 
 const TimelineNumberField: React.FC<{
 	readonly field: SchemaFieldInfo;
-	readonly canUpdate: boolean | null;
+	readonly canUpdate: boolean;
 	readonly onSave: (key: string, value: unknown) => void;
 }> = ({field, canUpdate, onSave}) => {
 	const onValueChange = useCallback((_newVal: number) => {
@@ -74,34 +75,43 @@ const TimelineNumberField: React.FC<{
 
 export const TimelineFieldValue: React.FC<{
 	readonly field: SchemaFieldInfo;
-	readonly canUpdate: boolean | null;
+	readonly propStatus: CanUpdateSequencePropStatus | null;
 	readonly onSave: (key: string, value: unknown) => void;
-}> = ({field, canUpdate, onSave}) => {
-	const wrapperStyle: React.CSSProperties | undefined =
-		canUpdate === null || canUpdate === false
-			? notEditableBackground
-			: undefined;
+}> = ({field, propStatus, onSave}) => {
+	const canUpdate = propStatus !== null && propStatus.canUpdate;
 
 	if (!field.supported) {
 		return (
-			<span style={{...unsupportedLabel, ...wrapperStyle}}>unsupported</span>
+			<span style={unsupportedLabel}>unsupported</span>
+		);
+	}
+
+	if (propStatus !== null && !propStatus.canUpdate) {
+		return (
+			<span style={unsupportedLabel}>{propStatus.reason}</span>
+		);
+	}
+
+	if (propStatus === null) {
+		return (
+			<span style={{...notEditableBackground}}>
+				<span style={unsupportedLabel}>error</span>
+			</span>
 		);
 	}
 
 	if (field.typeName === 'number') {
 		return (
-			<span style={wrapperStyle}>
-				<TimelineNumberField
-					field={field}
-					canUpdate={canUpdate}
-					onSave={onSave}
-				/>
-			</span>
+			<TimelineNumberField
+				field={field}
+				canUpdate={canUpdate}
+				onSave={onSave}
+			/>
 		);
 	}
 
 	return (
-		<span style={{...unsupportedLabel, fontStyle: 'normal', ...wrapperStyle}}>
+		<span style={{...unsupportedLabel, fontStyle: 'normal'}}>
 			{String(field.currentValue)}
 		</span>
 	);

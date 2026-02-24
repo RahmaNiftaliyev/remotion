@@ -4,7 +4,8 @@ import React, {useCallback, useRef, useState} from 'react';
 export const PlayButton: React.FC<{
 	readonly src: string;
 	readonly size?: number;
-}> = ({src, size = 48}) => {
+	readonly depth?: number;
+}> = ({src, size = 48, depth}) => {
 	const [playing, setPlaying] = useState(false);
 	const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -39,6 +40,7 @@ export const PlayButton: React.FC<{
 			style={{width: size, height: size}}
 			onClick={toggle}
 			title={playing ? 'Stop' : 'Play'}
+			depth={depth}
 		>
 			{playing ? (
 				<svg

@@ -467,7 +467,15 @@ const sidebars: SidebarsConfig = {
 				type: 'doc',
 				id: 'sfx/index',
 			},
-			items: ['sfx/whip', 'sfx/whoosh'],
+			items: [
+				'sfx/whip',
+				'sfx/whoosh',
+				'sfx/page-turn',
+				'sfx/ui-switch',
+				'sfx/mouse-click',
+				'sfx/shutter-modern',
+				'sfx/shutter-old',
+			],
 		},
 		{
 			type: 'category',

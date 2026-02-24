@@ -3,24 +3,36 @@ import {Grid} from '../../components/TableOfContents/Grid';
 import {TOCItem} from '../../components/TableOfContents/TOCItem';
 import {PlayButton} from './PlayButton';
 
+const SfxItem: React.FC<{
+	readonly link: string;
+	readonly src: string;
+	readonly name: string;
+	readonly description: string;
+}> = ({link, src, name, description}) => {
+	return (
+		<TOCItem link={link}>
+			<div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 12}}>
+				<PlayButton src={src} size={32} depth={0.5} />
+				<div>
+					<strong>{name}</strong>
+					<div>{description}</div>
+				</div>
+			</div>
+		</TOCItem>
+	);
+};
+
 export const TableOfContents: React.FC = () => {
 	return (
 		<div>
 			<Grid>
-				<TOCItem link="/docs/sfx/whip">
-					<strong>whip</strong>
-					<div>URL for a whip sound effect</div>
-					<div style={{marginTop: 8}}>
-						<PlayButton src="https://remotion.media/whip.wav" size={32} />
-					</div>
-				</TOCItem>
-				<TOCItem link="/docs/sfx/whoosh">
-					<strong>whoosh</strong>
-					<div>URL for a whoosh sound effect</div>
-					<div style={{marginTop: 8}}>
-						<PlayButton src="https://remotion.media/whoosh.wav" size={32} />
-					</div>
-				</TOCItem>
+				<SfxItem link="/docs/sfx/whip" src="https://remotion.media/whip.wav" name="whip" description="Whip sound effect" />
+				<SfxItem link="/docs/sfx/whoosh" src="https://remotion.media/whoosh.wav" name="whoosh" description="Whoosh sound effect" />
+				<SfxItem link="/docs/sfx/page-turn" src="https://remotion.media/page-turn.wav" name="pageTurn" description="Page turn sound effect" />
+				<SfxItem link="/docs/sfx/ui-switch" src="https://remotion.media/switch.wav" name="uiSwitch" description="UI switch sound effect" />
+				<SfxItem link="/docs/sfx/mouse-click" src="https://remotion.media/mouse-click.wav" name="mouseClick" description="Mouse click sound effect" />
+				<SfxItem link="/docs/sfx/shutter-modern" src="https://remotion.media/shutter-modern.wav" name="shutterModern" description="Modern camera shutter sound effect" />
+				<SfxItem link="/docs/sfx/shutter-old" src="https://remotion.media/shutter-old.wav" name="shutterOld" description="Vintage camera shutter sound effect" />
 			</Grid>
 		</div>
 	);

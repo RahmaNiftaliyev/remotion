@@ -1,8 +1,8 @@
+import type {File} from '@babel/types';
 import type {
 	CanUpdateSequencePropsRequest,
 	CanUpdateSequencePropsResponse,
 } from '@remotion/studio-shared';
-import type {File} from '@babel/types';
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import * as recast from 'recast';

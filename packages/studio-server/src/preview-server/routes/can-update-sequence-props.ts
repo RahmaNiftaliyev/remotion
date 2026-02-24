@@ -1,10 +1,10 @@
+import {readFileSync} from 'node:fs';
+import path from 'node:path';
 import type {File} from '@babel/types';
 import type {
 	CanUpdateSequencePropsRequest,
 	CanUpdateSequencePropsResponse,
 } from '@remotion/studio-shared';
-import {readFileSync} from 'node:fs';
-import path from 'node:path';
 import * as recast from 'recast';
 import {parseAst} from '../../codemods/parse-ast';
 import type {ApiHandler} from '../api-types';

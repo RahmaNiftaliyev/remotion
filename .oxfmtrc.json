@@ -8,7 +8,6 @@
 	"sortPackageJson": false,
 	"ignorePatterns": [
 		"packages/template-*/**",
-		"packages/example/**",
 		"packages/player-example/**",
 		"packages/example-videos/**"
 	],

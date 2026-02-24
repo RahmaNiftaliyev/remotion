@@ -84,6 +84,7 @@ export const packages = [
 	'design',
 	'light-leaks',
 	'vercel',
+	'sfx',
 ] as const;
 
 export type Pkgs = (typeof packages)[number];
@@ -98,13 +99,13 @@ export type ExtraPackage = {
 export const extraPackages: ExtraPackage[] = [
 	{
 		name: 'mediabunny',
-		version: '1.34.4',
+		version: '1.34.5',
 		description: 'Multimedia library used by Remotion',
 		docsUrl: 'https://www.remotion.dev/docs/mediabunny/version',
 	},
 	{
 		name: '@mediabunny/ac3',
-		version: '1.34.4',
+		version: '1.34.5',
 		description: 'AC-3 and E-AC-3 audio codec support for Mediabunny',
 		docsUrl: 'https://www.remotion.dev/docs/mediabunny/formats#ac-3-and-e-ac-3',
 	},
@@ -207,6 +208,7 @@ export const descriptions: {[key in Pkgs]: string | null} = {
 	design: 'Design system',
 	'light-leaks': 'Light leak effects for Remotion',
 	vercel: 'Render Remotion videos on Vercel Sandbox',
+	sfx: 'Sound effect library',
 };
 export const installableMap: {[key in Pkgs]: boolean} = {
 	'svg-3d-engine': false,
@@ -294,6 +296,7 @@ export const installableMap: {[key in Pkgs]: boolean} = {
 	design: false,
 	'light-leaks': true,
 	vercel: true,
+	sfx: true,
 };
 
 export const apiDocs: {[key in Pkgs]: string | null} = {
@@ -385,4 +388,5 @@ export const apiDocs: {[key in Pkgs]: string | null} = {
 	design: 'https://www.remotion.dev/design',
 	'light-leaks': 'https://www.remotion.dev/docs/light-leaks',
 	vercel: 'https://www.remotion.dev/docs/vercel/api',
+	sfx: 'https://www.remotion.dev/docs/sfx',
 };

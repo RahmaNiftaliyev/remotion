@@ -57,6 +57,7 @@
 		"@remotion/layout-utils": "workspace:*",
 		"@remotion/licensing": "workspace:*",
 		"@remotion/light-leaks": "workspace:*",
+		"@remotion/sfx": "workspace:*",
 		"@remotion/lottie": "workspace:*",
 		"@remotion/media": "workspace:*",
 		"@remotion/media-parser": "workspace:*",

@@ -1,8 +1,7 @@
+import path from 'node:path';
 import {enableScss} from '@remotion/enable-scss';
 import {enableSkia} from '@remotion/skia/enable';
 import {enableTailwind} from '@remotion/tailwind-v4';
-
-import path from 'node:path';
 
 const WEBPACK_OR_ESBUILD = 'esbuild';
 

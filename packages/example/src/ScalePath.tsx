@@ -1,3 +1,4 @@
+import {getBoundingBox, resetPath, scalePath} from '@remotion/paths';
 import opentype from 'opentype.js';
 import {useEffect, useRef, useState} from 'react';
 import {
@@ -7,8 +8,6 @@ import {
 	useCurrentFrame,
 	useVideoConfig,
 } from 'remotion';
-
-import {getBoundingBox, resetPath, scalePath} from '@remotion/paths';
 
 type FontInfo = {
 	path: string;

@@ -2,46 +2,29 @@ import type {
 	CanUpdateSequencePropsRequest,
 	CanUpdateSequencePropsResponse,
 } from '@remotion/studio-shared';
+import type {File} from '@babel/types';
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
+import * as recast from 'recast';
 import {parseAst} from '../../codemods/parse-ast';
 import type {ApiHandler} from '../api-types';
 
-const findJsxElementAtLine = (
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	node: any,
-	targetLine: number,
-): boolean => {
-	if (!node || typeof node !== 'object') {
-		return false;
-	}
+const findJsxElementAtLine = (ast: File, targetLine: number): boolean => {
+	let found = false;
 
-	if (node.type === 'JSXOpeningElement' && node.loc) {
-		if (node.loc.start.line === targetLine) {
-			return true;
-		}
-	}
-
-	for (const key of Object.keys(node)) {
-		if (key === 'loc' || key === 'start' || key === 'end' || key === 'type') {
-			continue;
-		}
-
-		const child = node[key];
-		if (Array.isArray(child)) {
-			for (const item of child) {
-				if (findJsxElementAtLine(item, targetLine)) {
-					return true;
-				}
+	recast.types.visit(ast, {
+		visitJSXOpeningElement(nodePath) {
+			const {node} = nodePath;
+			if (node.loc && node.loc.start.line === targetLine) {
+				found = true;
+				return false;
 			}
-		} else if (child && typeof child === 'object' && child.type) {
-			if (findJsxElementAtLine(child, targetLine)) {
-				return true;
-			}
-		}
-	}
 
-	return false;
+			return this.traverse(nodePath);
+		},
+	});
+
+	return found;
 };
 
 export const canUpdateSequencePropsHandler: ApiHandler<

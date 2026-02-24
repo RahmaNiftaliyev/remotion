@@ -53,6 +53,7 @@
 		"@remotion/media-utils": "workspace:*",
 		"@remotion/motion-blur": "workspace:*",
 		"@remotion/light-leaks": "workspace:*",
+		"@remotion/sfx": "workspace:*",
 		"@remotion/noise": "workspace:*",
 		"@remotion/paths": "workspace:*",
 		"@remotion/player": "workspace:*",

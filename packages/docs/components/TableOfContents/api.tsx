@@ -13,6 +13,7 @@ import {TableOfContents as LambdaTableOfContents} from '../../docs/lambda/table-
 import {TableOfContents as LayoutUtilsTableOfContents} from '../../docs/layout-utils/table-of-contents';
 import {TableOfContents as LicensingTableOfContents} from '../../docs/licensing/TableOfContents';
 import {TableOfContents as LightLeaksTableOfContents} from '../../docs/light-leaks/table-of-contents';
+import {TableOfContents as SfxTableOfContents} from '../../docs/sfx/table-of-contents';
 import {TableOfContents as LottieTableOfContents} from '../../docs/lottie/table-of-contents';
 import {TableOfContents as MediaParserTableOfContents} from '../../docs/media-parser/TableOfContents';
 import {TableOfContents as MediaUtilsTableOfContents} from '../../docs/media-utils/table-of-contents';
@@ -152,6 +153,9 @@ export const TableOfContents: React.FC = () => {
 			<h2>@remotion/zod-types</h2>
 			<p>Zod types enabling Remotion Studio UI</p>
 			<ZodTypesTableOfContents />
+			<h2>@remotion/sfx</h2>
+			<p>Sound effects for Remotion</p>
+			<SfxTableOfContents />
 			<h2>@remotion/light-leaks</h2>
 			<p>Light leak effects</p>
 			<LightLeaksTableOfContents />

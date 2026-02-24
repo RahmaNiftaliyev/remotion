@@ -130,6 +130,7 @@ import {EdgeBlur} from './EdgeBlur/EdgeBlur';
 import {Empty} from './Empty';
 import {JumpCuts, SAMPLE_SECTIONS, calculateMetadataJumpCuts} from './JumpCuts';
 import {LightLeakExample} from './LightLeak';
+import {SfxExample} from './Sfx';
 import {LightLeakAnimatedSize} from './LightLeak/AnimatedSize';
 import {LoopDisplayTestComp} from './LoopDisplayTest';
 import {NewAudioExample} from './NewAudio/NewAudio';
@@ -1843,6 +1844,14 @@ export const Index: React.FC = () => {
 					durationInFrames={120}
 				/>
 			</Folder>
+			<Composition
+				id="sfx"
+				component={SfxExample}
+				width={1080}
+				height={1080}
+				fps={30}
+				durationInFrames={60}
+			/>
 			<Folder name="transition-series-overlay">
 				<Composition
 					id="overlay-basic"

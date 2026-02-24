@@ -462,6 +462,15 @@ const sidebars: SidebarsConfig = {
 		},
 		{
 			type: 'category',
+			label: '@remotion/sfx',
+			link: {
+				type: 'doc',
+				id: 'sfx-api',
+			},
+			items: ['sfx/whip', 'sfx/whoosh'],
+		},
+		{
+			type: 'category',
 			label: '@remotion/openai-whisper',
 			link: {
 				type: 'doc',

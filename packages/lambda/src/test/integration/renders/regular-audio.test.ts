@@ -1,8 +1,8 @@
-import {LambdaClientInternals} from '@remotion/lambda-client';
-import {rendersPrefix} from '@remotion/serverless';
 import {expect, test} from 'bun:test';
 import {createWriteStream, unlinkSync} from 'fs';
 import path from 'path';
+import {LambdaClientInternals} from '@remotion/lambda-client';
+import {rendersPrefix} from '@remotion/serverless';
 import {mockImplementation} from '../../mocks/mock-implementation';
 import {Wavedraw} from '../draw-wav';
 import {simulateLambdaRender} from '../simulate-lambda-render';

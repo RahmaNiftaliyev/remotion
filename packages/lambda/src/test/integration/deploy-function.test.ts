@@ -1,8 +1,8 @@
+import {expect, test} from 'bun:test';
 import {
 	LambdaClientInternals,
 	speculateFunctionName,
 } from '@remotion/lambda-client';
-import {expect, test} from 'bun:test';
 import {VERSION} from 'remotion/version';
 import {internalDeployFunction} from '../../api/deploy-function';
 import {mockFullClientSpecifics} from '../mock-implementation';

@@ -3,7 +3,6 @@ import {Player} from '@remotion/player';
 import React, {useCallback, useMemo, useState} from 'react';
 import {AbsoluteFill} from 'remotion';
 import {Control} from './control';
-import styles from './styles.module.css';
 import type {DemoType} from './types';
 import {
 	animationMathDemo,
@@ -41,6 +40,7 @@ import {
 	triangleDemo,
 	wipePresentationDemo,
 } from './types';
+import styles from './styles.module.css';
 
 const container: React.CSSProperties = {
 	overflow: 'hidden',

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {BlueButton, ClearButton} from './layout/Button';
 import {MuxVideo} from './MuxVideo';
 import {SectionTitle} from './VideoAppsTitle';

@@ -1,5 +1,5 @@
-import {getRemoteExampleVideo} from '@remotion/example-videos';
 import {expect, test} from 'bun:test';
+import {getRemoteExampleVideo} from '@remotion/example-videos';
 import {getTfraBoxes} from '../containers/iso-base-media/traversal';
 import {mediaParserController} from '../controller/media-parser-controller';
 import {nodeReader} from '../node';

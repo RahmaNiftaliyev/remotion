@@ -1,10 +1,10 @@
-import React from 'react';
 // @ts-expect-error
 import CodeBlock from '@theme/CodeBlock';
 // @ts-expect-error
 import TabItem from '@theme/TabItem';
 // @ts-expect-error
 import Tabs from '@theme/Tabs';
+import React from 'react';
 import {VERSION} from 'remotion';
 
 const VersionWarning: React.FC<{
@@ -21,8 +21,8 @@ const VersionWarning: React.FC<{
 			Also update <code>remotion</code> and all <code>`@remotion/*`</code>{' '}
 			packages to the same version.
 			<br />
-			Remove all <code>^</code> character in front of the version numbers of
-			it as it can lead to a version conflict.
+			Remove all <code>^</code> character in front of the version numbers of it
+			as it can lead to a version conflict.
 		</>
 	);
 };

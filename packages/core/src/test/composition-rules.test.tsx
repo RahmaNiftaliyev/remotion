@@ -1,5 +1,5 @@
-import {cleanup, render} from '@testing-library/react';
 import {afterEach, describe, expect, test} from 'bun:test';
+import {cleanup, render} from '@testing-library/react';
 import React from 'react';
 import {Composition} from '../Composition.js';
 import {CompositionManagerProvider} from '../CompositionManagerProvider.js';

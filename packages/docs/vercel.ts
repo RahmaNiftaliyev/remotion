@@ -275,11 +275,9 @@ export const config: VercelConfig = {
 			'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Big_Buck_Bunny_4K.webm/Big_Buck_Bunny_4K.webm.720p.vp9.webm',
 			{permanent: false},
 		),
-		routes.redirect(
-			'/bbb.mp4',
-			'https://remotion.media/BigBuckBunny.mp4',
-			{permanent: false},
-		),
+		routes.redirect('/bbb.mp4', 'https://remotion.media/BigBuckBunny.mp4', {
+			permanent: false,
+		}),
 		routes.redirect(
 			'/leads',
 			'https://github.com/orgs/remotion-dev/projects/15/views/1',
@@ -298,11 +296,9 @@ export const config: VercelConfig = {
 		routes.redirect('/docs/snippets/fps-converter', '/docs/multiple-fps', {
 			permanent: false,
 		}),
-		routes.redirect(
-			'/docs/miscellaneous/vercel-functions',
-			'/docs/vercel',
-			{permanent: false},
-		),
+		routes.redirect('/docs/miscellaneous/vercel-functions', '/docs/vercel', {
+			permanent: false,
+		}),
 		routes.redirect('/docs/miscellaneous/vercel', '/docs/vercel', {
 			permanent: false,
 		}),

@@ -4,10 +4,10 @@ description: Open a pull request for the current feature
 ---
 
 Ensure we are not on the main branch, make a branch if necessary.  
-For all packages affected, run Prettier to format the code:
+For all packages affected, run Oxfmt to format the code:
 
 ```
-bunx prettier src --write
+bunx oxfmt src --write
 ```
 
 Commit the changes, use the following format:

@@ -7,7 +7,7 @@
 	"description": "Babel loader for Remotion",
 	"main": "dist/index.js",
 	"scripts": {
-		"formatting": "prettier src --check",
+		"formatting": "oxfmt src --check",
 		"lint": "eslint src",
 		"make": "tsgo -d"
 	},

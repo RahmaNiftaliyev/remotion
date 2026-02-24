@@ -1,3 +1,4 @@
+import type {StorageClass} from '@aws-sdk/client-s3';
 import type {
 	_InternalTypes,
 	AudioCodec,
@@ -29,11 +30,9 @@ import {
 	validateDownloadBehavior,
 	VERSION,
 } from '@remotion/serverless-client';
+import {validateWebhook} from '@remotion/serverless-client';
 import type {AwsProvider} from './aws-provider';
 import {awsImplementation} from './aws-provider';
-
-import type {StorageClass} from '@aws-sdk/client-s3';
-import {validateWebhook} from '@remotion/serverless-client';
 import type {GetRenderProgressInput} from './get-render-progress';
 import type {AwsRegion} from './regions';
 import type {RenderStillOnLambdaNonNullInput} from './render-still-on-lambda';

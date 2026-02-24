@@ -1,6 +1,6 @@
+import {execSync} from 'node:child_process';
 import type {Page} from '@playwright/test';
 import {test} from '@playwright/test';
-import {execSync} from 'node:child_process';
 
 const runTest = async (entrypoint: string, page: Page) => {
 	const bundled = execSync(`bun build ${entrypoint}`);

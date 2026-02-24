@@ -1,10 +1,8 @@
 import React, {useCallback} from 'react';
 import {InputDragger} from '../../NewComposition/InputDragger';
 import {Fieldset} from './Fieldset';
-import {SchemaLabel} from './SchemaLabel';
-import {ZodFieldValidation} from './ZodFieldValidation';
-import type {UpdaterFunction} from './ZodSwitch';
 import {useLocalState} from './local-state';
+import {SchemaLabel} from './SchemaLabel';
 import {
 	getZodNumberMaximum,
 	getZodNumberMinimum,
@@ -12,6 +10,8 @@ import {
 } from './zod-number-constraints';
 import type {AnyZodSchema} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
+import {ZodFieldValidation} from './ZodFieldValidation';
+import type {UpdaterFunction} from './ZodSwitch';
 
 const fullWidth: React.CSSProperties = {
 	width: '100%',

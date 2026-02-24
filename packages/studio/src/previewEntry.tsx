@@ -1,12 +1,11 @@
 import React from 'react';
-
 import ReactDOM from 'react-dom/client';
 import {Internals} from 'remotion';
 import {NoReactInternals} from 'remotion/no-react';
-import {Studio} from './Studio';
 import {NoRegisterRoot} from './components/NoRegisterRoot';
 import {startErrorOverlay} from './error-overlay/entry-basic';
 import {enableHotMiddleware} from './hot-middleware-client/client';
+import {Studio} from './Studio';
 
 Internals.CSSUtils.injectCSS(
 	Internals.CSSUtils.makeDefaultPreviewCSS(null, '#1f2428'),

@@ -1,7 +1,7 @@
-import {BundlerInternals} from '@remotion/bundler';
-import {dir} from '@remotion/compositor-linux-x64-gnu';
 import fs from 'fs';
 import path from 'path';
+import {BundlerInternals} from '@remotion/bundler';
+import {dir} from '@remotion/compositor-linux-x64-gnu';
 
 export const bundleRenderLogic = async () => {
 	const outdir = path.join(__dirname, '../../container/dist');

@@ -1,6 +1,6 @@
-import type {FileNameAndSize, GetFolderFiles} from '@remotion/serverless';
 import fs from 'fs';
 import path from 'path';
+import type {FileNameAndSize, GetFolderFiles} from '@remotion/serverless';
 export const getFolderFiles: GetFolderFiles = (folder) => {
 	const files = fs.readdirSync(folder);
 	const paths: FileNameAndSize[] = [];

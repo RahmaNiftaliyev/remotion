@@ -1,13 +1,13 @@
+import {beforeAll, expect, test} from 'bun:test';
+import {existsSync} from 'fs';
+import os from 'os';
+import path from 'path';
 import {
 	ensureBrowser,
 	getCompositions,
 	openBrowser,
 	renderStill,
 } from '@remotion/renderer';
-import {beforeAll, expect, test} from 'bun:test';
-import {existsSync} from 'fs';
-import os from 'os';
-import path from 'path';
 
 beforeAll(async () => {
 	await ensureBrowser();

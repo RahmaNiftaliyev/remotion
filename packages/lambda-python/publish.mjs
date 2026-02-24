@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
 import {execSync} from 'node:child_process';
+import dotenv from 'dotenv';
 
 dotenv.config({quiet: true});
 const isTest = false;

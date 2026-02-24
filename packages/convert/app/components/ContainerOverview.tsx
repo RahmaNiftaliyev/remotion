@@ -1,4 +1,3 @@
-import {Table, TableBody, TableCell, TableRow} from '@/components/ui/table';
 import type {
 	InputAudioTrack,
 	InputFormat,
@@ -6,6 +5,7 @@ import type {
 	MetadataTags,
 } from 'mediabunny';
 import React from 'react';
+import {Table, TableBody, TableCell, TableRow} from '@/components/ui/table';
 import type {Dimensions} from '~/lib/calculate-new-dimensions-from-dimensions';
 import {formatBytes} from '~/lib/format-bytes';
 import {formatSeconds} from '~/lib/format-seconds';

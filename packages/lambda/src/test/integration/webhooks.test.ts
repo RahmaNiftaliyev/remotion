@@ -1,7 +1,7 @@
-import {RenderInternals, ensureBrowser} from '@remotion/renderer';
-import {ServerlessRoutines} from '@remotion/serverless';
 import {beforeAll, expect, test} from 'bun:test';
 import path from 'path';
+import {RenderInternals, ensureBrowser} from '@remotion/renderer';
+import {ServerlessRoutines} from '@remotion/serverless';
 import {VERSION} from 'remotion/version';
 import {getWebhookCalls, resetWebhookCalls} from '../mock-implementation';
 import {mockImplementation} from '../mocks/mock-implementation';

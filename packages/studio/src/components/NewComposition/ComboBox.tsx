@@ -11,6 +11,7 @@ import {useMobileLayout} from '../../helpers/mobile-layout';
 import {noop} from '../../helpers/noop';
 import {CaretDown} from '../../icons/caret';
 import {HigherZIndex, useZIndex} from '../../state/z-index';
+import {Spacing} from '../layout';
 import {MENU_INITIATOR_CLASSNAME, isMenuItem} from '../Menu/is-menu-item';
 import {getPortal} from '../Menu/portals';
 import {
@@ -21,7 +22,6 @@ import {
 	menuContainerTowardsTop,
 	outerPortal,
 } from '../Menu/styles';
-import {Spacing} from '../layout';
 import {MenuContent} from './MenuContent';
 
 const container: React.CSSProperties = {

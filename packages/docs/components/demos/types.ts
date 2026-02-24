@@ -20,9 +20,13 @@ import {PieDemo} from './Pie';
 import {PolygonDemo} from './Polygon';
 import {RectDemo} from './Rect';
 import {RoundedTextBox} from './RoundedTextBox';
+import {ShaderDemoComp} from './ShaderDemo';
 import {SpringDemo} from './Spring';
 import {StarDemo} from './Star';
 import {AnimationMath} from './SubtractAnimations';
+import {TransitionSeriesEnterExitDemoComp} from './TransitionSeriesEnterExitDemo';
+import {TransitionSeriesOverlayDemoComp} from './TransitionSeriesOverlayDemo';
+import {TransitionSeriesTransitionDemoComp} from './TransitionSeriesTransitionDemo';
 import {
 	OpacityDemo,
 	RotateDemo,
@@ -30,10 +34,6 @@ import {
 	SkewDemo,
 	TranslateDemo,
 } from './Translate';
-import {ShaderDemoComp} from './ShaderDemo';
-import {TransitionSeriesEnterExitDemoComp} from './TransitionSeriesEnterExitDemo';
-import {TransitionSeriesOverlayDemoComp} from './TransitionSeriesOverlayDemo';
-import {TransitionSeriesTransitionDemoComp} from './TransitionSeriesTransitionDemo';
 import {TriangleDemo} from './Triangle';
 
 export type Option = {

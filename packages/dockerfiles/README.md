@@ -9,12 +9,14 @@ Uses `npx remotion browser ensure` to install the browser, which requires some s
 ```
 
 This will:
+
 1. Build the browser-test bundle from `packages/example` (using `src/browser-test-entry.ts`)
 2. Build Docker images for each platform (ubuntu24, ubuntu22, debian, nix)
 3. Each Docker build runs `npx remotion compositions` and `npx remotion render`
 4. Extract the rendered videos to `out/` directory
 
 Output videos:
+
 - `out/ubuntu24.mp4`
 - `out/ubuntu22.mp4`
 - `out/debian.mp4`
@@ -23,6 +25,7 @@ Output videos:
 ## browser-test composition
 
 Located in `packages/example/src/BrowserTest/index.tsx`, it tests:
+
 - GPU/WebGL rendering (Three.js)
 - Video playback with different codecs (H.264, H.265)
 - WebGL availability

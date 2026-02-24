@@ -1,10 +1,10 @@
-import {LambdaClientInternals} from '@remotion/lambda-client';
-import {ensureBrowser, RenderInternals} from '@remotion/renderer';
-import {rendersPrefix} from '@remotion/serverless';
 import {beforeAll, expect, test} from 'bun:test';
 import fs, {createWriteStream} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import {LambdaClientInternals} from '@remotion/lambda-client';
+import {ensureBrowser, RenderInternals} from '@remotion/renderer';
+import {rendersPrefix} from '@remotion/serverless';
 import {mockImplementation} from '../../mocks/mock-implementation';
 import {simulateLambdaRender} from '../simulate-lambda-render';
 

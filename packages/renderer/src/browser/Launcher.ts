@@ -15,7 +15,6 @@
  */
 
 import {HeadlessBrowser} from './Browser';
-
 import type {LaunchOptions} from './LaunchOptions';
 
 export const launchChrome = async ({

@@ -1,6 +1,6 @@
-import {Table, TableBody, TableCell, TableRow} from '@/components/ui/table';
 import type {InputVideoTrack} from 'mediabunny';
 import React, {useEffect, useState} from 'react';
+import {Table, TableBody, TableCell, TableRow} from '@/components/ui/table';
 import {renderHumanReadableVideoCodec} from '~/lib/render-codec-label';
 import {PacketList} from './PacketList';
 import {TextButtonWithChevron} from './TexrButtonWithChevron';

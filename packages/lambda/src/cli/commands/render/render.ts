@@ -1,12 +1,6 @@
+import path from 'path';
 import {CliInternals} from '@remotion/cli';
 import {ConfigInternals} from '@remotion/cli/config';
-import type {ChromiumOptions, LogLevel} from '@remotion/renderer';
-import {RenderInternals} from '@remotion/renderer';
-import {BrowserSafeApis} from '@remotion/renderer/client';
-import path from 'path';
-import {NoReactInternals} from 'remotion/no-react';
-import {internalDownloadMedia} from '../../../api/download-media';
-
 import {
 	AwsProvider,
 	getRenderProgress,
@@ -17,8 +11,13 @@ import {
 	DEFAULT_MAX_RETRIES,
 	DEFAULT_OUTPUT_PRIVACY,
 } from '@remotion/lambda-client/constants';
+import type {ChromiumOptions, LogLevel} from '@remotion/renderer';
+import {RenderInternals} from '@remotion/renderer';
+import {BrowserSafeApis} from '@remotion/renderer/client';
 import type {EnhancedErrorInfo, ProviderSpecifics} from '@remotion/serverless';
 import {validatePrivacy, type ServerlessCodec} from '@remotion/serverless';
+import {NoReactInternals} from 'remotion/no-react';
+import {internalDownloadMedia} from '../../../api/download-media';
 import {sleep} from '../../../shared/sleep';
 import {validateMaxRetries} from '../../../shared/validate-retries';
 import {parsedLambdaCli} from '../../args';

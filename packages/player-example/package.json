@@ -25,6 +25,7 @@
 	},
 	"devDependencies": {
 		"eslint": "catalog:",
+		"prettier": "catalog:",
 		"@types/node": "catalog:"
 	},
 	"scripts": {

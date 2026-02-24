@@ -20,14 +20,6 @@ import {ContextMenu} from '../ContextMenu';
 import {VERTICAL_SCROLLBAR_CLASSNAME} from '../Menu/is-menu-item';
 import type {ComboboxValue} from '../NewComposition/ComboBox';
 import {defaultInOutValue} from '../TimelineInOutToggle';
-import {inMarkerAreaRef, outMarkerAreaRef} from './TimelineInOutPointer';
-import {
-	TimelineInOutPointerHandle,
-	inPointerHandle,
-	outPointerHandle,
-} from './TimelineInOutPointerHandle';
-import {redrawTimelineSliderFast} from './TimelineSlider';
-import {TimelineWidthContext} from './TimelineWidthProvider';
 import {scrollableRef, sliderAreaRef} from './timeline-refs';
 import {
 	canScrollTimelineIntoDirection,
@@ -38,6 +30,14 @@ import {
 	getScrollPositionForCursorOnRightEdge,
 	scrollToTimelineXOffset,
 } from './timeline-scroll-logic';
+import {inMarkerAreaRef, outMarkerAreaRef} from './TimelineInOutPointer';
+import {
+	TimelineInOutPointerHandle,
+	inPointerHandle,
+	outPointerHandle,
+} from './TimelineInOutPointerHandle';
+import {redrawTimelineSliderFast} from './TimelineSlider';
+import {TimelineWidthContext} from './TimelineWidthProvider';
 
 const inner: React.CSSProperties = {
 	overflowY: 'auto',

@@ -1,7 +1,7 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {cn} from '../../cn';
-import {Outer} from './Outer';
 import {useHoverTransforms} from './hover-transforms';
+import {Outer} from './Outer';
 
 export const Button3D: React.FC<
 	React.ButtonHTMLAttributes<HTMLButtonElement>

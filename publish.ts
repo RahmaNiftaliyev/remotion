@@ -1,6 +1,6 @@
-import {$} from 'bun';
 import {existsSync, lstatSync, readdirSync, readFileSync} from 'node:fs';
 import path from 'node:path';
+import {$} from 'bun';
 import limit from 'p-limit';
 import {FEATURED_TEMPLATES} from './packages/create-video/src/templates';
 

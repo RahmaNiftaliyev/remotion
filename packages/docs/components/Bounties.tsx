@@ -2,7 +2,6 @@ import {algora, type AlgoraOutput} from '@algora/sdk';
 import {useColorMode} from '@docusaurus/theme-common';
 import clsx from 'clsx';
 import React, {useEffect, useState} from 'react';
-
 import './bounties.css';
 
 const org = 'remotion';

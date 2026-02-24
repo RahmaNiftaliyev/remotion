@@ -11,7 +11,7 @@
 	"sideEffects": false,
 	"type": "module",
 	"scripts": {
-		"formatting": "prettier --experimental-cli src --check",
+		"formatting": "oxfmt src --check",
 		"lint": "eslint src",
 		"watch": "tsgo -w",
 		"make": "tsgo && bun --env-file=../.env.bundle bundle.ts"

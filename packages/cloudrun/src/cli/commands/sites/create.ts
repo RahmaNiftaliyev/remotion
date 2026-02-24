@@ -1,8 +1,8 @@
+import {existsSync, lstatSync} from 'fs';
 import {CliInternals} from '@remotion/cli';
 import {ConfigInternals} from '@remotion/cli/config';
 import type {LogLevel} from '@remotion/renderer';
 import {BrowserSafeApis} from '@remotion/renderer/client';
-import {existsSync, lstatSync} from 'fs';
 import {Internals} from 'remotion';
 import {displaySiteInfo} from '.';
 import {internalDeploySiteRaw} from '../../../api/deploy-site';

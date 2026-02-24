@@ -1,9 +1,9 @@
-import {ZonNonEditableValue} from './ZodNonEditableValue';
-import {ZodOrNullishEditor} from './ZodOrNullishEditor';
-import type {UpdaterFunction} from './ZodSwitch';
 import type {AnyZodSchema} from './zod-schema-type';
 import {getUnionOptions, getZodSchemaType} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
+import {ZonNonEditableValue} from './ZodNonEditableValue';
+import {ZodOrNullishEditor} from './ZodOrNullishEditor';
+import type {UpdaterFunction} from './ZodSwitch';
 
 const findNull = (value: readonly AnyZodSchema[]) => {
 	const nullIndex = value.findIndex((v) => {

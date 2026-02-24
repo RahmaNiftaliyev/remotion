@@ -2,7 +2,6 @@
 // which is under MIT License as per the banner
 
 import './styles.css';
-
 import Translate, {translate} from '@docusaurus/Translate';
 import copy from 'copy-text-to-clipboard';
 import React, {useRef, useState} from 'react';

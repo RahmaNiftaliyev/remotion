@@ -51,6 +51,7 @@
 		"@types/deno": "2.0.0",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
+		"oxfmt": "0.35.0",
 		"prettier": "catalog:",
 		"prettier-plugin-organize-imports": "3.2.4"
 	},

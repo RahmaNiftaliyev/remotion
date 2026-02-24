@@ -6,7 +6,6 @@ import {
 	INPUT_BACKGROUND,
 	LIGHT_TEXT,
 } from '../../helpers/colors';
-
 import {useZIndex} from '../../state/z-index';
 
 const tabsContainer: React.CSSProperties = {

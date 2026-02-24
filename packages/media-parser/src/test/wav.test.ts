@@ -1,5 +1,5 @@
-import {exampleVideos} from '@remotion/example-videos';
 import {expect, test} from 'bun:test';
+import {exampleVideos} from '@remotion/example-videos';
 import {WAVE_SAMPLES_PER_SECOND} from '../containers/wav/get-seeking-byte';
 import {parseMedia} from '../parse-media';
 import {nodeReader} from '../readers/from-node';

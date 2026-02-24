@@ -1,7 +1,7 @@
 import {expect, test} from 'bun:test';
 import fs from 'fs';
-import OpenAI from 'openai';
 import path from 'path';
+import OpenAI from 'openai';
 import {openAiWhisperApiToCaptions} from '../openai-whisper-api-to-captions';
 import {testOutput} from './output';
 

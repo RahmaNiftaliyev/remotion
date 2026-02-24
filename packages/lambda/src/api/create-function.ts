@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import {
 	CreateLogGroupCommand,
 	PutRetentionPolicyCommand,
@@ -19,7 +20,6 @@ import {
 import {LOG_GROUP_PREFIX} from '@remotion/lambda-client/constants';
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
-import {readFileSync} from 'node:fs';
 import {VERSION} from 'remotion/version';
 import {getLayers} from '../shared/get-layers';
 import {lambdaInsightsExtensions} from '../shared/lambda-insights-extensions';

@@ -2,8 +2,8 @@ import type {ChangeEvent} from 'react';
 import React, {useCallback} from 'react';
 import {Checkbox} from '../Checkbox';
 import {Spacing} from '../layout';
-import {OptionExplainerBubble} from './OptionExplainerBubble';
 import {label, optionRow, rightRow} from './layout';
+import {OptionExplainerBubble} from './OptionExplainerBubble';
 
 export const EnforceAudioTrackSetting: React.FC<{
 	readonly enforceAudioTrack: boolean;

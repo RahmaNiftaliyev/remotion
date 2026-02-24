@@ -4,13 +4,13 @@
  * and rewritten in TypeScript. This file is MIT licensed
  */
 
+import type {IncomingMessage, ServerResponse} from 'node:http';
+import {parse} from 'node:url';
 import type {webpack} from '@remotion/bundler';
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
 import type {HotMiddlewareMessage, ModuleMap} from '@remotion/studio-shared';
 import {hotMiddlewareOptions} from '@remotion/studio-shared';
-import type {IncomingMessage, ServerResponse} from 'node:http';
-import {parse} from 'node:url';
 import type {WebpackStats} from './types';
 
 declare global {

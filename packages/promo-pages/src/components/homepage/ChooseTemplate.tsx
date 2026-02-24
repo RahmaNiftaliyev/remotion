@@ -1,6 +1,5 @@
 import {CreateVideoInternals} from 'create-video';
 import React from 'react';
-
 import {IconForTemplate} from './IconForTemplate';
 import {MoreTemplatesButton} from './MoreTemplatesButton';
 import {TemplateIcon} from './TemplateIcon';

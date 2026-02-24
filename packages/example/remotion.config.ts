@@ -11,3 +11,4 @@ Config.overrideWebpackConfig(async (config) => {
 
 Config.setExperimentalClientSideRenderingEnabled(true);
 Config.setExperimentalVisualMode(true);
+Config.setExperimentalRspackEnabled(true);

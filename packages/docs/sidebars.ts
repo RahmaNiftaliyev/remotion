@@ -1444,6 +1444,7 @@ const sidebars: SidebarsConfig = {
 				'contributing/rust',
 				'contributing/web-renderer',
 				'contributing/presentation',
+				'contributing/sfx',
 				'authoring-packages',
 				'contributing/ineligible',
 			],

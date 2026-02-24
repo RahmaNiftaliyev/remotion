@@ -11,14 +11,14 @@
 	"sideEffects": false,
 	"type": "module",
 	"scripts": {
-		"formatting": "prettier src --check",
+		"formatting": "oxfmt src --check",
 		"lint": "eslint src",
 		"watch": "tsgo -w",
 		"make": "tsgo && bun --env-file=../.env.bundle bundle.ts"
 	},
 	"author": "Jonny Burger <jonny@remotion.dev>",
 	"contributors": [],
-	"license": "Remotion License",
+	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/remotion-dev/remotion/issues"
 	},

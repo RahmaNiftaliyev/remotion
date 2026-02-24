@@ -42,9 +42,8 @@ test('Computed values should be detected as computed', () => {
 });
 
 test('canUpdateSequenceProps should flag computed props', async () => {
-	const {canUpdateSequencePropsHandler} = await import(
-		'../preview-server/routes/can-update-sequence-props'
-	);
+	const {canUpdateSequencePropsHandler} =
+		await import('../preview-server/routes/can-update-sequence-props');
 
 	const result = await canUpdateSequencePropsHandler({
 		input: {

@@ -72,20 +72,6 @@ test('All packages should have a README.md file', () => {
 
 		const name = pkg === 'create-video' ? 'create-video' : `@remotion/${pkg}`;
 
-		const webcodecsLicenseDisclaimer = [
-			'',
-			'## License',
-			'This package is licensed under the [Remotion License](/docs/license).',
-			'We consider a team of 4 or more people a "company".',
-			'',
-			'**For "companies"**: A Remotion Company license needs to be obtained to use this package.',
-			'In a future version of `@remotion/webcodecs`, this package will also require the purchase of a newly created "WebCodecs Conversion Seat". [Get in touch](https://remotion.dev/contact) with us if you are planning to use this package.',
-			'',
-			'**For individuals and teams up to 3**: You can use this package for free.',
-			'',
-			'This is a short, non-binding explanation of our license. See the [License](https://remotion.dev/docs/license) itself for more details.',
-		].join('\n');
-
 		const readme =
 			[
 				`# @remotion/${pkg}`,

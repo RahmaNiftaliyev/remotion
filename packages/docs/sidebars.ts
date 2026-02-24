@@ -938,6 +938,7 @@ const sidebars: SidebarsConfig = {
 				'audio/pitch',
 				'audio/from-video',
 				'audio/visualization',
+				'audio/sfx',
 				'audio/exporting',
 				'audio/order-of-operations',
 			],

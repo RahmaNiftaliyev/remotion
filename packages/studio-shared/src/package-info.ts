@@ -208,7 +208,7 @@ export const descriptions: {[key in Pkgs]: string | null} = {
 	design: 'Design system',
 	'light-leaks': 'Light leak effects for Remotion',
 	vercel: 'Render Remotion videos on Vercel Sandbox',
-	sfx: 'Sound effects for Remotion',
+	sfx: 'Sound effect library',
 };
 export const installableMap: {[key in Pkgs]: boolean} = {
 	'svg-3d-engine': false,

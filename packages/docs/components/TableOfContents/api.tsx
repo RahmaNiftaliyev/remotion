@@ -154,7 +154,7 @@ export const TableOfContents: React.FC = () => {
 			<p>Zod types enabling Remotion Studio UI</p>
 			<ZodTypesTableOfContents />
 			<h2>@remotion/sfx</h2>
-			<p>Sound effects for Remotion</p>
+			<p>Sound effects library</p>
 			<SfxTableOfContents />
 			<h2>@remotion/light-leaks</h2>
 			<p>Light leak effects</p>

@@ -387,6 +387,15 @@ export const articles = [
 		slug: 'audio/pitch',
 	},
 	{
+		id: 'audio/sfx',
+		title: 'Sound effects',
+		relativePath: 'docs/audio/sfx.mdx',
+		compId: 'articles-docs-audio-sfx',
+		crumb: 'Audio',
+		noAi: false,
+		slug: 'audio/sfx',
+	},
+	{
 		id: 'speed',
 		title: 'Controlling playback speed',
 		relativePath: 'docs/audio/speed.mdx',

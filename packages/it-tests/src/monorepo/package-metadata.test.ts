@@ -89,34 +89,33 @@ test('All packages should have a README.md file', () => {
 		const readme =
 			[
 				`# @remotion/${pkg}`,
-				description ? ' ' : null,
+				description ? '' : null,
 				description ?? null,
-				' ',
+				'',
 				docs
 					? `[![NPM Downloads](https://img.shields.io/npm/dm/${name}.svg?style=flat&color=black&label=Downloads)](https://npmcharts.com/compare/${name}?minimal=true)`
 					: null,
-				docs ? ' ' : null,
+				docs ? '' : null,
 				docs ? '## Installation' : null,
-				docs ? ' ' : null,
+				docs ? '' : null,
 				docs ? '```bash' : null,
 				docs ? `npm install ${name} --save-exact` : null,
 				docs ? '```' : null,
-				docs ? ' ' : null,
+				docs ? '' : null,
 				docs
 					? 'When installing a Remotion package, make sure to align the version of all `remotion` and `@remotion/*` packages to the same version.'
 					: null,
 				docs
 					? 'Remove the `^` character from the version number to use the exact version.'
 					: null,
-				docs ? ' ' : null,
+				docs ? '' : null,
 				'## Usage',
-				' ',
+				'',
 				docs
 					? 'See the [documentation](' + docs + ') for more information.'
 					: 'This is an internal package and has no documentation.',
-				pkg === 'webcodecs' ? webcodecsLicenseDisclaimer : null,
 			]
-				.filter(Boolean)
+				.filter(t => t !== null)
 				.join('\n') + '\n';
 
 		if (pkg === 'convert') {

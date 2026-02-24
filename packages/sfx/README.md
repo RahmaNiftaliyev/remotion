@@ -1,6 +1,6 @@
 # @remotion/sfx
 
-Sound effects for Remotion
+Sound effect library
 
 [![NPM Downloads](https://img.shields.io/npm/dm/@remotion/sfx.svg?style=flat&color=black&label=Downloads)](https://npmcharts.com/compare/@remotion/sfx?minimal=true)
 

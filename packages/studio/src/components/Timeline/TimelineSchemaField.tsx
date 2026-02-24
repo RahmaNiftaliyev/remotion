@@ -30,7 +30,11 @@ const TimelineNumberField: React.FC<{
 	readonly canUpdate: boolean | null;
 	readonly onSave: (key: string, value: unknown) => void;
 }> = ({field, canUpdate, onSave}) => {
-	const onValueChange = useCallback(
+	const onValueChange = useCallback((_newVal: number) => {
+		// No-op during drag; save happens on drag end
+	}, []);
+
+	const onValueChangeEnd = useCallback(
 		(newVal: number) => {
 			if (canUpdate) {
 				onSave(field.key, newVal);
@@ -58,6 +62,7 @@ const TimelineNumberField: React.FC<{
 			style={draggerStyle}
 			status="ok"
 			onValueChange={onValueChange}
+			onValueChangeEnd={onValueChangeEnd}
 			onTextChange={onTextChange}
 			min={getZodNumberMinimum(field.fieldSchema)}
 			max={getZodNumberMaximum(field.fieldSchema)}

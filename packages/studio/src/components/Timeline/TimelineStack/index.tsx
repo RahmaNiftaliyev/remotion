@@ -1,12 +1,6 @@
 import type {GitSource} from '@remotion/studio-shared';
 import {SOURCE_MAP_ENDPOINT} from '@remotion/studio-shared';
-import React, {
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, {useCallback, useContext, useMemo, useState} from 'react';
 import type {TSequence} from 'remotion';
 import {SourceMapConsumer} from 'source-map';
 import type {OriginalPosition} from '../../../error-overlay/react-overlay/utils/get-source-map';
@@ -23,7 +17,6 @@ import {useSelectAsset} from '../../InitialCompositionLoader';
 import {Spacing} from '../../layout';
 import {showNotification} from '../../Notifications/NotificationCenter';
 import {Spinner} from '../../Spinner';
-import {getOriginalLocationFromStack} from './get-stack';
 import {getOriginalSourceAttribution} from './source-attribution';
 
 const publicPath =
@@ -41,10 +34,8 @@ SourceMapConsumer.initialize({
 export const TimelineStack: React.FC<{
 	readonly isCompact: boolean;
 	readonly sequence: TSequence;
-}> = ({isCompact, sequence}) => {
-	const [originalLocation, setOriginalLocation] =
-		useState<OriginalPosition | null>(null);
-
+	readonly originalLocation: OriginalPosition | null;
+}> = ({isCompact, sequence, originalLocation}) => {
 	const [stackHovered, setStackHovered] = useState(false);
 	const [titleHovered, setTitleHovered] = useState(false);
 	const [opening, setOpening] = useState(false);
@@ -156,21 +147,6 @@ export const TimelineStack: React.FC<{
 			);
 		}
 	}, [canOpenInEditor, canOpenInGitHub, openEditor, originalLocation]);
-
-	useEffect(() => {
-		if (!sequence.stack) {
-			return;
-		}
-
-		getOriginalLocationFromStack(sequence.stack, 'sequence')
-			.then((frame) => {
-				setOriginalLocation(frame);
-			})
-			.catch((err) => {
-				// eslint-disable-next-line no-console
-				console.error('Could not get original location of Sequence', err);
-			});
-	}, [sequence.stack]);
 
 	const onStackPointerEnter = useCallback(() => {
 		setStackHovered(true);

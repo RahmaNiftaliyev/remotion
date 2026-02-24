@@ -191,6 +191,39 @@ export type CanUpdateDefaultPropsResponse =
 			reason: string;
 	  };
 
+export type CanUpdateSequencePropsRequest = {
+	fileName: string;
+	line: number;
+	column: number;
+};
+
+export type CanUpdateSequencePropsResponse =
+	| {
+			canUpdate: true;
+	  }
+	| {
+			canUpdate: false;
+			reason: string;
+	  };
+
+export type SaveSequencePropsRequest = {
+	fileName: string;
+	line: number;
+	column: number;
+	key: string;
+	value: string;
+	enumPaths: EnumPath[];
+};
+
+export type SaveSequencePropsResponse =
+	| {
+			success: true;
+	  }
+	| {
+			success: false;
+			reason: string;
+	  };
+
 export type UpdateAvailableRequest = {};
 export type UpdateAvailableResponse = {
 	currentVersion: string;
@@ -237,6 +270,14 @@ export type ApiRoutes = {
 	'/api/can-update-default-props': ReqAndRes<
 		CanUpdateDefaultPropsRequest,
 		CanUpdateDefaultPropsResponse
+	>;
+	'/api/can-update-sequence-props': ReqAndRes<
+		CanUpdateSequencePropsRequest,
+		CanUpdateSequencePropsResponse
+	>;
+	'/api/save-sequence-props': ReqAndRes<
+		SaveSequencePropsRequest,
+		SaveSequencePropsResponse
 	>;
 	'/api/update-available': ReqAndRes<
 		UpdateAvailableRequest,

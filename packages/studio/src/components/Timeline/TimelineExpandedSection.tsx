@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import type {TSequence} from 'remotion';
+import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import {TIMELINE_TRACK_SEPARATOR} from '../../helpers/colors';
 import {
 	getExpandedTrackHeight,
@@ -7,7 +8,6 @@ import {
 } from '../../helpers/timeline-layout';
 import {callApi} from '../call-api';
 import {TimelineFieldValue} from './TimelineSchemaField';
-import {getOriginalLocationFromStack} from './TimelineStack/get-stack';
 
 const expandedSectionBase: React.CSSProperties = {
 	color: 'white',
@@ -31,53 +31,46 @@ const fieldName: React.CSSProperties = {
 	fontSize: 12,
 };
 
-type OriginalLocation = {
-	source: string;
-	line: number;
-	column: number;
-};
-
 export const TimelineExpandedSection: React.FC<{
 	readonly sequence: TSequence;
-}> = ({sequence}) => {
+	readonly originalLocation: OriginalPosition | null;
+}> = ({sequence, originalLocation}) => {
 	const [canUpdate, setCanUpdate] = useState<boolean | null>(null);
-	const [originalLocation, setOriginalLocation] =
-		useState<OriginalLocation | null>(null);
+
+	const validatedLocation = useMemo(() => {
+		if (
+			!originalLocation ||
+			!originalLocation.source ||
+			!originalLocation.line
+		) {
+			return null;
+		}
+
+		return {
+			source: originalLocation.source,
+			line: originalLocation.line,
+			column: originalLocation.column ?? 0,
+		};
+	}, [originalLocation]);
 
 	useEffect(() => {
-		if (!sequence.stack || !sequence.controls) {
+		if (!sequence.controls || !validatedLocation) {
 			setCanUpdate(false);
 			return;
 		}
 
-		getOriginalLocationFromStack(sequence.stack, 'sequence')
-			.then((location) => {
-				if (!location || !location.source || !location.line) {
-					setCanUpdate(false);
-					return undefined;
-				}
-
-				setOriginalLocation({
-					source: location.source,
-					line: location.line,
-					column: location.column ?? 0,
-				});
-
-				return callApi('/api/can-update-sequence-props', {
-					fileName: location.source,
-					line: location.line,
-					column: location.column ?? 0,
-				});
-			})
+		callApi('/api/can-update-sequence-props', {
+			fileName: validatedLocation.source,
+			line: validatedLocation.line,
+			column: validatedLocation.column,
+		})
 			.then((result) => {
-				if (result) {
-					setCanUpdate(result.canUpdate);
-				}
+				setCanUpdate(result.canUpdate);
 			})
 			.catch(() => {
 				setCanUpdate(false);
 			});
-	}, [sequence.stack, sequence.controls]);
+	}, [sequence.controls, validatedLocation]);
 
 	const schemaFields = useMemo(
 		() => getSchemaFields(sequence.controls),
@@ -91,14 +84,14 @@ export const TimelineExpandedSection: React.FC<{
 
 	const onSave = useCallback(
 		(key: string, value: unknown) => {
-			if (!canUpdate || !originalLocation) {
+			if (!canUpdate || !validatedLocation) {
 				return;
 			}
 
 			callApi('/api/save-sequence-props', {
-				fileName: originalLocation.source,
-				line: originalLocation.line,
-				column: originalLocation.column,
+				fileName: validatedLocation.source,
+				line: validatedLocation.line,
+				column: validatedLocation.column,
 				key,
 				value: JSON.stringify(value),
 				enumPaths: [],
@@ -107,7 +100,7 @@ export const TimelineExpandedSection: React.FC<{
 				console.error('Failed to save sequence prop:', err);
 			});
 		},
-		[canUpdate, originalLocation],
+		[canUpdate, validatedLocation],
 	);
 
 	return (

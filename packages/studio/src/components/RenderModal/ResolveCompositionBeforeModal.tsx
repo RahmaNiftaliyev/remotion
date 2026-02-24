@@ -2,9 +2,9 @@ import React, {useContext, useEffect, useMemo} from 'react';
 import type {_InternalTypes, VideoConfig} from 'remotion';
 import {Internals} from 'remotion';
 import {LIGHT_TEXT} from '../../helpers/colors';
+import {Spacing} from '../layout';
 import {inlineCodeSnippet} from '../Menu/styles';
 import {RunningCalculateMetadata} from '../RunningCalculateMetadata';
-import {Spacing} from '../layout';
 
 const loaderContainer: React.CSSProperties = {
 	paddingTop: 40,

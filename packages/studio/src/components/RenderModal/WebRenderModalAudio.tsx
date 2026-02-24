@@ -6,14 +6,14 @@ import type {
 import {getSupportedAudioCodecsForContainer} from '@remotion/web-renderer';
 import React, {useMemo} from 'react';
 import {Checkmark} from '../../icons/Checkmark';
+import {Spacing} from '../layout';
 import {VERTICAL_SCROLLBAR_CLASSNAME} from '../Menu/is-menu-item';
 import type {ComboboxValue} from '../NewComposition/ComboBox';
 import {Combobox} from '../NewComposition/ComboBox';
-import {Spacing} from '../layout';
-import {MutedSetting} from './MutedSetting';
-import {RenderModalHr} from './RenderModalHr';
 import {label, optionRow, rightRow} from './layout';
+import {MutedSetting} from './MutedSetting';
 import {getQualityOptions} from './quality-options';
+import {RenderModalHr} from './RenderModalHr';
 
 const container: React.CSSProperties = {
 	flex: 1,

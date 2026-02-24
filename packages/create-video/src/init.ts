@@ -1,6 +1,6 @@
+import path from 'node:path';
 import chalk from 'chalk';
 import execa from 'execa';
-import path from 'node:path';
 import {
 	addPostcssConfig,
 	addTailwindRootCss,

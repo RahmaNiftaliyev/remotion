@@ -1,3 +1,4 @@
+import type {StorageClass} from '@aws-sdk/client-s3';
 import type {
 	BrowserSafeApis,
 	ChromiumOptions,
@@ -6,8 +7,6 @@ import type {
 	ToOptions,
 } from '@remotion/serverless-client';
 import {ServerlessRoutines} from '@remotion/serverless-client';
-
-import type {StorageClass} from '@aws-sdk/client-s3';
 import type {
 	CostsInfo,
 	OutNameInput,

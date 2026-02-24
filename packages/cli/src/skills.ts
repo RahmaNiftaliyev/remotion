@@ -1,5 +1,5 @@
-import type {LogLevel} from '@remotion/renderer';
 import {spawn} from 'node:child_process';
+import type {LogLevel} from '@remotion/renderer';
 import {chalk} from './chalk';
 import {Log} from './log';
 

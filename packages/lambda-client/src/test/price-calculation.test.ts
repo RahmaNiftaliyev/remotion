@@ -1,5 +1,5 @@
-import {estimatePriceFromMetadata} from '@remotion/serverless-client';
 import {expect, test} from 'bun:test';
+import {estimatePriceFromMetadata} from '@remotion/serverless-client';
 import {awsImplementation} from '../aws-provider';
 
 test('Should not throw while calculating prices when time shifts occur', () => {

@@ -1,5 +1,3 @@
-import {canUseWebFsWriter, webFsWriter} from './writers/web-fs';
-
 import type {
 	MediaParserLogLevel,
 	WriterInterface,
@@ -7,6 +5,7 @@ import type {
 import {withResolvers} from './create/with-resolvers';
 import {Log} from './log';
 import {bufferWriter} from './writers/buffer';
+import {canUseWebFsWriter, webFsWriter} from './writers/web-fs';
 
 export const autoSelectWriter = async (
 	writer: WriterInterface | undefined,

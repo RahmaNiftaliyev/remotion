@@ -1,10 +1,10 @@
-import type {GitSource, RenderDefaults} from '@remotion/studio-shared';
-import {getProjectName, SOURCE_MAP_ENDPOINT} from '@remotion/studio-shared';
 import fs, {promises} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {promisify} from 'node:util';
 import {isMainThread} from 'node:worker_threads';
+import type {GitSource, RenderDefaults} from '@remotion/studio-shared';
+import {getProjectName, SOURCE_MAP_ENDPOINT} from '@remotion/studio-shared';
 import webpack from 'webpack';
 import {copyDir} from './copy-dir';
 import {indexHtml} from './index-html';

@@ -1,5 +1,5 @@
-import {exampleVideos} from '@remotion/example-videos';
 import {expect, test} from 'bun:test';
+import {exampleVideos} from '@remotion/example-videos';
 import {fetchWebmCues} from '../../containers/webm/seek/fetch-web-cues';
 import {mediaParserController} from '../../controller/media-parser-controller';
 import {hasBeenAborted} from '../../errors';

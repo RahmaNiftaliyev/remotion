@@ -1,9 +1,9 @@
 // TODO: there's no indication of error in case worker.js is fails to dynamically import
 
-import {$} from 'bun';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import {$} from 'bun';
 
 const randomDir = os.tmpdir();
 

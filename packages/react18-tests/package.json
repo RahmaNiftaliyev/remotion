@@ -7,7 +7,7 @@
 	"main": "dist/index.js",
 	"sideEffects": false,
 	"scripts": {
-		"formatting": "prettier src --check",
+		"formatting": "oxfmt src --check",
 		"lint": "eslint src",
 		"make": "tsgo -d",
 		"testwebrenderer": "vitest src/test --browser --run",

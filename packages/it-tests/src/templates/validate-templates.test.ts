@@ -1,7 +1,7 @@
 import {describe, expect, it} from 'bun:test';
-import {CreateVideoInternals, Template} from 'create-video';
 import {existsSync, readFileSync} from 'node:fs';
 import path from 'node:path';
+import {CreateVideoInternals, Template} from 'create-video';
 
 const {FEATURED_TEMPLATES} = CreateVideoInternals;
 

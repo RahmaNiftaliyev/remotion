@@ -1,6 +1,6 @@
+import fs from 'fs';
 import type {WebpackOverrideFn} from '@remotion/bundler';
 import {webpack} from '@remotion/bundler';
-import fs from 'fs';
 
 /**
  * @description A function that modifies the default Webpack configuration to make the necessary changes to support Skia.

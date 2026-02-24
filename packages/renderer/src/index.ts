@@ -21,7 +21,6 @@ import {validateFrameRange} from './frame-range';
 import {internalGetCompositions} from './get-compositions';
 import {resolveConcurrency} from './get-concurrency';
 import {getFramesToRender} from './get-duration-from-frame-range';
-
 import {
 	defaultCodecsForFileExtension,
 	getFileExtensionFromCodec,
@@ -47,7 +46,6 @@ import {
 	validOpenGlRenderers,
 	validateOpenGlRenderer,
 } from './options/gl';
-
 import {parseStack} from './parse-browser-error-stack';
 import * as perf from './perf';
 import {DEFAULT_PIXEL_FORMAT, validPixelFormats} from './pixel-format';

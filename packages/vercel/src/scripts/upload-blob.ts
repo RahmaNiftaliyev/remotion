@@ -1,5 +1,5 @@
-import {put} from '@vercel/blob';
 import {readFileSync, statSync} from 'fs';
+import {put} from '@vercel/blob';
 import type {VercelBlobAccess} from '../types';
 
 type UploadBlobConfig = {

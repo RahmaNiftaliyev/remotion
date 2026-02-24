@@ -1,9 +1,9 @@
+import {readFileSync, writeFileSync} from 'node:fs';
+import path from 'node:path';
 import type {
 	SaveSequencePropsRequest,
 	SaveSequencePropsResponse,
 } from '@remotion/studio-shared';
-import {readFileSync, writeFileSync} from 'node:fs';
-import path from 'node:path';
 import {updateSequenceProps} from '../../codemods/update-sequence-props';
 import type {ApiHandler} from '../api-types';
 

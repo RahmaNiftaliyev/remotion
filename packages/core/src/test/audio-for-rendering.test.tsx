@@ -1,9 +1,9 @@
-import {cleanup, render} from '@testing-library/react';
 import {afterEach, beforeEach, describe, expect, mock, test} from 'bun:test';
+import {cleanup, render} from '@testing-library/react';
 import React from 'react';
+import {AudioForRendering} from '../audio/AudioForRendering.js';
 import {CanUseRemotionHooksProvider} from '../CanUseRemotionHooks.js';
 import {RenderAssetManager} from '../RenderAssetManager.js';
-import {AudioForRendering} from '../audio/AudioForRendering.js';
 import {expectToThrow} from './expect-to-throw.js';
 import {WrapSequenceContext} from './wrap-sequence-context.js';
 

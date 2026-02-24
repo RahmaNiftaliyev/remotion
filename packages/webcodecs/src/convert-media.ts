@@ -21,7 +21,6 @@ import {
 	MediaParserInternals,
 	type MediaParserOnVideoTrack,
 } from '@remotion/media-parser';
-
 import {webReader} from '@remotion/media-parser/web';
 import {autoSelectWriter} from './auto-select-writer';
 import {calculateProgress} from './calculate-progress';

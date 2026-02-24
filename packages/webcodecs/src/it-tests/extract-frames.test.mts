@@ -1,5 +1,5 @@
-import {expect, test} from '@playwright/test';
 import path from 'path';
+import {expect, test} from '@playwright/test';
 import type {ViteDevServer} from 'vite';
 import {createServer} from 'vite';
 

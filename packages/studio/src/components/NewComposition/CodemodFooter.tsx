@@ -3,10 +3,10 @@ import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {ShortcutHint} from '../../error-overlay/remotion-overlay/ShortcutHint';
 import {useKeybinding} from '../../helpers/use-keybinding';
 import {ModalsContext} from '../../state/modals';
+import {Flex, Row, Spacing} from '../layout';
 import {ModalButton} from '../ModalButton';
 import {showNotification} from '../Notifications/NotificationCenter';
 import {applyCodemod, getProjectInfo} from '../RenderQueue/actions';
-import {Flex, Row, Spacing} from '../layout';
 import type {CodemodStatus} from './DiffPreview';
 import {CodemodDiffPreview} from './DiffPreview';
 

@@ -1,10 +1,9 @@
 import {CliInternals} from '@remotion/cli';
 import {ConfigInternals} from '@remotion/cli/config';
-import type {LogLevel} from '@remotion/renderer';
-import {BrowserSafeApis} from '@remotion/renderer/client';
-
 import {AwsProvider} from '@remotion/lambda-client';
 import {BINARY_NAME} from '@remotion/lambda-client/constants';
+import type {LogLevel} from '@remotion/renderer';
+import {BrowserSafeApis} from '@remotion/renderer/client';
 import type {ProviderSpecifics} from '@remotion/serverless';
 import {internalGetOrCreateBucket, type Privacy} from '@remotion/serverless';
 import {NoReactInternals} from 'remotion/no-react';

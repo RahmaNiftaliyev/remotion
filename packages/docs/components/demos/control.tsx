@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react';
-import styles from './styles.module.css';
 import type {Option} from './types';
+import styles from './styles.module.css';
 
 const left: React.CSSProperties = {
 	fontFamily: 'GTPlanar',

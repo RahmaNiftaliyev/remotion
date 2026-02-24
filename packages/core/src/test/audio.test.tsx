@@ -1,5 +1,5 @@
-import {cleanup, render} from '@testing-library/react';
 import {afterEach, expect, test} from 'bun:test';
+import {cleanup, render} from '@testing-library/react';
 import {Html5Audio} from '../audio/index.js';
 import {WrapSequenceContext} from './wrap-sequence-context.js';
 

@@ -5,8 +5,8 @@ import {
 	INPUT_BORDER_COLOR_UNHOVERED,
 	TEXT_COLOR,
 } from '../../helpers/colors';
-import {CompositionIdListItem} from './CompositionIdListItem';
 import {CaretDown} from './carets';
+import {CompositionIdListItem} from './CompositionIdListItem';
 
 const containerStyle: React.CSSProperties = {
 	display: 'inline-block',

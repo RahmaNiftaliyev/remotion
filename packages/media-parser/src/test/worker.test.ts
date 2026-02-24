@@ -1,5 +1,5 @@
-import {exampleVideos} from '@remotion/example-videos';
 import {expect, test} from 'bun:test';
+import {exampleVideos} from '@remotion/example-videos';
 import {mediaParserController} from '../controller/media-parser-controller';
 import {hasBeenAborted, IsAnImageError} from '../errors';
 import {parseMediaOnServerWorker} from '../server-worker.module';

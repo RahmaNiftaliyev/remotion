@@ -1,7 +1,7 @@
-import type {LogLevel, LogOptions} from '@remotion/renderer';
-import {RenderInternals} from '@remotion/renderer';
 import fs from 'node:fs';
 import path from 'node:path';
+import type {LogLevel, LogOptions} from '@remotion/renderer';
+import {RenderInternals} from '@remotion/renderer';
 import {chalk} from './chalk';
 import {EXTRA_PACKAGES, EXTRA_PACKAGES_DOCS} from './extra-packages';
 import {listOfRemotionPackages} from './list-of-remotion-packages';

@@ -99,18 +99,18 @@ This configuration grants authority to `ec2-remotion-role` to assume the role of
 
 - From AWS Management console:<br/>
   <Step>1</Step>Go to the EC2 dashboard by selecting EC2 from the list of services.<br/>
-  <Step>2</Step>Click on the "Launch Instance" button.<br/>
-  <Step>3</Step>Choose an Amazon Machine Image (AMI) that you want to use for your instance. You can select from a variety of pre-configured AMIs, or you can create your own. For this instance chose "Ubuntu AMI".<br/>
-  <Step>4</Step>Select an instance type that you want to use for your instance. The instance type determines the amount of CPU, memory, storage, and networking capacity that your instance will have. The recommended operating system is Ubuntu and at least 1Gib of RAM.<br/>
-  <Step>5</Step>Configure your instance details, such as the number of instances you want to launch, the VPC and subnet you want to use, and any advanced settings you want to enable.<br/>
-  <Step>6</Step>From "Network setting" tick the "Allow SSH traffic from", and from selection of allowing access select "My IP address". This will allow you to connect to the server instance via SSH and SFTP to upload the application code.<br/>
-  <Step>7</Step>From "Network setting" also, click "Allow HTTP traffic from the internet", this will allow the application to be trigger for REST API operation.<br/>
-  <Step>8</Step>Add storage to your instance by selecting the storage type and size you want to use.<br/>
-  <Step>9</Step>From "Advance details", on "IAM instance profile" find the role you specifically created for EC2, this is "ec2-remotion-role".<br/>
-  <Step>10</Step>Review your instance launch details and click the "Launch" button.<br/>
-  <Step>11</Step>Choose an existing key pair or create a new key pair to securely connect to your instance. This key pair is necessary to access your instance via SSH.<br/>
-  <Step>12</Step>Launch your instance by clicking the "Launch Instances" button.<br/>
-  <Step>13</Step>Wait for your instance to launch. Once it's ready, you can connect to it using SSH, RDP, or other remote access methods.<br/>
+<Step>2</Step>Click on the "Launch Instance" button.<br/>
+<Step>3</Step>Choose an Amazon Machine Image (AMI) that you want to use for your instance. You can select from a variety of pre-configured AMIs, or you can create your own. For this instance chose "Ubuntu AMI".<br/>
+<Step>4</Step>Select an instance type that you want to use for your instance. The instance type determines the amount of CPU, memory, storage, and networking capacity that your instance will have. The recommended operating system is Ubuntu and at least 1Gib of RAM.<br/>
+<Step>5</Step>Configure your instance details, such as the number of instances you want to launch, the VPC and subnet you want to use, and any advanced settings you want to enable.<br/>
+<Step>6</Step>From "Network setting" tick the "Allow SSH traffic from", and from selection of allowing access select "My IP address". This will allow you to connect to the server instance via SSH and SFTP to upload the application code.<br/>
+<Step>7</Step>From "Network setting" also, click "Allow HTTP traffic from the internet", this will allow the application to be trigger for REST API operation.<br/>
+<Step>8</Step>Add storage to your instance by selecting the storage type and size you want to use.<br/>
+<Step>9</Step>From "Advance details", on "IAM instance profile" find the role you specifically created for EC2, this is "ec2-remotion-role".<br/>
+<Step>10</Step>Review your instance launch details and click the "Launch" button.<br/>
+<Step>11</Step>Choose an existing key pair or create a new key pair to securely connect to your instance. This key pair is necessary to access your instance via SSH.<br/>
+<Step>12</Step>Launch your instance by clicking the "Launch Instances" button.<br/>
+<Step>13</Step>Wait for your instance to launch. Once it's ready, you can connect to it using SSH, RDP, or other remote access methods.<br/>
 
 ### 7. Upload the code to the server and install dependencies
 

@@ -1,6 +1,7 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import type {EmittedArtifact, StillImageFormat} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
-
 import type {
 	CloudProvider,
 	OnStream,
@@ -25,8 +26,6 @@ import {
 	validatePrivacy,
 	VERSION,
 } from '@remotion/serverless-client';
-import fs from 'node:fs';
-import path from 'node:path';
 import {cleanupSerializedInputProps} from '../cleanup-serialized-input-props';
 import {getTmpDirStateIfENoSp} from '../get-tmp-dir';
 import {onDownloadsHelper} from '../on-downloads-helpers';

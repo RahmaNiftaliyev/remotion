@@ -9,8 +9,8 @@ import {wipe} from '@remotion/transitions/wipe';
 import React from 'react';
 import {PresentationPreview} from '../../transitions/previews';
 import {Grid} from '../Grid';
-import {TOCItem} from '../TOCItem';
 import {ProLabel} from '../pro-label';
+import {TOCItem} from '../TOCItem';
 
 const row: React.CSSProperties = {
 	display: 'flex',

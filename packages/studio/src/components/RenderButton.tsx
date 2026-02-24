@@ -25,6 +25,7 @@ import {ThinRenderIcon} from '../icons/render';
 import {useTimelineInOutFramePosition} from '../state/in-out';
 import {ModalsContext} from '../state/modals';
 import {HigherZIndex, useZIndex} from '../state/z-index';
+import {Row, Spacing} from './layout';
 import {MENU_INITIATOR_CLASSNAME, isMenuItem} from './Menu/is-menu-item';
 import {getPortal} from './Menu/portals';
 import {
@@ -35,7 +36,6 @@ import {
 } from './Menu/styles';
 import type {ComboboxValue} from './NewComposition/ComboBox';
 import {MenuContent} from './NewComposition/MenuContent';
-import {Row, Spacing} from './layout';
 
 const splitButtonContainer: React.CSSProperties = {
 	display: 'inline-flex',

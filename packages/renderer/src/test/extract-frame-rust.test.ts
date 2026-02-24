@@ -1,5 +1,5 @@
-import {exampleVideos} from '@remotion/example-videos';
 import {expect, test} from 'bun:test';
+import {exampleVideos} from '@remotion/example-videos';
 import {interpolate} from 'remotion';
 import {startLongRunningCompositor} from '../compositor/compositor';
 

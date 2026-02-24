@@ -2,9 +2,9 @@ import React, {useCallback, useMemo, useState} from 'react';
 import {FAIL_COLOR, LIGHT_TEXT} from '../../../helpers/colors';
 import {Flex} from '../../layout';
 import {InlineRemoveButton} from '../InlineRemoveButton';
+import {getSchemaLabel} from './get-schema-label';
 import {SchemaResetButton} from './SchemaResetButton';
 import {SchemaSaveButton} from './SchemaSaveButton';
-import {getSchemaLabel} from './get-schema-label';
 import {DEFAULT_PROPS_PATH_CLASSNAME} from './scroll-to-default-props-path';
 import type {JSONPath} from './zod-types';
 

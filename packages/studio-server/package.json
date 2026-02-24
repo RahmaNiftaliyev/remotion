@@ -10,7 +10,7 @@
 	"scripts": {
 		"lint": "eslint src",
 		"test": "bun test src",
-		"formatting": "prettier src --check",
+		"formatting": "oxfmt src --check",
 		"make": "tsgo -d"
 	},
 	"author": "Jonny Burger <jonny@remotion.dev>",
@@ -25,6 +25,7 @@
 	"dependencies": {
 		"@babel/parser": "7.24.1",
 		"semver": "7.5.3",
+		"prettier": "catalog:",
 		"remotion": "workspace:*",
 		"recast": "0.23.11",
 		"@remotion/bundler": "workspace:*",

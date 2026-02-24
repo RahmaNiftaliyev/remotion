@@ -14,7 +14,7 @@
 	"type": "module",
 	"scripts": {
 		"if-node-18+": "node -e \"const [maj]=process.versions.node.split('.').map(Number); process.exit(maj>=18?0:1)\"",
-		"formatting": "prettier src --check",
+		"formatting": "oxfmt src --check",
 		"lint": "eslint src",
 		"watch": "tsgo -w",
 		"test": "node src/test/execute.mjs",

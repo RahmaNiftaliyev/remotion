@@ -6,9 +6,6 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import {Img} from '../Img.js';
-import {RenderAssetManager} from '../RenderAssetManager.js';
-import {SequenceContext} from '../SequenceContext.js';
 import {getAbsoluteSrc} from '../absolute-src.js';
 import {
 	useFrameForVolumeProp,
@@ -17,7 +14,10 @@ import {
 import {cancelRender} from '../cancel-render.js';
 import {OBJECTFIT_CONTAIN_CLASS_NAME} from '../default-css.js';
 import type {delayRender as delayRenderGlobal} from '../delay-render.js';
+import {Img} from '../Img.js';
 import {random} from '../random.js';
+import {RenderAssetManager} from '../RenderAssetManager.js';
+import {SequenceContext} from '../SequenceContext.js';
 import {useTimelinePosition} from '../timeline-position-state.js';
 import {truthy} from '../truthy.js';
 import {useCurrentFrame} from '../use-current-frame.js';

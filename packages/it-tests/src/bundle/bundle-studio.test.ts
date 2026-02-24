@@ -1,7 +1,7 @@
-import {RenderInternals, openBrowser} from '@remotion/renderer';
 import {expect, test} from 'bun:test';
 import {existsSync, readFileSync} from 'fs';
 import path from 'path';
+import {RenderInternals, openBrowser} from '@remotion/renderer';
 
 test(
 	'Bundle studio',

@@ -6,20 +6,20 @@ import type {_InternalTypes, VideoConfig} from 'remotion';
 import {labelProResProfile} from '../../helpers/prores-labels';
 import {useFileExistence} from '../../helpers/use-file-existence';
 import {Checkmark} from '../../icons/Checkmark';
+import {Spacing} from '../layout';
 import type {ComboboxValue} from '../NewComposition/ComboBox';
 import {Combobox} from '../NewComposition/ComboBox';
 import {InputDragger} from '../NewComposition/InputDragger';
 import {RightAlignInput} from '../NewComposition/RemInput';
 import type {SegmentedControlItem} from '../SegmentedControl';
 import {SegmentedControl} from '../SegmentedControl';
-import {Spacing} from '../layout';
 import {FrameRangeSetting} from './FrameRangeSetting';
-import {OptionExplainerBubble} from './OptionExplainerBubble';
-import type {RenderType} from './RenderModalAdvanced';
-import {RenderModalOutputName} from './RenderModalOutputName';
 import {humanReadableCodec} from './human-readable-codec';
 import {humanReadableLogLevel} from './human-readable-loglevel';
 import {input, label, optionRow, rightRow} from './layout';
+import {OptionExplainerBubble} from './OptionExplainerBubble';
+import type {RenderType} from './RenderModalAdvanced';
+import {RenderModalOutputName} from './RenderModalOutputName';
 
 const container: React.CSSProperties = {
 	flex: 1,

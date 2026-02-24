@@ -1,5 +1,5 @@
-import {getRemoteExampleVideo} from '@remotion/example-videos';
 import {beforeAll, expect, test} from 'bun:test';
+import {getRemoteExampleVideo} from '@remotion/example-videos';
 import {parseMedia} from '../parse-media';
 import {nodeReader} from '../readers/from-node';
 

@@ -1,8 +1,7 @@
 import React, {useCallback, useMemo} from 'react';
 import {useCurrentScale} from 'remotion';
-
-import {ResizeHandle} from './ResizeHandle';
 import type {Item} from './item';
+import {ResizeHandle} from './ResizeHandle';
 
 export const SelectionOutline: React.FC<{
 	item: Item;

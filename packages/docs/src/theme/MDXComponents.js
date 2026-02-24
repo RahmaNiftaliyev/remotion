@@ -1,11 +1,11 @@
 // Import the original mapper
 import MDXComponents from '@theme-original/MDXComponents';
+import {Demo} from '../../components/demos';
 import {ExperimentalBadge} from '../../components/Experimental';
 import {InlineStep, Step, TitleStep} from '../../components/InlineStep';
 import {Installation} from '../../components/Installation';
 import {JumpToVideoLink} from '../../components/JumpToVideoLink';
 import {YouTube} from '../../components/YouTube';
-import {Demo} from '../../components/demos';
 import {
 	AvailableFrom,
 	MinBunVersion,

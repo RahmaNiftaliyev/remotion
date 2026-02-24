@@ -5,7 +5,6 @@ import {FolderContextProvider} from '../state/folders';
 import {HighestZIndexProvider} from '../state/highest-z-index';
 import {KeybindingContextProvider} from '../state/keybindings';
 import {PreviewSizeProvider} from '../state/preview-size';
-
 import {SidebarContextProvider} from '../state/sidebar';
 import {VisualControlsProvider} from '../visual-controls/VisualControls';
 import {CheckerboardProvider} from './CheckerboardProvider';

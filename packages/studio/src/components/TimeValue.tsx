@@ -10,8 +10,8 @@ import {LIGHT_TEXT} from '../helpers/colors';
 import {useIsStill} from '../helpers/is-current-selected-still';
 import {useKeybinding} from '../helpers/use-keybinding';
 import {renderFrame} from '../state/render-frame';
-import {InputDragger} from './NewComposition/InputDragger';
 import {Flex, Spacing} from './layout';
+import {InputDragger} from './NewComposition/InputDragger';
 
 const text: React.CSSProperties = {
 	color: 'white',

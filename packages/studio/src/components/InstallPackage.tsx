@@ -15,12 +15,12 @@ import {LIGHT_TEXT} from '../helpers/colors';
 import {useKeybinding} from '../helpers/use-keybinding';
 import {Checkbox} from './Checkbox';
 import {InstallablePackageComp} from './InstallablePackage';
+import {Flex, Row, Spacing} from './layout';
 import {VERTICAL_SCROLLBAR_CLASSNAME} from './Menu/is-menu-item';
 import {ModalButton} from './ModalButton';
 import {ModalFooterContainer} from './ModalFooter';
 import {ModalHeader} from './ModalHeader';
 import {DismissableModal} from './NewComposition/DismissableModal';
-import {Flex, Row, Spacing} from './layout';
 
 const container: React.CSSProperties = {
 	padding: 20,

@@ -2,12 +2,16 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import type {TSequence} from 'remotion';
 import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import {TIMELINE_TRACK_SEPARATOR} from '../../helpers/colors';
+import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
 import {
 	getExpandedTrackHeight,
 	getSchemaFields,
 } from '../../helpers/timeline-layout';
 import {callApi} from '../call-api';
-import {TimelineFieldValue} from './TimelineSchemaField';
+import {
+	TimelineFieldSavingSpinner,
+	TimelineFieldValue,
+} from './TimelineSchemaField';
 
 const expandedSectionBase: React.CSSProperties = {
 	color: 'white',
@@ -27,8 +31,42 @@ const fieldRow: React.CSSProperties = {
 };
 
 const fieldName: React.CSSProperties = {
-	flex: 1,
 	fontSize: 12,
+};
+
+const fieldLabelRow: React.CSSProperties = {
+	flex: 1,
+	display: 'flex',
+	flexDirection: 'row',
+	alignItems: 'center',
+	gap: 6,
+};
+
+const TimelineFieldRow: React.FC<{
+	readonly field: SchemaFieldInfo;
+	readonly canUpdate: boolean | null;
+	readonly onSave: (key: string, value: unknown) => void;
+}> = ({field, canUpdate, onSave}) => {
+	const [saving, setSaving] = useState(false);
+
+	const onSavingChange = useCallback((s: boolean) => {
+		setSaving(s);
+	}, []);
+
+	return (
+		<div style={{...fieldRow, height: field.rowHeight}}>
+			<div style={fieldLabelRow}>
+				<span style={fieldName}>{field.key}</span>
+				<TimelineFieldSavingSpinner saving={saving} />
+			</div>
+			<TimelineFieldValue
+				field={field}
+				canUpdate={canUpdate}
+				onSave={onSave}
+				onSavingChange={onSavingChange}
+			/>
+		</div>
+	);
 };
 
 export const TimelineExpandedSection: React.FC<{
@@ -107,14 +145,12 @@ export const TimelineExpandedSection: React.FC<{
 		<div style={{...expandedSectionBase, height: expandedHeight}}>
 			{schemaFields
 				? schemaFields.map((field) => (
-						<div key={field.key} style={{...fieldRow, height: field.rowHeight}}>
-							<span style={fieldName}>{field.key}</span>
-							<TimelineFieldValue
-								field={field}
-								canUpdate={canUpdate}
-								onSave={onSave}
-							/>
-						</div>
+						<TimelineFieldRow
+							key={field.key}
+							field={field}
+							canUpdate={canUpdate}
+							onSave={onSave}
+						/>
 					))
 				: 'No schema'}
 		</div>

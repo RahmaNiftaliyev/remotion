@@ -5,7 +5,7 @@ import {Audio, Sequence} from 'remotion';
 export const SfxExample: React.FC = () => {
 	return (
 		<>
-			<Sequence from={0} durationInFrames={30}>
+			<Sequence durationInFrames={30}>
 				<Audio src={whip} />
 			</Sequence>
 			<Sequence from={30} durationInFrames={30}>

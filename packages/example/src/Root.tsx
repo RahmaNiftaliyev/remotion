@@ -1,6 +1,3 @@
-// @ts-expect-error no types
-import styles from './styles.module.scss';
-
 import {alias} from 'lib/alias';
 import React, {useCallback, useMemo} from 'react';
 import {
@@ -82,8 +79,8 @@ import {
 } from './StudioApis/SaveDefaultProps';
 import {TriggerCalculateMetadata} from './StudioApis/TriggerCalculateMetadata';
 import {WriteStaticFile} from './StudioApis/WriteStaticFile';
-import './style.css';
 import {SubtitleArtifact} from './SubtitleArtifact/SubtitleArtifact';
+import './style.css';
 import {SvgFilter} from './SvgFilter';
 import {Tailwind} from './Tailwind';
 import {TenFrameTester} from './TenFrameTester';
@@ -105,6 +102,8 @@ import {WarpDemoOuter} from './WarpText';
 import {WarpDemo2} from './WarpText/demo2';
 import {WatchStaticDemo} from './watch-static';
 import {ZodV4SchemaTest, zodV4Schema} from './ZodV4SchemaTest';
+// @ts-expect-error no types
+import styles from './styles.module.scss';
 
 if (alias !== 'alias') {
 	throw new Error('should support TS aliases');

@@ -465,7 +465,7 @@ const sidebars: SidebarsConfig = {
 			label: '@remotion/sfx',
 			link: {
 				type: 'doc',
-				id: 'sfx-api',
+				id: 'sfx/index',
 			},
 			items: ['sfx/whip', 'sfx/whoosh'],
 		},

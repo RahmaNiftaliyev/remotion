@@ -26,8 +26,7 @@ export const Input: React.FC<{
 
   return (
     <input
-      id="username"
-      type="text"
+      type="search"
       autoComplete="off"
       disabled={disabled}
       name="title"

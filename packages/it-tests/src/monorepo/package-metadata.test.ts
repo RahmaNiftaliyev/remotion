@@ -115,7 +115,7 @@ test('All packages should have a README.md file', () => {
 					? 'See the [documentation](' + docs + ') for more information.'
 					: 'This is an internal package and has no documentation.',
 			]
-				.filter(t => t !== null)
+				.filter((t) => t !== null)
 				.join('\n') + '\n';
 
 		if (pkg === 'convert') {

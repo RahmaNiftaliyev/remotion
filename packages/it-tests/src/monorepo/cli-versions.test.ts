@@ -1,6 +1,6 @@
-import {$} from 'bun';
 import {expect, test} from 'bun:test';
 import path from 'node:path';
+import {$} from 'bun';
 import {VERSION} from 'remotion';
 
 test('should return list of versions', async () => {

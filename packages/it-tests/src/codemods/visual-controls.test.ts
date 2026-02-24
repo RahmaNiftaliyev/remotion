@@ -1,5 +1,5 @@
-import {StudioServerInternals} from '@remotion/studio-server';
 import {expect, test} from 'bun:test';
+import {StudioServerInternals} from '@remotion/studio-server';
 
 const contents = `
 import {makeTransform, matrix3d} from '@remotion/animation-utils';

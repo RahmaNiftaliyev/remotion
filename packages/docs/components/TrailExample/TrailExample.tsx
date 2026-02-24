@@ -1,3 +1,4 @@
+import {Trail} from '@remotion/motion-blur';
 import {Player} from '@remotion/player';
 import React, {useState} from 'react';
 import {
@@ -8,8 +9,6 @@ import {
 	useCurrentFrame,
 	useVideoConfig,
 } from 'remotion';
-
-import {Trail} from '@remotion/motion-blur';
 
 const square: React.CSSProperties = {
 	height: 150,

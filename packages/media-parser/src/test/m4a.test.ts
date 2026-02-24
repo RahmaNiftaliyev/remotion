@@ -1,5 +1,5 @@
-import {exampleVideos} from '@remotion/example-videos';
 import {expect, test} from 'bun:test';
+import {exampleVideos} from '@remotion/example-videos';
 import {nodeReader} from '../node';
 import {parseMedia} from '../parse-media';
 import {WEBCODECS_TIMESCALE} from '../webcodecs-timescale';

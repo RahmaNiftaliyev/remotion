@@ -235,7 +235,7 @@ const getMatroskaAudioCodecString = (track: TrackEntry): string => {
 				◦	5 for SBR (Spectral Band Replication)
 				◦	29 for HE-AAC (which uses SBR with AAC LC)
 		 */
-		/** 
+		/**
 		 * Fully qualified codec: 
 		 * This codec has multiple possible codec strings:
 			"mp4a.40.2" — MPEG-4 AAC LC

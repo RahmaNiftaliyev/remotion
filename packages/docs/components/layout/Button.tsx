@@ -1,8 +1,8 @@
 import {opacify} from 'polished';
 import type {ButtonHTMLAttributes, DetailedHTMLProps} from 'react';
 import React from 'react';
-import styles from './button.module.css';
 import {RED, UNDERLAY_RED} from './colors';
+import styles from './button.module.css';
 
 type ExtraProps = {
 	readonly size: Size;

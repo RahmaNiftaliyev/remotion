@@ -4,6 +4,12 @@
 	Source code adapted from https://github.com/facebook/create-react-app/tree/main/packages/react-error-overlay and refactored in Typescript. This file is MIT-licensed.
 */
 
+import type {ChildProcess} from 'node:child_process';
+import child_process, {exec} from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import util from 'node:util';
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
  *
@@ -12,12 +18,6 @@
  */
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
-import type {ChildProcess} from 'node:child_process';
-import child_process, {exec} from 'node:child_process';
-import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
-import util from 'node:util';
 import {openInEditorViaUrlScheme} from './open-in-editor-url-scheme';
 
 const {Log} = RenderInternals;

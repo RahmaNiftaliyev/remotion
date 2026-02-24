@@ -19,7 +19,6 @@ import {cancelRender, Internals, useDelayRender} from 'remotion';
 import {combineFloat32Arrays} from './combine-float32-arrays';
 import {getPartialAudioData} from './get-partial-audio-data';
 import {isRemoteAsset} from './is-remote-asset';
-
 import type {MediaUtilsAudioData} from './types';
 
 type WaveformMap = Record<number, Float32Array>;

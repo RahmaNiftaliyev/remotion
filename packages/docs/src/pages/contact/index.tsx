@@ -1,11 +1,10 @@
+import Head from '@docusaurus/Head';
 import Layout from '@theme/Layout';
 import React from 'react';
 import {PlainButton} from '../../../components/layout/Button';
 import {Spacer} from '../../../components/layout/Spacer';
 import {ContactUsHeader} from '../../components/ContactUsHeader';
 import GoogleMaps from '../../components/GoogleMaps';
-
-import Head from '@docusaurus/Head';
 
 const container: React.CSSProperties = {
 	maxWidth: 1000,

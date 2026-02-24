@@ -1,10 +1,10 @@
 // Schema error messages for studio editor
 import {BACKGROUND, BLUE, LIGHT_TEXT} from '../../../helpers/colors';
 import {Button} from '../../Button';
-import {inlineCodeSnippet} from '../../Menu/styles';
 import {Spacing} from '../../layout';
-import {ZodErrorMessages} from './ZodErrorMessages';
+import {inlineCodeSnippet} from '../../Menu/styles';
 import type {ZodSafeParseResult} from './zod-schema-type';
+import {ZodErrorMessages} from './ZodErrorMessages';
 
 const explainer: React.CSSProperties = {
 	display: 'flex',

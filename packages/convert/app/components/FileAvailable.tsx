@@ -14,9 +14,9 @@ import {VideoPlayer} from './MediaPlayer';
 import {Page} from './Page';
 import {Probe} from './Probe';
 import {ReplaceVideo} from './ReplaceVideo';
-import type {VideoThumbnailRef} from './VideoThumbnail';
 import Transcribe from './transcribe/App';
 import {useProbe} from './use-probe';
+import type {VideoThumbnailRef} from './VideoThumbnail';
 
 export const FileAvailable: React.FC<{
 	readonly src: Source;

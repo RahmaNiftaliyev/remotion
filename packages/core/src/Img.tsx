@@ -6,11 +6,11 @@ import React, {
 	useLayoutEffect,
 	useRef,
 } from 'react';
-import {SequenceContext} from './SequenceContext.js';
 import type {IsExact} from './audio/props.js';
 import {cancelRender} from './cancel-render.js';
 import {getCrossOriginValue} from './get-cross-origin-value.js';
 import {usePreload} from './prefetch.js';
+import {SequenceContext} from './SequenceContext.js';
 import {useBufferState} from './use-buffer-state.js';
 import {useDelayRender} from './use-delay-render.js';
 import {useRemotionEnvironment} from './use-remotion-environment.js';

@@ -1,8 +1,8 @@
-import {RenderInternals} from '@remotion/renderer';
 import {expect, test} from 'bun:test';
 import {createWriteStream, unlinkSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
+import {RenderInternals} from '@remotion/renderer';
 import {simulateLambdaRender} from '../simulate-lambda-render';
 
 test('Should make a distributed GIF', async () => {

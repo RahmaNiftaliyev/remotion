@@ -1,7 +1,7 @@
 import {BACKGROUND, LIGHT_TEXT} from '../helpers/colors';
+import {Spacing} from './layout';
 import {inlineCodeSnippet} from './Menu/styles';
 import {Spinner} from './Spinner';
-import {Spacing} from './layout';
 
 export const loaderLabel: React.CSSProperties = {
 	fontSize: 14,

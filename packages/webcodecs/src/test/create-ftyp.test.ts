@@ -1,5 +1,5 @@
-import {MediaParserInternals} from '@remotion/media-parser';
 import {expect, test} from 'bun:test';
+import {MediaParserInternals} from '@remotion/media-parser';
 import {createIsoBaseMediaFtyp} from '../create/iso-base-media/create-ftyp';
 
 const input = new Uint8Array([

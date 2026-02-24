@@ -1,8 +1,7 @@
-import {ForceSpecificCursor} from './components/crop-ui/force-specific-cursor';
-import {DEFAULT_FAVICON} from './lib/default-favicon';
-import './tailwind.css';
-
 import {Links, Outlet, Scripts, ScrollRestoration} from '@remix-run/react';
+import {ForceSpecificCursor} from './components/crop-ui/force-specific-cursor';
+import './tailwind.css';
+import {DEFAULT_FAVICON} from './lib/default-favicon';
 
 export const Layout = ({children}: {readonly children: React.ReactNode}) => {
 	return (

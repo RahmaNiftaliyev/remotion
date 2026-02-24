@@ -1,6 +1,6 @@
-import type {Sandbox} from '@vercel/sandbox';
 import {readdir, readFile} from 'fs/promises';
 import path from 'path';
+import type {Sandbox} from '@vercel/sandbox';
 import {REMOTION_SANDBOX_BUNDLE_DIR} from './internals/add-bundle';
 
 async function getRemotionBundleFiles(

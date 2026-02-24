@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react';
-import {Sequence} from '../Sequence.js';
 import {addSequenceStackTraces} from '../enable-sequence-stack-traces.js';
+import {Sequence} from '../Sequence.js';
 import {useRemotionEnvironment} from '../use-remotion-environment.js';
 import {validateMediaProps} from '../validate-media-props.js';
 import {
@@ -8,11 +8,11 @@ import {
 	validateMediaTrimProps,
 } from '../validate-start-from-props.js';
 import {OffthreadVideoForRendering} from './OffthreadVideoForRendering.js';
-import {VideoForPreview} from './VideoForPreview.js';
 import type {
 	AllOffthreadVideoProps,
 	RemotionOffthreadVideoProps,
 } from './props.js';
+import {VideoForPreview} from './VideoForPreview.js';
 
 export const InnerOffthreadVideo: React.FC<AllOffthreadVideoProps> = (
 	props,

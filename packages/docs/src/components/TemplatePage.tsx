@@ -1,10 +1,9 @@
 import Head from '@docusaurus/Head';
 import {useLocation} from '@docusaurus/router';
-import Layout from '@theme/Layout';
-import React from 'react';
-
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import Layout from '@theme/Layout';
 import {CreateVideoInternals} from 'create-video';
+import React from 'react';
 import {Seo} from './Seo';
 import {TemplateModalContent} from './TemplateModalContent';
 

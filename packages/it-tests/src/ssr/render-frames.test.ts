@@ -1,3 +1,7 @@
+import {expect, test} from 'bun:test';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import {
 	RenderInternals,
 	getCompositions,
@@ -5,10 +9,6 @@ import {
 	renderFrames,
 	stitchFramesToVideo,
 } from '@remotion/renderer';
-import {expect, test} from 'bun:test';
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
 
 test('Legacy SSR way of rendering videos should still work', async () => {
 	const puppeteerInstance = await openBrowser('chrome');

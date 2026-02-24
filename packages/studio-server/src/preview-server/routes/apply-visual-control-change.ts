@@ -1,9 +1,9 @@
+import {readFileSync, writeFileSync} from 'node:fs';
+import path from 'node:path';
 import type {
 	ApplyVisualControlRequest,
 	ApplyVisualControlResponse,
 } from '@remotion/studio-shared';
-import {readFileSync, writeFileSync} from 'node:fs';
-import path from 'node:path';
 import {parseAst, serializeAst} from '../../codemods/parse-ast';
 import {applyCodemod} from '../../codemods/recast-mods';
 import type {ApiHandler} from '../api-types';

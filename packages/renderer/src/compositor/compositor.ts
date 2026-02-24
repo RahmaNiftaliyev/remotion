@@ -1,6 +1,6 @@
-import {makeStreamer} from '@remotion/streaming';
 import {spawn} from 'node:child_process';
 import path from 'node:path';
+import {makeStreamer} from '@remotion/streaming';
 import type {LogLevel} from '../log-level';
 import {isEqualOrBelowLogLevel} from '../log-level';
 import {Log} from '../logger';

@@ -16,7 +16,6 @@
 import {Log} from '../logger';
 import type {Commands} from './devtools-commands';
 import type {TargetInfo} from './devtools-types';
-
 import {ProtocolError} from './Errors';
 import {EventEmitter} from './EventEmitter';
 import type {NodeWebSocketTransport} from './NodeWebSocketTransport';

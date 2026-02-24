@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import {AbsoluteFill} from './AbsoluteFill.js';
 import type {LoopDisplay, SequenceControls} from './CompositionManager.js';
+import {Freeze} from './freeze.js';
 import {useNonce} from './nonce.js';
 import type {SequenceContextType} from './SequenceContext.js';
 import {SequenceContext} from './SequenceContext.js';
@@ -17,11 +18,9 @@ import {
 } from './SequenceManager.js';
 import {useTimelinePosition} from './timeline-position-state.js';
 import {TimelineContext} from './TimelineContext.js';
-import {useVideoConfig} from './use-video-config.js';
-
-import {Freeze} from './freeze.js';
 import {useCurrentFrame} from './use-current-frame';
 import {useRemotionEnvironment} from './use-remotion-environment.js';
+import {useVideoConfig} from './use-video-config.js';
 import {ENABLE_V5_BREAKING_CHANGES} from './v5-flag.js';
 
 export type AbsoluteFillLayout = {

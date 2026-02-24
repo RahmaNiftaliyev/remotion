@@ -3,13 +3,13 @@ import {Checkmark} from '../../../icons/Checkmark';
 import type {ComboboxValue} from '../../NewComposition/ComboBox';
 import {Combobox} from '../../NewComposition/ComboBox';
 import {Fieldset} from './Fieldset';
-import {SchemaLabel} from './SchemaLabel';
-import {ZodFieldValidation} from './ZodFieldValidation';
-import type {UpdaterFunction} from './ZodSwitch';
 import {useLocalState} from './local-state';
+import {SchemaLabel} from './SchemaLabel';
 import type {AnyZodSchema} from './zod-schema-type';
 import {getEnumValues} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
+import {ZodFieldValidation} from './ZodFieldValidation';
+import type {UpdaterFunction} from './ZodSwitch';
 
 const container: React.CSSProperties = {
 	width: '100%',

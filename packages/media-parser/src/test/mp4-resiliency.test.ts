@@ -1,5 +1,5 @@
-import {exampleVideos} from '@remotion/example-videos';
 import {test} from 'bun:test';
+import {exampleVideos} from '@remotion/example-videos';
 import {nodeReader} from '../node';
 import {parseMedia} from '../parse-media';
 

@@ -1,4 +1,3 @@
-import {Glob} from 'bun';
 import {spawn} from 'child_process';
 import {createHash} from 'crypto';
 import {
@@ -12,6 +11,7 @@ import {
 import {createRequire} from 'module';
 import {cpus} from 'os';
 import {join, resolve} from 'path';
+import {Glob} from 'bun';
 
 const DOCS_ROOT = resolve(import.meta.dirname);
 const CACHE_ROOT = join(DOCS_ROOT, 'node_modules', '.cache', 'twoslash');

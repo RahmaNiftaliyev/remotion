@@ -1,9 +1,9 @@
+import path from 'path';
 import {
 	downloadWhisperModel,
 	installWhisperCpp,
 	transcribe,
 } from '@remotion/install-whisper-cpp';
-import path from 'path';
 
 const to = path.join(process.cwd(), 'whisper.cpp');
 

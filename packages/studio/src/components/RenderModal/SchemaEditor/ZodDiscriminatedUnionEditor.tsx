@@ -1,18 +1,15 @@
 import {useCallback, useMemo} from 'react';
 import {Checkmark} from '../../../icons/Checkmark';
-import type {ComboboxValue} from '../../NewComposition/ComboBox';
-import {Combobox} from '../../NewComposition/ComboBox';
 import {
 	useZodIfPossible,
 	useZodTypesIfPossible,
 } from '../../get-zod-if-possible';
-import {Fieldset} from './Fieldset';
-import {SchemaLabel} from './SchemaLabel';
-import type {ObjectDiscrimatedUnionReplacement} from './ZodObjectEditor';
-import {ZodObjectEditor} from './ZodObjectEditor';
-import type {UpdaterFunction} from './ZodSwitch';
+import type {ComboboxValue} from '../../NewComposition/ComboBox';
+import {Combobox} from '../../NewComposition/ComboBox';
 import {createZodValues} from './create-zod-values';
+import {Fieldset} from './Fieldset';
 import {useLocalState} from './local-state';
+import {SchemaLabel} from './SchemaLabel';
 import type {AnyZodSchema} from './zod-schema-type';
 import {
 	getDiscriminatedOption,
@@ -20,6 +17,9 @@ import {
 	getDiscriminator,
 } from './zod-schema-type';
 import type {JSONPath} from './zod-types';
+import type {ObjectDiscrimatedUnionReplacement} from './ZodObjectEditor';
+import {ZodObjectEditor} from './ZodObjectEditor';
+import type {UpdaterFunction} from './ZodSwitch';
 
 export const ZodDiscriminatedUnionEditor: React.FC<{
 	schema: AnyZodSchema;

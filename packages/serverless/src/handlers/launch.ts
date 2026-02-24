@@ -1,13 +1,10 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
-import type {EmittedArtifact, LogOptions} from '@remotion/renderer';
-import {RenderInternals} from '@remotion/renderer';
-
-import {validateCodec, VERSION} from '@remotion/serverless-client';
 import {existsSync, mkdirSync, rmSync} from 'fs';
 import {type EventEmitter} from 'node:events';
 import {join} from 'path';
-import type {InsideFunctionSpecifics} from '../provider-implementation';
-
+/* eslint-disable @typescript-eslint/no-use-before-define */
+import type {EmittedArtifact, LogOptions} from '@remotion/renderer';
+import {RenderInternals} from '@remotion/renderer';
+import {validateCodec, VERSION} from '@remotion/serverless-client';
 import type {
 	CloudProvider,
 	PostRenderData,
@@ -38,6 +35,7 @@ import {mergeChunksAndFinishRender} from '../merge-chunks';
 import type {OverallProgressHelper} from '../overall-render-progress';
 import {makeOverallRenderProgress} from '../overall-render-progress';
 import {planFrameRanges} from '../plan-frame-ranges';
+import type {InsideFunctionSpecifics} from '../provider-implementation';
 import {removeOutnameCredentials} from '../remove-outname-credentials';
 import {streamRendererFunctionWithRetry} from '../stream-renderer';
 import {validateComposition} from '../validate-composition';

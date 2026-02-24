@@ -1,6 +1,6 @@
-import {$} from 'bun';
 import {test} from 'bun:test';
 import path from 'path';
+import {$} from 'bun';
 import {getAllPackages} from './get-all-packages';
 
 const packages = getAllPackages();

@@ -1,3 +1,4 @@
+import {exit} from 'node:process';
 import {
 	GetAWSDefaultServiceQuotaCommand,
 	GetServiceQuotaCommand,
@@ -14,7 +15,6 @@ import {
 	LAMBDA_CONCURRENCY_LIMIT_QUOTA,
 } from '@remotion/lambda-client/constants';
 import type {LogLevel, LogOptions} from '@remotion/renderer';
-import {exit} from 'node:process';
 import {QUOTAS_COMMAND} from '.';
 import {forceFlagProvided} from '../../args';
 import {getAwsRegion} from '../../get-aws-region';

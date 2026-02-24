@@ -1,5 +1,5 @@
-import {exampleVideos} from '@remotion/example-videos';
 import {expect, test} from 'bun:test';
+import {exampleVideos} from '@remotion/example-videos';
 import {fetchIdx1} from '../../containers/riff/seek/fetch-idx1';
 import {mediaParserController} from '../../controller/media-parser-controller';
 import {nodeReader} from '../../node';

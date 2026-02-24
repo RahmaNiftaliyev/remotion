@@ -1,8 +1,8 @@
-import {RenderInternals} from '@remotion/renderer';
 import {afterEach, beforeAll, beforeEach, expect, test} from 'bun:test';
-import execa from 'execa';
 import fs from 'fs';
 import path from 'path';
+import {RenderInternals} from '@remotion/renderer';
+import execa from 'execa';
 import {NoReactInternals} from 'remotion/no-react';
 
 const outputPath = path.join(process.cwd(), 'packages/example/out.mp4');

@@ -1,7 +1,7 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import {random} from 'remotion';
-import {VOLUME_SLIDER_WIDTH} from './MediaVolumeSlider';
 import {ICON_SIZE} from './icons';
+import {VOLUME_SLIDER_WIDTH} from './MediaVolumeSlider';
 
 const KNOB_SIZE = 12;
 

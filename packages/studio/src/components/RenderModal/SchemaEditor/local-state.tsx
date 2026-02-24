@@ -8,10 +8,10 @@ import React, {
 	useState,
 } from 'react';
 import {Internals} from 'remotion';
-import type {UpdaterFunction} from './ZodSwitch';
 import {deepEqual} from './deep-equal';
 import type {AnyZodSchema, ZodSafeParseResult} from './zod-schema-type';
 import {zodSafeParse} from './zod-schema-type';
+import type {UpdaterFunction} from './ZodSwitch';
 
 export type LocalState<T> = {
 	value: T;

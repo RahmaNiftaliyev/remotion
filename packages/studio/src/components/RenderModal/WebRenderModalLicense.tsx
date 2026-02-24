@@ -6,9 +6,9 @@ import {
 	LIGHT_TEXT,
 } from '../../helpers/colors';
 import {Checkbox} from '../Checkbox';
+import {Spacing} from '../layout';
 import {RemotionInput} from '../NewComposition/RemInput';
 import {ValidationMessage} from '../NewComposition/ValidationMessage';
-import {Spacing} from '../layout';
 import type {LicenseKeyDetails} from './WebRenderModalLicenseKeyDetails';
 import {
 	WebRenderModalLicenseKeyDetails,

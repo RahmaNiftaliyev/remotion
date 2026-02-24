@@ -1,5 +1,5 @@
-import {ServerlessRoutines} from '@remotion/serverless';
 import {expect, test} from 'bun:test';
+import {ServerlessRoutines} from '@remotion/serverless';
 import {VERSION} from 'remotion/version';
 import {mockImplementation} from '../mocks/mock-implementation';
 

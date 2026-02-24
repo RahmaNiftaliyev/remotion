@@ -3,6 +3,7 @@ import {Internals} from 'remotion';
 import {NoReactInternals} from 'remotion/no-react';
 import {restartStudio} from '../api/restart-studio';
 import {askAiModalRef} from '../components/AskAiModal';
+import {Row} from '../components/layout';
 import type {Menu} from '../components/Menu/MenuItem';
 import type {
 	ComboboxValue,
@@ -12,7 +13,6 @@ import {showNotification} from '../components/Notifications/NotificationCenter';
 import type {TQuickSwitcherResult} from '../components/QuickSwitcher/QuickSwitcherResult';
 import {getPreviewSizeLabel, getUniqueSizes} from '../components/SizeSelector';
 import {inOutHandles} from '../components/TimelineInOutToggle';
-import {Row} from '../components/layout';
 import {cmdOrCtrlCharacter} from '../error-overlay/remotion-overlay/ShortcutHint';
 import {Checkmark} from '../icons/Checkmark';
 import {drawRef} from '../state/canvas-ref';

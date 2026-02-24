@@ -1,6 +1,6 @@
-import {$} from 'bun';
 import {expect, test} from 'bun:test';
 import path from 'path';
+import {$} from 'bun';
 import {streamToUint8Array} from '../../mocks/mock-store';
 import {simulateLambdaRender} from '../simulate-lambda-render';
 

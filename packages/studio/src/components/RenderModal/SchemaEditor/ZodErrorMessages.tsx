@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {FAIL_COLOR, LIGHT_TEXT} from '../../../helpers/colors';
-import {WarningTriangle} from '../../NewComposition/ValidationMessage';
 import {Spacing} from '../../layout';
+import {WarningTriangle} from '../../NewComposition/ValidationMessage';
 import type {ZodSafeParseResult} from './zod-schema-type';
 
 const schemaLabel: React.CSSProperties = {

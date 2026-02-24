@@ -1,6 +1,6 @@
+import {statSync} from 'fs';
 import type {InternalRenderMediaOptions} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
-import {statSync} from 'fs';
 import {NoReactInternals} from 'remotion/no-react';
 
 type RenderVideoConfig = {

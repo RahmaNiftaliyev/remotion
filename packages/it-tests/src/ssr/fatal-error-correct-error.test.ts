@@ -1,5 +1,5 @@
-import {renderMedia} from '@remotion/renderer';
 import {expect, test} from 'bun:test';
+import {renderMedia} from '@remotion/renderer';
 
 test('Fatal error on frame 10 should yield correct error', async () => {
 	await expect(() => {

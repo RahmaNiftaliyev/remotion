@@ -4,7 +4,6 @@ import {createHighlighter} from 'shiki';
 import type {BuildVisitor} from 'unist-util-visit';
 import {visit} from 'unist-util-visit';
 import {cachedTwoslashCall} from './caching';
-
 import {setupNodeForTwoslashException} from './exceptionMessageDOM';
 import {addIncludes, replaceIncludesInCode} from './includes';
 import type {Node} from './unist-types';

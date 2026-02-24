@@ -1,8 +1,8 @@
-import {LambdaClientInternals} from '@remotion/lambda-client';
 import {expect, test} from 'bun:test';
 import {execSync} from 'child_process';
 import {readFileSync, writeFileSync} from 'fs';
 import path from 'path';
+import {LambdaClientInternals} from '@remotion/lambda-client';
 
 test('Set the right version for gotest', () => {
 	const referenceVersion = readFileSync(

@@ -1,7 +1,7 @@
 import {afterEach, beforeEach, expect, test} from 'bun:test';
-import execa from 'execa';
 import fs from 'fs';
 import path from 'path';
+import execa from 'execa';
 
 const outputPath = path.join(process.cwd(), 'packages/example/out-cancel.mp4');
 

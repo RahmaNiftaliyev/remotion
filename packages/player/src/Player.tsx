@@ -17,19 +17,19 @@ import type {
 	TimelineContextValue,
 } from 'remotion';
 import {Composition, Internals} from 'remotion';
+import type {BrowserMediaControlsBehavior} from './browser-mediasession.js';
 import {PlayerEmitterProvider} from './EmitterProvider.js';
 import type {RenderMuteButton} from './MediaVolumeSlider.js';
+import {playerCssClassname} from './player-css-classname.js';
+import type {PlayerRef, RenderCustomControls} from './player-methods.js';
 import type {
 	RenderFullscreenButton,
 	RenderPlayPauseButton,
 } from './PlayerControls.js';
 import type {PosterFillMode, RenderLoading, RenderPoster} from './PlayerUI.js';
 import PlayerUI from './PlayerUI.js';
-import {PLAYER_COMP_ID, SharedPlayerContexts} from './SharedPlayerContext.js';
-import type {BrowserMediaControlsBehavior} from './browser-mediasession.js';
-import {playerCssClassname} from './player-css-classname.js';
-import type {PlayerRef, RenderCustomControls} from './player-methods.js';
 import type {RenderVolumeSlider} from './render-volume-slider.js';
+import {PLAYER_COMP_ID, SharedPlayerContexts} from './SharedPlayerContext.js';
 import {acknowledgeRemotionLicenseMessage} from './use-remotion-license-acknowledge.js';
 import type {PropsIfHasProps} from './utils/props-if-has-props.js';
 import {validateInOutFrames} from './utils/validate-in-out-frame.js';

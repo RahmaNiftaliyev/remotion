@@ -1,3 +1,4 @@
+import type {CanUpdateSequencePropStatus} from '@remotion/studio-shared';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import type {TSequence} from 'remotion';
 import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
@@ -44,9 +45,9 @@ const fieldLabelRow: React.CSSProperties = {
 
 const TimelineFieldRow: React.FC<{
 	readonly field: SchemaFieldInfo;
-	readonly canUpdate: boolean | null;
-	readonly onSave: (key: string, value: unknown) => void;
-}> = ({field, canUpdate, onSave}) => {
+	readonly propStatus: CanUpdateSequencePropStatus | null;
+	readonly onSave: (key: string, value: unknown) => Promise<void>;
+}> = ({field, propStatus, onSave}) => {
 	const [saving, setSaving] = useState(false);
 
 	const onSavingChange = useCallback((s: boolean) => {
@@ -61,7 +62,7 @@ const TimelineFieldRow: React.FC<{
 			</div>
 			<TimelineFieldValue
 				field={field}
-				canUpdate={canUpdate}
+				propStatus={propStatus}
 				onSave={onSave}
 				onSavingChange={onSavingChange}
 			/>
@@ -73,7 +74,15 @@ export const TimelineExpandedSection: React.FC<{
 	readonly sequence: TSequence;
 	readonly originalLocation: OriginalPosition | null;
 }> = ({sequence, originalLocation}) => {
-	const [canUpdate, setCanUpdate] = useState<boolean | null>(null);
+	const [propStatuses, setPropStatuses] = useState<Record<
+		string,
+		CanUpdateSequencePropStatus
+	> | null>(null);
+
+	const schemaFields = useMemo(
+		() => getSchemaFields(sequence.controls),
+		[sequence.controls],
+	);
 
 	const validatedLocation = useMemo(() => {
 		if (
@@ -92,8 +101,8 @@ export const TimelineExpandedSection: React.FC<{
 	}, [originalLocation]);
 
 	useEffect(() => {
-		if (!sequence.controls || !validatedLocation) {
-			setCanUpdate(false);
+		if (!sequence.controls || !validatedLocation || !schemaFields) {
+			setPropStatuses(null);
 			return;
 		}
 
@@ -101,19 +110,19 @@ export const TimelineExpandedSection: React.FC<{
 			fileName: validatedLocation.source,
 			line: validatedLocation.line,
 			column: validatedLocation.column,
+			keys: schemaFields.map((f) => f.key),
 		})
 			.then((result) => {
-				setCanUpdate(result.canUpdate);
+				if (result.canUpdate) {
+					setPropStatuses(result.props);
+				} else {
+					setPropStatuses(null);
+				}
 			})
 			.catch(() => {
-				setCanUpdate(false);
+				setPropStatuses(null);
 			});
-	}, [sequence.controls, validatedLocation]);
-
-	const schemaFields = useMemo(
-		() => getSchemaFields(sequence.controls),
-		[sequence.controls],
-	);
+	}, [sequence.controls, validatedLocation, schemaFields]);
 
 	const expandedHeight = useMemo(
 		() => getExpandedTrackHeight(sequence.controls),
@@ -121,24 +130,26 @@ export const TimelineExpandedSection: React.FC<{
 	);
 
 	const onSave = useCallback(
-		(key: string, value: unknown) => {
-			if (!canUpdate || !validatedLocation) {
-				return;
+		(key: string, value: unknown): Promise<void> => {
+			if (!propStatuses || !validatedLocation) {
+				return Promise.reject(new Error('Cannot save'));
 			}
 
-			callApi('/api/save-sequence-props', {
+			const status = propStatuses[key];
+			if (!status || !status.canUpdate) {
+				return Promise.reject(new Error('Cannot save'));
+			}
+
+			return callApi('/api/save-sequence-props', {
 				fileName: validatedLocation.source,
 				line: validatedLocation.line,
 				column: validatedLocation.column,
 				key,
 				value: JSON.stringify(value),
 				enumPaths: [],
-			}).catch((err) => {
-				// eslint-disable-next-line no-console
-				console.error('Failed to save sequence prop:', err);
-			});
+			}).then(() => undefined);
 		},
-		[canUpdate, validatedLocation],
+		[propStatuses, validatedLocation],
 	);
 
 	return (
@@ -148,7 +159,7 @@ export const TimelineExpandedSection: React.FC<{
 						<TimelineFieldRow
 							key={field.key}
 							field={field}
-							canUpdate={canUpdate}
+							propStatus={propStatuses?.[field.key] ?? null}
 							onSave={onSave}
 						/>
 					))

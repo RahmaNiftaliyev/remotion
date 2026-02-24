@@ -1,4 +1,11 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
+import {Internals} from 'remotion';
 import type {TSequence} from 'remotion';
 import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import {TIMELINE_TRACK_SEPARATOR} from '../../helpers/colors';
@@ -46,7 +53,9 @@ const TimelineFieldRow: React.FC<{
 	readonly field: SchemaFieldInfo;
 	readonly canUpdate: boolean | null;
 	readonly onSave: (key: string, value: unknown) => void;
-}> = ({field, canUpdate, onSave}) => {
+	readonly onDragValueChange: (key: string, value: unknown) => void;
+	readonly onDragEnd: () => void;
+}> = ({field, canUpdate, onSave, onDragValueChange, onDragEnd}) => {
 	const [saving, setSaving] = useState(false);
 
 	const onSavingChange = useCallback((s: boolean) => {
@@ -64,6 +73,8 @@ const TimelineFieldRow: React.FC<{
 				canUpdate={canUpdate}
 				onSave={onSave}
 				onSavingChange={onSavingChange}
+				onDragValueChange={onDragValueChange}
+				onDragEnd={onDragEnd}
 			/>
 		</div>
 	);
@@ -120,6 +131,10 @@ export const TimelineExpandedSection: React.FC<{
 		[sequence.controls],
 	);
 
+	const {setOverride, clearOverrides} = useContext(
+		Internals.SequenceControlOverrideContext,
+	);
+
 	const onSave = useCallback(
 		(key: string, value: unknown) => {
 			if (!canUpdate || !validatedLocation) {
@@ -141,6 +156,17 @@ export const TimelineExpandedSection: React.FC<{
 		[canUpdate, validatedLocation],
 	);
 
+	const onDragValueChange = useCallback(
+		(key: string, value: unknown) => {
+			setOverride(sequence.id, key, value);
+		},
+		[setOverride, sequence.id],
+	);
+
+	const onDragEnd = useCallback(() => {
+		clearOverrides(sequence.id);
+	}, [clearOverrides, sequence.id]);
+
 	return (
 		<div style={{...expandedSectionBase, height: expandedHeight}}>
 			{schemaFields
@@ -150,6 +176,8 @@ export const TimelineExpandedSection: React.FC<{
 							field={field}
 							canUpdate={canUpdate}
 							onSave={onSave}
+							onDragValueChange={onDragValueChange}
+							onDragEnd={onDragEnd}
 						/>
 					))
 				: 'No schema'}

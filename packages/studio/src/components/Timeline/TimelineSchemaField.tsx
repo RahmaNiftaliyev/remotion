@@ -136,7 +136,8 @@ export const TimelineFieldValue: React.FC<{
 	}
 
 	if (propStatus !== null && !propStatus.canUpdate) {
-		const label = propStatus.reason === 'not-set' ? 'not set' : propStatus.reason;
+		const label =
+			propStatus.reason === 'not-set' ? 'not set' : propStatus.reason;
 		return <span style={unsupportedLabel}>{label}</span>;
 	}
 

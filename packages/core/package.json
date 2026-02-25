@@ -10,6 +10,7 @@
 	"module": "dist/esm/index.mjs",
 	"scripts": {
 		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"prepublishOnly": "bun ensure-correct-version.ts && cp ../../README.md .",
 		"lint": "eslint src",
 		"test": "bun test src/test",

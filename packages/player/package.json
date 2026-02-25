@@ -11,6 +11,7 @@
 	"sideEffects": false,
 	"scripts": {
 		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"lint": "eslint src",
 		"make": "tsgo -d && bun ensure-correct-version.ts && bun --env-file=../.env.bundle bundle.ts",
 		"test": "bun test src",

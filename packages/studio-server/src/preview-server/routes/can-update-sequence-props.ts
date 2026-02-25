@@ -14,8 +14,9 @@ import * as recast from 'recast';
 import {parseAst} from '../../codemods/parse-ast';
 
 type CanUpdatePropStatus =
-	| {canUpdate: true; codeValue: unknown}
-	| {canUpdate: false; reason: 'computed'};
+	| {canUpdate: true}
+	| {canUpdate: false; reason: 'computed'}
+	| {canUpdate: false; reason: 'not-set'};
 
 export const isStaticValue = (node: Expression): boolean => {
 	switch (node.type) {
@@ -213,7 +214,7 @@ export const computeSequencePropsStatus = ({
 			if (key in allProps) {
 				filteredProps[key] = allProps[key];
 			} else {
-				filteredProps[key] = {canUpdate: false, reason: 'computed'};
+				filteredProps[key] = {canUpdate: false, reason: 'not-set'};
 			}
 		}
 

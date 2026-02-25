@@ -13,6 +13,7 @@
 	],
 	"scripts": {
 		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"dev": "remotion studio --props src/my-props.json",
 		"start-bun": "PATCH_BUN_DEVELOPMENT=true bun --bun remotion studio",
 		"start-js": "remotion preview src/entry.jsx",
@@ -96,7 +97,7 @@
 		"sass-loader": "14.2.1",
 		"style-loader": "4.0.0",
 		"styled-components": "6.1.13",
-		"tailwindcss": "4.0.0",
+		"tailwindcss": "4.2.0",
 		"three": "catalog:",
 		"ts-unused-exports": "^7.0.1",
 		"use-asset": "^1.0.4",

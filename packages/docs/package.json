@@ -7,6 +7,7 @@
 	"version": "4.0.429",
 	"scripts": {
 		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"docusaurus": "docusaurus",
 		"start": "bun copy-raw-docs.ts && bun fetch-prompt-submissions.ts && bun update-prompt.ts && cd .. && bun run build && cd docs && docusaurus start --host 0.0.0.0",
 		"build-docs": "bun copy-raw-docs.ts && bun fetch-prompt-submissions.ts && bun prewarm-twoslash.ts && DOCUSAURUS_IGNORE_SSG_WARNINGS=true docusaurus build && bun copy-convert.ts && bun count-pages.ts",

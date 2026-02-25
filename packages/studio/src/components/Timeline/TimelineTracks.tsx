@@ -1,5 +1,6 @@
 import React, {useContext, useMemo} from 'react';
 import type {SequenceControls} from 'remotion';
+import {StudioServerConnectionCtx} from '../../helpers/client-id';
 import type {TrackWithHash} from '../../helpers/get-timeline-sequence-sort-key';
 import {
 	getExpandedTrackHeight,
@@ -34,9 +35,11 @@ export const TimelineTracks: React.FC<{
 	readonly hasBeenCut: boolean;
 }> = ({timeline, hasBeenCut}) => {
 	const {expandedTracks} = useContext(ExpandedTracksContext);
-	const visualModeEnabled = Boolean(
-		process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED,
-	);
+	const {previewServerState} = useContext(StudioServerConnectionCtx);
+
+	const visualModeEnabled =
+		Boolean(process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED) &&
+		previewServerState.type === 'connected';
 
 	const timelineStyle: React.CSSProperties = useMemo(() => {
 		return {

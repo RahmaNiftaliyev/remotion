@@ -123,10 +123,17 @@ const findJsxElementAtLine = (
 	return found;
 };
 
-export const canUpdateSequencePropsHandler: ApiHandler<
-	CanUpdateSequencePropsRequest,
-	CanUpdateSequencePropsResponse
-> = ({input: {fileName, line, column: _column, keys}, remotionRoot}) => {
+export const computeSequencePropsStatus = ({
+	fileName,
+	line,
+	keys,
+	remotionRoot,
+}: {
+	fileName: string;
+	line: number;
+	keys: string[];
+	remotionRoot: string;
+}): CanUpdateSequencePropsResponse => {
 	try {
 		const absolutePath = path.resolve(remotionRoot, fileName);
 		const fileRelativeToRoot = path.relative(remotionRoot, absolutePath);
@@ -153,14 +160,23 @@ export const canUpdateSequencePropsHandler: ApiHandler<
 			}
 		}
 
-		return Promise.resolve({
+		return {
 			canUpdate: true as const,
 			props: filteredProps,
-		});
+		};
 	} catch (err) {
-		return Promise.resolve({
+		return {
 			canUpdate: false as const,
 			reason: (err as Error).message,
-		});
+		};
 	}
+};
+
+export const canUpdateSequencePropsHandler: ApiHandler<
+	CanUpdateSequencePropsRequest,
+	CanUpdateSequencePropsResponse
+> = ({input: {fileName, line, keys}, remotionRoot}) => {
+	return Promise.resolve(
+		computeSequencePropsStatus({fileName, line, keys, remotionRoot}),
+	);
 };

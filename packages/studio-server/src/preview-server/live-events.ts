@@ -7,6 +7,7 @@ import type {LogLevel} from '@remotion/renderer';
 import type {EventSourceEvent} from '@remotion/studio-shared';
 import {printServerReadyComment} from '../server-ready';
 import {unsubscribeClientFileExistenceWatchers} from './file-existence-watchers';
+import {unsubscribeClientSequencePropsWatchers} from './sequence-props-watchers';
 
 type Client = {
 	id: string;
@@ -59,6 +60,7 @@ export const makeLiveEventsRouter = (logLevel: LogLevel): LiveEventsServer => {
 
 		request.on('close', () => {
 			unsubscribeClientFileExistenceWatchers(clientId);
+			unsubscribeClientSequencePropsWatchers(clientId);
 			clients = clients.filter((client) => client.id !== clientId);
 
 			// If all clients disconnected, print a comment so user can easily restart it.

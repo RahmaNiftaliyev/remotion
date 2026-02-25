@@ -33,7 +33,7 @@ export const sendUsageEvent = async ({
 
 	await LicensingInternals.internalRegisterUsageEvent({
 		licenseKey: licenseKey === 'free-license' ? null : licenseKey,
-		event: 'webcodec-conversion',
+		event: 'web-render',
 		host,
 		succeeded,
 		isStill,

@@ -1,21 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 
-export const addPostcssConfig = (projectRoot: string) => {
-	const postcssConfigMjs = path.join(projectRoot, 'postcss.config.mjs');
-
-	fs.writeFileSync(
-		postcssConfigMjs,
-		`
-export default {
-  plugins: {
-    "@tailwindcss/postcss": {},
-  },
-};
-`.trim() + '\n',
-	);
-};
-
 export const addTailwindRootCss = (projectRoot: string) => {
 	const rootFileTsx = path.join(projectRoot, 'src', 'Root.tsx');
 	const rootFileJsx = path.join(projectRoot, 'src', 'Root.jsx');

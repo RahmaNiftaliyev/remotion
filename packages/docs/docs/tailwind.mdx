@@ -114,17 +114,7 @@ Config.overrideWebpackConfig((currentConfiguration) => {
 
 3. If you use the [`bundle()` or `deploySite()` Node.JS API, add the Webpack override to it as well](/docs/webpack#when-using-bundle-and-deploysite).
 
-4. Create a file `postcss.config.mjs` with the following content:
-
-```css title="postcss.config.mjs"
-export default {
-  plugins: {
-    "@tailwindcss/postcss": {},
-  },
-};
-```
-
-5. Create a file `src/index.css` with the following content:
+4. Create a file `src/index.css` with the following content:
 
 ```css title="src/index.css"
 @import 'tailwindcss';
@@ -136,7 +126,7 @@ export default {
 import './index.css';
 ```
 
-7. Ensure your `package.json` does not have `"sideEffects": false` set. If it has, declare that CSS files have a side effect:
+6. Ensure your `package.json` does not have `"sideEffects": false` set. If it has, declare that CSS files have a side effect:
 
 ```diff title="package.json"
 {
@@ -146,7 +136,7 @@ import './index.css';
 }
 ```
 
-8. Start using TailwindCSS! You can verify that it's working by adding `className="bg-red-900"` to any element.
+7. Start using TailwindCSS! You can verify that it's working by adding `className="bg-red-900"` to any element.
 
 ## Installing Tailwind v3 in existing project
 

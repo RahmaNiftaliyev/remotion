@@ -49,7 +49,7 @@ export const saveSequencePropsHandler: ApiHandler<
 		RenderInternals.Log.info(
 			{indent: false, logLevel},
 			RenderInternals.chalk.blueBright(
-				`${fileLink} updated: ${key} ${oldValueString.trim()} \u2192 ${newValueString}`,
+				`${fileLink} updated: ${key} ${oldValueString} \u2192 ${newValueString}`,
 			),
 		);
 

@@ -2,8 +2,8 @@ import {readFileSync, existsSync} from 'fs';
 import path from 'path';
 import {$} from 'bun';
 
-const staged = await $`git diff --cached --name-only --diff-filter=ACMR`.quiet().text();
-const unstaged = await $`git diff --name-only`.quiet().text();
+const staged = await $`git diff --cached --name-only --diff-filter=ACMR`.text();
+const unstaged = await $`git diff --name-only`.text();
 const changedFiles = [
 	...new Set([...staged.trim().split('\n'), ...unstaged.trim().split('\n')]),
 ].filter(Boolean);

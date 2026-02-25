@@ -216,7 +216,7 @@ export type UnsubscribeFromSequencePropsRequest = {
 };
 
 export type CanUpdateSequencePropStatus =
-	| {canUpdate: true}
+	| {canUpdate: true; codeValue: unknown}
 	| {canUpdate: false; reason: 'computed'}
 	| {canUpdate: false; reason: 'not-set'};
 

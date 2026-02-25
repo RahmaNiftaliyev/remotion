@@ -6,7 +6,6 @@ import {
 	extractStaticValue,
 	isStaticValue,
 } from '../preview-server/routes/can-update-sequence-props';
-import {isStaticValue} from '../preview-server/routes/can-update-sequence-props';
 import {computeSequencePropsStatus} from '../preview-server/routes/can-update-sequence-props';
 
 const parseExpression = (code: string): Expression => {

@@ -14,7 +14,7 @@ import * as recast from 'recast';
 import {parseAst} from '../../codemods/parse-ast';
 
 type CanUpdatePropStatus =
-	| {canUpdate: true}
+	| {canUpdate: true; codeValue: unknown}
 	| {canUpdate: false; reason: 'computed'}
 	| {canUpdate: false; reason: 'not-set'};
 

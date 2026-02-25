@@ -51,6 +51,7 @@ const InputDraggerForwardRefFn: React.ForwardRefRenderFunction<
 			...inputBaseStyle,
 			backgroundColor: 'transparent',
 			borderColor: 'transparent',
+			padding: '4px 6px',
 		};
 	}, []);
 

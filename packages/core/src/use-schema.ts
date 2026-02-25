@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import {useContext, useMemo, useState} from 'react';
 import type {AnyZodObject} from './any-zod-type.js';
 import type {SequenceControls} from './CompositionManager.js';
 import {SequenceControlOverrideContext} from './SequenceManager.js';
+import {useRemotionEnvironment} from './use-remotion-environment.js';
 
 export const useSchema = <T extends Record<string, unknown>>(
 	schema: AnyZodObject | null,
@@ -10,6 +12,23 @@ export const useSchema = <T extends Record<string, unknown>>(
 	controls: SequenceControls | null;
 	values: T;
 } => {
+	const env = useRemotionEnvironment();
+	const earlyReturn = useMemo(() => {
+		if (!env.isStudio || env.isReadOnlyStudio) {
+			return {
+				controls: null,
+				values: (currentValue ?? {}) as T,
+			};
+		}
+
+		return null;
+	}, [env.isStudio, env.isReadOnlyStudio, currentValue]);
+
+	if (earlyReturn) {
+		return earlyReturn;
+	}
+
+	// Intentional conditional hook call, useRemotionEnvironment is stable.
 	const [overrideId] = useState(() => String(Math.random()));
 	const {overrides} = useContext(SequenceControlOverrideContext);
 

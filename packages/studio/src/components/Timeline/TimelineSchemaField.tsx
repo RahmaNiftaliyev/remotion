@@ -102,15 +102,11 @@ export const TimelineFieldValue: React.FC<{
 	const canUpdate = propStatus !== null && propStatus.canUpdate;
 
 	if (!field.supported) {
-		return (
-			<span style={unsupportedLabel}>unsupported</span>
-		);
+		return <span style={unsupportedLabel}>unsupported</span>;
 	}
 
 	if (propStatus !== null && !propStatus.canUpdate) {
-		return (
-			<span style={unsupportedLabel}>{propStatus.reason}</span>
-		);
+		return <span style={unsupportedLabel}>{propStatus.reason}</span>;
 	}
 
 	if (propStatus === null) {

@@ -1,9 +1,9 @@
 import {expect, test} from 'bun:test';
-import {createZodValues} from '../components/RenderModal/SchemaEditor/create-zod-values';
 import {
 	getZTypesIfPossible,
 	getZodIfPossible,
 } from '../components/get-zod-if-possible';
+import {createZodValues} from '../components/RenderModal/SchemaEditor/create-zod-values';
 
 const getZ = async () => {
 	const z = await getZodIfPossible();

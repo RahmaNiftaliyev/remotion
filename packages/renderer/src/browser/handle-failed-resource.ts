@@ -1,10 +1,10 @@
 import type {LogLevel} from '../log-level';
 import {Log} from '../logger';
-import type {HTTPRequest} from './HTTPRequest';
 import type {
 	LoadingFailedEvent,
 	ResponseReceivedExtraInfoEvent,
 } from './devtools-types';
+import type {HTTPRequest} from './HTTPRequest';
 
 export const handleFailedResource = ({
 	extraInfo,

@@ -1,7 +1,7 @@
-import execa from 'execa';
 import type {SpawnOptionsWithoutStdio} from 'node:child_process';
 import {spawn} from 'node:child_process';
 import path from 'path';
+import execa from 'execa';
 import {getExecutablePath} from './compositor/get-executable-path';
 import {getExplicitEnv} from './compositor/get-explicit-env';
 import {makeFileExecutableIfItIsNot} from './compositor/make-file-executable';

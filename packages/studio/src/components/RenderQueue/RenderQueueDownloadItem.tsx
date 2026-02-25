@@ -2,8 +2,8 @@ import React, {useCallback, useMemo} from 'react';
 import type {RenderInlineAction} from '../InlineAction';
 import {InlineAction} from '../InlineAction';
 import {showNotification} from '../Notifications/NotificationCenter';
-import {downloadBlob} from './ClientRenderQueueProcessor';
 import type {ClientRenderJob} from './client-side-render-types';
+import {downloadBlob} from './ClientRenderQueueProcessor';
 
 export const RenderQueueDownloadItem: React.FC<{
 	readonly job: ClientRenderJob;

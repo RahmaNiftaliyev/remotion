@@ -1,5 +1,5 @@
-import {RenderInternals} from '@remotion/renderer';
 import {statSync} from 'fs';
+import {RenderInternals} from '@remotion/renderer';
 import {NoReactInternals} from 'remotion/no-react';
 
 type InternalStillOptions = Parameters<

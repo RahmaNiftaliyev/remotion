@@ -1,9 +1,9 @@
-import {RenderInternals} from '@remotion/renderer';
 import {expect, test} from 'bun:test';
-import execa from 'execa';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import {RenderInternals} from '@remotion/renderer';
+import execa from 'execa';
 import {random} from 'remotion';
 import sharp from 'sharp';
 

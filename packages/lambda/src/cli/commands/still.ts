@@ -1,3 +1,4 @@
+import path from 'path';
 import {CliInternals} from '@remotion/cli';
 import {ConfigInternals} from '@remotion/cli/config';
 import {AwsProvider, LambdaClientInternals} from '@remotion/lambda-client';
@@ -11,7 +12,6 @@ import {RenderInternals} from '@remotion/renderer';
 import {BrowserSafeApis} from '@remotion/renderer/client';
 import type {ProviderSpecifics} from '@remotion/serverless';
 import {validatePrivacy} from '@remotion/serverless';
-import path from 'path';
 import {NoReactInternals} from 'remotion/no-react';
 import {internalDownloadMedia} from '../../api/download-media';
 import {validateMaxRetries} from '../../shared/validate-retries';

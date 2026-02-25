@@ -13,17 +13,17 @@ import {loadLoopOption} from '../state/loop';
 import {CheckboardToggle} from './CheckboardToggle';
 import {FpsCounter} from './FpsCounter';
 import {FullScreenToggle} from './FullscreenToggle';
+import {Flex, Spacing} from './layout';
 import {LoopToggle} from './LoopToggle';
 import {MuteToggle} from './MuteToggle';
-import {PlayPause} from './PlayPause';
 import {PlaybackKeyboardShortcutsManager} from './PlaybackKeyboardShortcutsManager';
 import {PlaybackRatePersistor} from './PlaybackRatePersistor';
 import {PlaybackRateSelector} from './PlaybackRateSelector';
+import {PlayPause} from './PlayPause';
 import {RenderButton} from './RenderButton';
 import {SizeSelector} from './SizeSelector';
 import {TimelineZoomControls} from './Timeline/TimelineZoomControls';
 import {TimelineInOutPointToggle} from './TimelineInOutToggle';
-import {Flex, Spacing} from './layout';
 
 const container: React.CSSProperties = {
 	display: 'flex',
@@ -84,6 +84,7 @@ export const PreviewToolbar: React.FC<{
 
 	const {mediaMuted} = useContext(Internals.MediaVolumeContext);
 	const {setMediaMuted} = useContext(Internals.SetMediaVolumeContext);
+	const {canvasContent} = useContext(Internals.CompositionManager);
 	const isVideoComposition = useIsVideoComposition();
 	const previewToolbarRef = useRef<HTMLDivElement | null>(null);
 	const leftScrollIndicatorRef = useRef<HTMLDivElement | null>(null);
@@ -192,7 +193,7 @@ export const PreviewToolbar: React.FC<{
 				</>
 			) : null}
 
-			<CheckboardToggle />
+			{canvasContent?.type === 'composition' ? <CheckboardToggle /> : null}
 			<Spacing x={1} />
 			{isFullscreenSupported && <FullScreenToggle />}
 			<Flex />

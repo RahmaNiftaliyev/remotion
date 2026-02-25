@@ -1,6 +1,6 @@
 {
 	"name": "@remotion/media",
-	"version": "4.0.428",
+	"version": "4.0.429",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"module": "dist/esm/index.mjs",
@@ -14,7 +14,8 @@
 	"type": "module",
 	"scripts": {
 		"if-node-18+": "node -e \"const [maj]=process.versions.node.split('.').map(Number); process.exit(maj>=18?0:1)\"",
-		"formatting": "prettier src --check",
+		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"lint": "eslint src",
 		"watch": "tsgo -w",
 		"test": "node src/test/execute.mjs",
@@ -22,7 +23,8 @@
 	},
 	"dependencies": {
 		"mediabunny": "catalog:",
-		"remotion": "workspace:*"
+		"remotion": "workspace:*",
+		"zod": "catalog:"
 	},
 	"peerDependencies": {
 		"react": ">=16.8.0",

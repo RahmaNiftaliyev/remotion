@@ -3,11 +3,12 @@
 		"url": "https://github.com/remotion-dev/remotion/tree/main/packages/web-renderer"
 	},
 	"name": "@remotion/web-renderer",
-	"version": "4.0.428",
+	"version": "4.0.429",
 	"main": "dist/index.js",
 	"type": "module",
 	"scripts": {
-		"formatting": "prettier src --check",
+		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"lint": "eslint src",
 		"make": "tsgo && bun --env-file=../.env.bundle bundle.ts",
 		"watch": "tsgo -w",

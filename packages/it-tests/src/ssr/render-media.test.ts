@@ -1,8 +1,8 @@
-import {getCompositions, openBrowser, renderMedia} from '@remotion/renderer';
 import {expect, test} from 'bun:test';
 import {existsSync} from 'fs';
 import os from 'os';
 import path from 'path';
+import {getCompositions, openBrowser, renderMedia} from '@remotion/renderer';
 
 test(
 	'Render video with browser instance open',

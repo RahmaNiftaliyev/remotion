@@ -7,9 +7,8 @@ import {useMobileLayout} from '../../helpers/mobile-layout';
 import {areKeyboardShortcutsDisabled} from '../../helpers/use-keybinding';
 import {CaretRight} from '../../icons/caret';
 import {useZIndex} from '../../state/z-index';
-import type {SubMenu} from '../NewComposition/ComboBox';
 import {Row, Spacing} from '../layout';
-import {SubMenuComponent} from './SubMenu';
+import type {SubMenu} from '../NewComposition/ComboBox';
 import {MENU_ITEM_CLASSNAME} from './is-menu-item';
 import {getPortal} from './portals';
 import {
@@ -17,6 +16,7 @@ import {
 	SUBMENU_LEFT_INSET,
 	menuContainerTowardsBottom,
 } from './styles';
+import {SubMenuComponent} from './SubMenu';
 
 const container: React.CSSProperties = {
 	paddingTop: 8,

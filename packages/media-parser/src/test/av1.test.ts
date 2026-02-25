@@ -1,5 +1,5 @@
-import {exampleVideos} from '@remotion/example-videos';
 import {expect, test} from 'bun:test';
+import {exampleVideos} from '@remotion/example-videos';
 import {getTraks} from '../containers/iso-base-media/traversal';
 import {trakBoxContainsVideo} from '../get-fps';
 import {getAv1CBox} from '../get-sample-aspect-ratio';

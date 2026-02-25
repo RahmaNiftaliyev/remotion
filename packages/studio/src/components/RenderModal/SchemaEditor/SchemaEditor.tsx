@@ -2,20 +2,20 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Internals} from 'remotion';
 import {setUnsavedProps} from '../../../helpers/document-title';
 import {useKeybinding} from '../../../helpers/use-keybinding';
-import {VERTICAL_SCROLLBAR_CLASSNAME} from '../../Menu/is-menu-item';
 import {useZodIfPossible} from '../../get-zod-if-possible';
+import {VERTICAL_SCROLLBAR_CLASSNAME} from '../../Menu/is-menu-item';
+import {deepEqual} from './deep-equal';
+import type {RevisionContextType} from './local-state';
+import {RevisionContext} from './local-state';
 import {
 	InvalidDefaultProps,
 	InvalidSchema,
 	TopLevelZodValue,
 } from './SchemaErrorMessages';
-import {ZodObjectEditor} from './ZodObjectEditor';
-import {deepEqual} from './deep-equal';
-import type {RevisionContextType} from './local-state';
-import {RevisionContext} from './local-state';
 import {defaultPropsEditorScrollableAreaRef} from './scroll-to-default-props-path';
 import type {AnyZodSchema, ZodSafeParseResult} from './zod-schema-type';
 import {getZodSchemaType, zodSafeParse} from './zod-schema-type';
+import {ZodObjectEditor} from './ZodObjectEditor';
 
 const scrollable: React.CSSProperties = {
 	display: 'flex',

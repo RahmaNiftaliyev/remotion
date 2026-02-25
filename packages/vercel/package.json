@@ -1,6 +1,6 @@
 {
 	"name": "@remotion/vercel",
-	"version": "4.0.428",
+	"version": "4.0.429",
 	"description": "Render Remotion videos on Vercel Sandbox",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -11,7 +11,8 @@
 	"sideEffects": false,
 	"type": "module",
 	"scripts": {
-		"formatting": "prettier src --check",
+		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"lint": "eslint src",
 		"watch": "tsgo -w",
 		"make": "bun --env-file=../.env.bundle bundle.ts && tsgo"

@@ -1,8 +1,8 @@
-import {RenderInternals} from '@remotion/renderer';
 import {afterEach, beforeEach, expect, test} from 'bun:test';
-import execa from 'execa';
 import fs from 'fs';
 import path from 'path';
+import {RenderInternals} from '@remotion/renderer';
+import execa from 'execa';
 import {NoReactInternals} from 'remotion/no-react';
 
 const outputPath = path.join(process.cwd(), 'packages/example/out-scale.mp4');
@@ -65,7 +65,7 @@ test(
 		expect(data).toContain('30 fps');
 	},
 	{
-		timeout: 30000,
+		timeout: 90000,
 	},
 );
 

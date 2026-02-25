@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import {join} from 'node:path';
 import type {
 	AudioCodec,
 	CancelSignal,
@@ -6,9 +8,6 @@ import type {
 	LogLevel,
 } from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
-import fs from 'node:fs';
-import {join} from 'node:path';
-
 import type {CloudProvider, ServerlessCodec} from '@remotion/serverless-client';
 import {REMOTION_CONCATENATED_TOKEN} from '@remotion/serverless-client';
 import type {InsideFunctionSpecifics} from './provider-implementation';

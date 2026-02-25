@@ -56,7 +56,7 @@ test('should succeed on first attempt without retry', async () => {
 		licenseKey: 'rm_pub_test123',
 		host: 'https://test.com',
 		succeeded: true,
-		event: 'webcodec-conversion',
+		event: 'web-render',
 	});
 
 	expect(result).toEqual({
@@ -87,7 +87,7 @@ test('should retry and succeed after transient network error', async () => {
 		licenseKey: 'rm_pub_test123',
 		host: 'https://test.com',
 		succeeded: true,
-		event: 'webcodec-conversion',
+		event: 'web-render',
 	});
 
 	expect(attemptCount).toBe(2);
@@ -112,7 +112,7 @@ test('should exhaust all retries and throw last error', () => {
 			licenseKey: 'rm_pub_test123',
 			host: 'https://test.com',
 			succeeded: true,
-			event: 'webcodec-conversion',
+			event: 'web-render',
 		}),
 	).rejects.toThrow();
 
@@ -140,7 +140,7 @@ test('should not retry on non-retryable errors (invalid API key)', () => {
 			licenseKey: 'rm_pub_invalid',
 			host: 'https://test.com',
 			succeeded: true,
-			event: 'webcodec-conversion',
+			event: 'web-render',
 		}),
 	).rejects.toThrow('Invalid API key');
 
@@ -168,7 +168,7 @@ test('should not retry on server errors (500)', () => {
 			licenseKey: 'rm_pub_test123',
 			host: 'https://test.com',
 			succeeded: true,
-			event: 'webcodec-conversion',
+			event: 'web-render',
 		}),
 	).rejects.toThrow('Internal server error');
 
@@ -235,7 +235,7 @@ test('should call sleep with correct backoff values between retries', async () =
 		licenseKey: 'rm_pub_test123',
 		host: 'https://test.com',
 		succeeded: true,
-		event: 'webcodec-conversion',
+		event: 'web-render',
 	});
 
 	expect(sleepCalls).toEqual([1000, 2000, 4000]);

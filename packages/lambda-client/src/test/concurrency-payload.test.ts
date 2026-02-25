@@ -1,5 +1,5 @@
-import {ServerlessRoutines} from '@remotion/serverless-client';
 import {expect, test} from 'bun:test';
+import {ServerlessRoutines} from '@remotion/serverless-client';
 import {makeLambdaRenderMediaPayload} from '../make-lambda-payload';
 
 test('Should include concurrency field in payload', async () => {

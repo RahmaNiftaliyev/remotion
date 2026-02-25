@@ -1,5 +1,5 @@
-import {MediaParserInternals} from '@remotion/media-parser';
 import {expect, test} from 'bun:test';
+import {MediaParserInternals} from '@remotion/media-parser';
 import {
 	createTkhdForAudio,
 	createTkhdForVideo,

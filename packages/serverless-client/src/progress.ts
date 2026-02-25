@@ -1,5 +1,4 @@
 import {NoReactAPIs} from '@remotion/renderer/pure';
-
 import {calculateChunkTimes} from './calculate-chunk-times';
 import type {CustomCredentials} from './constants';
 import {estimatePriceFromMetadata} from './estimate-price-from-bucket';

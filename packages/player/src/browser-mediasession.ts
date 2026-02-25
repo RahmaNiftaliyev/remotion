@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useRef} from 'react';
 import type {VideoConfig} from 'remotion';
 import {usePlayer} from './use-player.js';
 
@@ -23,6 +23,13 @@ export const useBrowserMediaSession = ({
 	playbackRate: number;
 }) => {
 	const {playing, pause, play, emitter, getCurrentFrame, seek} = usePlayer();
+	const hasEverPlayed = useRef(false);
+
+	useEffect(() => {
+		if (playing) {
+			hasEverPlayed.current = true;
+		}
+	}, [playing]);
 
 	useEffect(() => {
 		if (!navigator.mediaSession) {
@@ -35,7 +42,7 @@ export const useBrowserMediaSession = ({
 
 		if (playing) {
 			navigator.mediaSession.playbackState = 'playing';
-		} else {
+		} else if (hasEverPlayed.current) {
 			navigator.mediaSession.playbackState = 'paused';
 		}
 	}, [browserMediaControlsBehavior.mode, playing]);

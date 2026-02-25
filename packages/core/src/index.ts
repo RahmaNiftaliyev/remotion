@@ -252,6 +252,7 @@ export const Config = new Proxy(proxyObj, {
 	},
 });
 
+Sequence.displayName = 'Sequence';
 addSequenceStackTraces(Sequence);
 
 export type _InternalTypes = {

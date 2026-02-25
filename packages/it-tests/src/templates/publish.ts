@@ -1,8 +1,8 @@
-import {$} from 'bun';
-import {CreateVideoInternals} from 'create-video';
 import {cpSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import path from 'path';
+import {$} from 'bun';
+import {CreateVideoInternals} from 'create-video';
 
 type MinimalTemplate = {
 	shortName: string;

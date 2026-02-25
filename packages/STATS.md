@@ -46,6 +46,7 @@ Monthly downloads of Remotion packages
 [![NPM Downloads](https://img.shields.io/npm/dm/@remotion/rive.svg?style=flat&color=black&label=@remotion/rive)](https://npmcharts.com/compare/@remotion/rive?minimal=true)  
 [![NPM Downloads](https://img.shields.io/npm/dm/@remotion/rounded-text-box.svg?style=flat&color=black&label=@remotion/rounded-text-box)](https://npmcharts.com/compare/@remotion/rounded-text-box?minimal=true)  
 [![NPM Downloads](https://img.shields.io/npm/dm/@remotion/serverless.svg?style=flat&color=black&label=@remotion/serverless)](https://npmcharts.com/compare/@remotion/serverless?minimal=true)  
+[![NPM Downloads](https://img.shields.io/npm/dm/@remotion/sfx.svg?style=flat&color=black&label=@remotion/sfx)](https://npmcharts.com/compare/@remotion/sfx?minimal=true)  
 [![NPM Downloads](https://img.shields.io/npm/dm/@remotion/shapes.svg?style=flat&color=black&label=@remotion/shapes)](https://npmcharts.com/compare/@remotion/shapes?minimal=true)  
 [![NPM Downloads](https://img.shields.io/npm/dm/@remotion/skia.svg?style=flat&color=black&label=@remotion/skia)](https://npmcharts.com/compare/@remotion/skia?minimal=true)  
 [![NPM Downloads](https://img.shields.io/npm/dm/@remotion/streaming.svg?style=flat&color=black&label=@remotion/streaming)](https://npmcharts.com/compare/@remotion/streaming?minimal=true)  

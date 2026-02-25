@@ -1,1 +1,1 @@
-import { Config } from "@remotion/cli/config";
+import {Config} from '@remotion/cli/config';

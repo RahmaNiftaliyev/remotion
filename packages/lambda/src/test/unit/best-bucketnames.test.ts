@@ -1,6 +1,6 @@
+import {expect, test} from 'bun:test';
 import {LambdaClientInternals} from '@remotion/lambda-client';
 import {makeBucketName} from '@remotion/serverless';
-import {expect, test} from 'bun:test';
 import {mockImplementation} from '../mocks/mock-implementation';
 
 test('Generate and parse bucket names correctly', () => {

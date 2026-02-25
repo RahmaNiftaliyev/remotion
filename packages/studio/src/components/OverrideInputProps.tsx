@@ -3,9 +3,9 @@ import {Internals} from 'remotion';
 import {BLUE, LIGHT_TEXT} from '../helpers/colors';
 import {ModalsContext} from '../state/modals';
 import {Button} from './Button';
+import {Flex, Spacing} from './layout';
 import {DismissableModal} from './NewComposition/DismissableModal';
 import {RemTextarea} from './NewComposition/RemTextarea';
-import {Flex, Spacing} from './layout';
 
 const style: React.CSSProperties = {
 	padding: 12,

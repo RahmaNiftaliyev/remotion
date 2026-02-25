@@ -1,15 +1,15 @@
 import React, {useMemo} from 'react';
-import {EditorPropsProvider} from './EditorProps.js';
-import {SequenceManagerProvider} from './SequenceManager.js';
-import {TimelineContextProvider} from './TimelineContext.js';
 import {SharedAudioContextProvider} from './audio/shared-audio-tags.js';
 import {BufferingProvider} from './buffering.js';
+import {EditorPropsProvider} from './EditorProps.js';
 import type {LoggingContextValue} from './log-level-context.js';
 import {LogLevelContext} from './log-level-context.js';
 import type {LogLevel} from './log.js';
 import type {TNonceContext} from './nonce.js';
 import {NonceContext} from './nonce.js';
 import {PrefetchProvider} from './prefetch-state.js';
+import {SequenceManagerProvider} from './SequenceManager.js';
+import {TimelineContextProvider} from './TimelineContext.js';
 import {MediaEnabledProvider} from './use-media-enabled.js';
 import {DurationsContextProvider} from './video/duration-state.js';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Sequence} from 'remotion';
-import {SelectionOutline} from './SelectionOutline';
 import type {Item} from './item';
+import {SelectionOutline} from './SelectionOutline';
 
 const displaySelectedItemOnTop = (
 	items: Item[],

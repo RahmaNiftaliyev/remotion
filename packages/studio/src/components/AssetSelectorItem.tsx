@@ -18,9 +18,9 @@ import {CollapsedFolderIcon, ExpandedFolderIcon} from '../icons/folder';
 import {SidebarContext} from '../state/sidebar';
 import type {RenderInlineAction} from './InlineAction';
 import {InlineAction} from './InlineAction';
+import {Row, Spacing} from './layout';
 import {showNotification} from './Notifications/NotificationCenter';
 import {openInFileExplorer} from './RenderQueue/actions';
-import {Row, Spacing} from './layout';
 
 const ASSET_ITEM_HEIGHT = 32;
 

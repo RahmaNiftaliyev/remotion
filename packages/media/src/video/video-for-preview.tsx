@@ -6,7 +6,12 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
-import type {LogLevel, LoopVolumeCurveBehavior, VolumeProp} from 'remotion';
+import type {
+	LogLevel,
+	LoopVolumeCurveBehavior,
+	SequenceControls,
+	VolumeProp,
+} from 'remotion';
 import {
 	Html5Video,
 	Internals,
@@ -14,6 +19,7 @@ import {
 	useCurrentFrame,
 	useVideoConfig,
 } from 'remotion';
+import {z} from 'zod';
 import {getTimeInSeconds} from '../get-time-in-seconds';
 import {MediaPlayer} from '../media-player';
 import {type MediaOnError, callOnErrorAndResolve} from '../on-error';
@@ -132,6 +138,22 @@ const VideoForPreviewAssertedShowing: React.FC<VideoForPreviewProps> = ({
 		trimBefore,
 	});
 
+	const controls: SequenceControls | null = useMemo(() => {
+		if (typeof volume !== 'number') {
+			return null;
+		}
+
+		return {
+			schema: z.object({
+				volume: z.number().min(0).multipleOf(0.01),
+				playbackRate: z.number().min(0).multipleOf(0.01),
+				trimBefore: z.number(),
+				trimAfter: z.number(),
+			}),
+			currentValue: {volume, playbackRate, trimBefore, trimAfter},
+		};
+	}, [volume, playbackRate, trimBefore, trimAfter]);
+
 	const {id: timelineId} = useMediaInTimeline({
 		volume,
 		mediaType: 'video',
@@ -146,6 +168,7 @@ const VideoForPreviewAssertedShowing: React.FC<VideoForPreviewProps> = ({
 		mediaVolume,
 		trimAfter,
 		trimBefore,
+		controls,
 	});
 
 	const isSequenceHidden = hidden[timelineId] ?? false;

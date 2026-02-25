@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import React, {forwardRef, useCallback, useContext} from 'react';
-import {Sequence} from '../Sequence.js';
 import {getAbsoluteSrc} from '../absolute-src.js';
 import {calculateMediaDuration} from '../calculate-media-duration.js';
 import {addSequenceStackTraces} from '../enable-sequence-stack-traces.js';
 import {Loop} from '../loop/index.js';
 import {usePreload} from '../prefetch.js';
+import {Sequence} from '../Sequence.js';
 import {useRemotionEnvironment} from '../use-remotion-environment.js';
 import {useVideoConfig} from '../use-video-config.js';
 import {validateMediaProps} from '../validate-media-props.js';
@@ -13,10 +13,10 @@ import {
 	resolveTrimProps,
 	validateMediaTrimProps,
 } from '../validate-start-from-props.js';
-import {VideoForPreview} from './VideoForPreview.js';
-import {VideoForRendering} from './VideoForRendering.js';
 import {DurationsContext} from './duration-state.js';
 import type {RemotionMainVideoProps, RemotionVideoProps} from './props';
+import {VideoForPreview} from './VideoForPreview.js';
+import {VideoForRendering} from './VideoForRendering.js';
 
 const VideoForwardingFunction: React.ForwardRefRenderFunction<
 	HTMLVideoElement,

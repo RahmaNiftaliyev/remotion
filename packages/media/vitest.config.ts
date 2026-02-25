@@ -1,5 +1,5 @@
-import {webdriverio} from '@vitest/browser-webdriverio';
 import path from 'node:path';
+import {webdriverio} from '@vitest/browser-webdriverio';
 import {defineConfig} from 'vitest/config';
 
 export default defineConfig({

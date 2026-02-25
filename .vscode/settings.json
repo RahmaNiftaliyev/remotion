@@ -4,7 +4,7 @@
 		"source.organizeImports": "never",
 		"source.fixAll": "explicit"
 	},
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.defaultFormatter": "oxc.oxc-vscode",
 	"[rust]": {
 		"editor.defaultFormatter": "rust-lang.rust-analyzer"
 	},
@@ -17,15 +17,15 @@
 	},
 	"[javascript]": {
 		"editor.formatOnSave": true,
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
+		"editor.defaultFormatter": "oxc.oxc-vscode"
 	},
 	"[typescript]": {
 		"editor.formatOnSave": true,
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
+		"editor.defaultFormatter": "oxc.oxc-vscode"
 	},
 	"[typescriptreact]": {
 		"editor.formatOnSave": true,
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
+		"editor.defaultFormatter": "oxc.oxc-vscode"
 	},
 	"[go]": {
 		"editor.defaultFormatter": "golang.go"

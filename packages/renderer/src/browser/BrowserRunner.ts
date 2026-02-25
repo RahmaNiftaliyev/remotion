@@ -21,10 +21,10 @@ import type {LogLevel} from '../log-level';
 import {isEqualOrBelowLogLevel} from '../log-level';
 import {Log} from '../logger';
 import {truthy} from '../truthy';
+import {assert} from './assert';
 import {Connection} from './Connection';
 import {TimeoutError} from './Errors';
 import {NodeWebSocketTransport} from './NodeWebSocketTransport';
-import {assert} from './assert';
 import {
 	formatChromeMessage,
 	shouldLogBrowserMessage,

@@ -21,6 +21,7 @@ export const drawText = ({
 			fontFamily,
 			fontSize,
 			fontWeight,
+			fontStyle,
 			direction,
 			writingMode,
 			letterSpacing,
@@ -45,7 +46,7 @@ export const drawText = ({
 
 		const fontSizePx = parseFloat(fontSize);
 
-		contextToDraw.font = `${fontWeight} ${fontSizePx}px ${fontFamily}`;
+		contextToDraw.font = `${fontStyle} ${fontWeight} ${fontSizePx}px ${fontFamily}`;
 		contextToDraw.fillStyle =
 			// If text is being applied with backgroundClipText, we need to use a solid color otherwise it won't get
 			// applied in canvas

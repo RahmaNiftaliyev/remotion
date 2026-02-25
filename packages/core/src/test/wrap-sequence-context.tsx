@@ -1,8 +1,8 @@
 import React from 'react';
+import {BufferingProvider} from '../buffering.js';
 import {CanUseRemotionHooksProvider} from '../CanUseRemotionHooks.js';
 import type {CompositionManagerContext} from '../CompositionManagerContext.js';
 import {CompositionManager} from '../CompositionManagerContext.js';
-import {BufferingProvider} from '../buffering.js';
 import type {LoggingContextValue} from '../log-level-context.js';
 import {LogLevelContext} from '../log-level-context.js';
 

@@ -1,7 +1,7 @@
 import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
-import {PromptsShowPage} from './components/prompts/PromptsShow';
 import type {PromptSubmission} from './components/prompts/prompt-types';
+import {PromptsShowPage} from './components/prompts/PromptsShow';
 import './index.css';
 
 const mockPromptSubmission: PromptSubmission = {

@@ -98,7 +98,7 @@ export const Button: React.FC<ButtonProps> = ({
 
 	const sharedClasses = cn(
 		'text-text',
-		'flex',
+		'inline-flex',
 		'justify-center',
 		'bg-button-bg',
 		'items-center',
@@ -112,7 +112,6 @@ export const Button: React.FC<ButtonProps> = ({
 		'cursor-pointer',
 		'px-4',
 		'h-12',
-		'flex',
 		'flex-row',
 		'items-center',
 		'relative',

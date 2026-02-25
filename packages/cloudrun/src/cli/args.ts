@@ -1,5 +1,4 @@
 import {CliInternals} from '@remotion/cli';
-
 import type {Privacy} from '../defaults';
 import type {GcpRegion} from '../pricing/gcp-regions';
 

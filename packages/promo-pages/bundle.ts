@@ -1,5 +1,4 @@
 import {$, build} from 'bun';
-
 import {NoReactInternals} from 'remotion/no-react';
 
 if (process.env.NODE_ENV !== 'production') {

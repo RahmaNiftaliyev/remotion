@@ -10,7 +10,6 @@ import {
 	DefaultVideoLayout,
 } from '@vidstack/react/player/layouts/default';
 import React, {useCallback} from 'react';
-
 import '@vidstack/react/player/styles/default/layouts/video.css';
 import '@vidstack/react/player/styles/default/theme.css';
 

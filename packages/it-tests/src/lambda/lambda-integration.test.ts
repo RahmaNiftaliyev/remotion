@@ -1,6 +1,6 @@
 import {expect, test} from 'bun:test';
-import execa from 'execa';
 import path from 'path';
+import execa from 'execa';
 
 test('Should be able to call pnpm exec remotion lambda', async () => {
 	const task = await execa('bun', ['x', 'remotion', 'lambda'], {

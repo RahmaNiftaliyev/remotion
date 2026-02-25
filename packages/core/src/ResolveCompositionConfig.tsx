@@ -1,8 +1,8 @@
 import {createContext, createRef, useContext, useMemo} from 'react';
 import type {AnyComposition} from './CompositionManager.js';
 import {CompositionManager} from './CompositionManagerContext.js';
-import {EditorPropsContext} from './EditorProps.js';
 import {getInputProps} from './config/input-props.js';
+import {EditorPropsContext} from './EditorProps.js';
 import {useRemotionEnvironment} from './use-remotion-environment.js';
 import {validateDimension} from './validation/validate-dimensions.js';
 import {validateDurationInFrames} from './validation/validate-duration-in-frames.js';

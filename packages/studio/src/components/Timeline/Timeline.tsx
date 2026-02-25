@@ -11,10 +11,12 @@ import {VERTICAL_SCROLLBAR_CLASSNAME} from '../Menu/is-menu-item';
 import {SplitterContainer} from '../Splitter/SplitterContainer';
 import {SplitterElement} from '../Splitter/SplitterElement';
 import {SplitterHandle} from '../Splitter/SplitterHandle';
+import {isTrackHidden} from './is-collapsed';
 import {
 	MAX_TIMELINE_TRACKS,
 	MAX_TIMELINE_TRACKS_NOTICE_HEIGHT,
 } from './MaxTimelineTracks';
+import {timelineVerticalScroll} from './timeline-refs';
 import {TimelineDragHandler} from './TimelineDragHandler';
 import {TimelineInOutPointer} from './TimelineInOutPointer';
 import {TimelineList} from './TimelineList';
@@ -28,8 +30,6 @@ import {
 } from './TimelineTimeIndicators';
 import {TimelineTracks} from './TimelineTracks';
 import {TimelineWidthProvider} from './TimelineWidthProvider';
-import {isTrackHidden} from './is-collapsed';
-import {timelineVerticalScroll} from './timeline-refs';
 
 const container: React.CSSProperties = {
 	minHeight: '100%',

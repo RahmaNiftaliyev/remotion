@@ -1,5 +1,5 @@
-import path from 'node:path';
 import type {CanUpdateSequencePropsResponse} from '@remotion/studio-shared';
+import path from 'node:path';
 import {installFileWatcher} from '../file-watcher';
 import {waitForLiveEventsListener} from './live-events';
 import {computeSequencePropsStatus} from './routes/can-update-sequence-props';

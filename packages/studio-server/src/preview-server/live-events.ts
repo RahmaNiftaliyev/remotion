@@ -1,10 +1,10 @@
+import type {LogLevel} from '@remotion/renderer';
+import type {EventSourceEvent} from '@remotion/studio-shared';
 import type {
 	IncomingMessage,
 	OutgoingHttpHeaders,
 	ServerResponse,
 } from 'node:http';
-import type {LogLevel} from '@remotion/renderer';
-import type {EventSourceEvent} from '@remotion/studio-shared';
 import {printServerReadyComment} from '../server-ready';
 import {unsubscribeClientFileExistenceWatchers} from './file-existence-watchers';
 import {unsubscribeClientSequencePropsWatchers} from './sequence-props-watchers';

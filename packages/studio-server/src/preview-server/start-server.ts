@@ -1,5 +1,3 @@
-import type {IncomingMessage} from 'node:http';
-import http from 'node:http';
 import type {WebpackOverrideFn} from '@remotion/bundler';
 import {BundlerInternals, webpack} from '@remotion/bundler';
 import type {LogLevel} from '@remotion/renderer';
@@ -9,6 +7,8 @@ import type {
 	RenderDefaults,
 	RenderJob,
 } from '@remotion/studio-shared';
+import type {IncomingMessage} from 'node:http';
+import http from 'node:http';
 import {detectRemotionServer} from '../detect-remotion-server';
 import {handleRoutes} from '../routes';
 import type {QueueMethods} from './api-types';

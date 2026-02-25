@@ -1,5 +1,3 @@
-import {readFileSync} from 'node:fs';
-import path from 'node:path';
 import type {
 	Expression,
 	File,
@@ -10,6 +8,8 @@ import type {
 	UnaryExpression,
 } from '@babel/types';
 import type {CanUpdateSequencePropsResponse} from '@remotion/studio-shared';
+import {readFileSync} from 'node:fs';
+import path from 'node:path';
 import * as recast from 'recast';
 import {parseAst} from '../../codemods/parse-ast';
 

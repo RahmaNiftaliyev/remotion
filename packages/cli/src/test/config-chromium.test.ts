@@ -1,5 +1,5 @@
-import {expect, test} from 'bun:test';
 import {BrowserSafeApis} from '@remotion/renderer/client';
+import {expect, test} from 'bun:test';
 import {Config} from '../config';
 
 test('getChromiumOpenGlRenderer from Config - angle value', () => {

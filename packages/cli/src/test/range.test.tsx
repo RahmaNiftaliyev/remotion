@@ -1,6 +1,6 @@
-import {describe, expect, test} from 'bun:test';
 import {RenderInternals} from '@remotion/renderer';
 import {BrowserSafeApis} from '@remotion/renderer/client';
+import {describe, expect, test} from 'bun:test';
 import {expectToThrow} from './expect-to-throw';
 
 const {framesOption} = BrowserSafeApis.options;

@@ -1,8 +1,3 @@
-import fs, {createWriteStream} from 'fs';
-import {createReadStream, existsSync, statSync} from 'node:fs';
-import type {IncomingMessage, ServerResponse} from 'node:http';
-import path, {join} from 'node:path';
-import {URLSearchParams} from 'node:url';
 import {BundlerInternals} from '@remotion/bundler';
 import type {LogLevel} from '@remotion/renderer';
 import type {
@@ -14,6 +9,11 @@ import type {
 	SymbolicatedStackFrame,
 } from '@remotion/studio-shared';
 import {SOURCE_MAP_ENDPOINT, getProjectName} from '@remotion/studio-shared';
+import fs, {createWriteStream} from 'fs';
+import {createReadStream, existsSync, statSync} from 'node:fs';
+import type {IncomingMessage, ServerResponse} from 'node:http';
+import path, {join} from 'node:path';
+import {URLSearchParams} from 'node:url';
 import {
 	addCompletedClientRender,
 	getCompletedClientRenders,

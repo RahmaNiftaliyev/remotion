@@ -1,6 +1,6 @@
+import {BrowserSafeApis} from '@remotion/renderer/client';
 import {existsSync} from 'node:fs';
 import path from 'node:path';
-import {BrowserSafeApis} from '@remotion/renderer/client';
 import {loadConfigFile} from './load-config';
 import {Log} from './log';
 import {parsedCli} from './parsed-cli';

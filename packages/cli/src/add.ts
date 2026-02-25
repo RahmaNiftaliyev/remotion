@@ -1,7 +1,7 @@
-import {spawn} from 'node:child_process';
-import fs from 'node:fs';
 import {RenderInternals, type LogLevel} from '@remotion/renderer';
 import {StudioServerInternals} from '@remotion/studio-server';
+import {spawn} from 'node:child_process';
+import fs from 'node:fs';
 import {chalk} from './chalk';
 import {EXTRA_PACKAGES} from './extra-packages';
 import {listOfRemotionPackages} from './list-of-remotion-packages';

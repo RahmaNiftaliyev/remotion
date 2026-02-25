@@ -1,8 +1,8 @@
+import type {LogLevel, LogOptions} from '@remotion/renderer';
+import {BrowserSafeApis} from '@remotion/renderer/client';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import type {LogLevel, LogOptions} from '@remotion/renderer';
-import {BrowserSafeApis} from '@remotion/renderer/client';
 import {Log} from './log';
 import {parsedCli} from './parsed-cli';
 

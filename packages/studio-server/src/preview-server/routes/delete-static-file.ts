@@ -1,9 +1,9 @@
-import {existsSync, unlinkSync} from 'fs';
-import path from 'path';
 import type {
 	DeleteStaticFileRequest,
 	DeleteStaticFileResponse,
 } from '@remotion/studio-shared';
+import {existsSync, unlinkSync} from 'fs';
+import path from 'path';
 import type {ApiHandler} from '../api-types';
 
 export const deleteStaticFileHandler: ApiHandler<

@@ -1,6 +1,6 @@
-import path from 'path';
 import type {LogLevel} from '@remotion/renderer';
 import {BrowserSafeApis} from '@remotion/renderer/client';
+import path from 'path';
 import {loadConfig} from './get-config-file-name';
 import {makeHyperlink} from './hyperlinks/make-link';
 import {Log} from './log';

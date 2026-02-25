@@ -1,10 +1,10 @@
-import {spawn} from 'node:child_process';
 import {RenderInternals} from '@remotion/renderer';
 import {
 	extraPackages,
 	type InstallPackageRequest,
 	type InstallPackageResponse,
 } from '@remotion/studio-shared';
+import {spawn} from 'node:child_process';
 import {VERSION} from 'remotion/version';
 import {getInstallCommand} from '../../helpers/install-command';
 import type {ApiHandler} from '../api-types';

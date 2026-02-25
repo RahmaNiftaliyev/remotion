@@ -1,9 +1,9 @@
-import {existsSync, readdirSync, readFileSync, rmSync, writeFileSync} from 'fs';
-import path from 'path';
 import {BundlerInternals} from '@remotion/bundler';
 import type {LogLevel} from '@remotion/renderer';
 import {BrowserSafeApis} from '@remotion/renderer/client';
 import {StudioServerInternals} from '@remotion/studio-server';
+import {existsSync, readdirSync, readFileSync, rmSync, writeFileSync} from 'fs';
+import path from 'path';
 import {chalk} from './chalk';
 import {findEntryPoint} from './entry-point';
 import {getGitSource} from './get-github-repository';

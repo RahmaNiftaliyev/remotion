@@ -1,6 +1,6 @@
+import type {ProjectInfo} from '@remotion/studio-shared';
 import {existsSync} from 'node:fs';
 import path from 'node:path';
-import type {ProjectInfo} from '@remotion/studio-shared';
 
 export const getProjectInfo = (
 	remotionRoot: string,

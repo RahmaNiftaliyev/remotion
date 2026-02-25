@@ -1,7 +1,5 @@
 // Prints to CLI and also reports back to browser
 
-import {existsSync, mkdirSync} from 'node:fs';
-import path from 'node:path';
 import type {
 	Browser,
 	BrowserExecutable,
@@ -19,6 +17,8 @@ import type {
 	JobProgressCallback,
 } from '@remotion/studio-server';
 import type {BrowserDownloadState} from '@remotion/studio-shared';
+import {existsSync, mkdirSync} from 'node:fs';
+import path from 'node:path';
 import {NoReactInternals} from 'remotion/no-react';
 import {defaultBrowserDownloadProgress} from '../browser-download-bar';
 import {chalk} from '../chalk';

@@ -1,7 +1,7 @@
-import {existsSync} from 'node:fs';
-import path from 'node:path';
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
+import {existsSync} from 'node:fs';
+import path from 'node:path';
 import {ConfigInternals} from './config';
 import {Log} from './log';
 

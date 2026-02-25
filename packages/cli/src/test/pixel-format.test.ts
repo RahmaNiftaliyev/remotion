@@ -1,6 +1,6 @@
-import {describe, expect, test} from 'bun:test';
 import type {PixelFormat} from '@remotion/renderer';
 import {BrowserSafeApis} from '@remotion/renderer/client';
+import {describe, expect, test} from 'bun:test';
 import {expectToThrow} from './expect-to-throw';
 
 const {pixelFormatOption} = BrowserSafeApis.options;

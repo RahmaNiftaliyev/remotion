@@ -1,9 +1,11 @@
+import type {Expression} from '@babel/types';
 import {expect, test} from 'bun:test';
 import path from 'node:path';
-import type {Expression} from '@babel/types';
 import {parseAst} from '../codemods/parse-ast';
-import {isStaticValue} from '../preview-server/routes/can-update-sequence-props';
-import {computeSequencePropsStatus} from '../preview-server/routes/can-update-sequence-props';
+import {
+	computeSequencePropsStatus,
+	isStaticValue,
+} from '../preview-server/routes/can-update-sequence-props';
 
 const parseExpression = (code: string): Expression => {
 	const ast = parseAst(`a = ${code}`);

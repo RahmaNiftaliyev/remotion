@@ -1,8 +1,8 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
 import type {PackageManager} from '@remotion/studio-shared';
+import fs from 'node:fs';
+import path from 'node:path';
 
 type LockfilePath = {
 	manager: PackageManager;

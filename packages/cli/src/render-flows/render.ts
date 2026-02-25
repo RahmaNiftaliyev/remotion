@@ -1,6 +1,3 @@
-import fs, {existsSync} from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
 import type {
 	AudioCodec,
 	Browser,
@@ -38,6 +35,9 @@ import {
 	type ArtifactProgress,
 	type BrowserDownloadState,
 } from '@remotion/studio-shared';
+import fs, {existsSync} from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import type {_InternalTypes} from 'remotion';
 import {NoReactInternals} from 'remotion/no-react';
 import {defaultBrowserDownloadProgress} from '../browser-download-bar';

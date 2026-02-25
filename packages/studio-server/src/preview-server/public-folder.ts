@@ -1,6 +1,6 @@
+import {BundlerInternals} from '@remotion/bundler';
 import {existsSync, watch} from 'node:fs';
 import path from 'node:path';
-import {BundlerInternals} from '@remotion/bundler';
 import type {StaticFile} from 'remotion';
 import {envSupportsFsRecursive} from './env-supports-fs-recursive';
 

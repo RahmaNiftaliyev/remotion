@@ -1,9 +1,9 @@
-import {readFileSync, writeFileSync} from 'node:fs';
 import {RenderInternals} from '@remotion/renderer';
 import type {
 	ApplyCodemodRequest,
 	ApplyCodemodResponse,
 } from '@remotion/studio-shared';
+import {readFileSync, writeFileSync} from 'node:fs';
 import {
 	formatOutput,
 	parseAndApplyCodemod,

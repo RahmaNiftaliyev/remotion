@@ -1,4 +1,3 @@
-import path from 'node:path';
 import type {LogLevel} from '@remotion/renderer';
 import type {
 	AggregateRenderProgress,
@@ -7,6 +6,7 @@ import type {
 	RenderJobWithCleanup,
 } from '@remotion/studio-server';
 import {StudioServerInternals} from '@remotion/studio-server';
+import path from 'node:path';
 import {chalk} from '../chalk';
 import {Log} from '../log';
 import {printError} from '../print-error';

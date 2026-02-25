@@ -22,10 +22,7 @@ import {
 } from '../../helpers/timeline-layout';
 import {callApi} from '../call-api';
 import {getDefaultValue} from '../RenderModal/SchemaEditor/zod-schema-type';
-import {
-	TimelineFieldSavingSpinner,
-	TimelineFieldValue,
-} from './TimelineSchemaField';
+import {TimelineFieldValue} from './TimelineSchemaField';
 
 const expandedSectionBase: React.CSSProperties = {
 	color: 'white',
@@ -63,23 +60,10 @@ const TimelineFieldRow: React.FC<{
 	readonly onDragEnd: () => void;
 	readonly propStatus: CanUpdateSequencePropStatus | null;
 }> = ({field, onSave, onDragValueChange, onDragEnd, propStatus}) => {
-	const effectiveCodeValue = propStatus?.canUpdate
-		? (propStatus.codeValue ??
-			field.currentValue ??
-			(field.typeName === 'default'
-				? getDefaultValue(field.fieldSchema)
-				: undefined))
-		: undefined;
-	const saving =
-		propStatus !== null &&
-		propStatus.canUpdate &&
-		JSON.stringify(field.currentValue) !== JSON.stringify(effectiveCodeValue);
-
 	return (
 		<div style={{...fieldRow, height: field.rowHeight}}>
 			<div style={fieldLabelRow}>
 				<span style={fieldName}>{field.key}</span>
-				<TimelineFieldSavingSpinner saving={saving} />
 			</div>
 			<TimelineFieldValue
 				field={field}

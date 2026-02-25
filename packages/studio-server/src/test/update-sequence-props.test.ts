@@ -1,9 +1,7 @@
 import {expect, test} from 'bun:test';
-import type {IncomingMessage, ServerResponse} from 'node:http';
 import path from 'node:path';
 import type {Expression} from '@babel/types';
 import {parseAst} from '../codemods/parse-ast';
-import type {QueueMethods} from '../preview-server/api-types';
 import {isStaticValue} from '../preview-server/routes/can-update-sequence-props';
 
 const parseExpression = (code: string): Expression => {
@@ -43,24 +41,14 @@ test('Computed values should be detected as computed', () => {
 });
 
 test('canUpdateSequenceProps should flag computed props', async () => {
-	const {canUpdateSequencePropsHandler} =
+	const {computeSequencePropsStatus} =
 		await import('../preview-server/routes/can-update-sequence-props');
 
-	const result = await canUpdateSequencePropsHandler({
-		input: {
-			fileName: path.join(__dirname, 'snapshots', 'light-leak-computed.txt'),
-			line: 8,
-			column: 0,
-			keys: ['durationInFrames', 'seed', 'hueShift'],
-		},
+	const result = computeSequencePropsStatus({
+		fileName: path.join(__dirname, 'snapshots', 'light-leak-computed.txt'),
+		line: 8,
+		keys: ['durationInFrames', 'seed', 'hueShift'],
 		remotionRoot: '/',
-		entryPoint: '',
-		request: {} as IncomingMessage,
-		response: {} as ServerResponse,
-		logLevel: 'info',
-		methods: {} as QueueMethods,
-		publicDir: '',
-		binariesDirectory: null,
 	});
 
 	expect(result.canUpdate).toBe(true);

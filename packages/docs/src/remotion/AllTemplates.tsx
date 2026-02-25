@@ -67,11 +67,6 @@ export const AllTemplates: React.FC = () => {
 										return null;
 									}
 
-									if (template.cliId === 'google-tts') {
-										// Delete duplicate
-										return null;
-									}
-
 									return (
 										<div
 											key={template.cliId}

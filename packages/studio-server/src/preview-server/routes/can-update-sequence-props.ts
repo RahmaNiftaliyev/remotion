@@ -9,13 +9,9 @@ import type {
 	ObjectProperty,
 	UnaryExpression,
 } from '@babel/types';
-import type {
-	CanUpdateSequencePropsRequest,
-	CanUpdateSequencePropsResponse,
-} from '@remotion/studio-shared';
+import type {CanUpdateSequencePropsResponse} from '@remotion/studio-shared';
 import * as recast from 'recast';
 import {parseAst} from '../../codemods/parse-ast';
-import type {ApiHandler} from '../api-types';
 
 type CanUpdatePropStatus =
 	| {canUpdate: true}
@@ -170,13 +166,4 @@ export const computeSequencePropsStatus = ({
 			reason: (err as Error).message,
 		};
 	}
-};
-
-export const canUpdateSequencePropsHandler: ApiHandler<
-	CanUpdateSequencePropsRequest,
-	CanUpdateSequencePropsResponse
-> = ({input: {fileName, line, keys}, remotionRoot}) => {
-	return Promise.resolve(
-		computeSequencePropsStatus({fileName, line, keys, remotionRoot}),
-	);
 };

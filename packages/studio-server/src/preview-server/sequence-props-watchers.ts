@@ -6,7 +6,6 @@ import {computeSequencePropsStatus} from './routes/can-update-sequence-props';
 
 type WatcherInfo = {
 	unwatch: () => void;
-	keys: string[];
 };
 
 const sequencePropsWatchers: Record<string, Record<string, WatcherInfo>> = {};
@@ -83,7 +82,7 @@ export const subscribeToSequencePropsWatchers = ({
 		sequencePropsWatchers[clientId] = {};
 	}
 
-	sequencePropsWatchers[clientId][watcherKey] = {unwatch, keys};
+	sequencePropsWatchers[clientId][watcherKey] = {unwatch};
 
 	return initialResult;
 };

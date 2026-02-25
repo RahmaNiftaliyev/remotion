@@ -504,8 +504,9 @@ const internalRenderMediaOnWeb = async <
 
 			await webFsTarget.close();
 			return {
-				getBlob: () => {
-					return webFsTarget.getBlob();
+				getBlob: async () => {
+					const file = await webFsTarget.getBlob();
+					return new Blob([file], {type: getMimeType(container)});
 				},
 				internalState,
 			};

@@ -1,6 +1,7 @@
 import type {CanUpdateSequencePropStatus} from '@remotion/studio-shared';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
+import {Checkbox} from '../Checkbox';
 import {InputDragger} from '../NewComposition/InputDragger';
 import {
 	getZodNumberMaximum,
@@ -23,6 +24,10 @@ const unsupportedLabel: React.CSSProperties = {
 
 const draggerStyle: React.CSSProperties = {
 	width: 80,
+	marginLeft: 'auto',
+};
+
+const checkboxContainer: React.CSSProperties = {
 	marginLeft: 'auto',
 };
 
@@ -106,6 +111,32 @@ const TimelineNumberField: React.FC<{
 	);
 };
 
+const TimelineBooleanField: React.FC<{
+	readonly field: SchemaFieldInfo;
+	readonly codeValue: unknown;
+	readonly canUpdate: boolean;
+	readonly onSave: (key: string, value: unknown) => Promise<void>;
+}> = ({field, codeValue, canUpdate, onSave}) => {
+	const checked = Boolean(codeValue);
+
+	const onChange = useCallback(() => {
+		if (canUpdate) {
+			onSave(field.key, !checked);
+		}
+	}, [canUpdate, onSave, field.key, checked]);
+
+	return (
+		<div style={checkboxContainer}>
+			<Checkbox
+				checked={checked}
+				onChange={onChange}
+				name={field.key}
+				disabled={!canUpdate}
+			/>
+		</div>
+	);
+};
+
 export const TimelineFieldValue: React.FC<{
 	readonly field: SchemaFieldInfo;
 	readonly onSave: (key: string, value: unknown) => Promise<void>;
@@ -157,6 +188,19 @@ export const TimelineFieldValue: React.FC<{
 					onSave={onSave}
 					onDragValueChange={onDragValueChange}
 					onDragEnd={onDragEnd}
+				/>
+			</span>
+		);
+	}
+
+	if (resolvedTypeName === 'boolean') {
+		return (
+			<span style={wrapperStyle}>
+				<TimelineBooleanField
+					field={field}
+					codeValue={effectiveCodeValue}
+					canUpdate={canUpdate}
+					onSave={onSave}
 				/>
 			</span>
 		);

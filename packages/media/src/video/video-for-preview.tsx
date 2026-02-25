@@ -533,6 +533,7 @@ const videoSchema = z.object({
 	playbackRate: z.number().min(0).multipleOf(0.01).default(1),
 	trimBefore: z.number().min(0).default(0),
 	trimAfter: z.number().min(0).default(0),
+	loop: z.boolean().default(false),
 });
 
 export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
@@ -546,8 +547,15 @@ export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
 			playbackRate: props.playbackRate,
 			trimBefore: props.trimBefore,
 			trimAfter: props.trimAfter,
+			loop: props.loop,
 		};
-	}, [props.volume, props.playbackRate, props.trimBefore, props.trimAfter]);
+	}, [
+		props.volume,
+		props.playbackRate,
+		props.trimBefore,
+		props.trimAfter,
+		props.loop,
+	]);
 
 	const {controls, values} = Internals.useSchema(
 		schemaInput ? videoSchema : null,
@@ -566,6 +574,8 @@ export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
 		schemaInput !== null
 			? (values.trimAfter as number | undefined)
 			: props.trimAfter;
+	const effectiveLoop =
+		schemaInput !== null ? (values.loop as boolean) : props.loop;
 
 	const frame = useCurrentFrame();
 	const videoConfig = useVideoConfig();
@@ -576,7 +586,7 @@ export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
 			getTimeInSeconds({
 				unloopedTimeInSeconds: currentTime,
 				playbackRate,
-				loop: props.loop,
+				loop: effectiveLoop,
 				trimBefore,
 				trimAfter,
 				mediaDurationInSeconds: Infinity,
@@ -587,7 +597,7 @@ export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
 		);
 	}, [
 		currentTime,
-		props.loop,
+		effectiveLoop,
 		playbackRate,
 		props.src,
 		trimAfter,
@@ -604,6 +614,7 @@ export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
 			{...props}
 			volume={volume}
 			playbackRate={playbackRate}
+			loop={effectiveLoop}
 			trimBefore={trimBefore}
 			trimAfter={trimAfter}
 			controls={controls}

@@ -131,7 +131,6 @@ export const upgradeCommand = async ({
 		const workspaceRoot = findWorkspaceRoot(remotionRoot);
 		if (workspaceRoot) {
 			const updatedCatalogEntries: string[] = [];
-			const failedCatalogEntries: string[] = [];
 
 			for (const {pkg, version: pkgVersion} of catalogPackages) {
 				const didUpdate = updateCatalogEntry({
@@ -142,7 +141,7 @@ export const upgradeCommand = async ({
 				if (didUpdate) {
 					updatedCatalogEntries.push(`${pkg}@${pkgVersion}`);
 				} else {
-					failedCatalogEntries.push(pkg);
+					normalPackages.push({pkg, version: pkgVersion});
 				}
 			}
 
@@ -154,22 +153,10 @@ export const upgradeCommand = async ({
 					),
 				);
 			}
-
-			if (failedCatalogEntries.length > 0) {
-				Log.warn(
-					{indent: false, logLevel},
-					chalk.yellow(
-						`Could not find catalog entries for: ${failedCatalogEntries.join(', ')}. Update them manually.`,
-					),
-				);
-			}
 		} else {
-			Log.warn(
-				{indent: false, logLevel},
-				chalk.yellow(
-					`Found catalog: references for ${catalogPackages.map((p) => p.pkg).join(', ')}, but could not find workspace root. Update the catalog entries manually.`,
-				),
-			);
+			for (const catalogPkg of catalogPackages) {
+				normalPackages.push(catalogPkg);
+			}
 		}
 	}
 

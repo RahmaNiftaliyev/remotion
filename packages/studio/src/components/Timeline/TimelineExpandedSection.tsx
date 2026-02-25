@@ -1,5 +1,12 @@
 import type {CanUpdateSequencePropStatus} from '@remotion/studio-shared';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
+import {Internals} from 'remotion';
 import type {TSequence} from 'remotion';
 import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import {TIMELINE_TRACK_SEPARATOR} from '../../helpers/colors';
@@ -45,9 +52,11 @@ const fieldLabelRow: React.CSSProperties = {
 
 const TimelineFieldRow: React.FC<{
 	readonly field: SchemaFieldInfo;
-	readonly propStatus: CanUpdateSequencePropStatus | null;
 	readonly onSave: (key: string, value: unknown) => Promise<void>;
-}> = ({field, propStatus, onSave}) => {
+	readonly onDragValueChange: (key: string, value: unknown) => void;
+	readonly onDragEnd: () => void;
+	readonly propStatus: CanUpdateSequencePropStatus | null;
+}> = ({field, onSave, onDragValueChange, onDragEnd, propStatus}) => {
 	const [saving, setSaving] = useState(false);
 
 	const onSavingChange = useCallback((s: boolean) => {
@@ -65,6 +74,9 @@ const TimelineFieldRow: React.FC<{
 				propStatus={propStatus}
 				onSave={onSave}
 				onSavingChange={onSavingChange}
+				onDragValueChange={onDragValueChange}
+				onDragEnd={onDragEnd}
+				canUpdate={propStatus?.canUpdate ?? false}
 			/>
 		</div>
 	);
@@ -129,6 +141,10 @@ export const TimelineExpandedSection: React.FC<{
 		[sequence.controls],
 	);
 
+	const {setOverride, clearOverrides} = useContext(
+		Internals.SequenceControlOverrideContext,
+	);
+
 	const onSave = useCallback(
 		(key: string, value: unknown): Promise<void> => {
 			if (!propStatuses || !validatedLocation) {
@@ -152,6 +168,17 @@ export const TimelineExpandedSection: React.FC<{
 		[propStatuses, validatedLocation],
 	);
 
+	const onDragValueChange = useCallback(
+		(key: string, value: unknown) => {
+			setOverride(sequence.id, key, value);
+		},
+		[setOverride, sequence.id],
+	);
+
+	const onDragEnd = useCallback(() => {
+		clearOverrides(sequence.id);
+	}, [clearOverrides, sequence.id]);
+
 	return (
 		<div style={{...expandedSectionBase, height: expandedHeight}}>
 			{schemaFields
@@ -161,6 +188,8 @@ export const TimelineExpandedSection: React.FC<{
 							field={field}
 							propStatus={propStatuses?.[field.key] ?? null}
 							onSave={onSave}
+							onDragValueChange={onDragValueChange}
+							onDragEnd={onDragEnd}
 						/>
 					))
 				: 'No schema'}

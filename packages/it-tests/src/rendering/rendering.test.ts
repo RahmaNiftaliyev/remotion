@@ -380,6 +380,7 @@ test(
 			],
 			{
 				cwd: path.join(process.cwd(), '..', 'example'),
+				timeout: 25000,
 			},
 		);
 		expect(task.exitCode).toBe(0);

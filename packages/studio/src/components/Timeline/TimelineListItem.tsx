@@ -8,6 +8,7 @@ import React, {
 import type {TSequence} from 'remotion';
 import {Internals} from 'remotion';
 import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
+import {StudioServerConnectionCtx} from '../../helpers/client-id';
 import {TIMELINE_TRACK_SEPARATOR} from '../../helpers/colors';
 import {
 	getTimelineLayerHeight,
@@ -50,9 +51,10 @@ export const TimelineListItem: React.FC<{
 	readonly nestedDepth: number;
 	readonly isCompact: boolean;
 }> = ({nestedDepth, sequence, isCompact}) => {
-	const visualModeEnabled = Boolean(
-		process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED,
-	);
+	const {previewServerState} = useContext(StudioServerConnectionCtx);
+	const visualModeEnabled =
+		Boolean(process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED) &&
+		previewServerState.type === 'connected';
 	const {hidden, setHidden} = useContext(
 		Internals.SequenceVisibilityToggleContext,
 	);

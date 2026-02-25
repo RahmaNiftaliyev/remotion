@@ -4,7 +4,7 @@
 	},
 	"name": "docs",
 	"private": true,
-	"version": "4.0.428",
+	"version": "4.0.429",
 	"scripts": {
 		"formatting": "oxfmt src --check",
 		"docusaurus": "docusaurus",

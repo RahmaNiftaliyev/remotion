@@ -2,6 +2,7 @@ import type {SequenceControls} from 'remotion';
 import type {AnyZodSchema} from '../components/RenderModal/SchemaEditor/zod-schema-type';
 import {
 	getObjectShape,
+	getZodSchemaDescription,
 	getZodSchemaType,
 } from '../components/RenderModal/SchemaEditor/zod-schema-type';
 
@@ -29,6 +30,7 @@ const SUPPORTED_SCHEMA_TYPES = new Set([
 
 export type SchemaFieldInfo = {
 	key: string;
+	description: string | undefined;
 	typeName: string;
 	supported: boolean;
 	rowHeight: number;
@@ -49,6 +51,7 @@ export const getSchemaFields = (
 		const supported = SUPPORTED_SCHEMA_TYPES.has(typeName);
 		return {
 			key,
+			description: getZodSchemaDescription(fieldSchema),
 			typeName,
 			supported,
 			rowHeight: supported

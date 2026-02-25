@@ -529,8 +529,19 @@ const VideoForPreviewAssertedShowing: React.FC<
 };
 
 const videoSchema = z.object({
-	volume: z.number().min(0).max(20).multipleOf(0.01).default(1),
-	playbackRate: z.number().min(0).multipleOf(0.01).default(1),
+	volume: z
+		.number()
+		.min(0)
+		.max(20)
+		.multipleOf(0.01)
+		.default(1)
+		.describe('Volume'),
+	playbackRate: z
+		.number()
+		.min(0)
+		.multipleOf(0.01)
+		.default(1)
+		.describe('Playback Rate'),
 	trimBefore: z.number().min(0).default(0),
 	trimAfter: z.number().min(0).default(0),
 });

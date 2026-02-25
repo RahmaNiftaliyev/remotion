@@ -3,15 +3,15 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
 import {InputDragger} from '../NewComposition/InputDragger';
 import {
-	getDefaultValue,
-	getInnerType,
-	getZodSchemaType,
-} from '../RenderModal/SchemaEditor/zod-schema-type';
-import {
 	getZodNumberMaximum,
 	getZodNumberMinimum,
 	getZodNumberStep,
 } from '../RenderModal/SchemaEditor/zod-number-constraints';
+import {
+	getDefaultValue,
+	getInnerType,
+	getZodSchemaType,
+} from '../RenderModal/SchemaEditor/zod-schema-type';
 import {Spinner} from '../Spinner';
 
 const unsupportedLabel: React.CSSProperties = {
@@ -138,7 +138,9 @@ export const TimelineFieldValue: React.FC<{
 	const effectiveCodeValue =
 		propStatus.codeValue ??
 		field.currentValue ??
-		(field.typeName === 'default' ? getDefaultValue(field.fieldSchema) : undefined);
+		(field.typeName === 'default'
+			? getDefaultValue(field.fieldSchema)
+			: undefined);
 
 	const resolvedTypeName =
 		field.typeName === 'default'

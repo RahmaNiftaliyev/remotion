@@ -65,10 +65,10 @@ const TimelineFieldRow: React.FC<{
 }> = ({field, onSave, onDragValueChange, onDragEnd, propStatus}) => {
 	const effectiveCodeValue = propStatus?.canUpdate
 		? (propStatus.codeValue ??
-				field.currentValue ??
-				(field.typeName === 'default'
-					? getDefaultValue(field.fieldSchema)
-					: undefined))
+			field.currentValue ??
+			(field.typeName === 'default'
+				? getDefaultValue(field.fieldSchema)
+				: undefined))
 		: undefined;
 	const saving =
 		propStatus !== null &&

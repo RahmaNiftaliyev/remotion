@@ -31,7 +31,7 @@ export const useMediaInTimeline = ({
 	loopDisplay: LoopDisplay | undefined;
 	trimBefore: number | undefined;
 	trimAfter: number | undefined;
-	controls: SequenceControls | null;
+	controls: SequenceControls | undefined;
 }) => {
 	const parentSequence = useContext(Internals.SequenceContext);
 	const startsAt = Internals.useMediaStartsAt();
@@ -117,7 +117,7 @@ export const useMediaInTimeline = ({
 			stack,
 			premountDisplay: null,
 			postmountDisplay: null,
-			controls,
+			controls: controls ?? null,
 		});
 
 		return () => {

@@ -1,6 +1,12 @@
 import {RenderInternals, type LogLevel} from '@remotion/renderer';
 import {StudioServerInternals} from '@remotion/studio-server';
 import {execSync, spawn} from 'node:child_process';
+import {
+	findVersionSpecifier,
+	findWorkspaceRoot,
+	isCatalogProtocol,
+	updateCatalogEntry,
+} from './catalog-utils';
 import {chalk} from './chalk';
 import {EXTRA_PACKAGES} from './extra-packages';
 import {listOfRemotionPackages} from './list-of-remotion-packages';
@@ -43,12 +49,8 @@ export const upgradeCommand = async ({
 	logLevel: LogLevel;
 	args: string[];
 }) => {
-	const {
-		dependencies,
-		devDependencies,
-		optionalDependencies,
-		peerDependencies,
-	} = StudioServerInternals.getInstalledDependencies(remotionRoot);
+	const depsWithVersions =
+		StudioServerInternals.getInstalledDependenciesWithVersions(remotionRoot);
 
 	let targetVersion: string;
 	if (version) {
@@ -82,32 +84,22 @@ export const upgradeCommand = async ({
 	}
 
 	const allDeps = [
-		...dependencies,
-		...devDependencies,
-		...optionalDependencies,
-		...peerDependencies,
+		...Object.keys(depsWithVersions.dependencies),
+		...Object.keys(depsWithVersions.devDependencies),
+		...Object.keys(depsWithVersions.optionalDependencies),
+		...Object.keys(depsWithVersions.peerDependencies),
 	];
 
 	const remotionToUpgrade = listOfRemotionPackages.filter((u) =>
 		allDeps.includes(u),
 	);
 
-	// Check if extra packages (zod, mediabunny) are installed
 	const installedExtraPackages = Object.keys(EXTRA_PACKAGES).filter((pkg) =>
 		allDeps.includes(pkg),
 	);
 
-	// Get the correct versions for extra packages for this Remotion version
 	const extraPackageVersions =
 		getExtraPackageVersionsForRemotionVersion(targetVersion);
-
-	// Build the list of packages to upgrade
-	const packagesWithVersions = [
-		...remotionToUpgrade.map((pkg) => `${pkg}@${targetVersion}`),
-		...installedExtraPackages.map(
-			(pkg) => `${pkg}@${extraPackageVersions[pkg]}`,
-		),
-	];
 
 	if (installedExtraPackages.length > 0) {
 		Log.info(
@@ -116,19 +108,122 @@ export const upgradeCommand = async ({
 		);
 	}
 
-	const command = StudioServerInternals.getInstallCommand({
-		manager: manager.manager,
-		packages: packagesWithVersions,
-		version: '',
-		additionalArgs: args,
-	});
+	const allPackagesToUpgrade = [
+		...remotionToUpgrade,
+		...installedExtraPackages,
+	];
 
-	Log.info(
-		{indent: false, logLevel},
-		chalk.gray(`$ ${manager.manager} ${command.join(' ')}`),
+	const normalPackages: {pkg: string; version: string}[] = [];
+	const catalogPackages: {pkg: string; version: string}[] = [];
+
+	for (const pkg of allPackagesToUpgrade) {
+		const versionSpec = findVersionSpecifier(depsWithVersions, pkg);
+		const targetVersionForPkg = extraPackageVersions[pkg] ?? targetVersion;
+
+		if (versionSpec && isCatalogProtocol(versionSpec)) {
+			catalogPackages.push({pkg, version: targetVersionForPkg});
+		} else {
+			normalPackages.push({pkg, version: targetVersionForPkg});
+		}
+	}
+
+	if (catalogPackages.length > 0) {
+		const workspaceRoot = findWorkspaceRoot(remotionRoot);
+		if (workspaceRoot) {
+			const updatedCatalogEntries: string[] = [];
+			const failedCatalogEntries: string[] = [];
+
+			for (const {pkg, version: pkgVersion} of catalogPackages) {
+				const didUpdate = updateCatalogEntry({
+					workspaceRoot,
+					pkg,
+					newVersion: pkgVersion,
+				});
+				if (didUpdate) {
+					updatedCatalogEntries.push(`${pkg}@${pkgVersion}`);
+				} else {
+					failedCatalogEntries.push(pkg);
+				}
+			}
+
+			if (updatedCatalogEntries.length > 0) {
+				Log.info(
+					{indent: false, logLevel},
+					chalk.green(
+						`Updated catalog entries: ${updatedCatalogEntries.join(', ')}`,
+					),
+				);
+			}
+
+			if (failedCatalogEntries.length > 0) {
+				Log.warn(
+					{indent: false, logLevel},
+					chalk.yellow(
+						`Could not find catalog entries for: ${failedCatalogEntries.join(', ')}. Update them manually.`,
+					),
+				);
+			}
+		} else {
+			Log.warn(
+				{indent: false, logLevel},
+				chalk.yellow(
+					`Found catalog: references for ${catalogPackages.map((p) => p.pkg).join(', ')}, but could not find workspace root. Update the catalog entries manually.`,
+				),
+			);
+		}
+	}
+
+	const packagesWithVersions = normalPackages.map(
+		({pkg, version: pkgVersion}) => `${pkg}@${pkgVersion}`,
 	);
 
-	const task = spawn(manager.manager, command, {
+	if (packagesWithVersions.length > 0) {
+		const command = StudioServerInternals.getInstallCommand({
+			manager: manager.manager,
+			packages: packagesWithVersions,
+			version: '',
+			additionalArgs: args,
+		});
+
+		Log.info(
+			{indent: false, logLevel},
+			chalk.gray(`$ ${manager.manager} ${command.join(' ')}`),
+		);
+
+		await runPackageManagerCommand({
+			manager: manager.manager,
+			command,
+			logLevel,
+		});
+	}
+
+	if (catalogPackages.length > 0 && packagesWithVersions.length === 0) {
+		Log.info(
+			{indent: false, logLevel},
+			chalk.gray(`$ ${manager.manager} install`),
+		);
+
+		await runPackageManagerCommand({
+			manager: manager.manager,
+			command: ['install'],
+			logLevel,
+		});
+	}
+
+	Log.info({indent: false, logLevel}, '⏫ Remotion has been upgraded!');
+	Log.info({indent: false, logLevel}, 'https://remotion.dev/changelog');
+};
+
+const runPackageManagerCommand = async ({
+	manager,
+	command,
+	logLevel,
+}: {
+	manager: string;
+	command: string[];
+	logLevel: LogLevel;
+}) => {
+	const task = spawn(manager, command, {
 		env: {
 			...process.env,
 			ADBLOCK: '1',
@@ -152,7 +247,4 @@ export const upgradeCommand = async ({
 			}
 		});
 	});
-
-	Log.info({indent: false, logLevel}, '⏫ Remotion has been upgraded!');
-	Log.info({indent: false, logLevel}, 'https://remotion.dev/changelog');
 };

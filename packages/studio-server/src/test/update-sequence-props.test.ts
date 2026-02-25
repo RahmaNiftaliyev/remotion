@@ -1,10 +1,9 @@
 import {expect, test} from 'bun:test';
-import type {IncomingMessage, ServerResponse} from 'node:http';
 import path from 'node:path';
 import type {Expression} from '@babel/types';
 import {parseAst} from '../codemods/parse-ast';
-import type {QueueMethods} from '../preview-server/api-types';
 import {isStaticValue} from '../preview-server/routes/can-update-sequence-props';
+import {computeSequencePropsStatus} from '../preview-server/routes/can-update-sequence-props';
 
 const parseExpression = (code: string): Expression => {
 	const ast = parseAst(`a = ${code}`);
@@ -42,25 +41,12 @@ test('Computed values should be detected as computed', () => {
 	expect(isStaticValue(parseExpression('`template ${"x"}`'))).toBe(false);
 });
 
-test('canUpdateSequenceProps should flag computed props', async () => {
-	const {canUpdateSequencePropsHandler} =
-		await import('../preview-server/routes/can-update-sequence-props');
-
-	const result = await canUpdateSequencePropsHandler({
-		input: {
-			fileName: path.join(__dirname, 'snapshots', 'light-leak-computed.txt'),
-			line: 8,
-			column: 0,
-			keys: ['durationInFrames', 'seed', 'hueShift'],
-		},
+test('canUpdateSequenceProps should flag computed props', () => {
+	const result = computeSequencePropsStatus({
+		fileName: path.join(__dirname, 'snapshots', 'light-leak-computed.txt'),
+		line: 8,
+		keys: ['durationInFrames', 'seed', 'hueShift', 'nonExistentProp'],
 		remotionRoot: '/',
-		entryPoint: '',
-		request: {} as IncomingMessage,
-		response: {} as ServerResponse,
-		logLevel: 'info',
-		methods: {} as QueueMethods,
-		publicDir: '',
-		binariesDirectory: null,
 	});
 
 	expect(result.canUpdate).toBe(true);
@@ -71,4 +57,8 @@ test('canUpdateSequenceProps should flag computed props', async () => {
 	expect(result.props.durationInFrames).toEqual({canUpdate: true});
 	expect(result.props.hueShift).toEqual({canUpdate: true});
 	expect(result.props.seed).toEqual({canUpdate: false, reason: 'computed'});
+	expect(result.props.nonExistentProp).toEqual({
+		canUpdate: false,
+		reason: 'not-set',
+	});
 });

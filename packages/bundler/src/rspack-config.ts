@@ -104,6 +104,9 @@ export const rspackConfig = async ({
 		},
 		entry: [
 			require.resolve('./setup-environment'),
+			environment === 'development'
+				? require.resolve('./setup-sequence-stack-traces')
+				: null,
 			userDefinedComponent,
 			require.resolve('../react-shim.js'),
 			entry,

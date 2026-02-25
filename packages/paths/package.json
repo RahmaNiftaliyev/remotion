@@ -3,7 +3,7 @@
 		"url": "https://github.com/remotion-dev/remotion/tree/main/packages/paths"
 	},
 	"name": "@remotion/paths",
-	"version": "4.0.428",
+	"version": "4.0.429",
 	"description": "Utilities for working with SVG paths",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -11,6 +11,7 @@
 	"sideEffects": false,
 	"scripts": {
 		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"lint": "eslint src",
 		"test": "bun test src",
 		"make": "tsgo -d && bun --env-file=../.env.bundle bundle.ts"

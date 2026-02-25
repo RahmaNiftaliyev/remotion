@@ -43,7 +43,7 @@ import {
 } from './EditorProps.js';
 import {
 	addSequenceStackTraces,
-	enableSequenceStackTraces,
+	getComponentsToAddStacksTo,
 } from './enable-sequence-stack-traces.js';
 import {
 	getPreviewDomElement,
@@ -229,7 +229,7 @@ export const Internals = {
 	useMediaStartsAt,
 	BufferingProvider,
 	BufferingContextReact,
-	enableSequenceStackTraces,
+	getComponentsToAddStacksTo,
 	CurrentScaleContext,
 	PreviewSizeContext,
 	calculateScale,

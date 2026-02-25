@@ -3,7 +3,7 @@
 		"url": "https://github.com/remotion-dev/remotion/tree/main/packages/eslint-config-flat"
 	},
 	"name": "@remotion/eslint-config-flat",
-	"version": "4.0.428",
+	"version": "4.0.429",
 	"description": "Default configuration for Remotion templates (ESLint >= 9)",
 	"main": "dist/esm/index.mjs",
 	"type": "module",
@@ -13,6 +13,7 @@
 	"scripts": {
 		"lint": "eslint src",
 		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"make": "tsgo -d && bun --env-file=../.env.bundle bundle.ts"
 	},
 	"bugs": {

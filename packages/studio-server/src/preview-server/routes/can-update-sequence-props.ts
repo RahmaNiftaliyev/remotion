@@ -9,17 +9,14 @@ import type {
 	ObjectProperty,
 	UnaryExpression,
 } from '@babel/types';
-import type {
-	CanUpdateSequencePropsRequest,
-	CanUpdateSequencePropsResponse,
-} from '@remotion/studio-shared';
+import type {CanUpdateSequencePropsResponse} from '@remotion/studio-shared';
 import * as recast from 'recast';
 import {parseAst} from '../../codemods/parse-ast';
-import type {ApiHandler} from '../api-types';
 
 type CanUpdatePropStatus =
 	| {canUpdate: true}
-	| {canUpdate: false; reason: 'computed'};
+	| {canUpdate: false; reason: 'computed'}
+	| {canUpdate: false; reason: 'not-set'};
 
 export const isStaticValue = (node: Expression): boolean => {
 	switch (node.type) {
@@ -123,10 +120,17 @@ const findJsxElementAtLine = (
 	return found;
 };
 
-export const canUpdateSequencePropsHandler: ApiHandler<
-	CanUpdateSequencePropsRequest,
-	CanUpdateSequencePropsResponse
-> = ({input: {fileName, line, column: _column, keys}, remotionRoot}) => {
+export const computeSequencePropsStatus = ({
+	fileName,
+	line,
+	keys,
+	remotionRoot,
+}: {
+	fileName: string;
+	line: number;
+	keys: string[];
+	remotionRoot: string;
+}): CanUpdateSequencePropsResponse => {
 	try {
 		const absolutePath = path.resolve(remotionRoot, fileName);
 		const fileRelativeToRoot = path.relative(remotionRoot, absolutePath);
@@ -149,18 +153,18 @@ export const canUpdateSequencePropsHandler: ApiHandler<
 			if (key in allProps) {
 				filteredProps[key] = allProps[key];
 			} else {
-				filteredProps[key] = {canUpdate: false, reason: 'computed'};
+				filteredProps[key] = {canUpdate: false, reason: 'not-set'};
 			}
 		}
 
-		return Promise.resolve({
+		return {
 			canUpdate: true as const,
 			props: filteredProps,
-		});
+		};
 	} catch (err) {
-		return Promise.resolve({
+		return {
 			canUpdate: false as const,
 			reason: (err as Error).message,
-		});
+		};
 	}
 };

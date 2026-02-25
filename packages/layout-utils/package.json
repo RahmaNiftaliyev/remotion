@@ -3,7 +3,7 @@
 		"url": "https://github.com/remotion-dev/remotion/tree/main/packages/layout-utils"
 	},
 	"name": "@remotion/layout-utils",
-	"version": "4.0.428",
+	"version": "4.0.429",
 	"description": "Utilities for working with layouts",
 	"main": "dist/cjs/index.js",
 	"types": "dist/cjs/index.d.ts",
@@ -11,6 +11,7 @@
 	"sideEffects": false,
 	"scripts": {
 		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"lint": "eslint src",
 		"make": "tsgo -d && bun --env-file=../.env.bundle bundle.ts"
 	},

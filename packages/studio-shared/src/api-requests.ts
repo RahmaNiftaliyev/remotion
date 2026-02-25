@@ -198,9 +198,27 @@ export type CanUpdateSequencePropsRequest = {
 	keys: string[];
 };
 
+export type SubscribeToSequencePropsRequest = {
+	fileName: string;
+	line: number;
+	column: number;
+	keys: string[];
+	clientId: string;
+};
+
+export type SubscribeToSequencePropsResponse = CanUpdateSequencePropsResponse;
+
+export type UnsubscribeFromSequencePropsRequest = {
+	fileName: string;
+	line: number;
+	column: number;
+	clientId: string;
+};
+
 export type CanUpdateSequencePropStatus =
 	| {canUpdate: true}
-	| {canUpdate: false; reason: 'computed'};
+	| {canUpdate: false; reason: 'computed'}
+	| {canUpdate: false; reason: 'not-set'};
 
 export type CanUpdateSequencePropsResponse =
 	| {
@@ -277,9 +295,13 @@ export type ApiRoutes = {
 		CanUpdateDefaultPropsRequest,
 		CanUpdateDefaultPropsResponse
 	>;
-	'/api/can-update-sequence-props': ReqAndRes<
-		CanUpdateSequencePropsRequest,
-		CanUpdateSequencePropsResponse
+	'/api/subscribe-to-sequence-props': ReqAndRes<
+		SubscribeToSequencePropsRequest,
+		SubscribeToSequencePropsResponse
+	>;
+	'/api/unsubscribe-from-sequence-props': ReqAndRes<
+		UnsubscribeFromSequencePropsRequest,
+		undefined
 	>;
 	'/api/save-sequence-props': ReqAndRes<
 		SaveSequencePropsRequest,

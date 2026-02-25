@@ -20,6 +20,10 @@ export type GetUsageApiResponse =
 
 export type GetUsageResponse = {
 	cloudRenders: EventCount;
+	webRenders: EventCount;
+	/**
+	 * @deprecated Use `webRenders` instead
+	 */
 	webcodecConversions: EventCount;
 };
 
@@ -48,6 +52,7 @@ export const getUsage = async ({
 	if (json.success) {
 		return {
 			cloudRenders: json.cloudRenders,
+			webRenders: json.webcodecConversions,
 			webcodecConversions: json.webcodecConversions,
 		};
 	}

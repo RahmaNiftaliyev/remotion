@@ -10,7 +10,7 @@ test('Should be able to track production usage', async () => {
 		apiKey: 'rm_pub_cbbf1d1e7f07cb0b86daa0247693d6c9af4740463768f2f6',
 		host: 'http://localhost:50955',
 		succeeded: true,
-		event: 'webcodec-conversion',
+		event: 'web-render',
 	});
 	expect(result).toEqual({
 		billable: false,
@@ -23,7 +23,7 @@ test('Should be able to track development usage', async () => {
 		apiKey: 'rm_pub_cbbf1d1e7f07cb0b86daa0247693d6c9af4740463768f2f6',
 		host: 'https://remotion.dev',
 		succeeded: true,
-		event: 'webcodec-conversion',
+		event: 'web-render',
 	});
 	expect(result).toEqual({
 		billable: true,
@@ -35,7 +35,7 @@ test('Should be able to track without host', async () => {
 		apiKey: 'rm_pub_cbbf1d1e7f07cb0b86daa0247693d6c9af4740463768f2f6',
 		host: null,
 		succeeded: true,
-		event: 'webcodec-conversion',
+		event: 'web-render',
 	});
 	expect(result).toEqual({
 		billable: true,
@@ -48,7 +48,7 @@ test('Should reject invalid API key', () => {
 		apiKey: 'rm_pub_1dd719b',
 		host: 'http://localhost:50955',
 		succeeded: true,
-		event: 'webcodec-conversion',
+		event: 'web-render',
 	});
 	expect(result).rejects.toThrowError(/Invalid API key/);
 });
@@ -58,7 +58,7 @@ test('Should reject invalid secret API key', async () => {
 		apiKey: 'rm_sec_1dd719b',
 		host: 'http://localhost:50955',
 		succeeded: true,
-		event: 'webcodec-conversion',
+		event: 'web-render',
 	});
 	expect(result).rejects.toThrowError(
 		/Secret API key passed - use public key instead/,
@@ -79,9 +79,9 @@ test('should be able to get usage', async () => {
 		since: null,
 	});
 
-	expect(result.webcodecConversions.billable).toBeGreaterThan(0);
-	expect(result.webcodecConversions.development).toBeGreaterThan(0);
-	expect(result.webcodecConversions.failed).toBeGreaterThanOrEqual(0);
+	expect(result.webRenders.billable).toBeGreaterThan(0);
+	expect(result.webRenders.development).toBeGreaterThan(0);
+	expect(result.webRenders.failed).toBeGreaterThanOrEqual(0);
 	expect(result.cloudRenders.billable).toBeGreaterThanOrEqual(0);
 	expect(result.cloudRenders.development).toBeGreaterThanOrEqual(0);
 	expect(result.cloudRenders.failed).toBeGreaterThanOrEqual(0);

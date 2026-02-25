@@ -1,10 +1,10 @@
+import fs, {readFileSync} from 'node:fs';
+import path from 'node:path';
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
 import {BrowserSafeApis} from '@remotion/renderer/client';
 import {StudioServerInternals} from '@remotion/studio-server';
 import dotenv from 'dotenv';
-import fs, {readFileSync} from 'node:fs';
-import path from 'node:path';
 import {chalk} from './chalk';
 import {makeHyperlink} from './hyperlinks/make-link';
 import {Log} from './log';

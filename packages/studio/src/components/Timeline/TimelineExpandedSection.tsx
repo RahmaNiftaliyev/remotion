@@ -132,12 +132,12 @@ export const TimelineExpandedSection: React.FC<{
 	const onSave = useCallback(
 		(key: string, value: unknown): Promise<void> => {
 			if (!propStatuses || !validatedLocation) {
-				return Promise.resolve();
+				return Promise.reject(new Error('Cannot save'));
 			}
 
 			const status = propStatuses[key];
 			if (!status || !status.canUpdate) {
-				return Promise.resolve();
+				return Promise.reject(new Error('Cannot save'));
 			}
 
 			return callApi('/api/save-sequence-props', {

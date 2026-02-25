@@ -212,7 +212,11 @@ const WebRenderModal: React.FC<WebRenderModalProps> = ({
 	});
 
 	const [renderMode, setRenderMode] = useState<RenderType>(
-		isVideo ? 'video' : 'still',
+		initialContainer && isAudioOnlyContainer(initialContainer)
+			? 'audio'
+			: isVideo
+				? 'video'
+				: 'still',
 	);
 	const [tab, setTab] = useState<TabType>('general');
 	const [imageFormat, setImageFormat] = useState<RenderStillOnWebImageFormat>(

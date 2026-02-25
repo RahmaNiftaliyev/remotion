@@ -232,13 +232,9 @@ const LightLeakCanvas: React.FC<{
  * @see [Documentation](https://www.remotion.dev/docs/light-leaks/light-leak)
  */
 const lightLeakSchema = z.object({
-	seed: z.number().describe('Random seed for the light leak pattern'),
-	hueShift: z
-		.number()
-		.min(0)
-		.max(360)
-		.describe('Hue rotation in degrees (0–360)'),
-	from: z.number().describe('Starting frame of the light leak'),
+	seed: z.number().describe('Seed'),
+	hueShift: z.number().min(0).max(360).describe('Hue Shift'),
+	from: z.number().default(0).describe('From'),
 });
 
 export const LightLeak: React.FC<LightLeakProps> = ({

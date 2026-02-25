@@ -29,11 +29,12 @@ const notEditableBackground: React.CSSProperties = {
 
 const TimelineNumberField: React.FC<{
 	readonly field: SchemaFieldInfo;
+	readonly codeValue: unknown;
 	readonly canUpdate: boolean;
 	readonly onSave: (key: string, value: unknown) => Promise<void>;
 	readonly onDragValueChange: (key: string, value: unknown) => void;
 	readonly onDragEnd: () => void;
-}> = ({field, canUpdate, onSave, onDragValueChange, onDragEnd}) => {
+}> = ({field, codeValue, canUpdate, onSave, onDragValueChange, onDragEnd}) => {
 	const [dragValue, setDragValue] = useState<number | null>(null);
 	const dragging = useRef(false);
 
@@ -53,7 +54,7 @@ const TimelineNumberField: React.FC<{
 
 	const onValueChangeEnd = useCallback(
 		(newVal: number) => {
-			if (canUpdate && newVal !== field.currentValue) {
+			if (canUpdate && newVal !== codeValue) {
 				onSave(field.key, newVal).catch(() => {
 					setDragValue(null);
 				});
@@ -61,14 +62,14 @@ const TimelineNumberField: React.FC<{
 				setDragValue(null);
 			}
 		},
-		[canUpdate, onSave, field.key, field.currentValue],
+		[canUpdate, onSave, field.key, codeValue],
 	);
 
 	const onTextChange = useCallback(
 		(newVal: string) => {
 			if (canUpdate) {
 				const parsed = Number(newVal);
-				if (!Number.isNaN(parsed) && parsed !== field.currentValue) {
+				if (!Number.isNaN(parsed) && parsed !== codeValue) {
 					setDragValue(parsed);
 					onSave(field.key, parsed).catch(() => {
 						setDragValue(null);
@@ -76,13 +77,13 @@ const TimelineNumberField: React.FC<{
 				}
 			}
 		},
-		[canUpdate, onSave, field.key, field.currentValue],
+		[canUpdate, onSave, field.key, codeValue],
 	);
 
 	return (
 		<InputDragger
 			type="number"
-			value={dragValue ?? (field.currentValue as number)}
+			value={dragValue ?? (codeValue as number)}
 			style={draggerStyle}
 			status="ok"
 			onValueChange={onValueChange}
@@ -132,6 +133,7 @@ export const TimelineFieldValue: React.FC<{
 			<span style={wrapperStyle}>
 				<TimelineNumberField
 					field={field}
+					codeValue={propStatus.codeValue}
 					canUpdate={canUpdate}
 					onSave={onSave}
 					onDragValueChange={onDragValueChange}
@@ -143,7 +145,7 @@ export const TimelineFieldValue: React.FC<{
 
 	return (
 		<span style={{...unsupportedLabel, fontStyle: 'normal'}}>
-			{String(field.currentValue)}
+			{String(propStatus.codeValue)}
 		</span>
 	);
 };

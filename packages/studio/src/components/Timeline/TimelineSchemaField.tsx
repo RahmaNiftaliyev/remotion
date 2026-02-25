@@ -115,9 +115,7 @@ export const TimelineFieldValue: React.FC<{
 	}
 
 	if (propStatus !== null && !propStatus.canUpdate) {
-		const label =
-			propStatus.reason === 'not-set' ? 'not set' : propStatus.reason;
-		return <span style={unsupportedLabel}>{label}</span>;
+		return <span style={unsupportedLabel}>{propStatus.reason}</span>;
 	}
 
 	if (propStatus === null) {
@@ -128,12 +126,14 @@ export const TimelineFieldValue: React.FC<{
 		);
 	}
 
+	const effectiveCodeValue = propStatus.codeValue ?? field.currentValue;
+
 	if (field.typeName === 'number') {
 		return (
 			<span style={wrapperStyle}>
 				<TimelineNumberField
 					field={field}
-					codeValue={propStatus.codeValue}
+					codeValue={effectiveCodeValue}
 					canUpdate={canUpdate}
 					onSave={onSave}
 					onDragValueChange={onDragValueChange}
@@ -145,7 +145,7 @@ export const TimelineFieldValue: React.FC<{
 
 	return (
 		<span style={{...unsupportedLabel, fontStyle: 'normal'}}>
-			{String(propStatus.codeValue)}
+			{String(effectiveCodeValue)}
 		</span>
 	);
 };

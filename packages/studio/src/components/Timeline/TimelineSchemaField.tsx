@@ -7,6 +7,11 @@ import {
 	getZodNumberMinimum,
 	getZodNumberStep,
 } from '../RenderModal/SchemaEditor/zod-number-constraints';
+import {
+	getDefaultValue,
+	getInnerType,
+	getZodSchemaType,
+} from '../RenderModal/SchemaEditor/zod-schema-type';
 import {Spinner} from '../Spinner';
 
 const unsupportedLabel: React.CSSProperties = {
@@ -35,6 +40,10 @@ const TimelineNumberField: React.FC<{
 	readonly onDragValueChange: (key: string, value: unknown) => void;
 	readonly onDragEnd: () => void;
 }> = ({field, codeValue, canUpdate, onSave, onDragValueChange, onDragEnd}) => {
+	const numberSchema =
+		field.typeName === 'default'
+			? getInnerType(field.fieldSchema)
+			: field.fieldSchema;
 	const [dragValue, setDragValue] = useState<number | null>(null);
 	const dragging = useRef(false);
 
@@ -89,9 +98,9 @@ const TimelineNumberField: React.FC<{
 			onValueChange={onValueChange}
 			onValueChangeEnd={onValueChangeEnd}
 			onTextChange={onTextChange}
-			min={getZodNumberMinimum(field.fieldSchema)}
-			max={getZodNumberMaximum(field.fieldSchema)}
-			step={getZodNumberStep(field.fieldSchema)}
+			min={getZodNumberMinimum(numberSchema)}
+			max={getZodNumberMaximum(numberSchema)}
+			step={getZodNumberStep(numberSchema)}
 			rightAlign
 		/>
 	);
@@ -115,9 +124,7 @@ export const TimelineFieldValue: React.FC<{
 	}
 
 	if (propStatus !== null && !propStatus.canUpdate) {
-		const label =
-			propStatus.reason === 'not-set' ? 'not set' : propStatus.reason;
-		return <span style={unsupportedLabel}>{label}</span>;
+		return <span style={unsupportedLabel}>{propStatus.reason}</span>;
 	}
 
 	if (propStatus === null) {
@@ -128,12 +135,24 @@ export const TimelineFieldValue: React.FC<{
 		);
 	}
 
-	if (field.typeName === 'number') {
+	const effectiveCodeValue =
+		propStatus.codeValue ??
+		field.currentValue ??
+		(field.typeName === 'default'
+			? getDefaultValue(field.fieldSchema)
+			: undefined);
+
+	const resolvedTypeName =
+		field.typeName === 'default'
+			? getZodSchemaType(getInnerType(field.fieldSchema))
+			: field.typeName;
+
+	if (resolvedTypeName === 'number') {
 		return (
 			<span style={wrapperStyle}>
 				<TimelineNumberField
 					field={field}
-					codeValue={propStatus.codeValue}
+					codeValue={effectiveCodeValue}
 					canUpdate={canUpdate}
 					onSave={onSave}
 					onDragValueChange={onDragValueChange}
@@ -145,7 +164,7 @@ export const TimelineFieldValue: React.FC<{
 
 	return (
 		<span style={{...unsupportedLabel, fontStyle: 'normal'}}>
-			{String(propStatus.codeValue)}
+			{String(effectiveCodeValue)}
 		</span>
 	);
 };

@@ -529,10 +529,10 @@ const VideoForPreviewAssertedShowing: React.FC<
 };
 
 const videoSchema = z.object({
-	volume: z.number().min(0).multipleOf(0.01),
-	playbackRate: z.number().min(0).multipleOf(0.01),
-	trimBefore: z.number(),
-	trimAfter: z.number(),
+	volume: z.number().min(0).max(20).multipleOf(0.01).default(1),
+	playbackRate: z.number().min(0).multipleOf(0.01).default(1),
+	trimBefore: z.number().min(0).default(0),
+	trimAfter: z.number().min(0).default(0),
 });
 
 export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {

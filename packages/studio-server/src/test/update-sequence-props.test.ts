@@ -80,7 +80,7 @@ test('canUpdateSequenceProps should flag computed props', () => {
 	expect(result.props.hueShift).toEqual({canUpdate: true, codeValue: 30});
 	expect(result.props.seed).toEqual({canUpdate: false, reason: 'computed'});
 	expect(result.props.nonExistentProp).toEqual({
-		canUpdate: false,
-		reason: 'not-set',
+		canUpdate: true,
+		codeValue: undefined,
 	});
 });

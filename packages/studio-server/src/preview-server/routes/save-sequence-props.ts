@@ -14,7 +14,7 @@ export const saveSequencePropsHandler: ApiHandler<
 	SaveSequencePropsRequest,
 	SaveSequencePropsResponse
 > = async ({
-	input: {fileName, line, column, key, value, enumPaths},
+	input: {fileName, line, column, key, value, enumPaths, defaultValue},
 	remotionRoot,
 	logLevel,
 }) => {
@@ -33,6 +33,7 @@ export const saveSequencePropsHandler: ApiHandler<
 			key,
 			value: JSON.parse(value),
 			enumPaths,
+			defaultValue: defaultValue !== null ? JSON.parse(defaultValue) : null,
 		});
 
 		suppressHmrForFile(absolutePath);

@@ -21,6 +21,7 @@ import {
 	getSchemaFields,
 } from '../../helpers/timeline-layout';
 import {callApi} from '../call-api';
+import {getDefaultValue} from '../RenderModal/SchemaEditor/zod-schema-type';
 import {
 	TimelineFieldSavingSpinner,
 	TimelineFieldValue,
@@ -62,10 +63,17 @@ const TimelineFieldRow: React.FC<{
 	readonly onDragEnd: () => void;
 	readonly propStatus: CanUpdateSequencePropStatus | null;
 }> = ({field, onSave, onDragValueChange, onDragEnd, propStatus}) => {
+	const effectiveCodeValue = propStatus?.canUpdate
+		? (propStatus.codeValue ??
+			field.currentValue ??
+			(field.typeName === 'default'
+				? getDefaultValue(field.fieldSchema)
+				: undefined))
+		: undefined;
 	const saving =
 		propStatus !== null &&
 		propStatus.canUpdate &&
-		JSON.stringify(field.currentValue) !== JSON.stringify(propStatus.codeValue);
+		JSON.stringify(field.currentValue) !== JSON.stringify(effectiveCodeValue);
 
 	return (
 		<div style={{...fieldRow, height: field.rowHeight}}>
@@ -244,6 +252,12 @@ export const TimelineExpandedSection: React.FC<{
 				return Promise.reject(new Error('Cannot save'));
 			}
 
+			const field = schemaFields?.find((f) => f.key === key);
+			const defaultValue =
+				field && field.typeName === 'default'
+					? JSON.stringify(getDefaultValue(field.fieldSchema))
+					: null;
+
 			return callApi('/api/save-sequence-props', {
 				fileName: validatedLocation.source,
 				line: validatedLocation.line,
@@ -251,9 +265,10 @@ export const TimelineExpandedSection: React.FC<{
 				key,
 				value: JSON.stringify(value),
 				enumPaths: [],
+				defaultValue,
 			}).then(() => undefined);
 		},
-		[propStatuses, validatedLocation],
+		[propStatuses, validatedLocation, schemaFields],
 	);
 
 	const overrideId = sequence.controls?.overrideId ?? sequence.id;

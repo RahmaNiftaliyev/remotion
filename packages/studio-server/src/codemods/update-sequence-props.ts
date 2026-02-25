@@ -52,11 +52,7 @@ export const updateSequenceProps = async ({
 					? node.attributes?.[attrIndex]
 					: undefined;
 
-			if (
-				attr &&
-				attr.type !== 'JSXSpreadAttribute' &&
-				attr.value
-			) {
+			if (attr && attr.type !== 'JSXSpreadAttribute' && attr.value) {
 				const printed = recast.print(attr.value).code;
 				// Strip JSX expression container braces, e.g. "{30}" -> "30"
 				oldValueString =

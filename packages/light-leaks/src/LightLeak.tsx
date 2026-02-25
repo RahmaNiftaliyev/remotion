@@ -118,7 +118,12 @@ type GlContext = {
 const LightLeakCanvas: React.FC<{
 	readonly seed: number;
 	readonly hueShift: number;
-}> = ({seed, hueShift}) => {
+}> = ({seed: seedProp, hueShift: hueShiftProp}) => {
+	const overrideSeed = Internals.useSequenceControlOverride('seed');
+	const overrideHueShift = Internals.useSequenceControlOverride('hueShift');
+	const seed = (overrideSeed as number | undefined) ?? seedProp;
+	const hueShift = (overrideHueShift as number | undefined) ?? hueShiftProp;
+
 	const frame = useCurrentFrame();
 	const {width, height, durationInFrames} = useVideoConfig();
 	const canvasRef = useRef<HTMLCanvasElement>(null);

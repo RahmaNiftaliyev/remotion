@@ -1,5 +1,5 @@
 import type {CanUpdateSequencePropStatus} from '@remotion/studio-shared';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
 import {InputDragger} from '../NewComposition/InputDragger';
 import {
@@ -32,17 +32,33 @@ const TimelineNumberField: React.FC<{
 	readonly canUpdate: boolean;
 	readonly onSave: (key: string, value: unknown) => Promise<void>;
 	readonly onSavingChange: (saving: boolean) => void;
-}> = ({field, canUpdate, onSave, onSavingChange}) => {
+	readonly onDragValueChange: (key: string, value: unknown) => void;
+	readonly onDragEnd: () => void;
+}> = ({
+	field,
+	canUpdate,
+	onSave,
+	onSavingChange,
+	onDragValueChange,
+	onDragEnd,
+}) => {
 	const [dragValue, setDragValue] = useState<number | null>(null);
+	const dragging = useRef(false);
 
-	const onValueChange = useCallback((newVal: number) => {
-		setDragValue(newVal);
-	}, []);
+	const onValueChange = useCallback(
+		(newVal: number) => {
+			dragging.current = true;
+			setDragValue(newVal);
+			onDragValueChange(field.key, newVal);
+		},
+		[onDragValueChange, field.key],
+	);
 
 	useEffect(() => {
 		setDragValue(null);
 		onSavingChange(false);
-	}, [field.currentValue, onSavingChange]);
+		onDragEnd();
+	}, [field.currentValue, onSavingChange, onDragEnd]);
 
 	const onValueChangeEnd = useCallback(
 		(newVal: number) => {
@@ -95,11 +111,25 @@ const TimelineNumberField: React.FC<{
 
 export const TimelineFieldValue: React.FC<{
 	readonly field: SchemaFieldInfo;
-	readonly propStatus: CanUpdateSequencePropStatus | null;
 	readonly onSave: (key: string, value: unknown) => Promise<void>;
 	readonly onSavingChange: (saving: boolean) => void;
-}> = ({field, propStatus, onSave, onSavingChange}) => {
-	const canUpdate = propStatus !== null && propStatus.canUpdate;
+	readonly onDragValueChange: (key: string, value: unknown) => void;
+	readonly onDragEnd: () => void;
+	readonly canUpdate: boolean;
+	readonly propStatus: CanUpdateSequencePropStatus | null;
+}> = ({
+	field,
+	onSave,
+	onSavingChange,
+	onDragValueChange,
+	onDragEnd,
+	propStatus,
+	canUpdate,
+}) => {
+	const wrapperStyle: React.CSSProperties | undefined =
+		canUpdate === null || canUpdate === false
+			? notEditableBackground
+			: undefined;
 
 	if (!field.supported) {
 		return <span style={unsupportedLabel}>unsupported</span>;
@@ -119,12 +149,16 @@ export const TimelineFieldValue: React.FC<{
 
 	if (field.typeName === 'number') {
 		return (
-			<TimelineNumberField
-				field={field}
-				canUpdate={canUpdate}
-				onSave={onSave}
-				onSavingChange={onSavingChange}
-			/>
+			<span style={wrapperStyle}>
+				<TimelineNumberField
+					field={field}
+					canUpdate={canUpdate}
+					onSave={onSave}
+					onSavingChange={onSavingChange}
+					onDragValueChange={onDragValueChange}
+					onDragEnd={onDragEnd}
+				/>
+			</span>
 		);
 	}
 

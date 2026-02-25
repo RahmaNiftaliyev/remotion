@@ -85,6 +85,7 @@ import {
 } from './ResolveCompositionConfig.js';
 import {SequenceContext} from './SequenceContext.js';
 import {
+	SequenceControlOverrideContext,
 	SequenceManager,
 	SequenceVisibilityToggleContext,
 } from './SequenceManager.js';
@@ -113,6 +114,7 @@ import {
 	useBasicMediaInTimeline,
 	useMediaInTimeline,
 } from './use-media-in-timeline.js';
+import {useSequenceControlOverride} from './use-sequence-control-override.js';
 import {useUnsafeVideoConfig} from './use-unsafe-video-config.js';
 import {useVideo} from './use-video.js';
 import {validateMediaProps} from './validate-media-props.js';
@@ -171,8 +173,10 @@ export const Internals = {
 	VideoForPreview,
 	CompositionManager,
 	CompositionSetters,
+	SequenceControlOverrideContext,
 	SequenceManager,
 	SequenceVisibilityToggleContext,
+	useSequenceControlOverride,
 	RemotionRootContexts,
 	CompositionManagerProvider,
 	useVideo,

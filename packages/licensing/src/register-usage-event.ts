@@ -30,7 +30,13 @@ export type RegisterUsageEventResponse = {
 	classification: UsageEventClassification;
 };
 
-type UsageEventType = 'webcodec-conversion' | 'cloud-render';
+type UsageEventType =
+	| 'web-render'
+	| 'cloud-render'
+	/**
+	 * @deprecated Use `'web-render'` instead
+	 */
+	| 'webcodec-conversion';
 
 export type UsageEventClassification = 'billable' | 'development' | 'failed';
 

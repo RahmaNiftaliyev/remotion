@@ -22,7 +22,7 @@ const usage = await getUsage({
 console.log(usage);
 /*
 {
-  "webcodecConversions": {
+  "webRenders": {
     "billable": 10,
     "development": 5,
     "failed": 2
@@ -66,13 +66,19 @@ Your Remotion secret API key. You can get it from your Remotion.pro dashboard.
 
 An object with the following properties:
 
-### `webcodecConversions`
+### `webRenders`
 
 An object with the following properties:
 
-- `billable`: The number of billable webcodec conversions.
-- `development`: The number of development webcodec conversions (on `localhost` or other local environments).
-- `failed`: The number of failed webcodec conversions (you don't need to pay for them).
+- `billable`: The number of billable web renders.
+- `development`: The number of development web renders (on `localhost` or other local environments).
+- `failed`: The number of failed web renders (you don't need to pay for them).
+
+### ~~`webcodecConversions`~~
+
+_deprecated - use `webRenders` instead_
+
+Same as `webRenders`.
 
 ### `cloudRenders`
 

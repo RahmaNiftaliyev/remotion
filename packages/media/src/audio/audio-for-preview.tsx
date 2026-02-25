@@ -61,7 +61,7 @@ type NewAudioForPreviewProps = {
 };
 
 type AudioForPreviewAssertedShowingProps = NewAudioForPreviewProps & {
-	readonly controls: SequenceControls | null;
+	readonly controls: SequenceControls | undefined;
 };
 
 const AudioForPreviewAssertedShowing: React.FC<

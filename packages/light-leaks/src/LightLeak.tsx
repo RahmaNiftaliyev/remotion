@@ -281,7 +281,7 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 		<Sequence
 			durationInFrames={resolvedDuration}
 			name="<LightLeak>"
-			controls={controls ?? undefined}
+			controls={controls}
 			from={from}
 			{...sequenceProps}
 		>

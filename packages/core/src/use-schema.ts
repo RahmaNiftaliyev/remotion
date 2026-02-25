@@ -9,19 +9,19 @@ export const useSchema = <T extends Record<string, unknown>>(
 	schema: AnyZodObject | null,
 	currentValue: T | null,
 ): {
-	controls: SequenceControls | null;
+	controls: SequenceControls | undefined;
 	values: T;
 } => {
 	const env = useRemotionEnvironment();
 	const earlyReturn = useMemo(() => {
 		if (!env.isStudio || env.isReadOnlyStudio) {
 			return {
-				controls: null,
+				controls: undefined,
 				values: (currentValue ?? {}) as T,
 			};
 		}
 
-		return null;
+		return undefined;
 	}, [env.isStudio, env.isReadOnlyStudio, currentValue]);
 
 	if (earlyReturn) {
@@ -35,7 +35,7 @@ export const useSchema = <T extends Record<string, unknown>>(
 	return useMemo(() => {
 		if (schema === null || currentValue === null) {
 			return {
-				controls: null,
+				controls: undefined,
 				values: (currentValue ?? {}) as T,
 			};
 		}

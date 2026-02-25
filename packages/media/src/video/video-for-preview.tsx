@@ -66,7 +66,7 @@ type VideoForPreviewProps = {
 };
 
 type VideoForPreviewAssertedShowingProps = VideoForPreviewProps & {
-	readonly controls: SequenceControls | null;
+	readonly controls: SequenceControls | undefined;
 };
 
 const VideoForPreviewAssertedShowing: React.FC<

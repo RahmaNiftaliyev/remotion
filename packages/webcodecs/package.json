@@ -13,6 +13,7 @@
 	},
 	"scripts": {
 		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"lint": "eslint src",
 		"test": "bun test src/test",
 		"testwebcodecs": "playwright test src/it-tests",

@@ -8,6 +8,7 @@
 	"main": "dist/index.js",
 	"scripts": {
 		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"lint": "eslint src",
 		"make": "tsgo -d"
 	},

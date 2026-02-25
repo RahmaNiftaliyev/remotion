@@ -61,15 +61,6 @@ export const updateSequenceProps = async ({
 				return this.traverse(path);
 			}
 
-			if (attr.value) {
-				const printed = recast.print(attr.value).code;
-				// Strip JSX expression container braces, e.g. "{30}" -> "30"
-				oldValueString =
-					printed.startsWith('{') && printed.endsWith('}')
-						? printed.slice(1, -1)
-						: printed;
-			}
-
 			const parsed = (
 				(
 					parseAst(`a = ${stringifyDefaultProps({props: value, enumPaths})}`)
@@ -89,6 +80,15 @@ export const updateSequenceProps = async ({
 
 				node.attributes.push(newAttr);
 			} else {
+				if (attr.value) {
+					const printed = recast.print(attr.value).code;
+					// Strip JSX expression container braces, e.g. "{30}" -> "30"
+					oldValueString =
+						printed.startsWith('{') && printed.endsWith('}')
+							? printed.slice(1, -1)
+							: printed;
+				}
+
 				attr.value = recast.types.builders.jsxExpressionContainer(parsed);
 			}
 

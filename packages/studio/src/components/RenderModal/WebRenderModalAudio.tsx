@@ -46,8 +46,6 @@ const humanReadableWebAudioCodec = (
 			return 'MP3';
 		case 'vorbis':
 			return 'Vorbis';
-		case 'flac':
-			return 'FLAC';
 		case 'pcm-s16':
 			return 'Lossless (PCM)';
 		default:

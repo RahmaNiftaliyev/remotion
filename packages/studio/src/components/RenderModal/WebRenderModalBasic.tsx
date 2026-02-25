@@ -59,17 +59,10 @@ const containerLabels: Record<WebRendererContainer, string> = {
 	mp3: 'MP3',
 	aac: 'AAC',
 	ogg: 'OGG',
-	flac: 'FLAC',
 };
 
 const videoContainers: WebRendererContainer[] = ['mp4', 'webm', 'mkv', 'mov'];
-const audioContainers: WebRendererContainer[] = [
-	'wav',
-	'mp3',
-	'aac',
-	'ogg',
-	'flac',
-];
+const audioContainers: WebRendererContainer[] = ['wav', 'mp3', 'aac', 'ogg'];
 
 const codecLabels: Record<WebRendererVideoCodec, string> = {
 	h264: 'H.264',

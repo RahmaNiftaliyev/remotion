@@ -62,11 +62,10 @@ const TimelineFieldRow: React.FC<{
 	readonly onDragEnd: () => void;
 	readonly propStatus: CanUpdateSequencePropStatus | null;
 }> = ({field, onSave, onDragValueChange, onDragEnd, propStatus}) => {
-	const [saving, setSaving] = useState(false);
-
-	const onSavingChange = useCallback((s: boolean) => {
-		setSaving(s);
-	}, []);
+	const saving =
+		propStatus !== null &&
+		propStatus.canUpdate &&
+		JSON.stringify(field.currentValue) !== JSON.stringify(propStatus.codeValue);
 
 	return (
 		<div style={{...fieldRow, height: field.rowHeight}}>
@@ -78,7 +77,6 @@ const TimelineFieldRow: React.FC<{
 				field={field}
 				propStatus={propStatus}
 				onSave={onSave}
-				onSavingChange={onSavingChange}
 				onDragValueChange={onDragValueChange}
 				onDragEnd={onDragEnd}
 				canUpdate={propStatus?.canUpdate ?? false}

@@ -148,12 +148,6 @@
 			"path": "./packages/template-next-app-tailwind"
 		},
 		{
-			"path": "./packages/template-tts-azure"
-		},
-		{
-			"path": "./packages/template-tts-google"
-		},
-		{
 			"path": "./packages/template-three"
 		},
 		{

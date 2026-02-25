@@ -16,9 +16,10 @@ export const updateSequenceProps = async ({
 	key: string;
 	value: unknown;
 	enumPaths: EnumPath[];
-}): Promise<string> => {
+}): Promise<{output: string; oldValueString: string}> => {
 	const ast = parseAst(input);
 	let found = false;
+	let oldValueString = '';
 
 	recast.types.visit(ast, {
 		visitJSXOpeningElement(path) {
@@ -44,6 +45,15 @@ export const updateSequenceProps = async ({
 				throw new Error(
 					`Could not find attribute "${key}" on the JSX element at line ${targetLine}`,
 				);
+			}
+
+			if (attr.value) {
+				const printed = recast.print(attr.value).code;
+				// Strip JSX expression container braces, e.g. "{30}" -> "30"
+				oldValueString =
+					printed.startsWith('{') && printed.endsWith('}')
+						? printed.slice(1, -1)
+						: printed;
 			}
 
 			const parsed = (
@@ -98,5 +108,5 @@ export const updateSequenceProps = async ({
 		plugins: [],
 		endOfLine: 'auto',
 	});
-	return prettified;
+	return {output: prettified, oldValueString};
 };

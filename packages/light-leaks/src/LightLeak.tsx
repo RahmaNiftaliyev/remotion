@@ -291,4 +291,6 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 	);
 };
 
+LightLeak.displayName = 'LightLeak';
+
 Internals.addSequenceStackTraces(LightLeak);

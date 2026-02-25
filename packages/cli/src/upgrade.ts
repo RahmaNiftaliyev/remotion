@@ -1,6 +1,6 @@
+import {execSync, spawn} from 'node:child_process';
 import {RenderInternals, type LogLevel} from '@remotion/renderer';
 import {StudioServerInternals} from '@remotion/studio-server';
-import {execSync, spawn} from 'node:child_process';
 import {
 	findVersionSpecifier,
 	findWorkspaceRoot,

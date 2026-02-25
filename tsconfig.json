@@ -260,6 +260,9 @@
 		},
 		{
 			"path": "./packages/vercel"
+		},
+		{
+			"path": "./packages/sfx"
 		}
 	]
 }

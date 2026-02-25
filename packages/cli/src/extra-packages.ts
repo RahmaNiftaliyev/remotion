@@ -1,6 +1,6 @@
 export const EXTRA_PACKAGES: Record<string, string> = {
-	mediabunny: '1.34.4',
-	'@mediabunny/ac3': '1.34.4',
+	mediabunny: '1.34.5',
+	'@mediabunny/ac3': '1.34.5',
 	zod: '4.3.6',
 };
 

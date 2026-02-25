@@ -1,6 +1,3 @@
-// @ts-expect-error no types
-import styles from './styles.module.scss';
-
 import {alias} from 'lib/alias';
 import React, {useCallback, useMemo} from 'react';
 import {
@@ -82,8 +79,8 @@ import {
 } from './StudioApis/SaveDefaultProps';
 import {TriggerCalculateMetadata} from './StudioApis/TriggerCalculateMetadata';
 import {WriteStaticFile} from './StudioApis/WriteStaticFile';
-import './style.css';
 import {SubtitleArtifact} from './SubtitleArtifact/SubtitleArtifact';
+import './style.css';
 import {SvgFilter} from './SvgFilter';
 import {Tailwind} from './Tailwind';
 import {TenFrameTester} from './TenFrameTester';
@@ -105,6 +102,8 @@ import {WarpDemoOuter} from './WarpText';
 import {WarpDemo2} from './WarpText/demo2';
 import {WatchStaticDemo} from './watch-static';
 import {ZodV4SchemaTest, zodV4Schema} from './ZodV4SchemaTest';
+// @ts-expect-error no types
+import styles from './styles.module.scss';
 
 if (alias !== 'alias') {
 	throw new Error('should support TS aliases');
@@ -142,6 +141,7 @@ import {OffthreadRemoteSeries} from './OffthreadRemoteVideo/OffthreadRemoteSerie
 import {ParseAndDownloadMedia} from './ParseAndDownloadMedia';
 import {PremountOnTransitionSeries} from './PremountOnTransitionSeries';
 import {PrintProps} from './PrintProps';
+import {SfxExample} from './Sfx';
 import {SmoothTextTransition} from './SmoothTextTransition';
 import {SpringSeason} from './SpringSeason';
 import {Seek} from './StudioApis/Seek';
@@ -1843,6 +1843,14 @@ export const Index: React.FC = () => {
 					durationInFrames={120}
 				/>
 			</Folder>
+			<Composition
+				id="sfx"
+				component={SfxExample}
+				width={1080}
+				height={1080}
+				fps={30}
+				durationInFrames={60}
+			/>
 			<Folder name="transition-series-overlay">
 				<Composition
 					id="overlay-basic"

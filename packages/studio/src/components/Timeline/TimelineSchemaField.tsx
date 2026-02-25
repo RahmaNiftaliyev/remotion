@@ -1,3 +1,4 @@
+import type {CanUpdateSequencePropStatus} from '@remotion/studio-shared';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
 import {InputDragger} from '../NewComposition/InputDragger';
@@ -28,8 +29,8 @@ const notEditableBackground: React.CSSProperties = {
 
 const TimelineNumberField: React.FC<{
 	readonly field: SchemaFieldInfo;
-	readonly canUpdate: boolean | null;
-	readonly onSave: (key: string, value: unknown) => void;
+	readonly canUpdate: boolean;
+	readonly onSave: (key: string, value: unknown) => Promise<void>;
 	readonly onSavingChange: (saving: boolean) => void;
 	readonly onDragValueChange: (key: string, value: unknown) => void;
 	readonly onDragEnd: () => void;
@@ -61,10 +62,12 @@ const TimelineNumberField: React.FC<{
 
 	const onValueChangeEnd = useCallback(
 		(newVal: number) => {
-			dragging.current = false;
 			if (canUpdate && newVal !== field.currentValue) {
 				onSavingChange(true);
-				onSave(field.key, newVal);
+				onSave(field.key, newVal).catch(() => {
+					onSavingChange(false);
+					setDragValue(null);
+				});
 			} else {
 				setDragValue(null);
 			}
@@ -79,7 +82,10 @@ const TimelineNumberField: React.FC<{
 				if (!Number.isNaN(parsed) && parsed !== field.currentValue) {
 					setDragValue(parsed);
 					onSavingChange(true);
-					onSave(field.key, parsed);
+					onSave(field.key, parsed).catch(() => {
+						onSavingChange(false);
+						setDragValue(null);
+					});
 				}
 			}
 		},
@@ -105,18 +111,20 @@ const TimelineNumberField: React.FC<{
 
 export const TimelineFieldValue: React.FC<{
 	readonly field: SchemaFieldInfo;
-	readonly canUpdate: boolean | null;
-	readonly onSave: (key: string, value: unknown) => void;
+	readonly onSave: (key: string, value: unknown) => Promise<void>;
 	readonly onSavingChange: (saving: boolean) => void;
 	readonly onDragValueChange: (key: string, value: unknown) => void;
 	readonly onDragEnd: () => void;
+	readonly canUpdate: boolean;
+	readonly propStatus: CanUpdateSequencePropStatus | null;
 }> = ({
 	field,
-	canUpdate,
 	onSave,
 	onSavingChange,
 	onDragValueChange,
 	onDragEnd,
+	propStatus,
+	canUpdate,
 }) => {
 	const wrapperStyle: React.CSSProperties | undefined =
 		canUpdate === null || canUpdate === false
@@ -124,8 +132,18 @@ export const TimelineFieldValue: React.FC<{
 			: undefined;
 
 	if (!field.supported) {
+		return <span style={unsupportedLabel}>unsupported</span>;
+	}
+
+	if (propStatus !== null && !propStatus.canUpdate) {
+		return <span style={unsupportedLabel}>{propStatus.reason}</span>;
+	}
+
+	if (propStatus === null) {
 		return (
-			<span style={{...unsupportedLabel, ...wrapperStyle}}>unsupported</span>
+			<span style={{...notEditableBackground}}>
+				<span style={unsupportedLabel}>error</span>
+			</span>
 		);
 	}
 
@@ -145,7 +163,7 @@ export const TimelineFieldValue: React.FC<{
 	}
 
 	return (
-		<span style={{...unsupportedLabel, fontStyle: 'normal', ...wrapperStyle}}>
+		<span style={{...unsupportedLabel, fontStyle: 'normal'}}>
 			{String(field.currentValue)}
 		</span>
 	);

@@ -195,11 +195,17 @@ export type CanUpdateSequencePropsRequest = {
 	fileName: string;
 	line: number;
 	column: number;
+	keys: string[];
 };
+
+export type CanUpdateSequencePropStatus =
+	| {canUpdate: true}
+	| {canUpdate: false; reason: 'computed'};
 
 export type CanUpdateSequencePropsResponse =
 	| {
 			canUpdate: true;
+			props: Record<string, CanUpdateSequencePropStatus>;
 	  }
 	| {
 			canUpdate: false;

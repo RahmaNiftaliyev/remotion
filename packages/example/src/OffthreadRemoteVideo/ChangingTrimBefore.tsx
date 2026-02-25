@@ -1,11 +1,11 @@
 import {Audio} from '@remotion/media';
+// https://www.remotion.dev/docs/mediabunny/metadata
+import {useMemo} from 'react';
 import {
 	CalculateMetadataFunction,
 	Composition,
 	useCurrentFrame,
 } from 'remotion';
-// https://www.remotion.dev/docs/mediabunny/metadata
-import {useMemo} from 'react';
 import {getMediaMetadata} from '../get-media-metadata';
 
 const src = 'https://remotion.media/dialogue.wav';

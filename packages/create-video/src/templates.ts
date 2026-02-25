@@ -33,8 +33,6 @@ export type Template = {
 		| 'react-router'
 		| 'three'
 		| 'still'
-		| 'tts'
-		| 'google-tts'
 		| 'audiogram'
 		| 'music-visualization'
 		| 'prompt-to-video'
@@ -375,54 +373,6 @@ export const FEATURED_TEMPLATES: Template[] = [
 		previewURL: 'https://template-still.vercel.app/?/PreviewCard',
 		previewLabel: null,
 		templateInMonorepo: 'template-still',
-		allowEnableTailwind: false,
-		contributedBy: null,
-		showStackblitz: true,
-	},
-	{
-		homePageLabel: 'Text-To-Speech (Azure)',
-		shortName: 'TTS (Azure)',
-		org: 'FelippeChemello',
-		repoName: 'Remotion-TTS-Example',
-		description: 'Turns text into speech and makes a video',
-		longerDescription:
-			'A template that turns text into a spoken video. Integrates with Azure Cloud for Speech synthesis.',
-		promoVideo: {
-			muxId: '8vJJ01lNuFmQCx7n59VILevqQGxRuQHp9a7VBR7B4C8k',
-			width: 1920,
-			height: 1080,
-		},
-		cliId: 'tts' as const,
-		type: 'video' as const,
-		defaultBranch: 'master',
-		featuredOnHomePage: null,
-		previewURL: null,
-		previewLabel: null,
-		templateInMonorepo: 'template-tts-azure',
-		allowEnableTailwind: false,
-		contributedBy: null,
-		showStackblitz: true,
-	},
-	{
-		homePageLabel: 'Text-To-Speech (Google)',
-		shortName: 'TTS (Google)',
-		org: 'thecmdrunner',
-		repoName: 'remotion-gtts-template',
-		description: 'Turns text into speech and makes a video',
-		longerDescription:
-			'A template that turns text into a spoken video. Integrates with Firebase for Storage, and Google Cloud for Speech synthesis.',
-		promoVideo: {
-			muxId: '82dzhGhv3bl3p8LW009cFGd8oltqt6UvxTWdP27202BAY',
-			width: 1920,
-			height: 1080,
-		},
-		cliId: 'google-tts' as const,
-		type: 'video' as const,
-		defaultBranch: 'master',
-		featuredOnHomePage: null,
-		previewURL: null,
-		previewLabel: null,
-		templateInMonorepo: 'template-tts-google',
 		allowEnableTailwind: false,
 		contributedBy: null,
 		showStackblitz: true,

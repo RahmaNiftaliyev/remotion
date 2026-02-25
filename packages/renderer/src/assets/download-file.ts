@@ -26,6 +26,8 @@ const CANCELLED_ERROR = 'cancelled';
 const incorrectContentLengthToken = 'Download finished with';
 const noDataSentToken = 'but the server sent no data for';
 
+const noDataSentToken = 'but the server sent no data for';
+
 const downloadFileWithoutRetries = ({
 	onProgress,
 	url,

@@ -17,7 +17,6 @@ import {Stargazer} from '../icons/stargazer';
 import {StillIcon} from '../icons/still';
 import {TikTok} from '../icons/tiktok';
 import {TypeScriptIcon} from '../icons/ts';
-import {TTSIcon} from '../icons/tts';
 import {VercelIcon} from '../icons/vercel';
 import {Waveform} from '../icons/waveform';
 
@@ -79,26 +78,6 @@ export const IconForTemplate: React.FC<{
 	if (template.cliId === 'audiogram') {
 		return (
 			<Waveform
-				style={{
-					height: scale * 36,
-				}}
-			/>
-		);
-	}
-
-	if (template.cliId === 'tts') {
-		return (
-			<TTSIcon
-				style={{
-					height: scale * 36,
-				}}
-			/>
-		);
-	}
-
-	if (template.cliId === 'google-tts') {
-		return (
-			<TTSIcon
 				style={{
 					height: scale * 36,
 				}}

@@ -3,6 +3,7 @@ import path from 'node:path';
 import type {Expression} from '@babel/types';
 import {parseAst} from '../codemods/parse-ast';
 import {isStaticValue} from '../preview-server/routes/can-update-sequence-props';
+import {computeSequencePropsStatus} from '../preview-server/routes/can-update-sequence-props';
 
 const parseExpression = (code: string): Expression => {
 	const ast = parseAst(`a = ${code}`);
@@ -41,13 +42,10 @@ test('Computed values should be detected as computed', () => {
 });
 
 test('canUpdateSequenceProps should flag computed props', async () => {
-	const {computeSequencePropsStatus} =
-		await import('../preview-server/routes/can-update-sequence-props');
-
 	const result = computeSequencePropsStatus({
 		fileName: path.join(__dirname, 'snapshots', 'light-leak-computed.txt'),
 		line: 8,
-		keys: ['durationInFrames', 'seed', 'hueShift'],
+		keys: ['durationInFrames', 'seed', 'hueShift', 'nonExistentProp'],
 		remotionRoot: '/',
 	});
 
@@ -59,4 +57,8 @@ test('canUpdateSequenceProps should flag computed props', async () => {
 	expect(result.props.durationInFrames).toEqual({canUpdate: true});
 	expect(result.props.hueShift).toEqual({canUpdate: true});
 	expect(result.props.seed).toEqual({canUpdate: false, reason: 'computed'});
+	expect(result.props.nonExistentProp).toEqual({
+		canUpdate: false,
+		reason: 'not-set',
+	});
 });

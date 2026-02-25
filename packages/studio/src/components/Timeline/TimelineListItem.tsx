@@ -78,7 +78,8 @@ export const TimelineListItem: React.FC<{
 			});
 	}, [sequence.stack]);
 
-	const isExpanded = expandedTracks[sequence.id] ?? false;
+	const isExpanded =
+		visualModeEnabled && (expandedTracks[sequence.id] ?? false);
 
 	const onToggleExpand = useCallback(() => {
 		toggleTrack(sequence.id);

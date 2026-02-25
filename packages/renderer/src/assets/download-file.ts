@@ -24,6 +24,7 @@ type Options = {
 const CANCELLED_ERROR = 'cancelled';
 
 const incorrectContentLengthToken = 'Download finished with';
+const noDataSentToken = 'but the server sent no data for';
 
 const downloadFileWithoutRetries = ({
 	onProgress,
@@ -69,7 +70,7 @@ const downloadFileWithoutRetries = ({
 
 				rejectAndFlag(
 					new Error(
-						`Tried to download file ${url}, but the server sent no data for 20 seconds`,
+						`Tried to download file ${url}, ${noDataSentToken} 20 seconds`,
 					),
 				);
 			}, 20000);
@@ -189,6 +190,7 @@ export const downloadFile = async (
 			message === 'aborted' ||
 			message.includes('ECONNRESET') ||
 			message.includes(incorrectContentLengthToken) ||
+			message.includes(noDataSentToken) ||
 			// Try again if hitting internal errors
 			message.includes('503') ||
 			message.includes('502') ||

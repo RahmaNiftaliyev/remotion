@@ -65,7 +65,7 @@ test(
 		expect(data).toContain('30 fps');
 	},
 	{
-		timeout: 30000,
+		timeout: 90000,
 	},
 );
 

@@ -52,6 +52,24 @@ export const updateSequenceProps = async ({
 					? node.attributes?.[attrIndex]
 					: undefined;
 
+			if (
+				attr &&
+				attr.type !== 'JSXSpreadAttribute' &&
+				attr.value
+			) {
+				const printed = recast.print(attr.value).code;
+				// Strip JSX expression container braces, e.g. "{30}" -> "30"
+				oldValueString =
+					printed.startsWith('{') && printed.endsWith('}')
+						? printed.slice(1, -1)
+						: printed;
+			} else if (attr && attr.type !== 'JSXSpreadAttribute' && !attr.value) {
+				// JSX shorthand like `loop` (no value) is implicitly `true`
+				oldValueString = 'true';
+			} else if (!attr && defaultValue !== null) {
+				oldValueString = JSON.stringify(defaultValue);
+			}
+
 			if (isDefault) {
 				if (attr && attr.type !== 'JSXSpreadAttribute' && node.attributes) {
 					node.attributes.splice(attrIndex!, 1);
@@ -68,10 +86,15 @@ export const updateSequenceProps = async ({
 				).expression as AssignmentExpression
 			).right as ExpressionKind;
 
+			const newValue =
+				value === true
+					? null
+					: recast.types.builders.jsxExpressionContainer(parsed);
+
 			if (!attr || attr.type === 'JSXSpreadAttribute') {
 				const newAttr = recast.types.builders.jsxAttribute(
 					recast.types.builders.jsxIdentifier(key),
-					recast.types.builders.jsxExpressionContainer(parsed),
+					newValue,
 				);
 
 				if (!node.attributes) {
@@ -80,16 +103,7 @@ export const updateSequenceProps = async ({
 
 				node.attributes.push(newAttr);
 			} else {
-				if (attr.value) {
-					const printed = recast.print(attr.value).code;
-					// Strip JSX expression container braces, e.g. "{30}" -> "30"
-					oldValueString =
-						printed.startsWith('{') && printed.endsWith('}')
-							? printed.slice(1, -1)
-							: printed;
-				}
-
-				attr.value = recast.types.builders.jsxExpressionContainer(parsed);
+				attr.value = newValue;
 			}
 
 			found = true;

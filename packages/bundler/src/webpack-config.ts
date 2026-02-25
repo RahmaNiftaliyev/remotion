@@ -90,6 +90,9 @@ export const webpackConfig = async ({
 				? require.resolve('./fast-refresh/runtime.js')
 				: null,
 			require.resolve('./setup-environment'),
+			environment === 'development'
+				? require.resolve('./setup-sequence-stack-traces')
+				: null,
 			userDefinedComponent,
 			require.resolve('../react-shim.js'),
 			entry,

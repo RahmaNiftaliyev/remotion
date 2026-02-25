@@ -29,19 +29,12 @@ const notEditableBackground: React.CSSProperties = {
 
 const TimelineNumberField: React.FC<{
 	readonly field: SchemaFieldInfo;
+	readonly codeValue: unknown;
 	readonly canUpdate: boolean;
 	readonly onSave: (key: string, value: unknown) => Promise<void>;
-	readonly onSavingChange: (saving: boolean) => void;
 	readonly onDragValueChange: (key: string, value: unknown) => void;
 	readonly onDragEnd: () => void;
-}> = ({
-	field,
-	canUpdate,
-	onSave,
-	onSavingChange,
-	onDragValueChange,
-	onDragEnd,
-}) => {
+}> = ({field, codeValue, canUpdate, onSave, onDragValueChange, onDragEnd}) => {
 	const [dragValue, setDragValue] = useState<number | null>(null);
 	const dragging = useRef(false);
 
@@ -56,46 +49,41 @@ const TimelineNumberField: React.FC<{
 
 	useEffect(() => {
 		setDragValue(null);
-		onSavingChange(false);
 		onDragEnd();
-	}, [field.currentValue, onSavingChange, onDragEnd]);
+	}, [field.currentValue, onDragEnd]);
 
 	const onValueChangeEnd = useCallback(
 		(newVal: number) => {
-			if (canUpdate && newVal !== field.currentValue) {
-				onSavingChange(true);
+			if (canUpdate && newVal !== codeValue) {
 				onSave(field.key, newVal).catch(() => {
-					onSavingChange(false);
 					setDragValue(null);
 				});
 			} else {
 				setDragValue(null);
 			}
 		},
-		[canUpdate, onSave, onSavingChange, field.key, field.currentValue],
+		[canUpdate, onSave, field.key, codeValue],
 	);
 
 	const onTextChange = useCallback(
 		(newVal: string) => {
 			if (canUpdate) {
 				const parsed = Number(newVal);
-				if (!Number.isNaN(parsed) && parsed !== field.currentValue) {
+				if (!Number.isNaN(parsed) && parsed !== codeValue) {
 					setDragValue(parsed);
-					onSavingChange(true);
 					onSave(field.key, parsed).catch(() => {
-						onSavingChange(false);
 						setDragValue(null);
 					});
 				}
 			}
 		},
-		[canUpdate, onSave, onSavingChange, field.key, field.currentValue],
+		[canUpdate, onSave, field.key, codeValue],
 	);
 
 	return (
 		<InputDragger
 			type="number"
-			value={dragValue ?? (field.currentValue as number)}
+			value={dragValue ?? (codeValue as number)}
 			style={draggerStyle}
 			status="ok"
 			onValueChange={onValueChange}
@@ -112,20 +100,11 @@ const TimelineNumberField: React.FC<{
 export const TimelineFieldValue: React.FC<{
 	readonly field: SchemaFieldInfo;
 	readonly onSave: (key: string, value: unknown) => Promise<void>;
-	readonly onSavingChange: (saving: boolean) => void;
 	readonly onDragValueChange: (key: string, value: unknown) => void;
 	readonly onDragEnd: () => void;
 	readonly canUpdate: boolean;
 	readonly propStatus: CanUpdateSequencePropStatus | null;
-}> = ({
-	field,
-	onSave,
-	onSavingChange,
-	onDragValueChange,
-	onDragEnd,
-	propStatus,
-	canUpdate,
-}) => {
+}> = ({field, onSave, onDragValueChange, onDragEnd, propStatus, canUpdate}) => {
 	const wrapperStyle: React.CSSProperties | undefined =
 		canUpdate === null || canUpdate === false
 			? notEditableBackground
@@ -154,9 +133,9 @@ export const TimelineFieldValue: React.FC<{
 			<span style={wrapperStyle}>
 				<TimelineNumberField
 					field={field}
+					codeValue={propStatus.codeValue}
 					canUpdate={canUpdate}
 					onSave={onSave}
-					onSavingChange={onSavingChange}
 					onDragValueChange={onDragValueChange}
 					onDragEnd={onDragEnd}
 				/>
@@ -166,7 +145,7 @@ export const TimelineFieldValue: React.FC<{
 
 	return (
 		<span style={{...unsupportedLabel, fontStyle: 'normal'}}>
-			{String(field.currentValue)}
+			{String(propStatus.codeValue)}
 		</span>
 	);
 };

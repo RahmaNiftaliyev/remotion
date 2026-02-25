@@ -4,7 +4,6 @@ import {handleAddRender} from './routes/add-render';
 import {applyCodemodHandler} from './routes/apply-codemod';
 import {applyVisualControlHandler} from './routes/apply-visual-control-change';
 import {canUpdateDefaultPropsHandler} from './routes/can-update-default-props';
-import {canUpdateSequencePropsHandler} from './routes/can-update-sequence-props';
 import {handleCancelRender} from './routes/cancel-render';
 import {deleteStaticFileHandler} from './routes/delete-static-file';
 import {handleInstallPackage} from './routes/install-dependency';
@@ -14,7 +13,9 @@ import {handleRemoveRender} from './routes/remove-render';
 import {handleRestartStudio} from './routes/restart-studio';
 import {saveSequencePropsHandler} from './routes/save-sequence-props';
 import {subscribeToFileExistence} from './routes/subscribe-to-file-existence';
+import {subscribeToSequenceProps} from './routes/subscribe-to-sequence-props';
 import {unsubscribeFromFileExistence} from './routes/unsubscribe-from-file-existence';
+import {unsubscribeFromSequenceProps} from './routes/unsubscribe-from-sequence-props';
 import {handleUpdate} from './routes/update-available';
 import {updateDefaultPropsHandler} from './routes/update-default-props';
 
@@ -34,7 +35,8 @@ export const allApiRoutes: {
 	'/api/apply-visual-control-change': applyVisualControlHandler,
 	'/api/apply-codemod': applyCodemodHandler,
 	'/api/can-update-default-props': canUpdateDefaultPropsHandler,
-	'/api/can-update-sequence-props': canUpdateSequencePropsHandler,
+	'/api/subscribe-to-sequence-props': subscribeToSequenceProps,
+	'/api/unsubscribe-from-sequence-props': unsubscribeFromSequenceProps,
 	'/api/save-sequence-props': saveSequencePropsHandler,
 	'/api/update-available': handleUpdate,
 	'/api/project-info': projectInfoHandler,

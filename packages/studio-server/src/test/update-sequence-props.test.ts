@@ -41,7 +41,7 @@ test('Computed values should be detected as computed', () => {
 	expect(isStaticValue(parseExpression('`template ${"x"}`'))).toBe(false);
 });
 
-test('canUpdateSequenceProps should flag computed props', async () => {
+test('canUpdateSequenceProps should flag computed props', () => {
 	const result = computeSequencePropsStatus({
 		fileName: path.join(__dirname, 'snapshots', 'light-leak-computed.txt'),
 		line: 8,

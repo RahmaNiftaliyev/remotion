@@ -1,7 +1,7 @@
-import type {LogLevel} from '@remotion/renderer';
-import {BrowserSafeApis} from '@remotion/renderer/client';
 import fs from 'node:fs';
 import path from 'node:path';
+import type {LogLevel} from '@remotion/renderer';
+import {BrowserSafeApis} from '@remotion/renderer/client';
 import {ConfigInternals} from './config';
 import {getEnvironmentVariables} from './get-env';
 import {getInputProps} from './get-input-props';
@@ -9,7 +9,9 @@ import {Log} from './log';
 import {parsedCli} from './parsed-cli';
 
 const getAndValidateFrameRange = (logLevel: LogLevel, indent: boolean) => {
-	const frameRange = ConfigInternals.getRange();
+	const frameRange = BrowserSafeApis.options.framesOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	if (typeof frameRange === 'number') {
 		Log.warn(
 			{logLevel, indent},

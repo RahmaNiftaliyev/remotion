@@ -1,5 +1,5 @@
-import {GetObjectCommand} from '@aws-sdk/client-s3';
 import type {Readable} from 'stream';
+import {GetObjectCommand} from '@aws-sdk/client-s3';
 import {getS3Client} from './get-s3-client';
 import type {AwsRegion} from './regions';
 import type {RequestHandler} from './types';

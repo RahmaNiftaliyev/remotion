@@ -326,12 +326,16 @@ A promise resolving to an object containing the following properties:
 - `frameCount`: `number` - describing how many frames got rendered.
 - `assetsInfo`: `RenderAssetInfo` - information that can be passed to `stitchFramesToVideo()` to mix audio. The shape of this object should be considered as Remotion internals and may change across Remotion versions.
 
+## Compatibility
+
+<CompatibilityTable chrome={false} firefox={false} safari={false} nodejs={true} bun={true} serverlessFunctions={false} clientSideRendering={false} serverSideRendering={true} player={false} studio={false} />
+
 ## See also
 
 - [Source code for this function](https://github.com/remotion-dev/remotion/blob/main/packages/renderer/src/render-frames.ts)
-- [renderMedia()](/docs/renderer/render-media)
-- [bundle()](/docs/bundle)
+- [`renderMedia()`](/docs/renderer/render-media)
+- [`bundle()`](/docs/bundle)
 - [Server-Side rendering](/docs/ssr)
-- [getCompositions()](/docs/renderer/get-compositions)
-- [stitchFramesToVideo()](/docs/renderer/stitch-frames-to-video)
-- [renderStill()](/docs/renderer/render-still)
+- [`getCompositions()`](/docs/renderer/get-compositions)
+- [`stitchFramesToVideo()`](/docs/renderer/stitch-frames-to-video)
+- [`renderStill()`](/docs/renderer/render-still)

@@ -1,8 +1,8 @@
-import {LambdaClientInternals} from '@remotion/lambda-client';
 import {beforeAll, expect, test} from 'bun:test';
 import {execSync} from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import {LambdaClientInternals} from '@remotion/lambda-client';
 import {VERSION} from 'remotion';
 
 const rubySdk = path.join(__dirname, '..', '..', '..', 'lambda-ruby');

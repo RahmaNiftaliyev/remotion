@@ -48,6 +48,7 @@ const {
 	webpackPollOption,
 	keyboardShortcutsOption,
 	experimentalClientSideRenderingOption,
+	experimentalVisualModeOption,
 	imageSequencePatternOption,
 	scaleOption,
 	overwriteOption,
@@ -65,6 +66,7 @@ const {
 	mutedOption,
 	headlessOption,
 	disableGitSourceOption,
+	framesOption,
 	forSeamlessAacConcatenationOption,
 	isProductionOption,
 	noOpenOption,
@@ -126,7 +128,7 @@ export type CommandLineOptions = {
 	[propsOption.cliFlag]: TypeOfOption<typeof propsOption>;
 	quality: number;
 	[jpegQualityOption.cliFlag]: TypeOfOption<typeof jpegQualityOption>;
-	frames: string | number;
+	[framesOption.cliFlag]: string | number;
 	[scaleOption.cliFlag]: TypeOfOption<typeof scaleOption>;
 	[imageSequenceOption.cliFlag]: TypeOfOption<typeof imageSequenceOption>;
 	quiet: boolean;
@@ -141,6 +143,9 @@ export type CommandLineOptions = {
 	>;
 	[experimentalClientSideRenderingOption.cliFlag]: TypeOfOption<
 		typeof experimentalClientSideRenderingOption
+	>;
+	[experimentalVisualModeOption.cliFlag]: TypeOfOption<
+		typeof experimentalVisualModeOption
 	>;
 	[mutedOption.cliFlag]: TypeOfOption<typeof mutedOption>;
 	[overrideHeightOption.cliFlag]: TypeOfOption<typeof overrideHeightOption>;
@@ -188,6 +193,7 @@ export const BooleanFlags = [
 	headlessOption.cliFlag,
 	keyboardShortcutsOption.cliFlag,
 	experimentalClientSideRenderingOption.cliFlag,
+	experimentalVisualModeOption.cliFlag,
 	ipv4Option.cliFlag,
 	beepOnFinishOption.cliFlag,
 	disableGitSourceOption.cliFlag,
@@ -204,6 +210,8 @@ export const parsedCli = minimist<CommandLineOptions>(process.argv.slice(2), {
 	default: {
 		[overwriteOption.cliFlag]: true,
 		[bundleCacheOption.cliFlag]: null,
+		[experimentalClientSideRenderingOption.cliFlag]: null,
+		[experimentalVisualModeOption.cliFlag]: null,
 		[mutedOption.cliFlag]: null,
 	},
 }) as CommandLineOptions & {

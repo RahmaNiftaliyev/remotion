@@ -1,6 +1,6 @@
+import path from 'path';
 import {expect, test} from '@playwright/test';
 import {WEBCODECS_TIMESCALE} from '@remotion/media-parser';
-import path from 'path';
 import type {ViteDevServer} from 'vite';
 import {createServer} from 'vite';
 

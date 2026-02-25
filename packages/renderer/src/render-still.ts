@@ -1,6 +1,6 @@
-import {LicensingInternals} from '@remotion/licensing';
 import fs, {statSync} from 'node:fs';
 import path from 'node:path';
+import {LicensingInternals} from '@remotion/licensing';
 import type {_InternalTypes} from 'remotion';
 import type {VideoConfig} from 'remotion/no-react';
 import {NoReactInternals} from 'remotion/no-react';
@@ -9,10 +9,10 @@ import {DEFAULT_BROWSER} from './browser';
 import type {BrowserExecutable} from './browser-executable';
 import type {BrowserLog} from './browser-log';
 import type {HeadlessBrowser} from './browser/Browser';
-import type {OnLog} from './browser/BrowserPage';
-import {DEFAULT_TIMEOUT} from './browser/TimeoutSettings';
 import {defaultBrowserDownloadProgress} from './browser/browser-download-progress-bar';
+import type {OnLog} from './browser/BrowserPage';
 import type {SourceMapGetter} from './browser/source-map-getter';
+import {DEFAULT_TIMEOUT} from './browser/TimeoutSettings';
 import type {Codec} from './codec';
 import {collectAssets} from './collect-assets';
 import {convertToPositiveFrameIndex} from './convert-to-positive-frame-index';
@@ -31,6 +31,7 @@ import {Log} from './logger';
 import type {CancelSignal} from './make-cancel-signal';
 import {cancelErrorMessages} from './make-cancel-signal';
 import {getAvailableMemory} from './memory/get-available-memory';
+import {mimeLookup} from './mime-types';
 import type {ChromiumOptions} from './open-browser';
 import {internalOpenBrowser} from './open-browser';
 import type {ToOptions} from './options/option';
@@ -118,7 +119,7 @@ export type RenderStillOptions = {
 	};
 
 type CleanupFn = () => Promise<unknown>;
-type RenderStillReturnValue = {buffer: Buffer | null};
+type RenderStillReturnValue = {buffer: Buffer | null; contentType: string};
 
 const innerRenderStill = async ({
 	composition,
@@ -384,7 +385,11 @@ const innerRenderStill = async ({
 
 	await cleanup();
 
-	return {buffer: output ? null : buffer};
+	return {
+		buffer: output ? null : buffer,
+		contentType:
+			mimeLookup('file.' + imageFormat) || 'application/octet-stream',
+	};
 };
 
 const internalRenderStillRaw = (

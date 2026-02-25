@@ -1,3 +1,4 @@
+import path from 'node:path';
 import type {AwsRegion, RequestHandler} from '@remotion/lambda-client';
 import {LambdaClientInternals, type AwsProvider} from '@remotion/lambda-client';
 import {REMOTION_BUCKET_PREFIX} from '@remotion/lambda-client/constants';
@@ -9,7 +10,6 @@ import {
 	getOverallProgressFromStorage,
 	type CustomCredentials,
 } from '@remotion/serverless';
-import path from 'node:path';
 import type {LambdaReadFileProgress} from '../functions/helpers/read-with-progress';
 import {lambdaDownloadFileWithProgress} from '../functions/helpers/read-with-progress';
 

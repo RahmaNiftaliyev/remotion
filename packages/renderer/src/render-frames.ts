@@ -1,6 +1,5 @@
 import fs from 'node:fs';
 import path from 'node:path';
-
 import type {
 	AudioOrVideoAsset,
 	InlineAudioAsset,
@@ -13,11 +12,11 @@ import {DEFAULT_BROWSER} from './browser';
 import type {BrowserExecutable} from './browser-executable';
 import type {BrowserLog} from './browser-log';
 import type {HeadlessBrowser} from './browser/Browser';
-import type {OnLog, Page} from './browser/BrowserPage';
-import {DEFAULT_TIMEOUT} from './browser/TimeoutSettings';
 import {defaultBrowserDownloadProgress} from './browser/browser-download-progress-bar';
+import type {OnLog, Page} from './browser/BrowserPage';
 import {isTargetClosedErr} from './browser/flaky-errors';
 import type {SourceMapGetter} from './browser/source-map-getter';
+import {DEFAULT_TIMEOUT} from './browser/TimeoutSettings';
 import {getShouldUsePartitionedRendering} from './can-use-parallel-encoding';
 import {cycleBrowserTabs} from './cycle-browser-tabs';
 import {defaultOnLog} from './default-on-log';

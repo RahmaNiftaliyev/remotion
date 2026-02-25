@@ -1,9 +1,9 @@
-import {parseMedia} from '@remotion/media-parser';
-import {nodeReader} from '@remotion/media-parser/node';
-import {$} from 'bun';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import {parseMedia} from '@remotion/media-parser';
+import {nodeReader} from '@remotion/media-parser/node';
+import {$} from 'bun';
 import {hasBenchmark} from './persistance';
 import {BenchmarkItem, getBenchmarkKey, QualityControl} from './types';
 

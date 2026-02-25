@@ -1,6 +1,6 @@
-import {exampleVideos} from '@remotion/example-videos';
 import {expect, test} from 'bun:test';
 import {existsSync, statSync, unlinkSync} from 'node:fs';
+import {exampleVideos} from '@remotion/example-videos';
 import {mediaParserController} from '../controller/media-parser-controller';
 import {downloadAndParseMedia} from '../download-and-parse-media';
 import {nodeReader} from '../readers/from-node';

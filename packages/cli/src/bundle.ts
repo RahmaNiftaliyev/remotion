@@ -1,9 +1,9 @@
+import {existsSync, readdirSync, readFileSync, rmSync, writeFileSync} from 'fs';
+import path from 'path';
 import {BundlerInternals} from '@remotion/bundler';
 import type {LogLevel} from '@remotion/renderer';
 import {BrowserSafeApis} from '@remotion/renderer/client';
 import {StudioServerInternals} from '@remotion/studio-server';
-import {existsSync, readdirSync, readFileSync, rmSync, writeFileSync} from 'fs';
-import path from 'path';
 import {chalk} from './chalk';
 import {findEntryPoint} from './entry-point';
 import {getGitSource} from './get-github-repository';
@@ -20,7 +20,9 @@ const {
 	audioLatencyHintOption,
 	askAIOption,
 	experimentalClientSideRenderingOption,
+	experimentalVisualModeOption,
 	keyboardShortcutsOption,
+	rspackOption,
 	outDirOption,
 	bundleCacheOption,
 } = BrowserSafeApis.options;
@@ -71,10 +73,14 @@ export const bundleCommand = async (
 		experimentalClientSideRenderingOption.getValue({
 			commandLine: parsedCli,
 		}).value;
+	const experimentalVisualModeEnabled = experimentalVisualModeOption.getValue({
+		commandLine: parsedCli,
+	}).value;
 	const askAIEnabled = askAIOption.getValue({commandLine: parsedCli}).value;
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const rspack = rspackOption.getValue({commandLine: parsedCli}).value;
 	const shouldCache = bundleCacheOption.getValue({
 		commandLine: parsedCli,
 	}).value;
@@ -164,8 +170,10 @@ export const bundleCommand = async (
 		publicPath,
 		audioLatencyHint,
 		experimentalClientSideRenderingEnabled,
+		experimentalVisualModeEnabled,
 		askAIEnabled,
 		keyboardShortcutsEnabled,
+		rspack,
 		shouldCache,
 	});
 

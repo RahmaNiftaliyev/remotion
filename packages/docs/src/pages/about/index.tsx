@@ -1,8 +1,7 @@
-import Layout from '@theme/Layout';
-import React from 'react';
-
 import Head from '@docusaurus/Head';
 import {TeamPage} from '@remotion/promo-pages/dist/team.js';
+import Layout from '@theme/Layout';
+import React from 'react';
 
 export default () => {
 	return (

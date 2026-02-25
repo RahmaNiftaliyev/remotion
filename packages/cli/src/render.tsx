@@ -47,7 +47,9 @@ const {
 	darkModeOption,
 	askAIOption,
 	experimentalClientSideRenderingOption,
+	experimentalVisualModeOption,
 	keyboardShortcutsOption,
+	rspackOption,
 	pixelFormatOption,
 	browserExecutableOption,
 	everyNthFrameOption,
@@ -222,6 +224,7 @@ export const render = async (
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const rspack = rspackOption.getValue({commandLine: parsedCli}).value;
 
 	const chromiumOptions: Required<ChromiumOptions> = {
 		disableWebSecurity,
@@ -248,6 +251,13 @@ export const render = async (
 		commandLine: parsedCli,
 	}).value;
 	const shouldCache = bundleCacheOption.getValue({
+		commandLine: parsedCli,
+	}).value;
+	const experimentalClientSideRenderingEnabled =
+		experimentalClientSideRenderingOption.getValue({
+			commandLine: parsedCli,
+		}).value;
+	const experimentalVisualModeEnabled = experimentalVisualModeOption.getValue({
 		commandLine: parsedCli,
 	}).value;
 
@@ -321,10 +331,10 @@ export const render = async (
 		audioLatencyHint,
 		imageSequencePattern,
 		askAIEnabled,
-		experimentalClientSideRenderingEnabled:
-			experimentalClientSideRenderingOption.getValue({commandLine: parsedCli})
-				.value,
+		experimentalClientSideRenderingEnabled,
+		experimentalVisualModeEnabled,
 		keyboardShortcutsEnabled,
+		rspack,
 		shouldCache,
 	});
 };

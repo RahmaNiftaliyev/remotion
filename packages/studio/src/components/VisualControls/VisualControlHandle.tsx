@@ -1,22 +1,22 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {NoReactInternals} from 'remotion/no-react';
 import {FastRefreshContext} from '../../fast-refresh-context';
+import {getVisualControlEditedValue} from '../../visual-controls/get-current-edited-value';
 import {
 	SetVisualControlsContext,
 	VisualControlsContext,
 	type VisualControlValue,
 } from '../../visual-controls/VisualControls';
-import {getVisualControlEditedValue} from '../../visual-controls/get-current-edited-value';
-import {showNotification} from '../Notifications/NotificationCenter';
-import type {UpdaterFunction} from '../RenderModal/SchemaEditor/ZodSwitch';
-import {ZodSwitch} from '../RenderModal/SchemaEditor/ZodSwitch';
-import {extractEnumJsonPaths} from '../RenderModal/SchemaEditor/extract-enum-json-paths';
-import {useLocalState} from '../RenderModal/SchemaEditor/local-state';
-import {applyVisualControlChange} from '../RenderQueue/actions';
 import {useZodIfPossible, useZodTypesIfPossible} from '../get-zod-if-possible';
 import {Spacing} from '../layout';
-import {VisualControlHandleHeader} from './VisualControlHandleHeader';
+import {showNotification} from '../Notifications/NotificationCenter';
+import {extractEnumJsonPaths} from '../RenderModal/SchemaEditor/extract-enum-json-paths';
+import {useLocalState} from '../RenderModal/SchemaEditor/local-state';
+import type {UpdaterFunction} from '../RenderModal/SchemaEditor/ZodSwitch';
+import {ZodSwitch} from '../RenderModal/SchemaEditor/ZodSwitch';
+import {applyVisualControlChange} from '../RenderQueue/actions';
 import {useOriginalFileName} from './get-original-stack-trace';
+import {VisualControlHandleHeader} from './VisualControlHandleHeader';
 
 export const VisualControlHandle: React.FC<{
 	readonly value: VisualControlValue;

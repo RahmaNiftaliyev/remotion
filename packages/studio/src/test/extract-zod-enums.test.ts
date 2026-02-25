@@ -1,6 +1,6 @@
+import {expect, test} from 'bun:test';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import * as zodTypes from '@remotion/zod-types';
-import {expect, test} from 'bun:test';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {zMatrix} from '@remotion/zod-types';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports

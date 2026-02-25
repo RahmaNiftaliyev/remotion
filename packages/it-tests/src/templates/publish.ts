@@ -1,8 +1,8 @@
-import {$} from 'bun';
-import {CreateVideoInternals} from 'create-video';
 import {cpSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import path from 'path';
+import {$} from 'bun';
+import {CreateVideoInternals} from 'create-video';
 
 type MinimalTemplate = {
 	shortName: string;
@@ -83,7 +83,7 @@ const publish = async (template: MinimalTemplate) => {
 	await $`git push origin ${defaultBranch.trim()}`.cwd(workingDir);
 };
 
-const CONCURRENCY = 4;
+const CONCURRENCY = 1;
 
 const results: PromiseSettledResult<void>[] = [];
 

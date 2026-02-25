@@ -5,9 +5,9 @@ if (process.env.NODE_ENV !== 'production') {
 	throw new Error('This script must be run using NODE_ENV=production');
 }
 
-import {$} from 'bun';
 import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'fs';
 import path from 'path';
+import {$} from 'bun';
 import {filteredFonts} from './scripts/filtered-fonts';
 import {removeWhitespace} from './scripts/utils';
 

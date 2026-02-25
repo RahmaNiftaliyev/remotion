@@ -1,6 +1,6 @@
+import {expect, test} from 'bun:test';
 import {exampleVideos} from '@remotion/example-videos';
 import {nodeReader} from '@remotion/media-parser/node';
-import {expect, test} from 'bun:test';
 import {convertMedia} from '../convert-media';
 
 test('Convert AVI to MP4', async () => {

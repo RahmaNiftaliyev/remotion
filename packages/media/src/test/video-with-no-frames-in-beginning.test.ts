@@ -99,6 +99,7 @@ test('same goes for audio', async () => {
 		},
 		updatePlaybackTime: () => {},
 		initialMuted: false,
+		drawDebugOverlay: () => {},
 	});
 
 	const nonceManager = makeNonceManager();
@@ -116,17 +117,10 @@ test('same goes for audio', async () => {
 	await manager.seek({
 		newTime: 0.10007241372413796,
 		nonce: nonceManager.createAsyncOperation(),
-		fps: 30,
 		playbackRate: 1,
 		getIsPlaying: () => true,
 		scheduleAudioNode: (node) => {
 			node.start(1);
-		},
-		bufferState: {
-			delayPlayback: () => ({
-				unblock: () => {},
-				[Symbol.dispose]: () => {},
-			}),
 		},
 	});
 

@@ -1,8 +1,8 @@
 import {expect, test} from 'bun:test';
 import {AbsoluteFill} from 'remotion';
-import {TransitionSeries} from '../TransitionSeries.js';
 import {fade} from '../presentations/fade.js';
 import {linearTiming} from '../timings/linear-timing.js';
+import {TransitionSeries} from '../TransitionSeries.js';
 import {renderForFrame} from './render-for-frame.js';
 
 const Letter: React.FC<{

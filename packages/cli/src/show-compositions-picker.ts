@@ -1,7 +1,6 @@
-import {selectAsync} from './composition-prompts';
-
 import type {getCompositions, LogLevel} from '@remotion/renderer';
 import {chalk} from './chalk';
+import {selectAsync} from './composition-prompts';
 type Await<T> = T extends PromiseLike<infer U> ? U : T;
 
 export const showSingleCompositionsPicker = async (

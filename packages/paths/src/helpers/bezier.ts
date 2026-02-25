@@ -1,7 +1,5 @@
 // Copied from: https://github.com/rveciana/svg-path-properties
 
-import type {Point, Properties} from './types';
-
 import {
 	cubicDerivative,
 	cubicPoint,
@@ -11,6 +9,7 @@ import {
 	quadraticPoint,
 	t2length,
 } from './bezier-functions';
+import type {Point, Properties} from './types';
 
 export const makeQuadratic = ({
 	startX,

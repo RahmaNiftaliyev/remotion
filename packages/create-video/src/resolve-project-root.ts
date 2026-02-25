@@ -1,8 +1,8 @@
-import chalk from 'chalk';
 import fs from 'node:fs';
 import {readdir, stat} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
+import chalk from 'chalk';
 import {Log} from './log';
 import {mkdirp} from './mkdirp';
 import prompts from './prompts';

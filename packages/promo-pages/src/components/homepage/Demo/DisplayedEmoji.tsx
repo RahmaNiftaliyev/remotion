@@ -4,7 +4,6 @@ import {
 	Lottie,
 	type LottieAnimationData,
 } from '@remotion/lottie';
-
 import React, {useEffect, useMemo, useState} from 'react';
 import {useDelayRender, useVideoConfig} from 'remotion';
 

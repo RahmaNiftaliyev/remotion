@@ -1,12 +1,12 @@
 import fs from 'fs';
 import type {BrowserExecutable} from './browser-executable';
+import {defaultBrowserDownloadProgress} from './browser/browser-download-progress-bar';
 import {
 	downloadBrowser,
 	getRevisionInfo,
 	readVersionFile,
 	TESTED_VERSION,
 } from './browser/BrowserFetcher';
-import {defaultBrowserDownloadProgress} from './browser/browser-download-progress-bar';
 import type {BrowserSafeApis} from './client';
 import {Log} from './logger';
 import type {ChromeMode} from './options/chrome-mode';

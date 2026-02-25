@@ -17,11 +17,8 @@
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
-
-import extractZip from 'extract-zip';
-
 import {promisify} from 'node:util';
-
+import extractZip from 'extract-zip';
 import {downloadFile} from '../assets/download-file';
 import {makeFileExecutableIfItIsNot} from '../compositor/make-file-executable';
 import type {LogLevel} from '../log-level';

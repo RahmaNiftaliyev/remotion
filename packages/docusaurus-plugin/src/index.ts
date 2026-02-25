@@ -1,5 +1,5 @@
-import type {DocusaurusContext} from '@docusaurus/types';
 import path from 'path';
+import type {DocusaurusContext} from '@docusaurus/types';
 import {remarkTwoslash} from './shiki';
 /**
  * @param {import("@docusaurus/types").DocusaurusContext} context

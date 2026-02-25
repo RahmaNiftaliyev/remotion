@@ -3,14 +3,14 @@ import type {ChangeEventHandler} from 'react';
 import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {Internals} from 'remotion';
 import {validateCompositionName} from '../../helpers/validate-new-comp-data';
+import {Spacing} from '../layout';
 import {ModalFooterContainer} from '../ModalFooter';
 import {ModalHeader} from '../ModalHeader';
+import {label, optionRow, rightRow} from '../RenderModal/layout';
 import {
 	ResolveCompositionBeforeModal,
 	ResolvedCompositionContext,
 } from '../RenderModal/ResolveCompositionBeforeModal';
-import {label, optionRow, rightRow} from '../RenderModal/layout';
-import {Spacing} from '../layout';
 import {CodemodFooter} from './CodemodFooter';
 import {DismissableModal} from './DismissableModal';
 import {RemotionInput} from './RemInput';
@@ -104,6 +104,7 @@ const RenameCompositionLoaded: React.FC<{}> = () => {
 						submitLabel={({relativeRootPath}) => `Modify ${relativeRootPath}`}
 						codemod={codemod}
 						valid={valid}
+						onSuccess={null}
 					/>
 				</ModalFooterContainer>
 			</form>

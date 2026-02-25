@@ -1,3 +1,6 @@
+import crypto from 'node:crypto';
+import {existsSync} from 'node:fs';
+import path from 'node:path';
 import type {WebpackOverrideFn} from '@remotion/bundler';
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
@@ -6,9 +9,6 @@ import type {
 	RenderDefaults,
 	RenderJob,
 } from '@remotion/studio-shared';
-import crypto from 'node:crypto';
-import {existsSync} from 'node:fs';
-import path from 'node:path';
 import {getNetworkAddress} from './get-network-address';
 import {maybeOpenBrowser} from './maybe-open-browser';
 import type {QueueMethods} from './preview-server/api-types';
@@ -38,6 +38,7 @@ export const startStudio = async ({
 	remotionRoot,
 	keyboardShortcutsEnabled,
 	experimentalClientSideRenderingEnabled,
+	experimentalVisualModeEnabled,
 	relativePublicDir,
 	webpackOverride,
 	poll,
@@ -54,6 +55,7 @@ export const startStudio = async ({
 	enableCrossSiteIsolation,
 	askAIEnabled,
 	forceNew,
+	rspack,
 }: {
 	browserArgs: string;
 	browserFlag: string;
@@ -68,6 +70,7 @@ export const startStudio = async ({
 	remotionRoot: string;
 	keyboardShortcutsEnabled: boolean;
 	experimentalClientSideRenderingEnabled: boolean;
+	experimentalVisualModeEnabled: boolean;
 	relativePublicDir: string | null;
 	webpackOverride: WebpackOverrideFn;
 	poll: number | null;
@@ -83,6 +86,7 @@ export const startStudio = async ({
 	forceIPv4: boolean;
 	askAIEnabled: boolean;
 	forceNew: boolean;
+	rspack: boolean;
 }): Promise<StartStudioResult> => {
 	try {
 		if (typeof Bun === 'undefined') {
@@ -138,6 +142,7 @@ export const startStudio = async ({
 		remotionRoot,
 		keyboardShortcutsEnabled,
 		experimentalClientSideRenderingEnabled,
+		experimentalVisualModeEnabled,
 		publicDir,
 		webpackOverride,
 		poll,
@@ -158,6 +163,7 @@ export const startStudio = async ({
 		enableCrossSiteIsolation,
 		askAIEnabled,
 		forceNew,
+		rspack,
 	});
 
 	if (result.type === 'already-running') {

@@ -1,6 +1,5 @@
 import fs, {mkdirSync} from 'node:fs';
 import path from 'path';
-
 import limit from 'p-limit';
 import {FontInfo, extractInfoFromCss} from './extract-info-from-css';
 import {Font, googleFonts} from './google-fonts';

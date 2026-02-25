@@ -3,10 +3,10 @@ import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {ShortcutHint} from '../../error-overlay/remotion-overlay/ShortcutHint';
 import {useKeybinding} from '../../helpers/use-keybinding';
 import {ModalsContext} from '../../state/modals';
+import {Flex, Row, Spacing} from '../layout';
 import {ModalButton} from '../ModalButton';
 import {showNotification} from '../Notifications/NotificationCenter';
 import {applyCodemod, getProjectInfo} from '../RenderQueue/actions';
-import {Flex, Row, Spacing} from '../layout';
 import type {CodemodStatus} from './DiffPreview';
 import {CodemodDiffPreview} from './DiffPreview';
 
@@ -18,6 +18,7 @@ export const CodemodFooter: React.FC<{
 	readonly errorNotification: string;
 	readonly genericSubmitLabel: string;
 	readonly submitLabel: (options: {relativeRootPath: string}) => string;
+	readonly onSuccess: (() => void) | null;
 }> = ({
 	codemod,
 	valid,
@@ -26,6 +27,7 @@ export const CodemodFooter: React.FC<{
 	errorNotification,
 	genericSubmitLabel,
 	submitLabel,
+	onSuccess,
 }) => {
 	const [submitting, setSubmitting] = useState(false);
 	const {setSelectedModal} = useContext(ModalsContext);
@@ -66,6 +68,7 @@ export const CodemodFooter: React.FC<{
 		})
 			.then(() => {
 				notification.replaceContent(successNotification, 2000);
+				onSuccess?.();
 			})
 			.catch((err) => {
 				notification.replaceContent(
@@ -77,6 +80,7 @@ export const CodemodFooter: React.FC<{
 		codemod,
 		errorNotification,
 		loadingNotification,
+		onSuccess,
 		setSelectedModal,
 		successNotification,
 	]);
@@ -118,7 +122,7 @@ export const CodemodFooter: React.FC<{
 			aborted = true;
 			abortController.abort();
 		};
-	}, [codemodStatus, getCanApplyCodemod, setSelectedModal]);
+	}, [getCanApplyCodemod]);
 
 	const disabled =
 		!valid ||

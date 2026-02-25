@@ -3,6 +3,7 @@ import {Internals} from 'remotion';
 import type {DrawFn} from '../drawn-fn';
 import {applyTextTransform} from './apply-text-transform';
 import {findWords} from './find-line-breaks.text';
+import {parseTextShadow} from './parse-text-shadow';
 
 export const drawText = ({
 	span,
@@ -20,11 +21,13 @@ export const drawText = ({
 			fontFamily,
 			fontSize,
 			fontWeight,
+			fontStyle,
 			direction,
 			writingMode,
 			letterSpacing,
 			textTransform,
 			webkitTextFillColor,
+			textShadow: textShadowValue,
 		} = computedStyle;
 		const isVertical = writingMode !== 'horizontal-tb';
 		if (isVertical) {
@@ -43,7 +46,7 @@ export const drawText = ({
 
 		const fontSizePx = parseFloat(fontSize);
 
-		contextToDraw.font = `${fontWeight} ${fontSizePx}px ${fontFamily}`;
+		contextToDraw.font = `${fontStyle} ${fontWeight} ${fontSizePx}px ${fontFamily}`;
 		contextToDraw.fillStyle =
 			// If text is being applied with backgroundClipText, we need to use a solid color otherwise it won't get
 			// applied in canvas
@@ -63,6 +66,8 @@ export const drawText = ({
 
 		const tokens = findWords(span);
 
+		const textShadows = parseTextShadow(textShadowValue);
+
 		for (const token of tokens) {
 			const measurements = contextToDraw.measureText(originalText);
 			const {fontBoundingBoxDescent, fontBoundingBoxAscent} = measurements;
@@ -72,11 +77,27 @@ export const drawText = ({
 			const leading = token.rect.height - fontHeight;
 			const halfLeading = leading / 2;
 
-			contextToDraw.fillText(
-				token.text,
-				(isRTL ? token.rect.right : token.rect.left) - parentRect.x,
-				token.rect.top + fontBoundingBoxAscent + halfLeading - parentRect.y,
-			);
+			const x = (isRTL ? token.rect.right : token.rect.left) - parentRect.x;
+			const y =
+				token.rect.top + fontBoundingBoxAscent + halfLeading - parentRect.y;
+
+			// Draw text shadows from last to first (so first shadow appears on top)
+			for (let i = textShadows.length - 1; i >= 0; i--) {
+				const shadow = textShadows[i];
+				contextToDraw.shadowColor = shadow.color;
+				contextToDraw.shadowBlur = shadow.blurRadius;
+				contextToDraw.shadowOffsetX = shadow.offsetX;
+				contextToDraw.shadowOffsetY = shadow.offsetY;
+				contextToDraw.fillText(token.text, x, y);
+			}
+
+			// Reset shadow and draw the actual text on top
+			contextToDraw.shadowColor = 'transparent';
+			contextToDraw.shadowBlur = 0;
+			contextToDraw.shadowOffsetX = 0;
+			contextToDraw.shadowOffsetY = 0;
+
+			contextToDraw.fillText(token.text, x, y);
 		}
 
 		span.textContent = originalText;

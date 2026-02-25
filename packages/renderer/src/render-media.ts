@@ -1,8 +1,8 @@
-import {LicensingInternals} from '@remotion/licensing';
-import type {ExecaChildProcess} from 'execa';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import {LicensingInternals} from '@remotion/licensing';
+import type {ExecaChildProcess} from 'execa';
 import type {_InternalTypes} from 'remotion';
 import type {VideoConfig} from 'remotion/no-react';
 import {NoReactInternals} from 'remotion/no-react';
@@ -11,9 +11,9 @@ import type {Bitrate} from './bitrate';
 import type {BrowserExecutable} from './browser-executable';
 import type {BrowserLog} from './browser-log';
 import type {HeadlessBrowser} from './browser/Browser';
+import {defaultBrowserDownloadProgress} from './browser/browser-download-progress-bar';
 import type {OnLog} from './browser/BrowserPage';
 import {DEFAULT_TIMEOUT} from './browser/TimeoutSettings';
-import {defaultBrowserDownloadProgress} from './browser/browser-download-progress-bar';
 import {canUseParallelEncoding} from './can-use-parallel-encoding';
 import type {Codec} from './codec';
 import {codecSupportsMedia} from './codec-supports-media';
@@ -40,6 +40,7 @@ import {DEFAULT_JPEG_QUALITY, validateJpegQuality} from './jpeg-quality';
 import {Log} from './logger';
 import type {CancelSignal} from './make-cancel-signal';
 import {cancelErrorMessages, makeCancelSignal} from './make-cancel-signal';
+import {mimeLookup} from './mime-types';
 import type {ChromiumOptions} from './open-browser';
 import {DEFAULT_COLOR_SPACE, type ColorSpace} from './options/color-space';
 import {DEFAULT_RENDER_FRAMES_OFFTHREAD_VIDEO_THREADS} from './options/offthreadvideo-threads';
@@ -86,7 +87,7 @@ const MAX_RECENT_FRAME_TIMINGS = 150;
 
 export type SlowFrame = {frame: number; time: number};
 
-export type RenderMediaOnProgress = (progress: {
+export type RenderMediaProgress = {
 	renderedFrames: number;
 	encodedFrames: number;
 	encodedDoneIn: number | null;
@@ -94,7 +95,9 @@ export type RenderMediaOnProgress = (progress: {
 	renderEstimatedTime: number;
 	progress: number;
 	stitchStage: StitchingState;
-}) => void;
+};
+
+export type RenderMediaOnProgress = (progress: RenderMediaProgress) => void;
 
 type MoreRenderMediaOptions = ToOptions<typeof optionsMap.renderMedia>;
 
@@ -220,6 +223,7 @@ type Await<T> = T extends PromiseLike<infer U> ? U : T;
 type RenderMediaResult = {
 	buffer: Buffer | null;
 	slowestFrames: SlowFrame[];
+	contentType: string;
 };
 
 const internalRenderMediaRaw = ({
@@ -826,6 +830,10 @@ const internalRenderMediaRaw = ({
 				const result: RenderMediaResult = {
 					buffer,
 					slowestFrames,
+					contentType:
+						mimeLookup(
+							'file.' + getFileExtensionFromCodec(codec, audioCodec),
+						) || 'application/octet-stream',
 				};
 
 				const sendTelemetryAndResolve = () => {

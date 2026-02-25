@@ -5,7 +5,9 @@ title: makeCancelSignal()
 crumb: '@remotion/renderer'
 ---
 
-<AvailableFrom v="3.0.15" />
+# makeCancelSignal()<AvailableFrom v="3.0.15" />
+
+_Part of the `@remotion/renderer` package._
 
 This function returns a signal and a cancel function that allows to you cancel a render triggered using [`renderMedia()`](/docs/renderer/render-media), [`renderStill()`](/docs/renderer/render-still), [`renderFrames()`](/docs/renderer/render-frames) or [`stitchFramesToVideo()`](/docs/renderer/stitch-frames-to-video)
 .
@@ -60,6 +62,10 @@ Calling `makeCancelSignal` returns an object with two properties:
 
 - `cancelSignal`: An object to be passed to one of the above mentioned render functions
 - `cancel`: A function you should call when you want to cancel the render.
+
+## Compatibility
+
+<CompatibilityTable chrome={false} firefox={false} safari={false} nodejs={true} bun={true} serverlessFunctions={false} clientSideRendering={false} serverSideRendering={true} player={false} studio={false} />
 
 ## See also
 

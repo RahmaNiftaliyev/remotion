@@ -5,10 +5,10 @@ import {FolderContextProvider} from '../state/folders';
 import {HighestZIndexProvider} from '../state/highest-z-index';
 import {KeybindingContextProvider} from '../state/keybindings';
 import {PreviewSizeProvider} from '../state/preview-size';
-
 import {SidebarContextProvider} from '../state/sidebar';
 import {VisualControlsProvider} from '../visual-controls/VisualControls';
 import {CheckerboardProvider} from './CheckerboardProvider';
+import {ExpandedTracksProvider} from './ExpandedTracksProvider';
 import {ZodProvider} from './get-zod-if-possible';
 import {MediaVolumeProvider} from './MediaVolumeProvider';
 import {ModalsProvider} from './ModalsProvider';
@@ -44,7 +44,9 @@ export const EditorContexts: React.FC<{
 																<FolderContextProvider>
 																	<HighestZIndexProvider>
 																		<SetTimelineInOutProvider>
-																			{children}
+																			<ExpandedTracksProvider>
+																				{children}
+																			</ExpandedTracksProvider>
 																		</SetTimelineInOutProvider>
 																	</HighestZIndexProvider>
 																</FolderContextProvider>

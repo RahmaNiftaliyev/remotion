@@ -6,6 +6,7 @@ import {
 } from '../../helpers/retry-payload';
 import {ModalsContext} from '../../state/modals';
 import {Button} from '../Button';
+import {Flex, SPACING_UNIT} from '../layout';
 import {HORIZONTAL_SCROLLBAR_CLASSNAME} from '../Menu/is-menu-item';
 import {ModalContainer} from '../ModalContainer';
 import {ModalHeader} from '../ModalHeader';
@@ -17,7 +18,6 @@ import type {
 } from '../RenderQueue/client-side-render-types';
 import {isRestoredClientJob} from '../RenderQueue/client-side-render-types';
 import {isClientRenderJob, RenderQueueContext} from '../RenderQueue/context';
-import {Flex, SPACING_UNIT} from '../layout';
 import {ClientRenderProgress} from './ClientRenderProgress';
 import {GuiRenderStatus} from './GuiRenderStatus';
 

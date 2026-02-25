@@ -1,6 +1,6 @@
-import {rendererClassic, transformerTwoslash} from '@shikijs/twoslash';
 import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'fs';
 import {dirname} from 'path';
+import {rendererClassic, transformerTwoslash} from '@shikijs/twoslash';
 import {createHighlighter} from 'shiki';
 import {createTwoslasher} from 'twoslash';
 
@@ -72,8 +72,7 @@ for (const item of items) {
 	// Report progress every 10 items
 	if ((completed + errors) % 10 === 0) {
 		process.stdout.write(
-			JSON.stringify({completed, errors, total: items.length, timings}) +
-				'\n',
+			JSON.stringify({completed, errors, total: items.length, timings}) + '\n',
 		);
 	}
 }

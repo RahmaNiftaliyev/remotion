@@ -5,19 +5,19 @@ sidebar_label: Formatting
 crumb: Contributing
 ---
 
-The Remotion codebase uses Prettier and ESLint for formatting and requires all code to be formatted correctly before it is merged.
+The Remotion codebase uses Oxfmt and ESLint for formatting and requires all code to be formatted correctly before it is merged.
 
-## Prettier
+## Oxfmt
 
-In VS Code, you can install the [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode). Extensions for other editors are available on the [Prettier website](https://prettier.io/docs/en/editors.html).
+In VS Code, you can install the [Oxc extension](https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode).
 
 The editor should automatically pick up our `.vscode/settings.json` file and format your code when you save a file.
 
-To manually format a whole package, run `pnpm exec prettier src --write` on a package. Example:
+To manually format a whole package, run `bunx oxfmt src --write` on a package. Example:
 
 ```bash
 cd packages/renderer
-pnpm exec prettier src --write
+bunx oxfmt src --write
 ```
 
 ## ESLint

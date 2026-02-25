@@ -7,16 +7,16 @@ import React, {useCallback, useMemo} from 'react';
 import {labelx264Preset} from '../../helpers/presets-labels';
 import {Checkmark} from '../../icons/Checkmark';
 import {Checkbox} from '../Checkbox';
+import {Spacing} from '../layout';
 import {VERTICAL_SCROLLBAR_CLASSNAME} from '../Menu/is-menu-item';
 import type {ComboboxValue, SelectionItem} from '../NewComposition/ComboBox';
 import {Combobox} from '../NewComposition/ComboBox';
 import {RemotionInput} from '../NewComposition/RemInput';
-import {Spacing} from '../layout';
+import {input, label, optionRow, rightRow} from './layout';
 import {NumberSetting} from './NumberSetting';
 import {OptionExplainerBubble} from './OptionExplainerBubble';
 import {RenderModalEnvironmentVariables} from './RenderModalEnvironmentVariables';
 import {RenderModalHr} from './RenderModalHr';
-import {input, label, optionRow, rightRow} from './layout';
 
 export type RenderType = 'still' | 'video' | 'audio' | 'sequence';
 

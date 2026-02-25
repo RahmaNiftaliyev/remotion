@@ -9,10 +9,6 @@ crumb: '@remotion/renderer'
 
 # getSilentParts()<AvailableFrom v="4.0.18" />
 
-:::note
-This function is meant to be used **in Node.js applications**. It cannot run in the browser.
-:::
-
 Gets the silent parts of a video or audio in Node.js. Useful for cutting out silence from a video.
 
 ## Example
@@ -86,7 +82,11 @@ An array of objects with the following properties:
 
 The time length of the media in seconds.
 
+## Compatibility
+
+<CompatibilityTable chrome={false} firefox={false} safari={false} nodejs={true} bun={true} serverlessFunctions={false} clientSideRendering={false} serverSideRendering={true} player={false} studio={false} />
+
 ## See also
 
 - [Source code for this function](https://github.com/remotion-dev/remotion/blob/main/packages/renderer/src/get-silent-parts.ts)
-- [getVideoMetadata()](/docs/renderer/get-video-metadata)
+- [`getVideoMetadata()`](/docs/renderer/get-video-metadata)

@@ -1,7 +1,7 @@
-import {makeCancelSignal, renderMedia} from '@remotion/renderer';
 import {test} from 'bun:test';
 import fs from 'fs';
 import path from 'path';
+import {makeCancelSignal, renderMedia} from '@remotion/renderer';
 
 test('Cancelling after success should not throw error', async () => {
 	const {cancel, cancelSignal} = makeCancelSignal();

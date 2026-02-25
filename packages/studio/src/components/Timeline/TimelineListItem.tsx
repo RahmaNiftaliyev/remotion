@@ -1,13 +1,23 @@
-import React, {useCallback, useContext, useMemo} from 'react';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import type {TSequence} from 'remotion';
 import {Internals} from 'remotion';
+import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import {TIMELINE_TRACK_SEPARATOR} from '../../helpers/colors';
 import {
 	getTimelineLayerHeight,
 	TIMELINE_ITEM_BORDER_BOTTOM,
 } from '../../helpers/timeline-layout';
+import {ExpandedTracksContext} from '../ExpandedTracksProvider';
+import {TimelineExpandedSection} from './TimelineExpandedSection';
 import {TimelineLayerEye} from './TimelineLayerEye';
 import {TimelineStack} from './TimelineStack';
+import {getOriginalLocationFromStack} from './TimelineStack/get-stack';
 
 const SPACING = 5;
 
@@ -16,14 +26,61 @@ const space: React.CSSProperties = {
 	flexShrink: 0,
 };
 
+const arrowButton: React.CSSProperties = {
+	background: 'none',
+	border: 'none',
+	color: 'white',
+	cursor: 'pointer',
+	padding: 0,
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+	width: 12,
+	height: 12,
+	flexShrink: 0,
+	fontSize: 8,
+	marginRight: 4,
+	userSelect: 'none',
+	outline: 'none',
+	lineHeight: 1,
+};
+
 export const TimelineListItem: React.FC<{
 	readonly sequence: TSequence;
 	readonly nestedDepth: number;
 	readonly isCompact: boolean;
 }> = ({nestedDepth, sequence, isCompact}) => {
+	const visualModeEnabled = Boolean(
+		process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED,
+	);
 	const {hidden, setHidden} = useContext(
 		Internals.SequenceVisibilityToggleContext,
 	);
+	const {expandedTracks, toggleTrack} = useContext(ExpandedTracksContext);
+
+	const [originalLocation, setOriginalLocation] =
+		useState<OriginalPosition | null>(null);
+
+	useEffect(() => {
+		if (!sequence.stack) {
+			return;
+		}
+
+		getOriginalLocationFromStack(sequence.stack, 'sequence')
+			.then((frame) => {
+				setOriginalLocation(frame);
+			})
+			.catch((err) => {
+				// eslint-disable-next-line no-console
+				console.error('Could not get original location of Sequence', err);
+			});
+	}, [sequence.stack]);
+
+	const isExpanded = expandedTracks[sequence.id] ?? false;
+
+	const onToggleExpand = useCallback(() => {
+		toggleTrack(sequence.id);
+	}, [sequence.id, toggleTrack]);
 
 	const padder = useMemo((): React.CSSProperties => {
 		return {
@@ -65,16 +122,57 @@ export const TimelineListItem: React.FC<{
 		};
 	}, [sequence.type]);
 
+	const arrowStyle: React.CSSProperties = useMemo(() => {
+		return {
+			...arrowButton,
+			transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+		};
+	}, [isExpanded]);
+
 	return (
-		<div style={outer}>
-			<TimelineLayerEye
-				type={sequence.type === 'audio' ? 'speaker' : 'eye'}
-				hidden={isItemHidden}
-				onInvoked={onToggleVisibility}
-			/>
-			<div style={padder} />
-			{sequence.parent && nestedDepth > 0 ? <div style={space} /> : null}
-			<TimelineStack sequence={sequence} isCompact={isCompact} />
-		</div>
+		<>
+			<div style={outer}>
+				<TimelineLayerEye
+					type={sequence.type === 'audio' ? 'speaker' : 'eye'}
+					hidden={isItemHidden}
+					onInvoked={onToggleVisibility}
+				/>
+				<div style={padder} />
+				{sequence.parent && nestedDepth > 0 ? <div style={space} /> : null}
+				{visualModeEnabled ? (
+					sequence.controls ? (
+						<button
+							type="button"
+							style={arrowStyle}
+							onClick={onToggleExpand}
+							aria-expanded={isExpanded}
+							aria-label={`${isExpanded ? 'Collapse' : 'Expand'} track`}
+						>
+							<svg
+								width="12"
+								height="12"
+								viewBox="0 0 8 8"
+								style={{display: 'block'}}
+							>
+								<path d="M2 1L6 4L2 7Z" fill="white" />
+							</svg>
+						</button>
+					) : (
+						<div style={arrowButton} />
+					)
+				) : null}
+				<TimelineStack
+					sequence={sequence}
+					isCompact={isCompact}
+					originalLocation={originalLocation}
+				/>
+			</div>
+			{visualModeEnabled && isExpanded && sequence.controls ? (
+				<TimelineExpandedSection
+					sequence={sequence}
+					originalLocation={originalLocation}
+				/>
+			) : null}
+		</>
 	);
 };

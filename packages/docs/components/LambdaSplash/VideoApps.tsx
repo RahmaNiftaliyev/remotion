@@ -3,8 +3,8 @@ import React, {useEffect, useState} from 'react';
 import {BlueButton} from '../layout/Button';
 import {PALETTE} from '../layout/colors';
 import {Spacer} from '../layout/Spacer';
-import videoapps from './videoapps.module.css';
 import {YouAreHere} from './YouAreHere';
+import videoapps from './videoapps.module.css';
 
 const panel: React.CSSProperties = {
 	backgroundColor: 'var(--ifm-background-color)',

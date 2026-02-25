@@ -11,8 +11,9 @@ import {TableOfContents as GoogleFontsTableOfContents} from '../../docs/google-f
 import {TableOfContents as InstallWhisperCppTableOfContents} from '../../docs/install-whisper-cpp/install-whisper-cpp';
 import {TableOfContents as LambdaTableOfContents} from '../../docs/lambda/table-of-contents';
 import {TableOfContents as LayoutUtilsTableOfContents} from '../../docs/layout-utils/table-of-contents';
-import {TableOfContents as LightLeaksTableOfContents} from '../../docs/light-leaks/table-of-contents';
 import {TableOfContents as LicensingTableOfContents} from '../../docs/licensing/TableOfContents';
+import {TableOfContents as LightLeaksTableOfContents} from '../../docs/light-leaks/table-of-contents';
+import {TableOfContents as SfxTableOfContents} from '../../docs/sfx/table-of-contents';
 import {TableOfContents as LottieTableOfContents} from '../../docs/lottie/table-of-contents';
 import {TableOfContents as MediaParserTableOfContents} from '../../docs/media-parser/TableOfContents';
 import {TableOfContents as MediaUtilsTableOfContents} from '../../docs/media-utils/table-of-contents';
@@ -33,6 +34,7 @@ import {TableOfContents as TailwindV4TableOfContents} from '../../docs/tailwind-
 import {TableOfContents as TailwindTableOfContents} from '../../docs/tailwind/TableOfContents';
 import {TableOfContents as ThreeTableOfContents} from '../../docs/three/TableOfContents';
 import {TableOfContents as TransitionsTableOfContents} from '../../docs/transitions/table-of-contents';
+import {TableOfContents as VercelTableOfContents} from '../../docs/vercel/table-of-contents';
 import {TableOfContents as WebcodecsTableOfContents} from '../../docs/webcodecs/TableOfContents';
 import {ZodTypesTableOfContents} from '../../docs/zod-types/TableOfContents';
 import {Grid} from './Grid';
@@ -151,9 +153,15 @@ export const TableOfContents: React.FC = () => {
 			<h2>@remotion/zod-types</h2>
 			<p>Zod types enabling Remotion Studio UI</p>
 			<ZodTypesTableOfContents />
+			<h2>@remotion/sfx</h2>
+			<p>Sound effects library</p>
+			<SfxTableOfContents />
 			<h2>@remotion/light-leaks</h2>
 			<p>Light leak effects</p>
 			<LightLeaksTableOfContents />
+			<h2>@remotion/vercel</h2>
+			<p>Render videos on Vercel Sandbox</p>
+			<VercelTableOfContents />
 			<h2>@remotion/motion-blur</h2>
 			<p>Apply motion blur effects to components</p>
 			<MotionBlurTableOfContents />

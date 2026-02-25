@@ -12,7 +12,7 @@ import type {
 import {overallProgressKey} from '@remotion/serverless-client';
 
 export type OverallProgressHelper<Provider extends CloudProvider> = {
-	upload: () => Promise<void>;
+	upload: (reason: string) => Promise<void>;
 	setFrames: ({
 		encoded,
 		rendered,
@@ -31,7 +31,9 @@ export type OverallProgressHelper<Provider extends CloudProvider> = {
 	setCombinedFrames: (framesEncoded: number) => void;
 	setTimeToCombine: (timeToCombine: number) => void;
 	addRetry: (retry: ChunkRetry) => void;
-	setPostRenderData: (postRenderData: PostRenderData<Provider>) => void;
+	setPostRenderData: (
+		postRenderData: PostRenderData<Provider>,
+	) => Promise<void>;
 	setRenderMetadata: (renderMetadata: RenderMetadata<Provider>) => void;
 	addErrorWithoutUpload: (errorInfo: FunctionErrorInfo) => void;
 	setExpectedChunks: (expectedChunks: number) => void;
@@ -95,52 +97,53 @@ export const makeOverallRenderProgress = <Provider extends CloudProvider>({
 	const renderProgress: OverallRenderProgress<Provider> =
 		makeInitialOverallRenderProgress(timeoutTimestamp);
 
-	let currentUploadPromise: Promise<void> | null = null;
-
-	const getCurrentProgress = () => renderProgress;
-
-	let latestUploadRequest = 0;
-	const getLatestRequestId = () => latestUploadRequest;
+	let dirty = false;
+	let dirtyReasons: string[] = [];
+	let uploadLoopPromise: Promise<void> | null = null;
 
 	let encodeStartTime: number | null = null;
 	let renderFramesStartTime: number | null = null;
 
-	const upload = async () => {
-		const uploadRequestId = ++latestUploadRequest;
-		if (currentUploadPromise) {
-			await currentUploadPromise;
-		}
+	const markDirty = (reason: string) => {
+		dirty = true;
+		dirtyReasons.push(reason);
+	};
 
-		// If request has been replaced by a new one
-		if (getLatestRequestId() !== uploadRequestId) {
-			return;
-		}
+	const runUploadLoop = async () => {
+		while (dirty) {
+			dirty = false;
+			const reasons = dirtyReasons.join(', ');
+			dirtyReasons = [];
+			const toWrite = JSON.stringify(renderProgress);
 
-		const toWrite = JSON.stringify(getCurrentProgress());
-
-		const start = Date.now();
-		currentUploadPromise = providerSpecifics
-			.writeFile({
-				body: toWrite,
-				bucketName,
-				customCredentials: null,
-				downloadBehavior: null,
-				expectedBucketOwner,
-				key: overallProgressKey(renderId),
-				privacy: 'private',
-				region,
-				forcePathStyle,
-				storageClass: null,
-				requestHandler: null,
-			})
-			.then(() => {
-				// By default, upload is way too fast (~20 requests per second)
+			RenderInternals.Log.verbose(
+				{indent: false, logLevel},
+				`Uploading progress - ${reasons} (${toWrite.length} bytes)`,
+			);
+			const start = Date.now();
+			try {
+				await providerSpecifics.writeFile({
+					body: toWrite,
+					bucketName,
+					customCredentials: null,
+					downloadBehavior: null,
+					expectedBucketOwner,
+					key: overallProgressKey(renderId),
+					privacy: 'private',
+					region,
+					forcePathStyle,
+					storageClass: null,
+					requestHandler: null,
+				});
+				RenderInternals.Log.verbose(
+					{indent: false, logLevel},
+					`Uploaded progress in ${Date.now() - start}ms`,
+				);
 				// Space out the requests a bit
-				return new Promise<void>((resolve) => {
+				await new Promise<void>((resolve) => {
 					setTimeout(resolve, Math.max(0, 250 - (Date.now() - start)));
 				});
-			})
-			.catch((err) => {
+			} catch (err) {
 				// If an error occurs in uploading the state that contains the errors,
 				// that is unfortunate. We just log it.
 				RenderInternals.Log.error(
@@ -148,9 +151,19 @@ export const makeOverallRenderProgress = <Provider extends CloudProvider>({
 					'Error uploading progress',
 					err,
 				);
-			});
-		await currentUploadPromise;
-		currentUploadPromise = null;
+			}
+		}
+
+		uploadLoopPromise = null;
+	};
+
+	const upload = async (reason: string) => {
+		markDirty(reason);
+		if (!uploadLoopPromise) {
+			uploadLoopPromise = runUploadLoop();
+		}
+
+		await uploadLoopPromise;
 	};
 
 	return {
@@ -203,7 +216,9 @@ export const makeOverallRenderProgress = <Provider extends CloudProvider>({
 
 			renderProgress.framesRendered = totalFramesRendered;
 			renderProgress.framesEncoded = totalFramesEncoded;
-			upload();
+			upload(
+				`setFrames(rendered=${totalFramesRendered}, encoded=${totalFramesEncoded})`,
+			);
 		},
 		addChunkCompleted: (chunkIndex, start, rendered) => {
 			renderProgress.chunks.push(chunkIndex);
@@ -220,15 +235,15 @@ export const makeOverallRenderProgress = <Provider extends CloudProvider>({
 				start,
 				rendered,
 			});
-			upload();
+			upload(`addChunkCompleted(chunk=${chunkIndex})`);
 		},
 		setCombinedFrames: (frames: number) => {
 			renderProgress.combinedFrames = frames;
-			upload();
+			upload(`setCombinedFrames(${frames})`);
 		},
 		setTimeToCombine: (timeToCombine: number) => {
 			renderProgress.timeToCombine = timeToCombine;
-			upload();
+			upload(`setTimeToCombine(${timeToCombine})`);
 		},
 		setLambdaInvoked(chunk) {
 			if (lambdasInvoked.length === 0) {
@@ -240,15 +255,15 @@ export const makeOverallRenderProgress = <Provider extends CloudProvider>({
 				(a, b) => a + Number(b),
 				0,
 			);
-			upload();
+			upload(`setLambdaInvoked(chunk=${chunk})`);
 		},
-		setPostRenderData(postRenderData) {
+		async setPostRenderData(postRenderData) {
 			renderProgress.postRenderData = postRenderData;
-			upload();
+			await upload('setPostRenderData');
 		},
 		setRenderMetadata: (renderMetadata) => {
 			renderProgress.renderMetadata = renderMetadata;
-			upload();
+			upload('setRenderMetadata');
 		},
 		addErrorWithoutUpload: (errorInfo) => {
 			renderProgress.errors.push(errorInfo);
@@ -260,19 +275,19 @@ export const makeOverallRenderProgress = <Provider extends CloudProvider>({
 		},
 		setCompositionValidated(timestamp) {
 			renderProgress.compositionValidated = timestamp;
-			upload();
+			upload('setCompositionValidated');
 		},
 		setServeUrlOpened(timestamp) {
 			renderProgress.serveUrlOpened = timestamp;
-			upload();
+			upload('setServeUrlOpened');
 		},
 		addRetry(retry) {
 			renderProgress.retries.push(retry);
-			upload();
+			upload('addRetry');
 		},
 		addReceivedArtifact(asset) {
 			renderProgress.receivedArtifact.push(asset);
-			upload();
+			upload('addReceivedArtifact');
 		},
 		getReceivedArtifacts() {
 			return renderProgress.receivedArtifact;

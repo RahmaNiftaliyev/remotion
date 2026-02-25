@@ -1,5 +1,7 @@
 // Prints to CLI and also reports back to browser
 
+import {existsSync, mkdirSync} from 'node:fs';
+import path from 'node:path';
 import type {
 	Browser,
 	BrowserExecutable,
@@ -17,8 +19,6 @@ import type {
 	JobProgressCallback,
 } from '@remotion/studio-server';
 import type {BrowserDownloadState} from '@remotion/studio-shared';
-import {existsSync, mkdirSync} from 'node:fs';
-import path from 'node:path';
 import {NoReactInternals} from 'remotion/no-react';
 import {defaultBrowserDownloadProgress} from '../browser-download-bar';
 import {chalk} from '../chalk';
@@ -84,8 +84,10 @@ export const renderStillFlow = async ({
 	offthreadVideoThreads,
 	audioLatencyHint,
 	mediaCacheSizeInBytes,
+	rspack,
 	askAIEnabled,
 	experimentalClientSideRenderingEnabled,
+	experimentalVisualModeEnabled,
 	keyboardShortcutsEnabled,
 	shouldCache,
 }: {
@@ -124,8 +126,10 @@ export const renderStillFlow = async ({
 	chromeMode: ChromeMode;
 	audioLatencyHint: AudioContextLatencyCategory | null;
 	mediaCacheSizeInBytes: number | null;
+	rspack: boolean;
 	askAIEnabled: boolean;
 	experimentalClientSideRenderingEnabled: boolean;
+	experimentalVisualModeEnabled: boolean;
 	keyboardShortcutsEnabled: boolean;
 	shouldCache: boolean;
 }) => {
@@ -229,8 +233,10 @@ export const renderStillFlow = async ({
 			publicPath,
 			audioLatencyHint,
 			experimentalClientSideRenderingEnabled,
+			experimentalVisualModeEnabled,
 			askAIEnabled,
 			keyboardShortcutsEnabled,
+			rspack,
 			shouldCache,
 		},
 	);

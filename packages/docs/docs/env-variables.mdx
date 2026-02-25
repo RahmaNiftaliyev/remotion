@@ -50,7 +50,7 @@ You can override the location of your dotenv file using the [configuration file 
 
 ## Using in Node.js APIs
 
-When using the [Node.js APIs](/docs/renderer) such as [`renderMedia()`](/docs/renderer/render-media) or [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda), the environment variables are **not** picked up automatically.
+When using the [Node.js APIs](/docs/renderer) such as [`renderMedia()`](/docs/renderer/render-media), [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda) or [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel), the environment variables are **not** picked up automatically.
 
 The reason is that one might integrate Remotion as a small part of a big application and if Remotion would read the `.env` file automatically and forward all variables to renders, it would lead to a security issue.
 
@@ -60,7 +60,7 @@ If you want to read the environment variables from a `.env` file, use the [doten
 
 ## The `envVariables` option
 
-The `envVariables` option of [`renderMedia()`](/docs/renderer/render-media#envvariables), [`renderMediaOnLambda`](/docs/lambda/rendermediaonlambda) accepts an object of key-value pairs.  
+The `envVariables` option of [`renderMedia()`](/docs/renderer/render-media#envvariables), [`renderMediaOnLambda()`](/docs/lambda/rendermediaonlambda), [`renderMediaOnVercel()`](/docs/vercel/render-media-on-vercel#envvariables) accepts an object of key-value pairs.  
 These values can then be read from `process.env` inside your React component.
 
 The option is not for authenticating with AWS - instead, load the AWS credentials using one of the described methods above.

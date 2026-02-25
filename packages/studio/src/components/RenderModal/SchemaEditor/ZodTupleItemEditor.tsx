@@ -1,9 +1,9 @@
 import {useCallback, useMemo} from 'react';
 import {useZodIfPossible} from '../../get-zod-if-possible';
-import type {UpdaterFunction} from './ZodSwitch';
-import {ZodSwitch} from './ZodSwitch';
 import type {AnyZodSchema} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
+import type {UpdaterFunction} from './ZodSwitch';
+import {ZodSwitch} from './ZodSwitch';
 
 export const ZodTupleItemEditor: React.FC<{
 	jsonPath: JSONPath;

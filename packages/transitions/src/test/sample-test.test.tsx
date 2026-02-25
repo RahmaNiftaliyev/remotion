@@ -1,5 +1,5 @@
-import {Thumbnail} from '@remotion/player';
 import {expect, test} from 'bun:test';
+import {Thumbnail} from '@remotion/player';
 import type React from 'react';
 import {renderToString} from 'react-dom/server';
 import {useCurrentFrame} from 'remotion';

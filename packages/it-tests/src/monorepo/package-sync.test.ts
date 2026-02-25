@@ -1,9 +1,9 @@
-import {CliInternals} from '@remotion/cli';
-import {packages} from '@remotion/studio-shared';
 import {expect, test} from 'bun:test';
-import {CreateVideoInternals} from 'create-video';
 import {writeFileSync} from 'node:fs';
 import path from 'node:path';
+import {CliInternals} from '@remotion/cli';
+import {packages} from '@remotion/studio-shared';
+import {CreateVideoInternals} from 'create-video';
 
 test('create-video and cli should have the same list of packages', () => {
 	const list1 = path.resolve(

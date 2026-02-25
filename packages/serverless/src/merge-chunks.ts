@@ -1,10 +1,10 @@
+import fs from 'fs';
 import type {
 	AudioCodec,
 	CombineChunksOnProgress,
 	FrameRange,
 	LogLevel,
 } from '@remotion/renderer';
-
 import type {DownloadBehavior} from '@remotion/serverless-client';
 import {
 	inspectErrors,
@@ -17,7 +17,6 @@ import {
 	type SerializedInputProps,
 	type ServerlessCodec,
 } from '@remotion/serverless-client';
-import fs from 'fs';
 import {cleanupProps} from './cleanup-props';
 import {concatVideos} from './concat-videos';
 import {createPostRenderData} from './create-post-render-data';
@@ -156,7 +155,7 @@ export const mergeChunksAndFinishRender = async <
 		providerSpecifics: options.providerSpecifics,
 	});
 
-	options.overallProgress.setPostRenderData(postRenderData);
+	await options.overallProgress.setPostRenderData(postRenderData);
 
 	fs.unlinkSync(outfile);
 	await cleanupChunksProm;

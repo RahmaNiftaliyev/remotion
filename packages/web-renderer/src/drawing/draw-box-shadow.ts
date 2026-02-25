@@ -2,12 +2,10 @@ import type {LogLevel} from 'remotion';
 import {Internals} from 'remotion';
 import type {BorderRadiusCorners} from './border-radius';
 import {drawRoundedRectPath} from './draw-rounded';
+import type {ShadowBase} from './parse-shadow';
+import {parseShadowValues} from './parse-shadow';
 
-interface BoxShadow {
-	offsetX: number;
-	offsetY: number;
-	blurRadius: number;
-	color: string;
+interface BoxShadow extends ShadowBase {
 	inset: boolean;
 }
 
@@ -16,57 +14,18 @@ export const parseBoxShadow = (boxShadowValue: string): BoxShadow[] => {
 		return [];
 	}
 
-	const shadows: BoxShadow[] = [];
+	const baseShadows = parseShadowValues(
+		// Remove 'inset' before parsing shared values
+		boxShadowValue,
+	);
 
-	// Split by comma, but respect rgba() colors
+	// Split by comma to check for inset on each shadow
 	const shadowStrings = boxShadowValue.split(/,(?![^(]*\))/);
 
-	for (const shadowStr of shadowStrings) {
-		const trimmed = shadowStr.trim();
-		if (!trimmed || trimmed === 'none') {
-			continue;
-		}
-
-		const shadow: BoxShadow = {
-			offsetX: 0,
-			offsetY: 0,
-			blurRadius: 0,
-			color: 'rgba(0, 0, 0, 0.5)',
-			inset: false,
-		};
-
-		// Check for inset
-		shadow.inset = /\binset\b/i.test(trimmed);
-
-		// Remove 'inset' keyword
-		let remaining = trimmed.replace(/\binset\b/gi, '').trim();
-
-		// Extract color (can be rgb(), rgba(), hsl(), hsla(), hex, or named color)
-		const colorMatch = remaining.match(
-			/(rgba?\([^)]+\)|hsla?\([^)]+\)|#[0-9a-f]{3,8}|[a-z]+)/i,
-		);
-		if (colorMatch) {
-			shadow.color = colorMatch[0];
-			remaining = remaining.replace(colorMatch[0], '').trim();
-		}
-
-		// Parse remaining numeric values (offset-x offset-y blur spread)
-		const numbers = remaining.match(/[+-]?\d*\.?\d+(?:px|em|rem|%)?/gi) || [];
-		const values = numbers.map((n) => parseFloat(n) || 0);
-
-		if (values.length >= 2) {
-			shadow.offsetX = values[0];
-			shadow.offsetY = values[1];
-
-			if (values.length >= 3) {
-				shadow.blurRadius = Math.max(0, values[2]); // Blur cannot be negative
-			}
-		}
-
-		shadows.push(shadow);
-	}
-
-	return shadows;
+	return baseShadows.map((base, i) => ({
+		...base,
+		inset: /\binset\b/i.test(shadowStrings[i] || ''),
+	}));
 };
 
 export const drawBorderRadius = ({

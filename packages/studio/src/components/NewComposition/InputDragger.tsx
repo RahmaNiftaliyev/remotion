@@ -14,6 +14,7 @@ import {RemotionInput, inputBaseStyle} from './RemInput';
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
 	readonly onValueChange: (newVal: number) => void;
+	readonly onValueChangeEnd?: (newVal: number) => void;
 	readonly onTextChange: (newVal: string) => void;
 	readonly status: RemInputStatus;
 	readonly formatter?: (str: number | string) => string;
@@ -30,6 +31,7 @@ const InputDraggerForwardRefFn: React.ForwardRefRenderFunction<
 > = (
 	{
 		onValueChange,
+		onValueChangeEnd,
 		min: _min,
 		max: _max,
 		step: _step,
@@ -122,6 +124,8 @@ const InputDraggerForwardRefFn: React.ForwardRefRenderFunction<
 				return;
 			}
 
+			let lastDragValue: number | null = null;
+
 			const moveListener = (ev: MouseEvent) => {
 				const xDistance = ev.pageX - pageX;
 				const distanceFromStart = Math.sqrt(
@@ -142,6 +146,7 @@ const InputDraggerForwardRefFn: React.ForwardRefRenderFunction<
 				);
 				const newValue = Math.min(max, Math.max(min, Number(value) + diff));
 				const roundedToStep = roundToStep(newValue, step);
+				lastDragValue = roundedToStep;
 				onValueChange(roundedToStep);
 			};
 
@@ -150,6 +155,10 @@ const InputDraggerForwardRefFn: React.ForwardRefRenderFunction<
 				'pointerup',
 				() => {
 					window.removeEventListener('mousemove', moveListener);
+					if (lastDragValue !== null && onValueChangeEnd) {
+						onValueChangeEnd(lastDragValue);
+					}
+
 					setTimeout(() => {
 						setClickLock(false);
 					}, 2);
@@ -159,7 +168,7 @@ const InputDraggerForwardRefFn: React.ForwardRefRenderFunction<
 				},
 			);
 		},
-		[_step, _min, _max, value, onValueChange],
+		[_step, _min, _max, value, onValueChange, onValueChangeEnd],
 	);
 
 	useEffect(() => {

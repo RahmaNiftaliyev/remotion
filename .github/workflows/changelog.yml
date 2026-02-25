@@ -2,6 +2,10 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to post (e.g. v4.0.422). Leave empty for latest.'
+        required: false
 name: Publish latest release
 
 jobs:
@@ -18,4 +22,4 @@ jobs:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: |
           cd packages/discord-poster
-          bun post.ts
+          bun post.ts ${{ github.event.inputs.tag }}

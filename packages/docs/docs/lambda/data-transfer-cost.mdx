@@ -10,7 +10,7 @@ When rendering on Remotion Lambda, a headless browser is opened, which opens you
 Your site and assets are being loaded via HTTP, meaning that you will be charged by AWS for the data transfer.
 
 If you have big assets, these charges may add up.  
-This site explains two options for reducing the cost if you have big assets.
+This site explains three options for reducing the cost if you have big assets.
 
 ## Isn't data transfer free if the assets are in the same region?
 
@@ -30,7 +30,16 @@ Make sure to disable the Bot fight mode for R2:
 
 This ensures no traffic gets blocked when the Lambda function uses a headless browser to load the assets.
 
-## Option 2: Enable VPC endpoints
+## Option 2: Use `@remotion/media` tags
+
+The [`<Video />`](/docs/media/video) and [`<Audio />`](/docs/media/audio) components from [`@remotion/media`](/docs/media) support **partial downloads** of media files.
+Unlike [`<OffthreadVideo />`](/docs/offthreadvideo), which needs to download the entire file before extracting a frame, the [`@remotion/media`](/docs/media) tags use byte range requests to only fetch the parts of the file that are needed.
+
+This means that if your composition only uses a portion of a large video, the Lambda function will not download the full file — significantly reducing data transfer.
+
+See the [comparison of video tags](/docs/video-tags) for a full feature comparison.
+
+## Option 3: Enable VPC endpoints
 
 You can with some configuration set up a VPC for the Lambda function.
 

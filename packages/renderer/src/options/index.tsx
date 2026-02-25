@@ -26,9 +26,11 @@ import {enforceAudioOption} from './enforce-audio';
 import {envFileOption} from './env-file';
 import {everyNthFrameOption} from './every-nth-frame';
 import {experimentalClientSideRenderingOption} from './experimental-client-side-rendering';
+import {experimentalVisualModeOption} from './experimental-visual-mode';
 import {folderExpiryOption} from './folder-expiry';
 import {forSeamlessAacConcatenationOption} from './for-seamless-aac-concatenation';
 import {forceNewStudioOption} from './force-new-studio';
+import {framesOption} from './frames';
 import {glOption} from './gl';
 import {hardwareAccelerationOption} from './hardware-acceleration';
 import {headlessOption} from './headless';
@@ -67,6 +69,7 @@ import {publicDirOption} from './public-dir';
 import {publicLicenseKeyOption} from './public-license-key';
 import {publicPathOption} from './public-path';
 import {reproOption} from './repro';
+import {rspackOption} from './rspack';
 import {runsOption} from './runs';
 import {scaleOption} from './scale';
 import {separateAudioOption} from './separate-audio';
@@ -146,7 +149,9 @@ export const allOptions = {
 	isProductionOption,
 	askAIOption,
 	experimentalClientSideRenderingOption,
+	experimentalVisualModeOption,
 	keyboardShortcutsOption,
+	framesOption,
 	forceNewStudioOption,
 	numberOfSharedAudioTagsOption,
 	ipv4Option,
@@ -157,6 +162,7 @@ export const allOptions = {
 	overrideWidthOption,
 	overrideFpsOption,
 	overrideDurationOption,
+	rspackOption,
 	outDirOption,
 	packageManagerOption,
 	webpackPollOption,

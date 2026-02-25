@@ -29,7 +29,9 @@ const {
 	darkModeOption,
 	askAIOption,
 	experimentalClientSideRenderingOption,
+	experimentalVisualModeOption,
 	keyboardShortcutsOption,
+	rspackOption,
 	browserExecutableOption,
 	userAgentOption,
 	disableWebSecurityOption,
@@ -155,6 +157,7 @@ export const still = async (
 	const keyboardShortcutsEnabled = keyboardShortcutsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const rspack = rspackOption.getValue({commandLine: parsedCli}).value;
 	const shouldCache = bundleCacheOption.getValue({
 		commandLine: parsedCli,
 	}).value;
@@ -216,7 +219,11 @@ export const still = async (
 		experimentalClientSideRenderingEnabled:
 			experimentalClientSideRenderingOption.getValue({commandLine: parsedCli})
 				.value,
+		experimentalVisualModeEnabled: experimentalVisualModeOption.getValue({
+			commandLine: parsedCli,
+		}).value,
 		keyboardShortcutsEnabled,
+		rspack,
 		shouldCache,
 	});
 };

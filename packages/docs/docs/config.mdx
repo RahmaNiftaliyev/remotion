@@ -175,6 +175,30 @@ Config.setExperimentalClientSideRenderingEnabled(true);
 
 The [command line flag](/docs/cli/studio#--enable-experimental-client-side-rendering) `--enable-experimental-client-side-rendering` will take precedence over this option.
 
+## `setExperimentalRspackEnabled()`<AvailableFrom v="4.0.426" />
+
+Use [Rspack](https://rspack.dev) instead of Webpack as the bundler for the Studio. Default `false`.
+
+```ts twoslash title="remotion.config.ts"
+import {Config} from '@remotion/cli/config';
+// ---cut---
+Config.setExperimentalRspackEnabled(true);
+```
+
+The [command line flag](/docs/cli/studio#--experimental-rspack) `--experimental-rspack` will take precedence over this option.
+
+## `setExperimentalVisualMode()`<AvailableFrom v="4.0.428" />
+
+<Options id="experimental-visual-mode" />
+
+```ts twoslash title="remotion.config.ts"
+import {Config} from '@remotion/cli/config';
+// ---cut---
+Config.setExperimentalVisualMode(true);
+```
+
+The [command line flag](/docs/cli/studio#--experimental-visual-mode) `--experimental-visual-mode` will take precedence over this option.
+
 ## `setWebpackPollingInMilliseconds()`<AvailableFrom v="3.3.11" />
 
 <Options id="webpack-poll" />
@@ -437,7 +461,7 @@ The [command line flag](/docs/cli/render#--for-seamless-aac-concatenation) `--fo
 
 ## `setFrameRange()`<AvailableFrom v="2.0.0" />
 
-Pass a number to render a still frame or a tuple to render a subset of a video. The frame sequence is zero-indexed.
+<Options id="frames" />
 
 ```ts twoslash title="remotion.config.ts"
 import {Config} from '@remotion/cli/config';

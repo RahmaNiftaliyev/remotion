@@ -38,6 +38,7 @@ export const calculateTimeline = ({
 					stack: null,
 					premountDisplay: null,
 					postmountDisplay: null,
+					controls: null,
 				},
 				depth: 0,
 				hash: '-',

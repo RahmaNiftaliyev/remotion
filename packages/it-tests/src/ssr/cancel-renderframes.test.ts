@@ -1,9 +1,9 @@
+import {beforeAll, expect, test} from 'bun:test';
 import {
 	ensureBrowser,
 	makeCancelSignal,
 	renderFrames,
 } from '@remotion/renderer';
-import {beforeAll, expect, test} from 'bun:test';
 
 beforeAll(async () => {
 	await ensureBrowser();

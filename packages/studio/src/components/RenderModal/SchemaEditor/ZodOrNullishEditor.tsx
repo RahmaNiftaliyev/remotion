@@ -6,14 +6,14 @@ import {
 	useZodTypesIfPossible,
 } from '../../get-zod-if-possible';
 import {Spacing} from '../../layout';
-import {Fieldset} from './Fieldset';
-import {SchemaLabel} from './SchemaLabel';
-import type {UpdaterFunction} from './ZodSwitch';
-import {ZodSwitch} from './ZodSwitch';
 import {createZodValues} from './create-zod-values';
+import {Fieldset} from './Fieldset';
 import {useLocalState} from './local-state';
+import {SchemaLabel} from './SchemaLabel';
 import type {AnyZodSchema} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
+import type {UpdaterFunction} from './ZodSwitch';
+import {ZodSwitch} from './ZodSwitch';
 
 const labelStyle: React.CSSProperties = {
 	fontFamily: 'sans-serif',

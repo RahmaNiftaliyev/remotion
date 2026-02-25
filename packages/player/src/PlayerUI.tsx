@@ -12,12 +12,6 @@ import React, {
 } from 'react';
 import type {CurrentScaleContextType} from 'remotion';
 import {Internals} from 'remotion';
-import type {RenderMuteButton} from './MediaVolumeSlider.js';
-import type {
-	RenderFullscreenButton,
-	RenderPlayPauseButton,
-} from './PlayerControls.js';
-import {Controls} from './PlayerControls.js';
 import type {BrowserMediaControlsBehavior} from './browser-mediasession.js';
 import {
 	calculateCanvasTransformation,
@@ -27,12 +21,18 @@ import {
 } from './calculate-scale.js';
 import {ErrorBoundary} from './error-boundary.js';
 import {RenderWarningIfBlacklist} from './license-blacklist.js';
+import type {RenderMuteButton} from './MediaVolumeSlider.js';
 import {playerCssClassname} from './player-css-classname.js';
 import type {
 	PlayerMethods,
 	PlayerRef,
 	RenderCustomControls,
 } from './player-methods.js';
+import type {
+	RenderFullscreenButton,
+	RenderPlayPauseButton,
+} from './PlayerControls.js';
+import {Controls} from './PlayerControls.js';
 import type {RenderVolumeSlider} from './render-volume-slider.js';
 import {usePlayback} from './use-playback.js';
 import {usePlayer} from './use-player.js';

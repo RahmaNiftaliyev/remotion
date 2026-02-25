@@ -1,11 +1,11 @@
 import React, {useCallback} from 'react';
 import {Checkbox} from '../../Checkbox';
 import {Fieldset} from './Fieldset';
-import {SchemaLabel} from './SchemaLabel';
-import type {UpdaterFunction} from './ZodSwitch';
 import {useLocalState} from './local-state';
+import {SchemaLabel} from './SchemaLabel';
 import type {AnyZodSchema} from './zod-schema-type';
 import type {JSONPath} from './zod-types';
+import type {UpdaterFunction} from './ZodSwitch';
 
 const fullWidth: React.CSSProperties = {
 	width: '100%',

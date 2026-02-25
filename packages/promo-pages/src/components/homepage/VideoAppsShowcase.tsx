@@ -1,5 +1,4 @@
 import React, {useRef, useState} from 'react';
-
 import {IsMutedIcon, NotMutedIcon, PausedIcon, PlayingIcon} from './Demo/icons';
 import {MuxVideo} from './MuxVideo';
 import {SectionTitle} from './VideoAppsTitle';

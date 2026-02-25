@@ -1,6 +1,6 @@
-import {$} from 'bun';
 import fs, {readFileSync} from 'fs';
 import path from 'path';
+import {$} from 'bun';
 // @ts-ignore outside project
 import * as seo from '../convert/app/seo';
 

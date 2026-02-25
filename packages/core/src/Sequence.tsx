@@ -7,21 +7,20 @@ import React, {
 	useState,
 } from 'react';
 import {AbsoluteFill} from './AbsoluteFill.js';
-import type {LoopDisplay} from './CompositionManager.js';
+import type {LoopDisplay, SequenceControls} from './CompositionManager.js';
+import {Freeze} from './freeze.js';
+import {useNonce} from './nonce.js';
 import type {SequenceContextType} from './SequenceContext.js';
 import {SequenceContext} from './SequenceContext.js';
 import {
 	SequenceManager,
 	SequenceVisibilityToggleContext,
 } from './SequenceManager.js';
-import {TimelineContext} from './TimelineContext.js';
-import {useNonce} from './nonce.js';
 import {useTimelinePosition} from './timeline-position-state.js';
-import {useVideoConfig} from './use-video-config.js';
-
-import {Freeze} from './freeze.js';
+import {TimelineContext} from './TimelineContext.js';
 import {useCurrentFrame} from './use-current-frame';
 import {useRemotionEnvironment} from './use-remotion-environment.js';
+import {useVideoConfig} from './use-video-config.js';
 import {ENABLE_V5_BREAKING_CHANGES} from './v5-flag.js';
 
 export type AbsoluteFillLayout = {
@@ -47,6 +46,7 @@ export type SequencePropsWithoutDuration = {
 	readonly from?: number;
 	readonly name?: string;
 	readonly showInTimeline?: boolean;
+	readonly controls?: SequenceControls;
 	/**
 	 * @deprecated For internal use only.
 	 */
@@ -89,6 +89,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 		height,
 		width,
 		showInTimeline = true,
+		controls,
 		_remotionInternalLoopDisplay: loopDisplay,
 		_remotionInternalStack: stack,
 		_remotionInternalPremountDisplay: premountDisplay,
@@ -205,6 +206,8 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 
 	const env = useRemotionEnvironment();
 
+	const inheritedStack = (other as any)?.stack ?? null;
+
 	useEffect(() => {
 		if (!env.isStudio) {
 			return;
@@ -221,9 +224,10 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 			showInTimeline,
 			nonce,
 			loopDisplay,
-			stack: stack ?? null,
+			stack: stack ?? inheritedStack,
 			premountDisplay: premountDisplay ?? null,
 			postmountDisplay: postmountDisplay ?? null,
+			controls: controls ?? null,
 		});
 		return () => {
 			unregisterSequence(id);
@@ -246,6 +250,8 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 		premountDisplay,
 		postmountDisplay,
 		env.isStudio,
+		inheritedStack,
+		controls,
 	]);
 
 	// Ceil to support floats

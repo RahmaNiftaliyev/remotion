@@ -1,5 +1,5 @@
-import {getRemoteExampleVideo} from '@remotion/example-videos';
 import {beforeAll, expect, test} from 'bun:test';
+import {getRemoteExampleVideo} from '@remotion/example-videos';
 import {mediaParserController} from '../../controller/media-parser-controller';
 import {hasBeenAborted} from '../../errors';
 import {parseMedia} from '../../parse-media';

@@ -10,19 +10,19 @@ import {useThumbnailAndWaveform} from '~/lib/use-thumbnail';
 import {AudioTrackOverview} from './AudioTrackOverview';
 import {ContainerOverview} from './ContainerOverview';
 import {EmbeddedImage} from './EmbeddedImage';
+import {getBrightnessOfFrame} from './get-brightness-of-frame';
 import {SourceLabel} from './SourceLabel';
 import {TrackSwitcher} from './TrackSwitcher';
-import type {VideoThumbnailRef} from './VideoThumbnail';
-import {VideoThumbnail} from './VideoThumbnail';
-import {VideoTrackOverview} from './VideoTrackOverview';
-import {getBrightnessOfFrame} from './get-brightness-of-frame';
-import styles from './probe.module.css';
 import {Button} from './ui/button';
 import {Card, CardDescription, CardHeader, CardTitle} from './ui/card';
 import {ScrollArea} from './ui/scroll-area';
 import {Separator} from './ui/separator';
 import {Skeleton} from './ui/skeleton';
 import type {ProbeResult} from './use-probe';
+import type {VideoThumbnailRef} from './VideoThumbnail';
+import {VideoThumbnail} from './VideoThumbnail';
+import {VideoTrackOverview} from './VideoTrackOverview';
+import styles from './probe.module.css';
 
 const idealBrightness = 0.8;
 

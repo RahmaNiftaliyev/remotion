@@ -1,7 +1,7 @@
-import {StudioServerInternals} from '@remotion/studio-server';
 import {expect, test} from 'bun:test';
 import {readFileSync} from 'fs';
 import {resolve} from 'path';
+import {StudioServerInternals} from '@remotion/studio-server';
 
 const rootFile = resolve(
 	__dirname,

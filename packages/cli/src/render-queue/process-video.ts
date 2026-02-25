@@ -11,7 +11,9 @@ const {
 	publicDirOption,
 	askAIOption,
 	experimentalClientSideRenderingOption,
+	experimentalVisualModeOption,
 	keyboardShortcutsOption,
+	rspackOption,
 	browserExecutableOption,
 	bundleCacheOption,
 } = BrowserSafeApis.options;
@@ -54,7 +56,9 @@ export const processVideoJob = async ({
 	const browserExecutable = browserExecutableOption.getValue({
 		commandLine: parsedCli,
 	}).value;
+	const rspack = rspackOption.getValue({commandLine: parsedCli}).value;
 	const fullEntryPoint = convertEntryPointToServeUrl(entryPoint);
+
 	await renderVideoFlow({
 		remotionRoot,
 		browser: 'chrome',
@@ -126,7 +130,11 @@ export const processVideoJob = async ({
 		experimentalClientSideRenderingEnabled:
 			experimentalClientSideRenderingOption.getValue({commandLine: parsedCli})
 				.value,
+		experimentalVisualModeEnabled: experimentalVisualModeOption.getValue({
+			commandLine: parsedCli,
+		}).value,
 		keyboardShortcutsEnabled,
+		rspack,
 		shouldCache,
 	});
 };

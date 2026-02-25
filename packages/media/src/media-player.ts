@@ -297,6 +297,7 @@ export class MediaPlayer {
 							this.playbackRate * this.globalPlaybackRate,
 						),
 					initialMuted,
+					drawDebugOverlay: this.drawDebugOverlay,
 				});
 			}
 
@@ -401,11 +402,9 @@ export class MediaPlayer {
 				? this.audioIteratorManager?.seek({
 						newTime,
 						nonce,
-						fps: this.fps,
 						playbackRate: this.playbackRate * this.globalPlaybackRate,
 						getIsPlaying: () => this.playing,
 						scheduleAudioNode: this.scheduleAudioNode,
-						bufferState: this.bufferState,
 					})
 				: null,
 		]);
@@ -640,7 +639,10 @@ export class MediaPlayer {
 		if (delay >= 0) {
 			node.start(this.sharedAudioContext.currentTime + delay);
 		} else {
-			node.start(this.sharedAudioContext.currentTime, -delay);
+			node.start(
+				this.sharedAudioContext.currentTime,
+				-delayWithoutPlaybackRate,
+			);
 		}
 	};
 
@@ -682,6 +684,7 @@ export class MediaPlayer {
 				audioIteratorManager: this.audioIteratorManager,
 				playing: this.playing,
 				videoIteratorManager: this.videoIteratorManager,
+				playbackRate: this.playbackRate * this.globalPlaybackRate,
 			});
 		}
 	};

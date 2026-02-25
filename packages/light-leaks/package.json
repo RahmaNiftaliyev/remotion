@@ -1,6 +1,6 @@
 {
 	"name": "@remotion/light-leaks",
-	"version": "4.0.425",
+	"version": "4.0.428",
 	"description": "Light leak effects for Remotion",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -11,7 +11,7 @@
 	"sideEffects": false,
 	"type": "module",
 	"scripts": {
-		"formatting": "prettier src --check",
+		"formatting": "oxfmt src --check",
 		"lint": "eslint src",
 		"watch": "tsgo -w",
 		"make": "tsgo && bun --env-file=../.env.bundle bundle.ts"
@@ -23,7 +23,8 @@
 		"url": "https://github.com/remotion-dev/remotion/issues"
 	},
 	"dependencies": {
-		"remotion": "workspace:*"
+		"remotion": "workspace:*",
+		"zod": "catalog:"
 	},
 	"peerDependencies": {
 		"react": ">=16.8.0",

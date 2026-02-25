@@ -66,13 +66,17 @@ Specify a desired output directory. If no passed, the webpack bundle will be cre
 
 <Options id="disable-ask-ai" />
 
+### `rspack?`
+
+Whether to use [Rspack](https://rspack.dev) instead of Webpack as the bundler. Default `false`.
+
 ### `keyboardShortcutsEnabled?`
 
-A `boolean` specifying whether the Studio responds to the predefined keyboard shortcuts.. Default `true`.
+<Options id="disable-keyboard-shortcuts" />
 
 ### `enableCaching?`
 
-A `boolean` specifying whether Webpack caching should be enabled. Default `true`, it is recommended to leave caching enabled at all times since file changes should be recognized by Webpack nonetheless.
+<Options id="bundle-cache" />
 
 ### `publicPath?`
 
@@ -88,7 +92,7 @@ The current working directory is the directory from which your program gets exec
 
 ### `publicDir?`<AvailableFrom v="3.2.13" />
 
-Set the directory in which the files that can be loaded using [`staticFile()`](/docs/staticfile) are located. By default it is the folder `public/` located in the [Remotion Root](/docs/terminology/remotion-root). If you pass a relative path, it will be resolved against the [Remotion Root](/docs/terminology/remotion-root).
+<Options id="public-dir" />
 
 ### `onPublicDirCopyProgress?`<AvailableFrom v="3.3.3" />
 

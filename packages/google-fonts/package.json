@@ -3,14 +3,14 @@
 		"url": "https://github.com/remotion-dev/remotion/tree/main/packages/google-fonts"
 	},
 	"name": "@remotion/google-fonts",
-	"version": "4.0.425",
+	"version": "4.0.428",
 	"description": "Use Google Fonts in Remotion",
 	"main": "dist/cjs/index.js",
 	"module": "dist/esm/index.mjs",
 	"scripts": {
 		"make": "tsgo -d && bun --env-file=../.env.bundle bundle.ts",
 		"generate": "bun --env-file=.env scripts/update-font-db.ts",
-		"formatting": "prettier src --check"
+		"formatting": "oxfmt src --check"
 	},
 	"license": "SEE LICENSE IN LICENSE.md",
 	"dependencies": {
@@ -20,7 +20,6 @@
 		"@types/css-font-loading-module": "0.0.14",
 		"@types/prettier": "^2.7.1",
 		"postcss": "8.4.47",
-		"prettier": "catalog:",
 		"@typescript/native-preview": "catalog:"
 	},
 	"types": "dist/cjs/index.d.ts",
@@ -199,6 +198,9 @@
 			],
 			"AlumniSansSC": [
 				"dist/cjs/AlumniSansSC.d.ts"
+			],
+			"Alyamama": [
+				"dist/cjs/Alyamama.d.ts"
 			],
 			"Amarante": [
 				"dist/cjs/Amarante.d.ts"
@@ -772,6 +774,15 @@
 			],
 			"BowlbyOneSC": [
 				"dist/cjs/BowlbyOneSC.d.ts"
+			],
+			"BpmfHuninn": [
+				"dist/cjs/BpmfHuninn.d.ts"
+			],
+			"BpmfIansui": [
+				"dist/cjs/BpmfIansui.d.ts"
+			],
+			"BpmfZihiKaiStd": [
+				"dist/cjs/BpmfZihiKaiStd.d.ts"
 			],
 			"BraahOne": [
 				"dist/cjs/BraahOne.d.ts"

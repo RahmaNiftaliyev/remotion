@@ -1,12 +1,14 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
 	AbsoluteFill,
+	Internals,
 	Sequence,
 	useCurrentFrame,
 	useDelayRender,
 	useVideoConfig,
 	type SequenceProps,
 } from 'remotion';
+import {z} from 'zod';
 
 export type LightLeakProps = Omit<
 	SequenceProps,
@@ -116,7 +118,12 @@ type GlContext = {
 const LightLeakCanvas: React.FC<{
 	readonly seed: number;
 	readonly hueShift: number;
-}> = ({seed, hueShift}) => {
+}> = ({seed: seedProp, hueShift: hueShiftProp}) => {
+	const overrideSeed = Internals.useSequenceControlOverride('seed');
+	const overrideHueShift = Internals.useSequenceControlOverride('hueShift');
+	const seed = (overrideSeed as number | undefined) ?? seedProp;
+	const hueShift = (overrideHueShift as number | undefined) ?? hueShiftProp;
+
 	const frame = useCurrentFrame();
 	const {width, height, durationInFrames} = useVideoConfig();
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -229,6 +236,15 @@ const LightLeakCanvas: React.FC<{
  * @description Renders a WebGL-based light leak effect as a Sequence.
  * @see [Documentation](https://www.remotion.dev/docs/light-leaks/light-leak)
  */
+const lightLeakSchema = z.object({
+	seed: z.number().describe('Random seed for the light leak pattern'),
+	hueShift: z
+		.number()
+		.min(0)
+		.max(360)
+		.describe('Hue rotation in degrees (0–360)'),
+});
+
 export const LightLeak: React.FC<LightLeakProps> = ({
 	seed = 0,
 	hueShift = 0,
@@ -255,9 +271,24 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 		);
 	}
 
+	const controls = useMemo(
+		() => ({
+			schema: lightLeakSchema,
+			currentValue: {seed, hueShift},
+		}),
+		[seed, hueShift],
+	);
+
 	return (
-		<Sequence durationInFrames={resolvedDuration} {...sequenceProps}>
+		<Sequence
+			durationInFrames={resolvedDuration}
+			name="<LightLeak>"
+			controls={controls}
+			{...sequenceProps}
+		>
 			<LightLeakCanvas seed={seed} hueShift={hueShift} />
 		</Sequence>
 	);
 };
+
+Internals.addSequenceStackTraces(LightLeak);

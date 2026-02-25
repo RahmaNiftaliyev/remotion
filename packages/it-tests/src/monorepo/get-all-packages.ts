@@ -1,8 +1,8 @@
-import {Pkgs, packages} from '@remotion/studio-shared';
-import {CreateVideoInternals} from 'create-video';
 import {existsSync, lstatSync, readdirSync, writeFileSync} from 'fs';
 import {readFileSync} from 'node:fs';
 import path from 'path';
+import {Pkgs, packages} from '@remotion/studio-shared';
+import {CreateVideoInternals} from 'create-video';
 
 export const getAllPackages = () => {
 	const pkgDir = path.join(__dirname, '..', '..', '..');

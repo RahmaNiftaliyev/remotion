@@ -1,8 +1,8 @@
+import {expect, test} from 'bun:test';
+import {unlinkSync} from 'node:fs';
 import {exampleVideos} from '@remotion/example-videos';
 import {nodeReader} from '@remotion/media-parser/node';
 import {nodeWriter} from '@remotion/media-parser/node-writer';
-import {expect, test} from 'bun:test';
-import {unlinkSync} from 'node:fs';
 import {convertMedia} from '../convert-media';
 
 test.skip('should be able to remux server side', async () => {

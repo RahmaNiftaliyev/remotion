@@ -1,13 +1,13 @@
 import type {MouseEventHandler, ReactNode, SyntheticEvent} from 'react';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {DefaultPlayPauseButton} from './DefaultPlayPauseButton.js';
+import {FullscreenIcon} from './icons.js';
 import type {RenderMuteButton} from './MediaVolumeSlider.js';
 import {MediaVolumeSlider} from './MediaVolumeSlider.js';
 import {PlaybackrateControl, playerButtonStyle} from './PlaybackrateControl.js';
+import type {RenderCustomControls} from './player-methods.js';
 import {PlayerSeekBar} from './PlayerSeekBar.js';
 import {PlayerTimeLabel} from './PlayerTimeLabel.js';
-import {FullscreenIcon} from './icons.js';
-import type {RenderCustomControls} from './player-methods.js';
 import type {RenderVolumeSlider} from './render-volume-slider.js';
 import {useHoverState} from './use-hover-state.js';
 import {

@@ -2,16 +2,19 @@ import {readFileSync, existsSync} from 'fs';
 import path from 'path';
 import {$} from 'bun';
 
-const result = await $`git diff --cached --name-only --diff-filter=ACMR`.text();
-const stagedFiles = result.trim().split('\n').filter(Boolean);
+const staged = await $`git diff --cached --name-only --diff-filter=ACMR`.text();
+const unstaged = await $`git diff --name-only`.text();
+const changedFiles = [
+	...new Set([...staged.trim().split('\n'), ...unstaged.trim().split('\n')]),
+].filter(Boolean);
 
-if (stagedFiles.length === 0) {
+if (changedFiles.length === 0) {
 	process.exit(0);
 }
 
 const packageNames = new Set<string>();
 
-for (const file of stagedFiles) {
+for (const file of changedFiles) {
 	const match = file.match(/^packages\/([^/]+)\//);
 	if (!match) {
 		continue;

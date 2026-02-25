@@ -1,11 +1,7 @@
 import path from 'node:path';
 import chalk from 'chalk';
 import execa from 'execa';
-import {
-	addPostcssConfig,
-	addTailwindRootCss,
-	addTailwindToConfig,
-} from './add-tailwind';
+import {addTailwindRootCss, addTailwindToConfig} from './add-tailwind';
 import {createYarnYmlFile} from './add-yarn2-support';
 import {askSkills} from './ask-skills';
 import {askTailwind} from './ask-tailwind';
@@ -157,7 +153,6 @@ export const init = async () => {
 		patchReadmeMd(projectRoot, pkgManager, selectedTemplate);
 		if (shouldOverrideTailwind) {
 			addTailwindToConfig(projectRoot);
-			addPostcssConfig(projectRoot);
 			addTailwindRootCss(projectRoot);
 		}
 

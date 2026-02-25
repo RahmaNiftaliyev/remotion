@@ -38,6 +38,7 @@ test('Computed values should be detected as computed', () => {
 	expect(isStaticValue(parseExpression('someVar'))).toBe(false);
 	expect(isStaticValue(parseExpression('foo()'))).toBe(false);
 	expect(isStaticValue(parseExpression('a ? b : c'))).toBe(false);
+	// eslint-disable-next-line no-template-curly-in-string
 	expect(isStaticValue(parseExpression('`template ${"x"}`'))).toBe(false);
 });
 

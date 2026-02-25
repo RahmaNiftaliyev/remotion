@@ -20,8 +20,8 @@ import {
 	getExpandedTrackHeight,
 	getSchemaFields,
 } from '../../helpers/timeline-layout';
-import {getDefaultValue} from '../RenderModal/SchemaEditor/zod-schema-type';
 import {callApi} from '../call-api';
+import {getDefaultValue} from '../RenderModal/SchemaEditor/zod-schema-type';
 import {
 	TimelineFieldSavingSpinner,
 	TimelineFieldValue,
@@ -64,7 +64,11 @@ const TimelineFieldRow: React.FC<{
 	readonly propStatus: CanUpdateSequencePropStatus | null;
 }> = ({field, onSave, onDragValueChange, onDragEnd, propStatus}) => {
 	const effectiveCodeValue = propStatus?.canUpdate
-		? (propStatus.codeValue ?? field.currentValue)
+		? (propStatus.codeValue ??
+				field.currentValue ??
+				(field.typeName === 'default'
+					? getDefaultValue(field.fieldSchema)
+					: undefined))
 		: undefined;
 	const saving =
 		propStatus !== null &&

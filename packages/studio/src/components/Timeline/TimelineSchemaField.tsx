@@ -3,6 +3,11 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
 import {InputDragger} from '../NewComposition/InputDragger';
 import {
+	getDefaultValue,
+	getInnerType,
+	getZodSchemaType,
+} from '../RenderModal/SchemaEditor/zod-schema-type';
+import {
 	getZodNumberMaximum,
 	getZodNumberMinimum,
 	getZodNumberStep,
@@ -35,6 +40,10 @@ const TimelineNumberField: React.FC<{
 	readonly onDragValueChange: (key: string, value: unknown) => void;
 	readonly onDragEnd: () => void;
 }> = ({field, codeValue, canUpdate, onSave, onDragValueChange, onDragEnd}) => {
+	const numberSchema =
+		field.typeName === 'default'
+			? getInnerType(field.fieldSchema)
+			: field.fieldSchema;
 	const [dragValue, setDragValue] = useState<number | null>(null);
 	const dragging = useRef(false);
 
@@ -89,9 +98,9 @@ const TimelineNumberField: React.FC<{
 			onValueChange={onValueChange}
 			onValueChangeEnd={onValueChangeEnd}
 			onTextChange={onTextChange}
-			min={getZodNumberMinimum(field.fieldSchema)}
-			max={getZodNumberMaximum(field.fieldSchema)}
-			step={getZodNumberStep(field.fieldSchema)}
+			min={getZodNumberMinimum(numberSchema)}
+			max={getZodNumberMaximum(numberSchema)}
+			step={getZodNumberStep(numberSchema)}
 			rightAlign
 		/>
 	);
@@ -126,9 +135,17 @@ export const TimelineFieldValue: React.FC<{
 		);
 	}
 
-	const effectiveCodeValue = propStatus.codeValue ?? field.currentValue;
+	const effectiveCodeValue =
+		propStatus.codeValue ??
+		field.currentValue ??
+		(field.typeName === 'default' ? getDefaultValue(field.fieldSchema) : undefined);
 
-	if (field.typeName === 'number') {
+	const resolvedTypeName =
+		field.typeName === 'default'
+			? getZodSchemaType(getInnerType(field.fieldSchema))
+			: field.typeName;
+
+	if (resolvedTypeName === 'number') {
 		return (
 			<span style={wrapperStyle}>
 				<TimelineNumberField

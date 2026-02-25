@@ -977,6 +977,7 @@
       "dependencies": {
         "mediabunny": "catalog:",
         "remotion": "workspace:*",
+        "zod": "catalog:",
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",

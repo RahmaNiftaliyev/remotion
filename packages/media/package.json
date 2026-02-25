@@ -22,7 +22,8 @@
 	},
 	"dependencies": {
 		"mediabunny": "catalog:",
-		"remotion": "workspace:*"
+		"remotion": "workspace:*",
+		"zod": "catalog:"
 	},
 	"peerDependencies": {
 		"react": ">=16.8.0",

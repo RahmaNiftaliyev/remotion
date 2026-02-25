@@ -3,12 +3,16 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import type {TSequence} from 'remotion';
 import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import {TIMELINE_TRACK_SEPARATOR} from '../../helpers/colors';
+import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
 import {
 	getExpandedTrackHeight,
 	getSchemaFields,
 } from '../../helpers/timeline-layout';
 import {callApi} from '../call-api';
-import {TimelineFieldValue} from './TimelineSchemaField';
+import {
+	TimelineFieldSavingSpinner,
+	TimelineFieldValue,
+} from './TimelineSchemaField';
 
 const expandedSectionBase: React.CSSProperties = {
 	color: 'white',
@@ -28,8 +32,42 @@ const fieldRow: React.CSSProperties = {
 };
 
 const fieldName: React.CSSProperties = {
-	flex: 1,
 	fontSize: 12,
+};
+
+const fieldLabelRow: React.CSSProperties = {
+	flex: 1,
+	display: 'flex',
+	flexDirection: 'row',
+	alignItems: 'center',
+	gap: 6,
+};
+
+const TimelineFieldRow: React.FC<{
+	readonly field: SchemaFieldInfo;
+	readonly propStatus: CanUpdateSequencePropStatus | null;
+	readonly onSave: (key: string, value: unknown) => Promise<void>;
+}> = ({field, propStatus, onSave}) => {
+	const [saving, setSaving] = useState(false);
+
+	const onSavingChange = useCallback((s: boolean) => {
+		setSaving(s);
+	}, []);
+
+	return (
+		<div style={{...fieldRow, height: field.rowHeight}}>
+			<div style={fieldLabelRow}>
+				<span style={fieldName}>{field.key}</span>
+				<TimelineFieldSavingSpinner saving={saving} />
+			</div>
+			<TimelineFieldValue
+				field={field}
+				propStatus={propStatus}
+				onSave={onSave}
+				onSavingChange={onSavingChange}
+			/>
+		</div>
+	);
 };
 
 export const TimelineExpandedSection: React.FC<{
@@ -92,27 +130,24 @@ export const TimelineExpandedSection: React.FC<{
 	);
 
 	const onSave = useCallback(
-		(key: string, value: unknown) => {
+		(key: string, value: unknown): Promise<void> => {
 			if (!propStatuses || !validatedLocation) {
-				return;
+				return Promise.resolve();
 			}
 
 			const status = propStatuses[key];
 			if (!status || !status.canUpdate) {
-				return;
+				return Promise.resolve();
 			}
 
-			callApi('/api/save-sequence-props', {
+			return callApi('/api/save-sequence-props', {
 				fileName: validatedLocation.source,
 				line: validatedLocation.line,
 				column: validatedLocation.column,
 				key,
 				value: JSON.stringify(value),
 				enumPaths: [],
-			}).catch((err) => {
-				// eslint-disable-next-line no-console
-				console.error('Failed to save sequence prop:', err);
-			});
+			}).then(() => undefined);
 		},
 		[propStatuses, validatedLocation],
 	);
@@ -121,14 +156,12 @@ export const TimelineExpandedSection: React.FC<{
 		<div style={{...expandedSectionBase, height: expandedHeight}}>
 			{schemaFields
 				? schemaFields.map((field) => (
-						<div key={field.key} style={{...fieldRow, height: field.rowHeight}}>
-							<span style={fieldName}>{field.key}</span>
-							<TimelineFieldValue
-								field={field}
-								propStatus={propStatuses?.[field.key] ?? null}
-								onSave={onSave}
-							/>
-						</div>
+						<TimelineFieldRow
+							key={field.key}
+							field={field}
+							propStatus={propStatuses?.[field.key] ?? null}
+							onSave={onSave}
+						/>
 					))
 				: 'No schema'}
 		</div>

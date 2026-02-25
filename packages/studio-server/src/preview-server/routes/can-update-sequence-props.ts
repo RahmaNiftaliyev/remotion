@@ -35,11 +35,10 @@ export const isStaticValue = (node: Expression): boolean => {
 				(node as UnaryExpression).argument.type === 'NumericLiteral'
 			);
 		case 'ArrayExpression':
-			return (node as Extract<Expression, {type: 'ArrayExpression'}>).elements.every(
-				(el) =>
-					el !== null &&
-					el.type !== 'SpreadElement' &&
-					isStaticValue(el),
+			return (
+				node as Extract<Expression, {type: 'ArrayExpression'}>
+			).elements.every(
+				(el) => el !== null && el.type !== 'SpreadElement' && isStaticValue(el),
 			);
 		case 'ObjectExpression':
 			return (node as ObjectExpression).properties.every(
@@ -66,7 +65,7 @@ const getPropsStatus = (
 			continue;
 		}
 
-		const name = attr.name.name;
+		const {name} = attr.name;
 		if (typeof name !== 'string') {
 			continue;
 		}

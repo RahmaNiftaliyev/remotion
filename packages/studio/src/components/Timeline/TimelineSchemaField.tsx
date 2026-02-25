@@ -1,5 +1,5 @@
 import type {CanUpdateSequencePropStatus} from '@remotion/studio-shared';
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
 import {InputDragger} from '../NewComposition/InputDragger';
 import {
@@ -7,6 +7,7 @@ import {
 	getZodNumberMinimum,
 	getZodNumberStep,
 } from '../RenderModal/SchemaEditor/zod-number-constraints';
+import {Spinner} from '../Spinner';
 
 const unsupportedLabel: React.CSSProperties = {
 	color: 'rgba(255, 255, 255, 0.4)',
@@ -29,37 +30,56 @@ const notEditableBackground: React.CSSProperties = {
 const TimelineNumberField: React.FC<{
 	readonly field: SchemaFieldInfo;
 	readonly canUpdate: boolean;
-	readonly onSave: (key: string, value: unknown) => void;
-}> = ({field, canUpdate, onSave}) => {
-	const onValueChange = useCallback((_newVal: number) => {
-		// No-op during drag; save happens on drag end
+	readonly onSave: (key: string, value: unknown) => Promise<void>;
+	readonly onSavingChange: (saving: boolean) => void;
+}> = ({field, canUpdate, onSave, onSavingChange}) => {
+	const [dragValue, setDragValue] = useState<number | null>(null);
+
+	const onValueChange = useCallback((newVal: number) => {
+		setDragValue(newVal);
 	}, []);
+
+	useEffect(() => {
+		setDragValue(null);
+		onSavingChange(false);
+	}, [field.currentValue, onSavingChange]);
 
 	const onValueChangeEnd = useCallback(
 		(newVal: number) => {
-			if (canUpdate) {
-				onSave(field.key, newVal);
+			if (canUpdate && newVal !== field.currentValue) {
+				onSavingChange(true);
+				onSave(field.key, newVal).catch(() => {
+					onSavingChange(false);
+					setDragValue(null);
+				});
+			} else {
+				setDragValue(null);
 			}
 		},
-		[canUpdate, onSave, field.key],
+		[canUpdate, onSave, onSavingChange, field.key, field.currentValue],
 	);
 
 	const onTextChange = useCallback(
 		(newVal: string) => {
 			if (canUpdate) {
 				const parsed = Number(newVal);
-				if (!Number.isNaN(parsed)) {
-					onSave(field.key, parsed);
+				if (!Number.isNaN(parsed) && parsed !== field.currentValue) {
+					setDragValue(parsed);
+					onSavingChange(true);
+					onSave(field.key, parsed).catch(() => {
+						onSavingChange(false);
+						setDragValue(null);
+					});
 				}
 			}
 		},
-		[canUpdate, onSave, field.key],
+		[canUpdate, onSave, onSavingChange, field.key, field.currentValue],
 	);
 
 	return (
 		<InputDragger
 			type="number"
-			value={field.currentValue as number}
+			value={dragValue ?? (field.currentValue as number)}
 			style={draggerStyle}
 			status="ok"
 			onValueChange={onValueChange}
@@ -76,20 +96,17 @@ const TimelineNumberField: React.FC<{
 export const TimelineFieldValue: React.FC<{
 	readonly field: SchemaFieldInfo;
 	readonly propStatus: CanUpdateSequencePropStatus | null;
-	readonly onSave: (key: string, value: unknown) => void;
-}> = ({field, propStatus, onSave}) => {
+	readonly onSave: (key: string, value: unknown) => Promise<void>;
+	readonly onSavingChange: (saving: boolean) => void;
+}> = ({field, propStatus, onSave, onSavingChange}) => {
 	const canUpdate = propStatus !== null && propStatus.canUpdate;
 
 	if (!field.supported) {
-		return (
-			<span style={unsupportedLabel}>unsupported</span>
-		);
+		return <span style={unsupportedLabel}>unsupported</span>;
 	}
 
 	if (propStatus !== null && !propStatus.canUpdate) {
-		return (
-			<span style={unsupportedLabel}>{propStatus.reason}</span>
-		);
+		return <span style={unsupportedLabel}>{propStatus.reason}</span>;
 	}
 
 	if (propStatus === null) {
@@ -106,6 +123,7 @@ export const TimelineFieldValue: React.FC<{
 				field={field}
 				canUpdate={canUpdate}
 				onSave={onSave}
+				onSavingChange={onSavingChange}
 			/>
 		);
 	}
@@ -115,4 +133,14 @@ export const TimelineFieldValue: React.FC<{
 			{String(field.currentValue)}
 		</span>
 	);
+};
+
+export const TimelineFieldSavingSpinner: React.FC<{
+	readonly saving: boolean;
+}> = ({saving}) => {
+	if (!saving) {
+		return null;
+	}
+
+	return <Spinner duration={0.5} size={12} />;
 };

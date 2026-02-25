@@ -140,22 +140,26 @@ export const TimelineListItem: React.FC<{
 				<div style={padder} />
 				{sequence.parent && nestedDepth > 0 ? <div style={space} /> : null}
 				{visualModeEnabled ? (
-					<button
-						type="button"
-						style={arrowStyle}
-						onClick={onToggleExpand}
-						aria-expanded={isExpanded}
-						aria-label={`${isExpanded ? 'Collapse' : 'Expand'} track`}
-					>
-						<svg
-							width="12"
-							height="12"
-							viewBox="0 0 8 8"
-							style={{display: 'block'}}
+					sequence.controls ? (
+						<button
+							type="button"
+							style={arrowStyle}
+							onClick={onToggleExpand}
+							aria-expanded={isExpanded}
+							aria-label={`${isExpanded ? 'Collapse' : 'Expand'} track`}
 						>
-							<path d="M2 1L6 4L2 7Z" fill="white" />
-						</svg>
-					</button>
+							<svg
+								width="12"
+								height="12"
+								viewBox="0 0 8 8"
+								style={{display: 'block'}}
+							>
+								<path d="M2 1L6 4L2 7Z" fill="white" />
+							</svg>
+						</button>
+					) : (
+						<div style={arrowButton} />
+					)
 				) : null}
 				<TimelineStack
 					sequence={sequence}
@@ -163,7 +167,7 @@ export const TimelineListItem: React.FC<{
 					originalLocation={originalLocation}
 				/>
 			</div>
-			{visualModeEnabled && isExpanded ? (
+			{visualModeEnabled && isExpanded && sequence.controls ? (
 				<TimelineExpandedSection
 					sequence={sequence}
 					originalLocation={originalLocation}

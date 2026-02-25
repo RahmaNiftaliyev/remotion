@@ -145,11 +145,14 @@ const VideoForPreviewAssertedShowing: React.FC<VideoForPreviewProps> = ({
 
 		return {
 			schema: z.object({
-				volume: z.number().min(0).step(0.01),
+				volume: z.number().min(0).multipleOf(0.01),
+				playbackRate: z.number().min(0).multipleOf(0.01),
+				trimBefore: z.number(),
+				trimAfter: z.number(),
 			}),
-			currentValue: {volume},
+			currentValue: {volume, playbackRate, trimBefore, trimAfter},
 		};
-	}, [volume]);
+	}, [volume, playbackRate, trimBefore, trimAfter]);
 
 	const {id: timelineId} = useMediaInTimeline({
 		volume,

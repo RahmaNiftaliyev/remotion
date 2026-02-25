@@ -10,6 +10,7 @@
 	"scripts": {
 		"lint": "eslint src",
 		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"make": "tsgo -d"
 	},
 	"author": "Jonny Burger <jonny@remotion.dev>",

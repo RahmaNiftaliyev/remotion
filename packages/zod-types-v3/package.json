@@ -12,6 +12,7 @@
 	"type": "module",
 	"scripts": {
 		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"lint": "eslint src",
 		"watch": "tsgo -w",
 		"make": "tsgo && bun --env-file=../.env.bundle bundle.ts"

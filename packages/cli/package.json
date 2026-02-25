@@ -14,6 +14,7 @@
 	},
 	"scripts": {
 		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"lint": "eslint src",
 		"test": "bun test src",
 		"make": "tsgo -d"

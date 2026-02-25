@@ -10,6 +10,7 @@
 	"sideEffects": false,
 	"scripts": {
 		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
 		"lint": "eslint src",
 		"test": "bun test src",
 		"watch": "tsgo -w",

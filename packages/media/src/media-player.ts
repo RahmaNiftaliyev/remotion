@@ -51,6 +51,7 @@ export class MediaPlayer {
 
 	private trimBefore: number | undefined;
 	private trimAfter: number | undefined;
+	private durationInFrames: number;
 
 	private totalDuration: number | undefined;
 
@@ -85,6 +86,7 @@ export class MediaPlayer {
 		bufferState,
 		isPremounting,
 		isPostmounting,
+		durationInFrames,
 		onVideoFrameCallback,
 		playing,
 	}: {
@@ -103,6 +105,7 @@ export class MediaPlayer {
 		bufferState: ReturnType<typeof useBufferState>;
 		isPremounting: boolean;
 		isPostmounting: boolean;
+		durationInFrames: number;
 		onVideoFrameCallback: null | ((frame: CanvasImageSource) => void);
 		playing: boolean;
 	}) {
@@ -121,6 +124,7 @@ export class MediaPlayer {
 		this.bufferState = bufferState;
 		this.isPremounting = isPremounting;
 		this.isPostmounting = isPostmounting;
+		this.durationInFrames = durationInFrames;
 		this.nonceManager = makeNonceManager();
 		this.onVideoFrameCallback = onVideoFrameCallback;
 		this.playing = playing;
@@ -167,7 +171,7 @@ export class MediaPlayer {
 	}
 
 	private getEndTime(): number {
-		return calculateEndTime({
+		const mediaEndTime = calculateEndTime({
 			mediaDurationInSeconds: this.totalDuration!,
 			ifNoMediaDuration: 'fail',
 			src: this.src,
@@ -175,6 +179,17 @@ export class MediaPlayer {
 			trimBefore: this.trimBefore,
 			fps: this.fps,
 		});
+
+		if (this.loop) {
+			return mediaEndTime;
+		}
+
+		// Cap at the media time corresponding to the end of the sequence
+		const sequenceEndMediaTime =
+			(this.durationInFrames / this.fps) * this.playbackRate +
+			(this.trimBefore ?? 0) / this.fps;
+
+		return Math.min(mediaEndTime, sequenceEndMediaTime);
 	}
 
 	private async _initialize(
@@ -609,6 +624,10 @@ export class MediaPlayer {
 
 	public setLoop(loop: boolean): void {
 		this.loop = loop;
+	}
+
+	public setDurationInFrames(durationInFrames: number): void {
+		this.durationInFrames = durationInFrames;
 	}
 
 	public async dispose(): Promise<void> {

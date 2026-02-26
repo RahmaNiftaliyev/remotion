@@ -222,6 +222,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 				isPremounting: initialIsPremounting.current,
 				isPostmounting: initialIsPostmounting.current,
 				globalPlaybackRate: initialGlobalPlaybackRate.current,
+				durationInFrames: videoConfig.durationInFrames,
 				onVideoFrameCallback: initialOnVideoFrameRef.current ?? null,
 				playing: initialPlaying.current,
 			});
@@ -472,6 +473,15 @@ const VideoForPreviewAssertedShowing: React.FC<
 
 		mediaPlayer.setLoop(loop);
 	}, [loop, mediaPlayerReady]);
+
+	useLayoutEffect(() => {
+		const mediaPlayer = mediaPlayerRef.current;
+		if (!mediaPlayer || !mediaPlayerReady) {
+			return;
+		}
+
+		mediaPlayer.setDurationInFrames(videoConfig.durationInFrames);
+	}, [videoConfig.durationInFrames, mediaPlayerReady]);
 
 	useLayoutEffect(() => {
 		const mediaPlayer = mediaPlayerRef.current;

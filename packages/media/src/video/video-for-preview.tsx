@@ -481,7 +481,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 			{logLevel, tag: '@remotion/media'},
 			`[VideoForPreview] Updating target time to ${currentTime.toFixed(3)}s`,
 		);
-	}, [currentTime, logLevel, mediaPlayerReady]);
+	}, [currentTime, logLevel, mediaPlayerReady, playbackRate]);
 
 	const actualStyle: React.CSSProperties = useMemo(() => {
 		return {

@@ -452,7 +452,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 			{logLevel, tag: '@remotion/media'},
 			`[AudioForPreview] Updating target time to ${currentTime.toFixed(3)}s`,
 		);
-	}, [currentTime, logLevel, mediaPlayerReady]);
+	}, [currentTime, logLevel, mediaPlayerReady, playbackRate]);
 
 	if (shouldFallbackToNativeAudio && !disallowFallbackToHtml5Audio) {
 		return (

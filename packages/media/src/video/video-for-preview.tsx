@@ -379,7 +379,6 @@ const VideoForPreviewAssertedShowing: React.FC<
 		premountFramesRemaining,
 		videoConfig.fps,
 		globalPlaybackRate,
-		playbackRate,
 	]);
 
 	useEffect(() => {
@@ -391,7 +390,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 			mediaPlayer.play(currentTimeRef.current);
 		} else {
 			// Pause will do the work all over again and check if there are scheduled nodes.
-			// This is why isNextFrameGoingToPlay is the in the depeendency array.
+			// This is why isNextFrameGoingToPlay is the in the dependency array.
 			// We want to trigger another pause if due to being 1 frame before premounting ends,
 			// audio is resumed and at the same time a pause is happening, we need to ensure
 			// that the pause is triggered again even though officially "playing" never changed.

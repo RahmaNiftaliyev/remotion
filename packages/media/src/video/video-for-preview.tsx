@@ -413,7 +413,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 			return;
 		}
 
-		mediaPlayer.setPlaybackRate(playbackRate);
+		mediaPlayer.setPlaybackRate(playbackRate, currentTimeRef.current);
 	}, [playbackRate, mediaPlayerReady]);
 
 	useLayoutEffect(() => {

@@ -393,7 +393,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 			return;
 		}
 
-		audioPlayer.setPlaybackRate(playbackRate);
+		audioPlayer.setPlaybackRate(playbackRate, currentTimeRef.current);
 	}, [playbackRate, mediaPlayerReady]);
 
 	useLayoutEffect(() => {

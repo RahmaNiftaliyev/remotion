@@ -65,6 +65,7 @@ import {playbackLogging} from './playback-logging.js';
 import {portalNode} from './portal-node.js';
 import {PrefetchProvider} from './prefetch-state.js';
 import {usePreload} from './prefetch.js';
+import {PremountContext} from './PremountContext.js';
 import {getRoot, waitForRoot} from './register-root.js';
 import type {RemotionEnvironment} from './remotion-environment-context.js';
 import {RemotionEnvironmentContext} from './remotion-environment-context.js';
@@ -87,7 +88,6 @@ import type {
 	SequenceFieldSchema,
 	SequenceSchema,
 } from './sequence-field-schema.js';
-import {PremountContext} from './PremountContext.js';
 import {SequenceContext} from './SequenceContext.js';
 import {
 	SequenceControlOverrideContext,

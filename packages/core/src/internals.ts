@@ -87,6 +87,7 @@ import type {
 	SequenceFieldSchema,
 	SequenceSchema,
 } from './sequence-field-schema.js';
+import {PremountContext} from './PremountContext.js';
 import {SequenceContext} from './SequenceContext.js';
 import {
 	SequenceControlOverrideContext,
@@ -193,6 +194,7 @@ export const Internals = {
 	useLazyComponent,
 	truthy,
 	SequenceContext,
+	PremountContext,
 	useRemotionContexts,
 	RemotionContextProvider,
 	CSSUtils,

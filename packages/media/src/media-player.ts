@@ -410,11 +410,7 @@ export class MediaPlayer {
 		]);
 	}
 
-	public async play(time: number): Promise<void> {
-		if (this.playing) {
-			return;
-		}
-
+	public async playAudio(time: number): Promise<void> {
 		const newTime = getTimeInSeconds({
 			unloopedTimeInSeconds: time,
 			playbackRate: this.playbackRate,
@@ -434,7 +430,6 @@ export class MediaPlayer {
 			newTime,
 			this.playbackRate * this.globalPlaybackRate,
 		);
-		this.playing = true;
 
 		if (this.audioIteratorManager) {
 			this.audioIteratorManager.resumeScheduledAudioChunks({
@@ -449,7 +444,16 @@ export class MediaPlayer {
 		) {
 			await this.sharedAudioContext.resume();
 		}
+	}
 
+	public async play(time: number): Promise<void> {
+		if (this.playing) {
+			return;
+		}
+
+		this.playing = true;
+
+		await this.playAudio(time);
 		this.drawDebugOverlay();
 	}
 

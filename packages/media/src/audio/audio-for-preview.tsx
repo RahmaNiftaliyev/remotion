@@ -393,7 +393,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 			return;
 		}
 
-		audioPlayer.setPlaybackRate(playbackRate);
+		audioPlayer.setPlaybackRate(playbackRate, currentTimeRef.current);
 	}, [playbackRate, mediaPlayerReady]);
 
 	useLayoutEffect(() => {
@@ -452,7 +452,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 			{logLevel, tag: '@remotion/media'},
 			`[AudioForPreview] Updating target time to ${currentTime.toFixed(3)}s`,
 		);
-	}, [currentTime, logLevel, mediaPlayerReady, playbackRate]);
+	}, [currentTime, logLevel, mediaPlayerReady]);
 
 	if (shouldFallbackToNativeAudio && !disallowFallbackToHtml5Audio) {
 		return (

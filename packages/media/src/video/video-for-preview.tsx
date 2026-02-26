@@ -413,7 +413,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 			return;
 		}
 
-		mediaPlayer.setPlaybackRate(playbackRate);
+		mediaPlayer.setPlaybackRate(playbackRate, currentTimeRef.current);
 	}, [playbackRate, mediaPlayerReady]);
 
 	useLayoutEffect(() => {
@@ -481,7 +481,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 			{logLevel, tag: '@remotion/media'},
 			`[VideoForPreview] Updating target time to ${currentTime.toFixed(3)}s`,
 		);
-	}, [currentTime, logLevel, mediaPlayerReady, playbackRate]);
+	}, [currentTime, logLevel, mediaPlayerReady]);
 
 	const actualStyle: React.CSSProperties = useMemo(() => {
 		return {

@@ -581,9 +581,17 @@ export class MediaPlayer {
 		}
 	}
 
-	public setPlaybackRate(rate: number): void {
+	public async setPlaybackRate(
+		rate: number,
+		unloopedTimeInSeconds: number,
+	): Promise<void> {
+		const previousRate = this.playbackRate;
 		this.playbackRate = rate;
 		this.updateAudioTimeAfterPlaybackRateChange();
+
+		if (previousRate !== rate) {
+			await this.seekTo(unloopedTimeInSeconds);
+		}
 	}
 
 	public setGlobalPlaybackRate(rate: number): void {

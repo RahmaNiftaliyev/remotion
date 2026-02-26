@@ -1,17 +1,8 @@
 import type {CanUpdateSequencePropStatus} from '@remotion/studio-shared';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
+import {Checkbox} from '../Checkbox';
 import {InputDragger} from '../NewComposition/InputDragger';
-import {
-	getZodNumberMaximum,
-	getZodNumberMinimum,
-	getZodNumberStep,
-} from '../RenderModal/SchemaEditor/zod-number-constraints';
-import {
-	getDefaultValue,
-	getInnerType,
-	getZodSchemaType,
-} from '../RenderModal/SchemaEditor/zod-schema-type';
 import {Spinner} from '../Spinner';
 
 const unsupportedLabel: React.CSSProperties = {
@@ -23,6 +14,10 @@ const unsupportedLabel: React.CSSProperties = {
 
 const draggerStyle: React.CSSProperties = {
 	width: 80,
+	marginLeft: 'auto',
+};
+
+const checkboxContainer: React.CSSProperties = {
 	marginLeft: 'auto',
 };
 
@@ -40,10 +35,6 @@ const TimelineNumberField: React.FC<{
 	readonly onDragValueChange: (key: string, value: unknown) => void;
 	readonly onDragEnd: () => void;
 }> = ({field, codeValue, canUpdate, onSave, onDragValueChange, onDragEnd}) => {
-	const numberSchema =
-		field.typeName === 'default'
-			? getInnerType(field.fieldSchema)
-			: field.fieldSchema;
 	const [dragValue, setDragValue] = useState<number | null>(null);
 	const dragging = useRef(false);
 
@@ -98,11 +89,47 @@ const TimelineNumberField: React.FC<{
 			onValueChange={onValueChange}
 			onValueChangeEnd={onValueChangeEnd}
 			onTextChange={onTextChange}
-			min={getZodNumberMinimum(numberSchema)}
-			max={getZodNumberMaximum(numberSchema)}
-			step={getZodNumberStep(numberSchema)}
+			min={
+				field.fieldSchema.type === 'number'
+					? (field.fieldSchema.min ?? -Infinity)
+					: -Infinity
+			}
+			max={
+				field.fieldSchema.type === 'number'
+					? (field.fieldSchema.max ?? Infinity)
+					: Infinity
+			}
+			step={
+				field.fieldSchema.type === 'number' ? (field.fieldSchema.step ?? 1) : 1
+			}
 			rightAlign
 		/>
+	);
+};
+
+const TimelineBooleanField: React.FC<{
+	readonly field: SchemaFieldInfo;
+	readonly codeValue: unknown;
+	readonly canUpdate: boolean;
+	readonly onSave: (key: string, value: unknown) => Promise<void>;
+}> = ({field, codeValue, canUpdate, onSave}) => {
+	const checked = Boolean(codeValue);
+
+	const onChange = useCallback(() => {
+		if (canUpdate) {
+			onSave(field.key, !checked);
+		}
+	}, [canUpdate, onSave, field.key, checked]);
+
+	return (
+		<div style={checkboxContainer}>
+			<Checkbox
+				checked={checked}
+				onChange={onChange}
+				name={field.key}
+				disabled={!canUpdate}
+			/>
+		</div>
 	);
 };
 
@@ -136,18 +163,9 @@ export const TimelineFieldValue: React.FC<{
 	}
 
 	const effectiveCodeValue =
-		propStatus.codeValue ??
-		field.currentValue ??
-		(field.typeName === 'default'
-			? getDefaultValue(field.fieldSchema)
-			: undefined);
+		propStatus.codeValue ?? field.currentValue ?? field.fieldSchema.default;
 
-	const resolvedTypeName =
-		field.typeName === 'default'
-			? getZodSchemaType(getInnerType(field.fieldSchema))
-			: field.typeName;
-
-	if (resolvedTypeName === 'number') {
+	if (field.typeName === 'number') {
 		return (
 			<span style={wrapperStyle}>
 				<TimelineNumberField
@@ -157,6 +175,19 @@ export const TimelineFieldValue: React.FC<{
 					onSave={onSave}
 					onDragValueChange={onDragValueChange}
 					onDragEnd={onDragEnd}
+				/>
+			</span>
+		);
+	}
+
+	if (field.typeName === 'boolean') {
+		return (
+			<span style={wrapperStyle}>
+				<TimelineBooleanField
+					field={field}
+					codeValue={effectiveCodeValue}
+					canUpdate={canUpdate}
+					onSave={onSave}
 				/>
 			</span>
 		);

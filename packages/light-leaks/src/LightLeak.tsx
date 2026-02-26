@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
+import type {SequenceSchema} from 'remotion';
 import {
 	AbsoluteFill,
 	Internals,
@@ -8,7 +9,6 @@ import {
 	useVideoConfig,
 	type SequenceProps,
 } from 'remotion';
-import {z} from 'zod';
 
 export type LightLeakProps = Omit<
 	SequenceProps,
@@ -231,11 +231,16 @@ const LightLeakCanvas: React.FC<{
  * @description Renders a WebGL-based light leak effect as a Sequence.
  * @see [Documentation](https://www.remotion.dev/docs/light-leaks/light-leak)
  */
-const lightLeakSchema = z.object({
-	seed: z.number().describe('Seed'),
-	hueShift: z.number().min(0).max(360).describe('Hue Shift'),
-	from: z.number().default(0).describe('From'),
-});
+const lightLeakSchema = {
+	seed: {type: 'number', description: 'Seed'},
+	hueShift: {
+		type: 'number',
+		min: 0,
+		max: 360,
+		description: 'Hue Shift',
+	},
+	from: {type: 'number', description: 'From'},
+} as const satisfies SequenceSchema;
 
 export const LightLeak: React.FC<LightLeakProps> = ({
 	seed: seedProp = 0,

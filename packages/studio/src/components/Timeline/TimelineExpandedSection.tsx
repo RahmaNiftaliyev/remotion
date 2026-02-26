@@ -21,7 +21,6 @@ import {
 	getSchemaFields,
 } from '../../helpers/timeline-layout';
 import {callApi} from '../call-api';
-import {getDefaultValue} from '../RenderModal/SchemaEditor/zod-schema-type';
 import {TimelineFieldValue} from './TimelineSchemaField';
 
 const expandedSectionBase: React.CSSProperties = {
@@ -238,8 +237,8 @@ export const TimelineExpandedSection: React.FC<{
 
 			const field = schemaFields?.find((f) => f.key === key);
 			const defaultValue =
-				field && field.typeName === 'default'
-					? JSON.stringify(getDefaultValue(field.fieldSchema))
+				field && field.fieldSchema.default !== undefined
+					? JSON.stringify(field.fieldSchema.default)
 					: null;
 
 			return callApi('/api/save-sequence-props', {

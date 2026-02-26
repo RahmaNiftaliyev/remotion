@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {useContext, useMemo, useState} from 'react';
-import type {AnyZodObject} from './any-zod-type.js';
 import type {SequenceControls} from './CompositionManager.js';
+import type {SequenceSchema} from './sequence-field-schema.js';
 import {SequenceControlOverrideContext} from './SequenceManager.js';
 import {useRemotionEnvironment} from './use-remotion-environment.js';
 
 export const useSchema = <T extends Record<string, unknown>>(
-	schema: AnyZodObject | null,
+	schema: SequenceSchema | null,
 	currentValue: T | null,
 ): {
 	controls: SequenceControls | undefined;

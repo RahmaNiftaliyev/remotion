@@ -268,7 +268,7 @@ export class MediaPlayer {
 				throw new Error(`should have asserted that the time is not null`);
 			}
 
-			this.setPlaybackTime(
+			this.setAudioPlaybackTime(
 				startTime,
 				this.playbackRate * this.globalPlaybackRate,
 			);
@@ -292,7 +292,7 @@ export class MediaPlayer {
 					getEndTime: () => this.getEndTime(),
 					getStartTime: () => this.getStartTime(),
 					updatePlaybackTime: (time: number) =>
-						this.setPlaybackTime(
+						this.setAudioPlaybackTime(
 							time,
 							this.playbackRate * this.globalPlaybackRate,
 						),
@@ -430,7 +430,10 @@ export class MediaPlayer {
 			throw new Error(`should have asserted that the time is not null`);
 		}
 
-		this.setPlaybackTime(newTime, this.playbackRate * this.globalPlaybackRate);
+		this.setAudioPlaybackTime(
+			newTime,
+			this.playbackRate * this.globalPlaybackRate,
+		);
 		this.playing = true;
 
 		if (this.audioIteratorManager) {
@@ -515,7 +518,7 @@ export class MediaPlayer {
 		this.audioIteratorManager?.destroyIterator();
 
 		if (newMediaTime !== null) {
-			this.setPlaybackTime(
+			this.setAudioPlaybackTime(
 				newMediaTime,
 				this.playbackRate * this.globalPlaybackRate,
 			);
@@ -559,7 +562,7 @@ export class MediaPlayer {
 			return;
 		}
 
-		this.setPlaybackTime(
+		this.setAudioPlaybackTime(
 			this.getAudioPlaybackTime(),
 			this.playbackRate * this.globalPlaybackRate,
 		);
@@ -658,7 +661,7 @@ export class MediaPlayer {
 		});
 	}
 
-	private setPlaybackTime(time: number, playbackRate: number): void {
+	private setAudioPlaybackTime(time: number, playbackRate: number): void {
 		if (!this.sharedAudioContext) {
 			return;
 		}

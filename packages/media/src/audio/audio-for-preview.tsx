@@ -508,11 +508,23 @@ type InnerAudioProps = {
 };
 
 const audioSchema = {
-	volume: {type: 'number', min: 0, max: 20, step: 0.01, default: 1},
-	playbackRate: {type: 'number', min: 0, step: 0.01, default: 1},
+	volume: {
+		type: 'number',
+		min: 0,
+		max: 20,
+		step: 0.01,
+		default: 1,
+		description: 'Volume',
+	},
+	playbackRate: {
+		type: 'number',
+		min: 0,
+		step: 0.01,
+		default: 1,
+		description: 'Playback Rate',
+	},
 	trimBefore: {type: 'number', min: 0, default: 0},
 	trimAfter: {type: 'number', min: 0, default: 0},
-	loop: {type: 'boolean', default: false},
 } as const satisfies SequenceSchema;
 
 export const AudioForPreview: React.FC<InnerAudioProps> = ({

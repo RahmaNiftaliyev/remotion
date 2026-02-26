@@ -232,14 +232,14 @@ const LightLeakCanvas: React.FC<{
  * @see [Documentation](https://www.remotion.dev/docs/light-leaks/light-leak)
  */
 const lightLeakSchema = {
-	seed: {type: 'number', description: 'Random seed for the light leak pattern'},
+	seed: {type: 'number', description: 'Seed'},
 	hueShift: {
 		type: 'number',
 		min: 0,
 		max: 360,
-		description: 'Hue rotation in degrees (0–360)',
+		description: 'Hue Shift',
 	},
-	from: {type: 'number', description: 'Starting frame of the light leak'},
+	from: {type: 'number', description: 'From'},
 } as const satisfies SequenceSchema;
 
 export const LightLeak: React.FC<LightLeakProps> = ({

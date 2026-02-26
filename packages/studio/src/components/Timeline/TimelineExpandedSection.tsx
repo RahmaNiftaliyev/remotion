@@ -62,7 +62,7 @@ const TimelineFieldRow: React.FC<{
 	return (
 		<div style={{...fieldRow, height: field.rowHeight}}>
 			<div style={fieldLabelRow}>
-				<span style={fieldName}>{field.key}</span>
+				<span style={fieldName}>{field.description ?? field.key}</span>
 			</div>
 			<TimelineFieldValue
 				field={field}

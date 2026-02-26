@@ -13,6 +13,7 @@ const SUPPORTED_SCHEMA_TYPES = new Set(['number', 'boolean']);
 
 export type SchemaFieldInfo = {
 	key: string;
+	description: string | undefined;
 	typeName: string;
 	supported: boolean;
 	rowHeight: number;
@@ -32,6 +33,7 @@ export const getSchemaFields = (
 		const supported = SUPPORTED_SCHEMA_TYPES.has(typeName);
 		return {
 			key,
+			description: fieldSchema.description,
 			typeName,
 			supported,
 			rowHeight: supported

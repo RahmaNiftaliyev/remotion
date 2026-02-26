@@ -3,16 +3,6 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
 import {Checkbox} from '../Checkbox';
 import {InputDragger} from '../NewComposition/InputDragger';
-import {
-	getZodNumberMaximum,
-	getZodNumberMinimum,
-	getZodNumberStep,
-} from '../RenderModal/SchemaEditor/zod-number-constraints';
-import {
-	getDefaultValue,
-	getInnerType,
-	getZodSchemaType,
-} from '../RenderModal/SchemaEditor/zod-schema-type';
 import {Spinner} from '../Spinner';
 
 const unsupportedLabel: React.CSSProperties = {
@@ -45,10 +35,6 @@ const TimelineNumberField: React.FC<{
 	readonly onDragValueChange: (key: string, value: unknown) => void;
 	readonly onDragEnd: () => void;
 }> = ({field, codeValue, canUpdate, onSave, onDragValueChange, onDragEnd}) => {
-	const numberSchema =
-		field.typeName === 'default'
-			? getInnerType(field.fieldSchema)
-			: field.fieldSchema;
 	const [dragValue, setDragValue] = useState<number | null>(null);
 	const dragging = useRef(false);
 
@@ -103,9 +89,19 @@ const TimelineNumberField: React.FC<{
 			onValueChange={onValueChange}
 			onValueChangeEnd={onValueChangeEnd}
 			onTextChange={onTextChange}
-			min={getZodNumberMinimum(numberSchema)}
-			max={getZodNumberMaximum(numberSchema)}
-			step={getZodNumberStep(numberSchema)}
+			min={
+				field.fieldSchema.type === 'number'
+					? (field.fieldSchema.min ?? -Infinity)
+					: -Infinity
+			}
+			max={
+				field.fieldSchema.type === 'number'
+					? (field.fieldSchema.max ?? Infinity)
+					: Infinity
+			}
+			step={
+				field.fieldSchema.type === 'number' ? (field.fieldSchema.step ?? 1) : 1
+			}
 			rightAlign
 		/>
 	);
@@ -167,18 +163,9 @@ export const TimelineFieldValue: React.FC<{
 	}
 
 	const effectiveCodeValue =
-		propStatus.codeValue ??
-		field.currentValue ??
-		(field.typeName === 'default'
-			? getDefaultValue(field.fieldSchema)
-			: undefined);
+		propStatus.codeValue ?? field.currentValue ?? field.fieldSchema.default;
 
-	const resolvedTypeName =
-		field.typeName === 'default'
-			? getZodSchemaType(getInnerType(field.fieldSchema))
-			: field.typeName;
-
-	if (resolvedTypeName === 'number') {
+	if (field.typeName === 'number') {
 		return (
 			<span style={wrapperStyle}>
 				<TimelineNumberField
@@ -193,7 +180,7 @@ export const TimelineFieldValue: React.FC<{
 		);
 	}
 
-	if (resolvedTypeName === 'boolean') {
+	if (field.typeName === 'boolean') {
 		return (
 			<span style={wrapperStyle}>
 				<TimelineBooleanField

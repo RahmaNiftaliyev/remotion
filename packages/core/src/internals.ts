@@ -83,6 +83,10 @@ import {
 	resolveCompositionsRef,
 	useResolvedVideoConfig,
 } from './ResolveCompositionConfig.js';
+import type {
+	SequenceFieldSchema,
+	SequenceSchema,
+} from './sequence-field-schema.js';
 import {SequenceContext} from './SequenceContext.js';
 import {
 	SequenceControlOverrideContext,
@@ -267,6 +271,8 @@ export type {
 	LoggingContextValue,
 	MediaVolumeContextValue,
 	RemotionEnvironment,
+	SequenceFieldSchema,
+	SequenceSchema,
 	SerializedJSONWithCustomFields,
 	SetMediaVolumeContextValue,
 	SetTimelineContextValue,

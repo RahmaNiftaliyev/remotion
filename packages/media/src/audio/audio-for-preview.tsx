@@ -10,6 +10,7 @@ import type {
 	LogLevel,
 	LoopVolumeCurveBehavior,
 	SequenceControls,
+	SequenceSchema,
 	VolumeProp,
 } from 'remotion';
 import {
@@ -19,7 +20,6 @@ import {
 	useCurrentFrame,
 	useVideoConfig,
 } from 'remotion';
-import {z} from 'zod';
 import {getTimeInSeconds} from '../get-time-in-seconds';
 import {MediaPlayer} from '../media-player';
 import {type MediaOnError, callOnErrorAndResolve} from '../on-error';
@@ -507,13 +507,13 @@ type InnerAudioProps = {
 	readonly onError?: MediaOnError;
 };
 
-const audioSchema = z.object({
-	volume: z.number().min(0).max(20).multipleOf(0.01).default(1),
-	playbackRate: z.number().min(0).multipleOf(0.01).default(1),
-	trimBefore: z.number().min(0).default(0),
-	trimAfter: z.number().min(0).default(0),
-	loop: z.boolean().default(false),
-});
+const audioSchema = {
+	volume: {type: 'number', min: 0, max: 20, step: 0.01, default: 1},
+	playbackRate: {type: 'number', min: 0, step: 0.01, default: 1},
+	trimBefore: {type: 'number', min: 0, default: 0},
+	trimAfter: {type: 'number', min: 0, default: 0},
+	loop: {type: 'boolean', default: false},
+} as const satisfies SequenceSchema;
 
 export const AudioForPreview: React.FC<InnerAudioProps> = ({
 	loop,

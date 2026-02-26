@@ -8,6 +8,7 @@ import {BrowserSafeApis} from '@remotion/renderer/client';
 import minimist from 'minimist';
 
 const {
+	benchmarkConcurrenciesOption,
 	beepOnFinishOption,
 	colorSpaceOption,
 	concurrencyOption,
@@ -155,7 +156,9 @@ export type CommandLineOptions = {
 	[overrideFpsOption.cliFlag]: TypeOfOption<typeof overrideFpsOption>;
 	[overrideDurationOption.cliFlag]: TypeOfOption<typeof overrideDurationOption>;
 	[runsOption.cliFlag]: TypeOfOption<typeof runsOption>;
-	concurrencies: string;
+	[benchmarkConcurrenciesOption.cliFlag]: TypeOfOption<
+		typeof benchmarkConcurrenciesOption
+	>;
 	[enforceAudioOption.cliFlag]: TypeOfOption<typeof enforceAudioOption>;
 	[glOption.cliFlag]: TypeOfOption<typeof glOption>;
 	[packageManagerOption.cliFlag]: TypeOfOption<typeof packageManagerOption>;

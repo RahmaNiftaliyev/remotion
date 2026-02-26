@@ -1,6 +1,7 @@
 import {apiKeyOption} from './api-key';
 import {askAIOption} from './ask-ai';
 import {audioBitrateOption} from './audio-bitrate';
+import {benchmarkConcurrenciesOption} from './benchmark-concurrencies';
 import {audioCodecOption} from './audio-codec';
 import {beepOnFinishOption} from './beep-on-finish';
 import {binariesDirectoryOption} from './binaries-directory';
@@ -89,6 +90,7 @@ import {x264Option} from './x264-preset';
 
 export const allOptions = {
 	audioCodecOption,
+	benchmarkConcurrenciesOption,
 	browserExecutableOption,
 	concurrencyOption,
 	scaleOption,

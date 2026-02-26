@@ -9,9 +9,11 @@ export const benchmarkConcurrenciesOption = {
 	cliFlag,
 	description: () => (
 		<>
-			Specify which concurrency values should be used while benchmarking. Multiple
-			values can be passed separated by comma. Learn more about{' '}
-			<a href="https://remotion.dev/docs/terminology/concurrency">concurrency</a>
+			Specify which concurrency values should be used while benchmarking.
+			Multiple values can be passed separated by comma. Learn more about{' '}
+			<a href="https://remotion.dev/docs/terminology/concurrency">
+				concurrency
+			</a>
 			.
 		</>
 	),

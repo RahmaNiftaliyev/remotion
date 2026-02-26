@@ -633,6 +633,7 @@ export class MediaPlayer {
 	private scheduleAudioNode = (
 		node: AudioBufferSourceNode,
 		mediaTimestamp: number,
+		maxDuration: number | null,
 	) => {
 		const currentTime = this.getAudioPlaybackTime();
 		const delayWithoutPlaybackRate = mediaTimestamp - currentTime;
@@ -644,11 +645,17 @@ export class MediaPlayer {
 		}
 
 		if (delay >= 0) {
-			node.start(this.sharedAudioContext.currentTime + delay);
+			node.start(
+				this.sharedAudioContext.currentTime + delay,
+				0,
+				maxDuration ?? undefined,
+			);
 		} else {
+			const offset = -delayWithoutPlaybackRate;
 			node.start(
 				this.sharedAudioContext.currentTime,
-				-delayWithoutPlaybackRate,
+				offset,
+				maxDuration !== null ? maxDuration - offset : undefined,
 			);
 		}
 	};

@@ -199,16 +199,19 @@ export const audioIteratorManager = ({
 				});
 			}
 
-			await iterator.bufferAsFarAsPossible((buffer) => {
-				if (!nonce.isStale()) {
-					onAudioChunk({
-						getIsPlaying,
-						buffer,
-						playbackRate,
-						scheduleAudioNode,
-					});
-				}
-			}, Math.min(startFromSecond + MAX_BUFFER_AHEAD_SECONDS, getEndTime()));
+			await iterator.bufferAsFarAsPossible(
+				(buffer) => {
+					if (!nonce.isStale()) {
+						onAudioChunk({
+							getIsPlaying,
+							buffer,
+							playbackRate,
+							scheduleAudioNode,
+						});
+					}
+				},
+				Math.min(startFromSecond + MAX_BUFFER_AHEAD_SECONDS, getEndTime()),
+			);
 		} catch (e) {
 			if (e instanceof InputDisposedError) {
 				// iterator was disposed by a newer startAudioIterator call
@@ -311,16 +314,19 @@ export const audioIteratorManager = ({
 			}
 		}
 
-		await audioBufferIterator.bufferAsFarAsPossible((buffer) => {
-			if (!nonce.isStale()) {
-				onAudioChunk({
-					getIsPlaying,
-					buffer,
-					playbackRate,
-					scheduleAudioNode,
-				});
-			}
-		}, Math.min(newTime + MAX_BUFFER_AHEAD_SECONDS, getEndTime()));
+		await audioBufferIterator.bufferAsFarAsPossible(
+			(buffer) => {
+				if (!nonce.isStale()) {
+					onAudioChunk({
+						getIsPlaying,
+						buffer,
+						playbackRate,
+						scheduleAudioNode,
+					});
+				}
+			},
+			Math.min(newTime + MAX_BUFFER_AHEAD_SECONDS, getEndTime()),
+		);
 	};
 
 	const resumeScheduledAudioChunks = ({

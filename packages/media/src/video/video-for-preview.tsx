@@ -355,6 +355,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 		sharedAudioContext,
 		videoConfig.fps,
 		onError,
+		videoConfig.durationInFrames,
 	]);
 
 	const classNameValue = useMemo(() => {

@@ -341,6 +341,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 		disallowFallbackToHtml5Audio,
 		buffer,
 		onError,
+		videoConfig.durationInFrames,
 	]);
 
 	useLayoutEffect(() => {

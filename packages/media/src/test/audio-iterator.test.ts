@@ -21,12 +21,8 @@ const prepare = async () => {
 		}),
 		sharedAudioContext: new AudioContext(),
 		getIsLooping: () => false,
-		getEndTime: () => {
-			throw new Error('not implemented');
-		},
-		getStartTime: () => {
-			throw new Error('not implemented');
-		},
+		getEndTime: () => Infinity,
+		getStartTime: () => 0,
 		updatePlaybackTime: () => {},
 		initialMuted: false,
 		drawDebugOverlay: () => {},
@@ -49,13 +45,14 @@ test('media player should work', async () => {
 	const scheduleAudioNode = (
 		node: AudioBufferSourceNode,
 		mediaTimestamp: number,
+		maxDuration: number | null,
 	) => {
-		node.start(mediaTimestamp);
+		node.start(mediaTimestamp, 0, maxDuration ?? undefined);
 		setTimeout(
 			() => {
 				node.stop();
 			},
-			(node.buffer?.duration ?? 0) * 1000,
+			(maxDuration ?? node.buffer?.duration ?? 0) * 1000,
 		);
 		scheduledChunks.push(mediaTimestamp);
 	};
@@ -102,13 +99,14 @@ test('should not create too many iterators when the audio ends', async () => {
 	const scheduleAudioNode = (
 		node: AudioBufferSourceNode,
 		mediaTimestamp: number,
+		maxDuration: number | null,
 	) => {
-		node.start(mediaTimestamp);
+		node.start(mediaTimestamp, 0, maxDuration ?? undefined);
 		setTimeout(
 			() => {
 				node.stop();
 			},
-			(node.buffer?.duration ?? 0) * 1000,
+			(maxDuration ?? node.buffer?.duration ?? 0) * 1000,
 		);
 		scheduledChunks.push(mediaTimestamp);
 	};
@@ -148,13 +146,14 @@ test('should create more iterators when seeking ', async () => {
 	const scheduleAudioNode = (
 		node: AudioBufferSourceNode,
 		mediaTimestamp: number,
+		maxDuration: number | null,
 	) => {
-		node.start(mediaTimestamp);
+		node.start(mediaTimestamp, 0, maxDuration ?? undefined);
 		setTimeout(
 			() => {
 				node.stop();
 			},
-			(node.buffer?.duration ?? 0) * 1000,
+			(maxDuration ?? node.buffer?.duration ?? 0) * 1000,
 		);
 		scheduledChunks.push(mediaTimestamp);
 	};
@@ -203,12 +202,8 @@ test('should not schedule duplicate chunks with playbackRate=0.5', async () => {
 		}),
 		sharedAudioContext: new AudioContext(),
 		getIsLooping: () => false,
-		getEndTime: () => {
-			throw new Error('not implemented');
-		},
-		getStartTime: () => {
-			throw new Error('not implemented');
-		},
+		getEndTime: () => Infinity,
+		getStartTime: () => 0,
 		updatePlaybackTime: () => {},
 		initialMuted: false,
 		drawDebugOverlay: () => {},
@@ -218,13 +213,14 @@ test('should not schedule duplicate chunks with playbackRate=0.5', async () => {
 	const scheduleAudioNode = (
 		node: AudioBufferSourceNode,
 		mediaTimestamp: number,
+		maxDuration: number | null,
 	) => {
-		node.start(mediaTimestamp);
+		node.start(mediaTimestamp, 0, maxDuration ?? undefined);
 		setTimeout(
 			() => {
 				node.stop();
 			},
-			(node.buffer?.duration ?? 0) * 1000,
+			(maxDuration ?? node.buffer?.duration ?? 0) * 1000,
 		);
 		scheduledChunks.push(mediaTimestamp);
 	};
@@ -282,19 +278,28 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 		drawDebugOverlay: () => {},
 	});
 
-	const scheduledChunks: number[] = [];
+	const scheduledChunks: {
+		timestamp: number;
+		maxDuration: number | null;
+		bufferDuration: number;
+	}[] = [];
 	const scheduleAudioNode = (
 		node: AudioBufferSourceNode,
 		mediaTimestamp: number,
+		maxDuration: number | null,
 	) => {
-		node.start(mediaTimestamp);
+		node.start(mediaTimestamp, 0, maxDuration ?? undefined);
 		setTimeout(
 			() => {
 				node.stop();
 			},
-			(node.buffer?.duration ?? 0) * 1000,
+			(maxDuration ?? node.buffer?.duration ?? 0) * 1000,
 		);
-		scheduledChunks.push(mediaTimestamp);
+		scheduledChunks.push({
+			timestamp: mediaTimestamp,
+			maxDuration,
+			bufferDuration: node.buffer?.duration ?? 0,
+		});
 	};
 
 	// Simulate playback frame by frame, seeking past the end time
@@ -310,7 +315,11 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 		});
 	}
 
-	for (const timestamp of scheduledChunks) {
-		expect(timestamp).toBeLessThanOrEqual(endTime);
+	for (const chunk of scheduledChunks) {
+		expect(chunk.timestamp).toBeLessThanOrEqual(endTime);
+		const effectiveDuration = chunk.maxDuration ?? chunk.bufferDuration;
+		expect(chunk.timestamp + effectiveDuration).toBeLessThanOrEqual(
+			endTime + 1 / 48000,
+		);
 	}
 });

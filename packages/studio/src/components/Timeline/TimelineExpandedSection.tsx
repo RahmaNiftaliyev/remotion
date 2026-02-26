@@ -21,10 +21,7 @@ import {
 	getSchemaFields,
 } from '../../helpers/timeline-layout';
 import {callApi} from '../call-api';
-import {
-	TimelineFieldSavingSpinner,
-	TimelineFieldValue,
-} from './TimelineSchemaField';
+import {TimelineFieldValue} from './TimelineSchemaField';
 
 const expandedSectionBase: React.CSSProperties = {
 	color: 'white',
@@ -62,23 +59,15 @@ const TimelineFieldRow: React.FC<{
 	readonly onDragEnd: () => void;
 	readonly propStatus: CanUpdateSequencePropStatus | null;
 }> = ({field, onSave, onDragValueChange, onDragEnd, propStatus}) => {
-	const [saving, setSaving] = useState(false);
-
-	const onSavingChange = useCallback((s: boolean) => {
-		setSaving(s);
-	}, []);
-
 	return (
 		<div style={{...fieldRow, height: field.rowHeight}}>
 			<div style={fieldLabelRow}>
-				<span style={fieldName}>{field.key}</span>
-				<TimelineFieldSavingSpinner saving={saving} />
+				<span style={fieldName}>{field.description ?? field.key}</span>
 			</div>
 			<TimelineFieldValue
 				field={field}
 				propStatus={propStatus}
 				onSave={onSave}
-				onSavingChange={onSavingChange}
 				onDragValueChange={onDragValueChange}
 				onDragEnd={onDragEnd}
 				canUpdate={propStatus?.canUpdate ?? false}
@@ -246,6 +235,12 @@ export const TimelineExpandedSection: React.FC<{
 				return Promise.reject(new Error('Cannot save'));
 			}
 
+			const field = schemaFields?.find((f) => f.key === key);
+			const defaultValue =
+				field && field.fieldSchema.default !== undefined
+					? JSON.stringify(field.fieldSchema.default)
+					: null;
+
 			return callApi('/api/save-sequence-props', {
 				fileName: validatedLocation.source,
 				line: validatedLocation.line,
@@ -253,21 +248,24 @@ export const TimelineExpandedSection: React.FC<{
 				key,
 				value: JSON.stringify(value),
 				enumPaths: [],
+				defaultValue,
 			}).then(() => undefined);
 		},
-		[propStatuses, validatedLocation],
+		[propStatuses, validatedLocation, schemaFields],
 	);
+
+	const overrideId = sequence.controls?.overrideId ?? sequence.id;
 
 	const onDragValueChange = useCallback(
 		(key: string, value: unknown) => {
-			setOverride(sequence.id, key, value);
+			setOverride(overrideId, key, value);
 		},
-		[setOverride, sequence.id],
+		[setOverride, overrideId],
 	);
 
 	const onDragEnd = useCallback(() => {
-		clearOverrides(sequence.id);
-	}, [clearOverrides, sequence.id]);
+		clearOverrides(overrideId);
+	}, [clearOverrides, overrideId]);
 
 	return (
 		<div style={{...expandedSectionBase, height: expandedHeight}}>

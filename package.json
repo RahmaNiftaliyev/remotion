@@ -8,7 +8,7 @@
 		"ts-build": "tsc -b --verbose --watch",
 		"stylecheck": "turbo run lint formatting --no-update-notifier",
 		"formatting": "turbo run formatting --no-update-notifier",
-		"format": "bun run --filter '*' format",
+		"format": "bun pre-commit.ts",
 		"build": "turbo run make --no-update-notifier",
 		"build-docs": "TURBO_TELEMETRY_DISABLED=1 turbo run build-docs --no-update-notifier",
 		"testssr": "turbo run testssr --no-update-notifier",
@@ -61,7 +61,7 @@
 	"dependencies": {
 		"p-limit": "7.2.0",
 		"typescript": "5.9.3",
-		"turbo": "2.8.10"
+		"turbo": "2.8.11"
 	},
 	"packageManager": "bun@1.3.3",
 	"overrides": {

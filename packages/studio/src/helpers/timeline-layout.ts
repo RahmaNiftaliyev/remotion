@@ -1,9 +1,4 @@
-import type {SequenceControls} from 'remotion';
-import type {AnyZodSchema} from '../components/RenderModal/SchemaEditor/zod-schema-type';
-import {
-	getObjectShape,
-	getZodSchemaType,
-} from '../components/RenderModal/SchemaEditor/zod-schema-type';
+import type {SequenceControls, SequenceFieldSchema} from 'remotion';
 
 export const TIMELINE_PADDING = 16;
 export const TIMELINE_BORDER = 1;
@@ -14,26 +9,16 @@ export const TIMELINE_TRACK_EXPANDED_HEIGHT = 100;
 export const SCHEMA_FIELD_ROW_HEIGHT = 26;
 export const UNSUPPORTED_FIELD_ROW_HEIGHT = 26;
 
-const SUPPORTED_SCHEMA_TYPES = new Set([
-	'number',
-	'string',
-	'boolean',
-	'enum',
-	'date',
-	'array',
-	'object',
-	'optional',
-	'nullable',
-	'default',
-]);
+const SUPPORTED_SCHEMA_TYPES = new Set(['number', 'boolean']);
 
 export type SchemaFieldInfo = {
 	key: string;
+	description: string | undefined;
 	typeName: string;
 	supported: boolean;
 	rowHeight: number;
 	currentValue: unknown;
-	fieldSchema: AnyZodSchema;
+	fieldSchema: SequenceFieldSchema;
 };
 
 export const getSchemaFields = (
@@ -43,12 +28,12 @@ export const getSchemaFields = (
 		return null;
 	}
 
-	const shape = getObjectShape(controls.schema);
-	return Object.entries(shape).map(([key, fieldSchema]) => {
-		const typeName = getZodSchemaType(fieldSchema);
+	return Object.entries(controls.schema).map(([key, fieldSchema]) => {
+		const typeName = fieldSchema.type;
 		const supported = SUPPORTED_SCHEMA_TYPES.has(typeName);
 		return {
 			key,
+			description: fieldSchema.description,
 			typeName,
 			supported,
 			rowHeight: supported

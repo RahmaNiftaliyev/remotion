@@ -1,12 +1,8 @@
 import type {CanUpdateSequencePropStatus} from '@remotion/studio-shared';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
+import {Checkbox} from '../Checkbox';
 import {InputDragger} from '../NewComposition/InputDragger';
-import {
-	getZodNumberMaximum,
-	getZodNumberMinimum,
-	getZodNumberStep,
-} from '../RenderModal/SchemaEditor/zod-number-constraints';
 import {Spinner} from '../Spinner';
 
 const unsupportedLabel: React.CSSProperties = {
@@ -21,6 +17,10 @@ const draggerStyle: React.CSSProperties = {
 	marginLeft: 'auto',
 };
 
+const checkboxContainer: React.CSSProperties = {
+	marginLeft: 'auto',
+};
+
 const notEditableBackground: React.CSSProperties = {
 	backgroundColor: 'rgba(255, 0, 0, 0.2)',
 	borderRadius: 3,
@@ -29,19 +29,12 @@ const notEditableBackground: React.CSSProperties = {
 
 const TimelineNumberField: React.FC<{
 	readonly field: SchemaFieldInfo;
+	readonly codeValue: unknown;
 	readonly canUpdate: boolean;
 	readonly onSave: (key: string, value: unknown) => Promise<void>;
-	readonly onSavingChange: (saving: boolean) => void;
 	readonly onDragValueChange: (key: string, value: unknown) => void;
 	readonly onDragEnd: () => void;
-}> = ({
-	field,
-	canUpdate,
-	onSave,
-	onSavingChange,
-	onDragValueChange,
-	onDragEnd,
-}) => {
+}> = ({field, codeValue, canUpdate, onSave, onDragValueChange, onDragEnd}) => {
 	const [dragValue, setDragValue] = useState<number | null>(null);
 	const dragging = useRef(false);
 
@@ -56,76 +49,98 @@ const TimelineNumberField: React.FC<{
 
 	useEffect(() => {
 		setDragValue(null);
-		onSavingChange(false);
 		onDragEnd();
-	}, [field.currentValue, onSavingChange, onDragEnd]);
+	}, [field.currentValue, onDragEnd]);
 
 	const onValueChangeEnd = useCallback(
 		(newVal: number) => {
-			if (canUpdate && newVal !== field.currentValue) {
-				onSavingChange(true);
+			if (canUpdate && newVal !== codeValue) {
 				onSave(field.key, newVal).catch(() => {
-					onSavingChange(false);
 					setDragValue(null);
 				});
 			} else {
 				setDragValue(null);
 			}
 		},
-		[canUpdate, onSave, onSavingChange, field.key, field.currentValue],
+		[canUpdate, onSave, field.key, codeValue],
 	);
 
 	const onTextChange = useCallback(
 		(newVal: string) => {
 			if (canUpdate) {
 				const parsed = Number(newVal);
-				if (!Number.isNaN(parsed) && parsed !== field.currentValue) {
+				if (!Number.isNaN(parsed) && parsed !== codeValue) {
 					setDragValue(parsed);
-					onSavingChange(true);
 					onSave(field.key, parsed).catch(() => {
-						onSavingChange(false);
 						setDragValue(null);
 					});
 				}
 			}
 		},
-		[canUpdate, onSave, onSavingChange, field.key, field.currentValue],
+		[canUpdate, onSave, field.key, codeValue],
 	);
 
 	return (
 		<InputDragger
 			type="number"
-			value={dragValue ?? (field.currentValue as number)}
+			value={dragValue ?? (codeValue as number)}
 			style={draggerStyle}
 			status="ok"
 			onValueChange={onValueChange}
 			onValueChangeEnd={onValueChangeEnd}
 			onTextChange={onTextChange}
-			min={getZodNumberMinimum(field.fieldSchema)}
-			max={getZodNumberMaximum(field.fieldSchema)}
-			step={getZodNumberStep(field.fieldSchema)}
+			min={
+				field.fieldSchema.type === 'number'
+					? (field.fieldSchema.min ?? -Infinity)
+					: -Infinity
+			}
+			max={
+				field.fieldSchema.type === 'number'
+					? (field.fieldSchema.max ?? Infinity)
+					: Infinity
+			}
+			step={
+				field.fieldSchema.type === 'number' ? (field.fieldSchema.step ?? 1) : 1
+			}
 			rightAlign
 		/>
+	);
+};
+
+const TimelineBooleanField: React.FC<{
+	readonly field: SchemaFieldInfo;
+	readonly codeValue: unknown;
+	readonly canUpdate: boolean;
+	readonly onSave: (key: string, value: unknown) => Promise<void>;
+}> = ({field, codeValue, canUpdate, onSave}) => {
+	const checked = Boolean(codeValue);
+
+	const onChange = useCallback(() => {
+		if (canUpdate) {
+			onSave(field.key, !checked);
+		}
+	}, [canUpdate, onSave, field.key, checked]);
+
+	return (
+		<div style={checkboxContainer}>
+			<Checkbox
+				checked={checked}
+				onChange={onChange}
+				name={field.key}
+				disabled={!canUpdate}
+			/>
+		</div>
 	);
 };
 
 export const TimelineFieldValue: React.FC<{
 	readonly field: SchemaFieldInfo;
 	readonly onSave: (key: string, value: unknown) => Promise<void>;
-	readonly onSavingChange: (saving: boolean) => void;
 	readonly onDragValueChange: (key: string, value: unknown) => void;
 	readonly onDragEnd: () => void;
 	readonly canUpdate: boolean;
 	readonly propStatus: CanUpdateSequencePropStatus | null;
-}> = ({
-	field,
-	onSave,
-	onSavingChange,
-	onDragValueChange,
-	onDragEnd,
-	propStatus,
-	canUpdate,
-}) => {
+}> = ({field, onSave, onDragValueChange, onDragEnd, propStatus, canUpdate}) => {
 	const wrapperStyle: React.CSSProperties | undefined =
 		canUpdate === null || canUpdate === false
 			? notEditableBackground
@@ -136,9 +151,7 @@ export const TimelineFieldValue: React.FC<{
 	}
 
 	if (propStatus !== null && !propStatus.canUpdate) {
-		const label =
-			propStatus.reason === 'not-set' ? 'not set' : propStatus.reason;
-		return <span style={unsupportedLabel}>{label}</span>;
+		return <span style={unsupportedLabel}>{propStatus.reason}</span>;
 	}
 
 	if (propStatus === null) {
@@ -149,14 +162,17 @@ export const TimelineFieldValue: React.FC<{
 		);
 	}
 
+	const effectiveCodeValue =
+		propStatus.codeValue ?? field.currentValue ?? field.fieldSchema.default;
+
 	if (field.typeName === 'number') {
 		return (
 			<span style={wrapperStyle}>
 				<TimelineNumberField
 					field={field}
+					codeValue={effectiveCodeValue}
 					canUpdate={canUpdate}
 					onSave={onSave}
-					onSavingChange={onSavingChange}
 					onDragValueChange={onDragValueChange}
 					onDragEnd={onDragEnd}
 				/>
@@ -164,9 +180,22 @@ export const TimelineFieldValue: React.FC<{
 		);
 	}
 
+	if (field.typeName === 'boolean') {
+		return (
+			<span style={wrapperStyle}>
+				<TimelineBooleanField
+					field={field}
+					codeValue={effectiveCodeValue}
+					canUpdate={canUpdate}
+					onSave={onSave}
+				/>
+			</span>
+		);
+	}
+
 	return (
 		<span style={{...unsupportedLabel, fontStyle: 'normal'}}>
-			{String(field.currentValue)}
+			{String(effectiveCodeValue)}
 		</span>
 	);
 };

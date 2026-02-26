@@ -4,6 +4,7 @@ import type {AnyZodObject} from './any-zod-type.js';
 import type {CalculateMetadataFunction} from './Composition.js';
 import type {DownloadBehavior} from './download-behavior.js';
 import type {InferProps, PropsIfHasProps} from './props-if-has-props.js';
+import type {SequenceSchema} from './sequence-field-schema.js';
 
 export type TComposition<
 	Schema extends AnyZodObject,
@@ -88,8 +89,9 @@ export type LoopDisplay = {
 };
 
 export type SequenceControls = {
-	schema: AnyZodObject;
+	schema: SequenceSchema;
 	currentValue: Record<string, unknown>;
+	overrideId: string;
 };
 
 export type TSequence = {

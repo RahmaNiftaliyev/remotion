@@ -10,15 +10,22 @@ export const updateSequenceProps = async ({
 	key,
 	value,
 	enumPaths,
+	defaultValue,
 }: {
 	input: string;
 	targetLine: number;
 	key: string;
 	value: unknown;
 	enumPaths: EnumPath[];
-}): Promise<string> => {
+	defaultValue: unknown | null;
+}): Promise<{output: string; oldValueString: string}> => {
 	const ast = parseAst(input);
 	let found = false;
+	let oldValueString = '';
+
+	const isDefault =
+		defaultValue !== null &&
+		JSON.stringify(value) === JSON.stringify(defaultValue);
 
 	recast.types.visit(ast, {
 		visitJSXOpeningElement(path) {
@@ -28,7 +35,7 @@ export const updateSequenceProps = async ({
 				return this.traverse(path);
 			}
 
-			const attr = node.attributes?.find((a) => {
+			const attrIndex = node.attributes?.findIndex((a) => {
 				if (a.type === 'JSXSpreadAttribute') {
 					return false;
 				}
@@ -40,10 +47,32 @@ export const updateSequenceProps = async ({
 				return a.name.name === key;
 			});
 
-			if (!attr || attr.type === 'JSXSpreadAttribute') {
-				throw new Error(
-					`Could not find attribute "${key}" on the JSX element at line ${targetLine}`,
-				);
+			const attr =
+				attrIndex !== undefined && attrIndex !== -1
+					? node.attributes?.[attrIndex]
+					: undefined;
+
+			if (attr && attr.type !== 'JSXSpreadAttribute' && attr.value) {
+				const printed = recast.print(attr.value).code;
+				// Strip JSX expression container braces, e.g. "{30}" -> "30"
+				oldValueString =
+					printed.startsWith('{') && printed.endsWith('}')
+						? printed.slice(1, -1)
+						: printed;
+			} else if (attr && attr.type !== 'JSXSpreadAttribute' && !attr.value) {
+				// JSX shorthand like `loop` (no value) is implicitly `true`
+				oldValueString = 'true';
+			} else if (!attr && defaultValue !== null) {
+				oldValueString = JSON.stringify(defaultValue);
+			}
+
+			if (isDefault) {
+				if (attr && attr.type !== 'JSXSpreadAttribute' && node.attributes) {
+					node.attributes.splice(attrIndex!, 1);
+				}
+
+				found = true;
+				return this.traverse(path);
 			}
 
 			const parsed = (
@@ -53,7 +82,26 @@ export const updateSequenceProps = async ({
 				).expression as AssignmentExpression
 			).right as ExpressionKind;
 
-			attr.value = recast.types.builders.jsxExpressionContainer(parsed);
+			const newValue =
+				value === true
+					? null
+					: recast.types.builders.jsxExpressionContainer(parsed);
+
+			if (!attr || attr.type === 'JSXSpreadAttribute') {
+				const newAttr = recast.types.builders.jsxAttribute(
+					recast.types.builders.jsxIdentifier(key),
+					newValue,
+				);
+
+				if (!node.attributes) {
+					node.attributes = [];
+				}
+
+				node.attributes.push(newAttr);
+			} else {
+				attr.value = newValue;
+			}
+
 			found = true;
 
 			return this.traverse(path);
@@ -98,5 +146,5 @@ export const updateSequenceProps = async ({
 		plugins: [],
 		endOfLine: 'auto',
 	});
-	return prettified;
+	return {output: prettified, oldValueString};
 };

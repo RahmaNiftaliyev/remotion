@@ -216,9 +216,8 @@ export type UnsubscribeFromSequencePropsRequest = {
 };
 
 export type CanUpdateSequencePropStatus =
-	| {canUpdate: true}
-	| {canUpdate: false; reason: 'computed'}
-	| {canUpdate: false; reason: 'not-set'};
+	| {canUpdate: true; codeValue: unknown}
+	| {canUpdate: false; reason: 'computed'};
 
 export type CanUpdateSequencePropsResponse =
 	| {
@@ -237,6 +236,7 @@ export type SaveSequencePropsRequest = {
 	key: string;
 	value: string;
 	enumPaths: EnumPath[];
+	defaultValue: string | null;
 };
 
 export type SaveSequencePropsResponse =

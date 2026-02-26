@@ -10,6 +10,7 @@ import type {
 	LogLevel,
 	LoopVolumeCurveBehavior,
 	SequenceControls,
+	SequenceSchema,
 	VolumeProp,
 } from 'remotion';
 import {
@@ -19,7 +20,6 @@ import {
 	useCurrentFrame,
 	useVideoConfig,
 } from 'remotion';
-import {z} from 'zod';
 import {getTimeInSeconds} from '../get-time-in-seconds';
 import {MediaPlayer} from '../media-player';
 import {type MediaOnError, callOnErrorAndResolve} from '../on-error';
@@ -65,7 +65,13 @@ type VideoForPreviewProps = {
 	readonly onError: MediaOnError | undefined;
 };
 
-const VideoForPreviewAssertedShowing: React.FC<VideoForPreviewProps> = ({
+type VideoForPreviewAssertedShowingProps = VideoForPreviewProps & {
+	readonly controls: SequenceControls | undefined;
+};
+
+const VideoForPreviewAssertedShowing: React.FC<
+	VideoForPreviewAssertedShowingProps
+> = ({
 	src: unpreloadedSrc,
 	style,
 	playbackRate,
@@ -87,6 +93,7 @@ const VideoForPreviewAssertedShowing: React.FC<VideoForPreviewProps> = ({
 	debugOverlay,
 	headless,
 	onError,
+	controls,
 }) => {
 	const src = usePreload(unpreloadedSrc);
 
@@ -137,22 +144,6 @@ const VideoForPreviewAssertedShowing: React.FC<VideoForPreviewProps> = ({
 		trimAfter,
 		trimBefore,
 	});
-
-	const controls: SequenceControls | null = useMemo(() => {
-		if (typeof volume !== 'number') {
-			return null;
-		}
-
-		return {
-			schema: z.object({
-				volume: z.number().min(0).multipleOf(0.01),
-				playbackRate: z.number().min(0).multipleOf(0.01),
-				trimBefore: z.number(),
-				trimAfter: z.number(),
-			}),
-			currentValue: {volume, playbackRate, trimBefore, trimAfter},
-		};
-	}, [volume, playbackRate, trimBefore, trimAfter]);
 
 	const {id: timelineId} = useMediaInTimeline({
 		volume,
@@ -537,7 +528,67 @@ const VideoForPreviewAssertedShowing: React.FC<VideoForPreviewProps> = ({
 	);
 };
 
+const videoSchema = {
+	volume: {
+		type: 'number',
+		min: 0,
+		max: 20,
+		step: 0.01,
+		default: 1,
+		description: 'Volume',
+	},
+	playbackRate: {
+		type: 'number',
+		min: 0,
+		step: 0.01,
+		default: 1,
+		description: 'Playback Rate',
+	},
+	trimBefore: {type: 'number', min: 0, default: 0},
+	trimAfter: {type: 'number', min: 0, default: 0},
+} as const satisfies SequenceSchema;
+
 export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
+	const schemaInput = useMemo(() => {
+		if (typeof props.volume !== 'number') {
+			return null;
+		}
+
+		return {
+			volume: props.volume,
+			playbackRate: props.playbackRate,
+			trimBefore: props.trimBefore,
+			trimAfter: props.trimAfter,
+			loop: props.loop,
+		};
+	}, [
+		props.volume,
+		props.playbackRate,
+		props.trimBefore,
+		props.trimAfter,
+		props.loop,
+	]);
+
+	const {controls, values} = Internals.useSchema(
+		schemaInput ? videoSchema : null,
+		schemaInput,
+	);
+
+	const volume =
+		schemaInput !== null ? (values.volume as number) : props.volume;
+	const playbackRate =
+		schemaInput !== null ? (values.playbackRate as number) : props.playbackRate;
+	const trimBefore =
+		schemaInput !== null
+			? (values.trimBefore as number | undefined)
+			: props.trimBefore;
+	const trimAfter =
+		schemaInput !== null
+			? (values.trimAfter as number | undefined)
+			: props.trimAfter;
+	const effectiveLoop =
+		schemaInput !== null ? (values.loop as boolean) : props.loop;
+
 	const frame = useCurrentFrame();
 	const videoConfig = useVideoConfig();
 	const currentTime = frame / videoConfig.fps;
@@ -546,10 +597,10 @@ export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
 		return (
 			getTimeInSeconds({
 				unloopedTimeInSeconds: currentTime,
-				playbackRate: props.playbackRate,
-				loop: props.loop,
-				trimBefore: props.trimBefore,
-				trimAfter: props.trimAfter,
+				playbackRate,
+				loop: effectiveLoop,
+				trimBefore,
+				trimAfter,
 				mediaDurationInSeconds: Infinity,
 				fps: videoConfig.fps,
 				ifNoMediaDuration: 'infinity',
@@ -558,11 +609,11 @@ export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
 		);
 	}, [
 		currentTime,
-		props.loop,
-		props.playbackRate,
+		effectiveLoop,
+		playbackRate,
 		props.src,
-		props.trimAfter,
-		props.trimBefore,
+		trimAfter,
+		trimBefore,
 		videoConfig.fps,
 	]);
 
@@ -570,5 +621,15 @@ export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
 		return null;
 	}
 
-	return <VideoForPreviewAssertedShowing {...props} />;
+	return (
+		<VideoForPreviewAssertedShowing
+			{...props}
+			volume={volume}
+			playbackRate={playbackRate}
+			loop={effectiveLoop}
+			trimBefore={trimBefore}
+			trimAfter={trimAfter}
+			controls={controls}
+		/>
+	);
 };

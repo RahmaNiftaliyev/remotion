@@ -14,9 +14,8 @@ import * as recast from 'recast';
 import {parseAst} from '../../codemods/parse-ast';
 
 type CanUpdatePropStatus =
-	| {canUpdate: true}
-	| {canUpdate: false; reason: 'computed'}
-	| {canUpdate: false; reason: 'not-set'};
+	| {canUpdate: true; codeValue: unknown}
+	| {canUpdate: false; reason: 'computed'};
 
 export const isStaticValue = (node: Expression): boolean => {
 	switch (node.type) {
@@ -48,6 +47,61 @@ export const isStaticValue = (node: Expression): boolean => {
 	}
 };
 
+export const extractStaticValue = (node: Expression): unknown => {
+	switch (node.type) {
+		case 'NumericLiteral':
+		case 'StringLiteral':
+		case 'BooleanLiteral':
+			return (node as {value: unknown}).value;
+		case 'NullLiteral':
+			return null;
+		case 'UnaryExpression': {
+			const un = node as UnaryExpression;
+			if (un.argument.type === 'NumericLiteral') {
+				const val = (un.argument as {value: number}).value;
+				return un.operator === '-' ? -val : val;
+			}
+
+			return undefined;
+		}
+
+		case 'ArrayExpression':
+			return (
+				node as Extract<Expression, {type: 'ArrayExpression'}>
+			).elements.map((el) => {
+				if (el === null || el.type === 'SpreadElement') {
+					return undefined;
+				}
+
+				return extractStaticValue(el);
+			});
+		case 'ObjectExpression': {
+			const obj = node as ObjectExpression;
+			const result: Record<string, unknown> = {};
+			for (const prop of obj.properties) {
+				if (prop.type === 'ObjectProperty') {
+					const p = prop as ObjectProperty;
+					const key =
+						p.key.type === 'Identifier'
+							? (p.key as {name: string}).name
+							: p.key.type === 'StringLiteral' ||
+								  p.key.type === 'NumericLiteral'
+								? String((p.key as {value: unknown}).value)
+								: undefined;
+					if (key !== undefined) {
+						result[key] = extractStaticValue(p.value as Expression);
+					}
+				}
+			}
+
+			return result;
+		}
+
+		default:
+			return undefined;
+	}
+};
+
 const getPropsStatus = (
 	jsxElement: JSXOpeningElement,
 ): Record<string, CanUpdatePropStatus> => {
@@ -70,12 +124,15 @@ const getPropsStatus = (
 		const {value} = attr as JSXAttribute;
 
 		if (!value) {
-			props[name] = {canUpdate: true};
+			props[name] = {canUpdate: true, codeValue: true};
 			continue;
 		}
 
 		if (value.type === 'StringLiteral') {
-			props[name] = {canUpdate: true};
+			props[name] = {
+				canUpdate: true,
+				codeValue: (value as {value: string}).value,
+			};
 			continue;
 		}
 
@@ -89,7 +146,10 @@ const getPropsStatus = (
 				continue;
 			}
 
-			props[name] = {canUpdate: true};
+			props[name] = {
+				canUpdate: true,
+				codeValue: extractStaticValue(expression),
+			};
 			continue;
 		}
 
@@ -153,7 +213,7 @@ export const computeSequencePropsStatus = ({
 			if (key in allProps) {
 				filteredProps[key] = allProps[key];
 			} else {
-				filteredProps[key] = {canUpdate: false, reason: 'not-set'};
+				filteredProps[key] = {canUpdate: true, codeValue: undefined};
 			}
 		}
 

@@ -41,11 +41,11 @@ test('Should test timeline sequence layout without max media duration', () => {
 			windowWidth: 1414.203125,
 		}),
 	).toEqual({
-		marginLeft: 1154.2137986426505,
+		marginLeft: 1154.0226668902187,
 		premountWidth: null,
 		postmountWidth: null,
-		width: 226.9893263573493,
-		naturalWidth: 226.9893263573493,
+		width: 227.18045810978126,
+		naturalWidth: 227.18045810978126,
 	});
 });
 test('Should test timeline sequence layout with max media duration', () => {
@@ -75,11 +75,11 @@ test('Should test timeline sequence layout with max media duration', () => {
 			windowWidth: 1414.203125,
 		}),
 	).toEqual({
-		marginLeft: 1154.2137986426505,
+		marginLeft: 1154.0226668902187,
 		premountWidth: null,
 		postmountWidth: null,
-		width: 221.8531462892238,
-		naturalWidth: 221.8531462892238,
+		width: 221.47594665703676,
+		naturalWidth: 221.47594665703676,
 	});
 });
 
@@ -165,7 +165,7 @@ test('naturalWidth is constrained by maxMediaDuration but not by timeline end', 
 	expect(clippedByBoth.naturalWidth).toBeGreaterThan(clippedByBoth.width);
 
 	// Same segment but not clipped by timeline end (starts earlier)
-	// Both should have the same half-frame behavior (shouldAddHalfAFrameAtEnd = true)
+	// Both should have the same behavior
 	const clippedByMediaOnly = getTimelineSequenceLayout({
 		durationInFrames: 200,
 		startFrom: 100,

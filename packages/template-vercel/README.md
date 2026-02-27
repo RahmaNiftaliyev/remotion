@@ -50,6 +50,10 @@ Upgrade Remotion:
 npx remotion upgrade
 ```
 
+## Important considerations
+
+This template does not include rate limiting or caching. Implement these before making your app publicly available, and set up [Vercel Spend Management](https://vercel.com/docs/accounts/spend-management) to control costs. Sandbox snapshots, rendered videos, and other Vercel Blob data persist indefinitely – delete them when no longer needed.
+
 ## Deploy to Vercel
 
 The only requirement is to set up a Vercel Blob store and attach it to your project.  

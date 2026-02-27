@@ -267,17 +267,7 @@ export class MediaPlayer {
 				});
 			}
 
-			const startTime = getTimeInSeconds({
-				unloopedTimeInSeconds: startTimeUnresolved,
-				playbackRate: this.playbackRate,
-				loop: this.loop,
-				trimBefore: this.trimBefore,
-				trimAfter: this.trimAfter,
-				mediaDurationInSeconds: this.totalDuration,
-				fps: this.fps,
-				ifNoMediaDuration: 'infinity',
-				src: this.src,
-			});
+			const startTime = this.getTrimmedTime(startTimeUnresolved);
 
 			if (startTime === null) {
 				throw new Error(`should have asserted that the time is not null`);
@@ -368,17 +358,7 @@ export class MediaPlayer {
 	};
 
 	public async seekTo(time: number): Promise<void> {
-		const newTime = getTimeInSeconds({
-			unloopedTimeInSeconds: time,
-			playbackRate: this.playbackRate,
-			loop: this.loop,
-			trimBefore: this.trimBefore,
-			trimAfter: this.trimAfter,
-			mediaDurationInSeconds: this.totalDuration ?? null,
-			fps: this.fps,
-			ifNoMediaDuration: 'infinity',
-			src: this.src,
-		});
+		const newTime = this.getTrimmedTime(time);
 
 		if (newTime === null) {
 			throw new Error(`should have asserted that the time is not null`);
@@ -422,17 +402,7 @@ export class MediaPlayer {
 	}
 
 	public async playAudio(time: number): Promise<void> {
-		const newTime = getTimeInSeconds({
-			unloopedTimeInSeconds: time,
-			playbackRate: this.playbackRate,
-			loop: this.loop,
-			trimBefore: this.trimBefore,
-			trimAfter: this.trimAfter,
-			mediaDurationInSeconds: this.totalDuration ?? null,
-			fps: this.fps,
-			ifNoMediaDuration: 'infinity',
-			src: this.src,
-		});
+		const newTime = this.getTrimmedTime(time);
 		if (newTime === null) {
 			throw new Error(`should have asserted that the time is not null`);
 		}
@@ -506,14 +476,8 @@ export class MediaPlayer {
 		this.audioIteratorManager.setVolume(volume);
 	}
 
-	private async updateAfterTrimChange(
-		unloopedTimeInSeconds: number,
-	): Promise<void> {
-		if (!this.audioIteratorManager && !this.videoIteratorManager) {
-			return;
-		}
-
-		const newMediaTime = getTimeInSeconds({
+	private getTrimmedTime(unloopedTimeInSeconds: number): number | null {
+		return getTimeInSeconds({
 			unloopedTimeInSeconds,
 			playbackRate: this.playbackRate,
 			loop: this.loop,
@@ -524,6 +488,16 @@ export class MediaPlayer {
 			ifNoMediaDuration: 'infinity',
 			src: this.src,
 		});
+	}
+
+	private async updateAfterTrimChange(
+		unloopedTimeInSeconds: number,
+	): Promise<void> {
+		if (!this.audioIteratorManager && !this.videoIteratorManager) {
+			return;
+		}
+
+		const newMediaTime = this.getTrimmedTime(unloopedTimeInSeconds);
 
 		// audio iterator will be re-created on next play/seek
 		// video iterator doesn't need to be re-created

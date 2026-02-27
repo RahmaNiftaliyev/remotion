@@ -3,18 +3,22 @@ import type {VideoIteratorManager} from '../video-iterator-manager';
 
 export const drawPreviewOverlay = ({
 	context,
-	mediaTime,
+	audioTime,
 	audioContextState,
+	audioSyncAnchor,
 	playing,
 	audioIteratorManager,
 	videoIteratorManager,
+	playbackRate,
 }: {
 	context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D;
-	mediaTime: number | null;
+	audioTime: number | null;
 	audioContextState: AudioContextState | null;
+	audioSyncAnchor: number;
 	playing: boolean;
 	audioIteratorManager: AudioIteratorManager | null;
 	videoIteratorManager: VideoIteratorManager | null;
+	playbackRate: number;
 }) => {
 	// Collect all lines to be rendered
 	const lines: string[] = [
@@ -23,7 +27,9 @@ export const drawPreviewOverlay = ({
 		`Audio iterators created: ${audioIteratorManager?.getAudioIteratorsCreated()}`,
 		`Frames rendered: ${videoIteratorManager?.getFramesRendered()}`,
 		`Audio context state: ${audioContextState}`,
-		mediaTime !== null ? `Audio time: ${mediaTime.toFixed(3)}s` : null,
+		audioTime
+			? `Audio time: ${((audioTime - audioSyncAnchor) * playbackRate).toFixed(3)}s`
+			: null,
 	].filter(Boolean) as string[];
 
 	if (audioIteratorManager) {
@@ -32,10 +38,9 @@ export const drawPreviewOverlay = ({
 			?.getQueuedPeriod();
 
 		if (queuedPeriod) {
-			const aheadText =
-				mediaTime !== null
-					? ` (${(queuedPeriod.until - mediaTime).toFixed(3)}s ahead)`
-					: '';
+			const aheadText = audioTime
+				? ` (${(queuedPeriod.until - (audioTime - audioSyncAnchor) * playbackRate).toFixed(3)}s ahead)`
+				: '';
 			lines.push(
 				`Audio queued until ${queuedPeriod.until.toFixed(3)}s${aheadText}`,
 			);

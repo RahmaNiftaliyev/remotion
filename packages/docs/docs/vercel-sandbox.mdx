@@ -32,6 +32,10 @@ Push it to Vercel.
 Then, in your Vercel dashboard, under "Storage", create a new Blob store and connect it to the project.  
 Redeploy for the changes to take effect.
 
+:::note
+The template does not include rate limiting or caching. Implement these before making your app publicly available, and set up [Vercel Spend Management](https://vercel.com/docs/accounts/spend-management) to control costs. Sandbox snapshots, rendered videos, and other Vercel Blob data persist indefinitely – delete them when no longer needed.
+:::
+
 ## `@remotion/vercel` package
 
 import {TableOfContents} from './vercel/table-of-contents';

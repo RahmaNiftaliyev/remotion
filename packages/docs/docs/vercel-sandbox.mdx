@@ -42,9 +42,7 @@ The [`@remotion/vercel`](/docs/vercel/api) package provides a programmatic API f
 
 ## Important considerations
 
-**No rate limiting or caching**: The template does not include rate limiting or caching. Any user with access to your deployment can trigger renders, which incur costs on your Vercel account. Before making your app publicly available, implement rate limiting and authentication, and set up [Vercel Spend Management](https://vercel.com/docs/accounts/spend-management) to control costs.
-
-**Renders are stored permanently**: Videos uploaded to Vercel Blob storage persist indefinitely and incur ongoing storage costs. Implement a cleanup strategy to delete old renders that are no longer needed.
+The template does not include rate limiting or caching. Implement these before making your app publicly available, and set up [Vercel Spend Management](https://vercel.com/docs/accounts/spend-management) to control costs. Sandbox snapshots, rendered videos, and other Vercel Blob data persist indefinitely – delete them when no longer needed.
 
 ## Advantages
 

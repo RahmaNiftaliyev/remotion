@@ -150,27 +150,5 @@ export const useSequencePropsSubscription = (
 		};
 	}, [locationSource, locationLine, locationColumn, subscribeToEvent]);
 
-	const {setCodeValues} = useContext(Internals.SequenceControlOverrideContext);
-	const overrideId = sequence.controls?.overrideId ?? null;
-
-	useEffect(() => {
-		if (!propStatuses || !overrideId) {
-			return;
-		}
-
-		const codeVals: Record<string, unknown> = {};
-		for (const [key, status] of Object.entries(propStatuses)) {
-			if (status.canUpdate) {
-				codeVals[key] = status.codeValue;
-			}
-		}
-
-		setCodeValues(overrideId, codeVals);
-
-		return () => {
-			setCodeValues(overrideId, {});
-		};
-	}, [propStatuses, overrideId, setCodeValues]);
-
 	return propStatuses;
 };

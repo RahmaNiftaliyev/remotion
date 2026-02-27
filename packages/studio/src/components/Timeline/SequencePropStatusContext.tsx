@@ -51,7 +51,6 @@ const CodeValueBridge: React.FC<{
 		for (const [overrideId, statuses] of Object.entries(propStatuses)) {
 			if (statuses) {
 				const extracted = extractCodeValues(statuses);
-				console.log('CodeValueBridge', overrideId, extracted);
 				setCodeValues(overrideId, extracted);
 			}
 		}

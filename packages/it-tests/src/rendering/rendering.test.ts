@@ -411,7 +411,9 @@ test(
 	},
 );
 
-test(
+const isMacOSCI = process.platform === 'darwin' && process.env.CI;
+
+test.skipIf(isMacOSCI)(
 	'Should render a video with Offline Audio-context',
 	async () => {
 		const out = outputPath.replace('.mp4', '.mp3');

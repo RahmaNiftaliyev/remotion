@@ -391,13 +391,11 @@ export const TimelineVideoInfo: React.FC<{
 
 					if (transformed !== frame) {
 						frame.close();
-						frame = undefined;
 					}
 
-					const databaseKey = makeFrameDatabaseKey(
-						src,
-						transformed.timestamp,
-					);
+					frame = undefined;
+
+					const databaseKey = makeFrameDatabaseKey(src, transformed.timestamp);
 
 					const existingFrame = frameDatabase.get(databaseKey);
 					if (existingFrame) {

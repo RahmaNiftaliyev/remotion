@@ -411,7 +411,7 @@ test(
 	},
 );
 
-const isMacOSCI = process.platform === 'darwin' && process.env.CI;
+const isMacOSCI = process.platform === 'darwin' && Boolean(process.env.CI);
 
 test.skipIf(isMacOSCI)(
 	'Should render a video with Offline Audio-context',

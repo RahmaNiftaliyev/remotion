@@ -56,7 +56,7 @@ This template does not include rate limiting or caching. Implement these before 
 
 ## Deploy to Vercel
 
-The only requirement is to set up a Vercel Blob store and attach it to your project.
+The only requirement is to set up a Vercel Blob store and attach it to your project.  
 It is advisable to first deploy the template to Vercel so you have a project to attach the Blob store to.
 
 1. Go to your Vercel dashboard

@@ -562,7 +562,9 @@ export class MediaPlayer {
 		this.debugOverlay = debugOverlay;
 	}
 
-	private updateAudioTimeAfterPlaybackRateChange(): void {
+	private updateAudioTimeAfterPlaybackRateChange(
+		mediaTimeBeforeChange: number,
+	): void {
 		if (!this.audioIteratorManager) {
 			return;
 		}
@@ -571,7 +573,7 @@ export class MediaPlayer {
 			return;
 		}
 
-		this.setAudioPlaybackTime(this.getAudioPlaybackTime());
+		this.setAudioPlaybackTime(mediaTimeBeforeChange);
 
 		const iterator = this.audioIteratorManager.getAudioBufferIterator();
 		if (!iterator) {
@@ -592,8 +594,9 @@ export class MediaPlayer {
 		unloopedTimeInSeconds: number,
 	): Promise<void> {
 		const previousRate = this.playbackRate;
+		const mediaTime = this.sharedAudioContext ? this.getAudioPlaybackTime() : 0;
 		this.playbackRate = rate;
-		this.updateAudioTimeAfterPlaybackRateChange();
+		this.updateAudioTimeAfterPlaybackRateChange(mediaTime);
 
 		if (previousRate !== rate) {
 			await this.seekTo(unloopedTimeInSeconds);
@@ -601,8 +604,9 @@ export class MediaPlayer {
 	}
 
 	public setGlobalPlaybackRate(rate: number): void {
+		const mediaTime = this.sharedAudioContext ? this.getAudioPlaybackTime() : 0;
 		this.globalPlaybackRate = rate;
-		this.updateAudioTimeAfterPlaybackRateChange();
+		this.updateAudioTimeAfterPlaybackRateChange(mediaTime);
 	}
 
 	public setFps(fps: number): void {
@@ -692,8 +696,15 @@ export class MediaPlayer {
 		}
 
 		const playbackRate = this.playbackRate * this.globalPlaybackRate;
-		this.audioSyncAnchor =
-			this.sharedAudioContext.currentTime - time / playbackRate;
+		const newAnchor = this.sharedAudioContext.currentTime - time / playbackRate;
+		const shift = Math.abs(newAnchor - this.audioSyncAnchor) * playbackRate;
+
+		// Skip small shifts to avoid audio glitches from frame-quantized re-anchoring
+		if (shift < 0.05) {
+			return;
+		}
+
+		this.audioSyncAnchor = newAnchor;
 	}
 
 	public setVideoFrameCallback(

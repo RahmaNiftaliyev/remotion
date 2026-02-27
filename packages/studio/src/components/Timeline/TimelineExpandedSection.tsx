@@ -48,7 +48,8 @@ const TimelineFieldRow: React.FC<{
 	readonly onDragValueChange: (key: string, value: unknown) => void;
 	readonly onDragEnd: () => void;
 	readonly propStatus: CanUpdateSequencePropStatus | null;
-}> = ({field, onSave, onDragValueChange, onDragEnd, propStatus}) => {
+	readonly effectiveValue: unknown;
+}> = ({field, onSave, onDragValueChange, onDragEnd, propStatus, effectiveValue}) => {
 	return (
 		<div style={{...fieldRow, height: field.rowHeight}}>
 			<div style={fieldLabelRow}>
@@ -61,6 +62,7 @@ const TimelineFieldRow: React.FC<{
 				onDragValueChange={onDragValueChange}
 				onDragEnd={onDragEnd}
 				canUpdate={propStatus?.canUpdate ?? false}
+				effectiveValue={effectiveValue}
 			/>
 		</div>
 	);
@@ -99,7 +101,7 @@ export const TimelineExpandedSection: React.FC<{
 		[sequence.controls],
 	);
 
-	const {setOverride, clearOverrides} = useContext(
+	const {setOverride, clearOverrides, codeValues, overrides} = useContext(
 		Internals.SequenceControlOverrideContext,
 	);
 
@@ -147,16 +149,28 @@ export const TimelineExpandedSection: React.FC<{
 	return (
 		<div style={{...expandedSectionBase, height: expandedHeight}}>
 			{schemaFields
-				? schemaFields.map((field) => (
-						<TimelineFieldRow
-							key={field.key}
-							field={field}
-							propStatus={propStatuses?.[field.key] ?? null}
-							onSave={onSave}
-							onDragValueChange={onDragValueChange}
-							onDragEnd={onDragEnd}
-						/>
-					))
+				? schemaFields.map((field) => {
+						const codeValue = codeValues[overrideId]?.[field.key];
+						const resolvedCodeValue =
+							codeValue !== undefined
+								? codeValue
+								: field.fieldSchema.default;
+						const dragOverride = overrides[overrideId]?.[field.key];
+						const effectiveValue =
+							dragOverride ?? resolvedCodeValue ?? field.currentValue;
+
+						return (
+							<TimelineFieldRow
+								key={field.key}
+								field={field}
+								propStatus={propStatuses?.[field.key] ?? null}
+								onSave={onSave}
+								onDragValueChange={onDragValueChange}
+								onDragEnd={onDragEnd}
+								effectiveValue={effectiveValue}
+							/>
+						);
+					})
 				: 'No schema'}
 		</div>
 	);

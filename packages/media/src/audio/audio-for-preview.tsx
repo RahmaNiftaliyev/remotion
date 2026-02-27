@@ -529,13 +529,13 @@ const audioSchema = {
 	},
 	playbackRate: {
 		type: 'number',
-		min: 0,
+		min: 0.1,
 		step: 0.01,
 		default: 1,
 		description: 'Playback Rate',
 	},
-	trimBefore: {type: 'number', min: 0, default: 0},
-	trimAfter: {type: 'number', min: 0, default: 0},
+	trimBefore: {type: 'number', min: 0, default: undefined},
+	trimAfter: {type: 'number', min: 0, default: undefined},
 	loop: {type: 'boolean', default: false, description: 'Loop'},
 } as const satisfies SequenceSchema;
 

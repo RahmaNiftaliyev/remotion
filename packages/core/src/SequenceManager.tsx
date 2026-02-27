@@ -39,6 +39,11 @@ export type SequenceControlOverrideState = {
 	overrides: Record<string, Record<string, unknown>>;
 	setOverride: (sequenceId: string, key: string, value: unknown) => void;
 	clearOverrides: (sequenceId: string) => void;
+	codeValues: Record<string, Record<string, unknown>>;
+	setCodeValues: (
+		sequenceId: string,
+		values: Record<string, unknown>,
+	) => void;
 };
 
 export const SequenceControlOverrideContext =
@@ -48,6 +53,10 @@ export const SequenceControlOverrideContext =
 			throw new Error('SequenceControlOverrideContext not initialized');
 		},
 		clearOverrides: () => {
+			throw new Error('SequenceControlOverrideContext not initialized');
+		},
+		codeValues: {},
+		setCodeValues: () => {
 			throw new Error('SequenceControlOverrideContext not initialized');
 		},
 	});
@@ -65,6 +74,9 @@ export const SequenceManagerProvider: React.FC<{
 	>({});
 	const controlOverridesRef = useRef(controlOverrides);
 	controlOverridesRef.current = controlOverrides;
+	const [codeValueOverrides, setCodeValueOverrides] = useState<
+		Record<string, Record<string, unknown>>
+	>({});
 
 	const setOverride = useCallback(
 		(sequenceId: string, key: string, value: unknown) => {
@@ -90,6 +102,16 @@ export const SequenceManagerProvider: React.FC<{
 			return next;
 		});
 	}, []);
+
+	const setCodeValues = useCallback(
+		(sequenceId: string, values: Record<string, unknown>) => {
+			setCodeValueOverrides((prev) => ({
+				...prev,
+				[sequenceId]: values,
+			}));
+		},
+		[],
+	);
 
 	const registerSequence = useCallback((seq: TSequence) => {
 		setSequences((seqs) => {
@@ -140,8 +162,10 @@ export const SequenceManagerProvider: React.FC<{
 			overrides: controlOverrides,
 			setOverride,
 			clearOverrides,
+			codeValues: codeValueOverrides,
+			setCodeValues,
 		};
-	}, [controlOverrides, setOverride, clearOverrides]);
+	}, [controlOverrides, setOverride, clearOverrides, codeValueOverrides, setCodeValues]);
 
 	return (
 		<SequenceManager.Provider value={sequenceContext}>

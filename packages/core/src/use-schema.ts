@@ -30,7 +30,7 @@ export const useSchema = <T extends Record<string, unknown>>(
 
 	// Intentional conditional hook call, useRemotionEnvironment is stable.
 	const [overrideId] = useState(() => String(Math.random()));
-	const {overrides} = useContext(SequenceControlOverrideContext);
+	const {overrides, codeValues} = useContext(SequenceControlOverrideContext);
 
 	return useMemo(() => {
 		if (schema === null || currentValue === null) {
@@ -40,8 +40,24 @@ export const useSchema = <T extends Record<string, unknown>>(
 			};
 		}
 
+		const codeValueOverrides = codeValues[overrideId] ?? {};
 		const overrideValues = overrides[overrideId] ?? {};
 		const merged = {...currentValue} as Record<string, unknown>;
+
+		// Apply code values over runtime values, falling back to schema default
+		for (const key of Object.keys(codeValueOverrides)) {
+			if (key in merged) {
+				const codeValue =
+					codeValueOverrides[key] !== undefined
+						? codeValueOverrides[key]
+						: schema[key]?.default;
+				if (codeValue !== undefined) {
+					merged[key] = codeValue;
+				}
+			}
+		}
+
+		// Apply drag overrides over code values
 		for (const key of Object.keys(overrideValues)) {
 			if (key in merged) {
 				merged[key] = overrideValues[key];
@@ -56,5 +72,5 @@ export const useSchema = <T extends Record<string, unknown>>(
 			},
 			values: merged as T,
 		};
-	}, [schema, currentValue, overrides, overrideId]);
+	}, [schema, currentValue, overrides, codeValues, overrideId]);
 };

@@ -150,9 +150,7 @@ export const useSequencePropsSubscription = (
 		};
 	}, [locationSource, locationLine, locationColumn, subscribeToEvent]);
 
-	const {setCodeValues} = useContext(
-		Internals.SequenceControlOverrideContext,
-	);
+	const {setCodeValues} = useContext(Internals.SequenceControlOverrideContext);
 	const overrideId = sequence.controls?.overrideId ?? null;
 
 	useEffect(() => {

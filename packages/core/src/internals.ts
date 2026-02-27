@@ -94,6 +94,11 @@ import {
 	SequenceManager,
 	SequenceVisibilityToggleContext,
 } from './SequenceManager.js';
+import type {ResolvedStackLocation} from './sequence-stack-traces.js';
+import {
+	SequenceStackTracesContext,
+	SequenceStackTracesUpdateContext,
+} from './sequence-stack-traces.js';
 import {setupEnvVariables} from './setup-env-variables.js';
 import * as TimelinePosition from './timeline-position-state.js';
 import {
@@ -181,6 +186,8 @@ export const Internals = {
 	CompositionSetters,
 	SequenceControlOverrideContext,
 	SequenceManager,
+	SequenceStackTracesContext,
+	SequenceStackTracesUpdateContext,
 	SequenceVisibilityToggleContext,
 	useSchema,
 	useSequenceControlOverride,
@@ -269,6 +276,7 @@ export const Internals = {
 
 export type {
 	CompositionManagerContext,
+	ResolvedStackLocation,
 	CompProps,
 	LoggingContextValue,
 	MediaVolumeContextValue,

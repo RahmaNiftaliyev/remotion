@@ -1,13 +1,6 @@
-import React, {
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, {useCallback, useContext, useMemo} from 'react';
 import type {TSequence} from 'remotion';
 import {Internals} from 'remotion';
-import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import {StudioServerConnectionCtx} from '../../helpers/client-id';
 import {TIMELINE_TRACK_SEPARATOR} from '../../helpers/colors';
 import {
@@ -18,7 +11,7 @@ import {ExpandedTracksContext} from '../ExpandedTracksProvider';
 import {TimelineExpandedSection} from './TimelineExpandedSection';
 import {TimelineLayerEye} from './TimelineLayerEye';
 import {TimelineStack} from './TimelineStack';
-import {getOriginalLocationFromStack} from './TimelineStack/get-stack';
+import {useResolvedStack} from './use-resolved-stack';
 
 const SPACING = 5;
 
@@ -60,23 +53,7 @@ export const TimelineListItem: React.FC<{
 	);
 	const {expandedTracks, toggleTrack} = useContext(ExpandedTracksContext);
 
-	const [originalLocation, setOriginalLocation] =
-		useState<OriginalPosition | null>(null);
-
-	useEffect(() => {
-		if (!sequence.stack) {
-			return;
-		}
-
-		getOriginalLocationFromStack(sequence.stack, 'sequence')
-			.then((frame) => {
-				setOriginalLocation(frame);
-			})
-			.catch((err) => {
-				// eslint-disable-next-line no-console
-				console.error('Could not get original location of Sequence', err);
-			});
-	}, [sequence.stack]);
+	const originalLocation = useResolvedStack(sequence.stack ?? null);
 
 	const isExpanded =
 		visualModeEnabled && (expandedTracks[sequence.id] ?? false);

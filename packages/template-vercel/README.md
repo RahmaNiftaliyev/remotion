@@ -50,9 +50,15 @@ Upgrade Remotion:
 npx remotion upgrade
 ```
 
+## Important considerations
+
+**No rate limiting or caching**: This template does not include rate limiting or caching. Any user with access to your deployment can trigger renders, which incur costs on your Vercel account. Before making your app publicly available, implement rate limiting and authentication, and set up [Vercel Spend Management](https://vercel.com/docs/accounts/spend-management) to control costs.
+
+**Renders are stored permanently**: Videos uploaded to Vercel Blob storage persist indefinitely and incur ongoing storage costs. Implement a cleanup strategy to delete old renders that are no longer needed.
+
 ## Deploy to Vercel
 
-The only requirement is to set up a Vercel Blob store and attach it to your project.  
+The only requirement is to set up a Vercel Blob store and attach it to your project.
 It is advisable to first deploy the template to Vercel so you have a project to attach the Blob store to.
 
 1. Go to your Vercel dashboard

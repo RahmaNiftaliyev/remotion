@@ -79,6 +79,8 @@ export const drawText = ({
 
 		const textShadows = parseTextShadow(textShadowValue);
 
+		const {strokeFirst} = parsePaintOrder(paintOrder);
+
 		for (const token of tokens) {
 			const measurements = contextToDraw.measureText(originalText);
 			const {fontBoundingBoxDescent, fontBoundingBoxAscent} = measurements;
@@ -107,8 +109,6 @@ export const drawText = ({
 			contextToDraw.shadowBlur = 0;
 			contextToDraw.shadowOffsetX = 0;
 			contextToDraw.shadowOffsetY = 0;
-
-			const {strokeFirst} = parsePaintOrder(paintOrder);
 
 			const drawFill = () => contextToDraw.fillText(token.text, x, y);
 			const drawStroke = () => {

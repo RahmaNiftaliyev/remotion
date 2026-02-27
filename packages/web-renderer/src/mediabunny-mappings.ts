@@ -183,7 +183,7 @@ export const getDefaultAudioCodecForContainer = (
 		case 'webm':
 			return 'opus';
 		case 'mkv':
-			return 'opus';
+			return 'aac';
 		case 'wav':
 			return 'pcm-s16';
 		case 'mp3':

@@ -283,10 +283,7 @@ export class MediaPlayer {
 				throw new Error(`should have asserted that the time is not null`);
 			}
 
-			this.setAudioPlaybackTime(
-				startTime,
-				this.playbackRate * this.globalPlaybackRate,
-			);
+			this.setAudioPlaybackTime(startTime);
 
 			if (audioTrack && this.sharedAudioContext) {
 				const canDecode = await audioTrack.canDecode();
@@ -404,10 +401,7 @@ export class MediaPlayer {
 			this.getAudioPlaybackTime() !== newTime;
 
 		if (shouldSeekAudio) {
-			this.setAudioPlaybackTime(
-				newTime,
-				this.playbackRate * this.globalPlaybackRate,
-			);
+			this.setAudioPlaybackTime(newTime);
 		}
 
 		await Promise.all([
@@ -443,10 +437,7 @@ export class MediaPlayer {
 			throw new Error(`should have asserted that the time is not null`);
 		}
 
-		this.setAudioPlaybackTime(
-			newTime,
-			this.playbackRate * this.globalPlaybackRate,
-		);
+		this.setAudioPlaybackTime(newTime);
 
 		if (this.audioIteratorManager) {
 			this.audioIteratorManager.resumeScheduledAudioChunks({
@@ -539,10 +530,7 @@ export class MediaPlayer {
 		this.audioIteratorManager?.destroyIterator();
 
 		if (newMediaTime !== null) {
-			this.setAudioPlaybackTime(
-				newMediaTime,
-				this.playbackRate * this.globalPlaybackRate,
-			);
+			this.setAudioPlaybackTime(newMediaTime);
 
 			if (!this.playing && this.videoIteratorManager) {
 				await this.seekToWithQueue(newMediaTime);
@@ -583,10 +571,7 @@ export class MediaPlayer {
 			return;
 		}
 
-		this.setAudioPlaybackTime(
-			this.getAudioPlaybackTime(),
-			this.playbackRate * this.globalPlaybackRate,
-		);
+		this.setAudioPlaybackTime(this.getAudioPlaybackTime());
 
 		const iterator = this.audioIteratorManager.getAudioBufferIterator();
 		if (!iterator) {
@@ -701,11 +686,12 @@ export class MediaPlayer {
 		});
 	}
 
-	private setAudioPlaybackTime(time: number, playbackRate: number): void {
+	private setAudioPlaybackTime(time: number): void {
 		if (!this.sharedAudioContext) {
 			return;
 		}
 
+		const playbackRate = this.playbackRate * this.globalPlaybackRate;
 		this.audioSyncAnchor =
 			this.sharedAudioContext.currentTime - time / playbackRate;
 	}

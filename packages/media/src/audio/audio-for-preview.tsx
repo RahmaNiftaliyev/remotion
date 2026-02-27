@@ -536,6 +536,7 @@ const audioSchema = {
 	},
 	trimBefore: {type: 'number', min: 0, default: 0},
 	trimAfter: {type: 'number', min: 0, default: 0},
+	loop: {type: 'boolean', default: false, description: 'Loop'},
 } as const satisfies SequenceSchema;
 
 export const AudioForPreview: React.FC<InnerAudioProps> = ({

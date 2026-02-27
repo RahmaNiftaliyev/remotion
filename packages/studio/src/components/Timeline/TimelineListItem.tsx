@@ -12,6 +12,7 @@ import {TimelineExpandedSection} from './TimelineExpandedSection';
 import {TimelineLayerEye} from './TimelineLayerEye';
 import {TimelineStack} from './TimelineStack';
 import {useResolvedStack} from './use-resolved-stack';
+import {useSequencePropsSubscription} from './use-sequence-props-subscription';
 
 const SPACING = 5;
 
@@ -54,6 +55,7 @@ export const TimelineListItem: React.FC<{
 	const {expandedTracks, toggleTrack} = useContext(ExpandedTracksContext);
 
 	const originalLocation = useResolvedStack(sequence.stack ?? null);
+	const propStatuses = useSequencePropsSubscription(sequence, originalLocation);
 
 	const isExpanded =
 		visualModeEnabled && (expandedTracks[sequence.id] ?? false);
@@ -151,6 +153,7 @@ export const TimelineListItem: React.FC<{
 				<TimelineExpandedSection
 					sequence={sequence}
 					originalLocation={originalLocation}
+					propStatuses={propStatuses}
 				/>
 			) : null}
 		</>

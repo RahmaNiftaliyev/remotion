@@ -3,6 +3,7 @@ import {Internals} from 'remotion';
 import type {DrawFn} from '../drawn-fn';
 import {applyTextTransform} from './apply-text-transform';
 import {findWords} from './find-line-breaks.text';
+import {parsePaintOrder} from './parse-paint-order';
 import {parseTextShadow} from './parse-text-shadow';
 
 export const drawText = ({
@@ -27,7 +28,10 @@ export const drawText = ({
 			letterSpacing,
 			textTransform,
 			webkitTextFillColor,
+			webkitTextStrokeWidth,
+			webkitTextStrokeColor,
 			textShadow: textShadowValue,
+			paintOrder,
 		} = computedStyle;
 		const isVertical = writingMode !== 'horizontal-tb';
 		if (isVertical) {
@@ -55,6 +59,13 @@ export const drawText = ({
 				: // -webkit-text-fill-color overrides color, and defaults to the value of `color`
 					webkitTextFillColor;
 		contextToDraw.letterSpacing = letterSpacing;
+
+		const strokeWidth = parseFloat(webkitTextStrokeWidth);
+		const hasStroke = strokeWidth > 0;
+		if (hasStroke) {
+			contextToDraw.strokeStyle = webkitTextStrokeColor;
+			contextToDraw.lineWidth = strokeWidth;
+		}
 
 		const isRTL = direction === 'rtl';
 		contextToDraw.textAlign = isRTL ? 'right' : 'left';
@@ -97,7 +108,22 @@ export const drawText = ({
 			contextToDraw.shadowOffsetX = 0;
 			contextToDraw.shadowOffsetY = 0;
 
-			contextToDraw.fillText(token.text, x, y);
+			const {strokeFirst} = parsePaintOrder(paintOrder);
+
+			const drawFill = () => contextToDraw.fillText(token.text, x, y);
+			const drawStroke = () => {
+				if (hasStroke) {
+					contextToDraw.strokeText(token.text, x, y);
+				}
+			};
+
+			if (strokeFirst) {
+				drawStroke();
+				drawFill();
+			} else {
+				drawFill();
+				drawStroke();
+			}
 		}
 
 		span.textContent = originalText;

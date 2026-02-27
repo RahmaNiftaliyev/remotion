@@ -306,11 +306,6 @@ export class MediaPlayer {
 					getIsLooping: () => this.loop,
 					getEndTime: () => this.getEndTime(),
 					getStartTime: () => this.getStartTime(),
-					updatePlaybackTime: (time: number) =>
-						this.setAudioPlaybackTime(
-							time,
-							this.playbackRate * this.globalPlaybackRate,
-						),
 					initialMuted,
 					drawDebugOverlay: this.drawDebugOverlay,
 				});
@@ -407,6 +402,13 @@ export class MediaPlayer {
 			this.audioIteratorManager &&
 			this.sharedAudioContext &&
 			this.getAudioPlaybackTime() !== newTime;
+
+		if (shouldSeekAudio) {
+			this.setAudioPlaybackTime(
+				newTime,
+				this.playbackRate * this.globalPlaybackRate,
+			);
+		}
 
 		await Promise.all([
 			this.videoIteratorManager?.seek({

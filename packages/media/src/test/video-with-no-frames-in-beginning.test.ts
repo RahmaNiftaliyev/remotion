@@ -93,7 +93,6 @@ test('same goes for audio', async () => {
 		getIsLooping: () => false,
 		getEndTime: () => Infinity,
 		getStartTime: () => 0,
-		updatePlaybackTime: () => {},
 		initialMuted: false,
 		drawDebugOverlay: () => {},
 	});

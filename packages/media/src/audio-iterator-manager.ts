@@ -18,7 +18,6 @@ export const audioIteratorManager = ({
 	getIsLooping,
 	getEndTime,
 	getStartTime,
-	updatePlaybackTime,
 	initialMuted,
 	drawDebugOverlay,
 }: {
@@ -29,7 +28,6 @@ export const audioIteratorManager = ({
 	getEndTime: () => number;
 	getStartTime: () => number;
 	initialMuted: boolean;
-	updatePlaybackTime: (time: number) => void;
 	drawDebugOverlay: () => void;
 }) => {
 	let muted = initialMuted;
@@ -161,7 +159,6 @@ export const audioIteratorManager = ({
 			return;
 		}
 
-		updatePlaybackTime(startFromSecond);
 		audioBufferIterator?.destroy();
 		using delayHandle = delayPlaybackHandleIfNotPremounting();
 		currentDelayHandle = delayHandle;

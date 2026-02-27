@@ -55,7 +55,7 @@ export const TimelineListItem: React.FC<{
 	const {expandedTracks, toggleTrack} = useContext(ExpandedTracksContext);
 
 	const originalLocation = useResolvedStack(sequence.stack ?? null);
-	const propStatuses = useSequencePropsSubscription(sequence, originalLocation);
+	useSequencePropsSubscription(sequence, originalLocation);
 
 	const isExpanded =
 		visualModeEnabled && (expandedTracks[sequence.id] ?? false);
@@ -153,7 +153,6 @@ export const TimelineListItem: React.FC<{
 				<TimelineExpandedSection
 					sequence={sequence}
 					originalLocation={originalLocation}
-					propStatuses={propStatuses}
 				/>
 			) : null}
 		</>

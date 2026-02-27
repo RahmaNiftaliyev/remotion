@@ -10,6 +10,7 @@ import {
 	getSchemaFields,
 } from '../../helpers/timeline-layout';
 import {callApi} from '../call-api';
+import {SequencePropStatusContext} from './SequencePropStatusContext';
 import {TimelineFieldValue} from './TimelineSchemaField';
 
 const expandedSectionBase: React.CSSProperties = {
@@ -68,8 +69,12 @@ const TimelineFieldRow: React.FC<{
 export const TimelineExpandedSection: React.FC<{
 	readonly sequence: TSequence;
 	readonly originalLocation: OriginalPosition | null;
-	readonly propStatuses: Record<string, CanUpdateSequencePropStatus> | null;
-}> = ({sequence, originalLocation, propStatuses}) => {
+}> = ({sequence, originalLocation}) => {
+	const overrideId = sequence.controls?.overrideId ?? sequence.id;
+	const {propStatuses: allPropStatuses} = useContext(
+		SequencePropStatusContext,
+	);
+	const propStatuses = allPropStatuses[overrideId] ?? null;
 	const schemaFields = useMemo(
 		() => getSchemaFields(sequence.controls),
 		[sequence.controls],
@@ -129,8 +134,6 @@ export const TimelineExpandedSection: React.FC<{
 		},
 		[propStatuses, validatedLocation, schemaFields],
 	);
-
-	const overrideId = sequence.controls?.overrideId ?? sequence.id;
 
 	const onDragValueChange = useCallback(
 		(key: string, value: unknown) => {

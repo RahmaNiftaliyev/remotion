@@ -2,22 +2,28 @@ import type {
 	CanUpdateSequencePropStatus,
 	EventSourceEvent,
 } from '@remotion/studio-shared';
-import {useContext, useEffect, useMemo, useRef, useState} from 'react';
-import {Internals} from 'remotion';
+import {useCallback, useContext, useEffect, useMemo, useRef} from 'react';
 import type {TSequence} from 'remotion';
 import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import {StudioServerConnectionCtx} from '../../helpers/client-id';
 import {getSchemaFields} from '../../helpers/timeline-layout';
 import {callApi} from '../call-api';
+import {SequencePropStatusContext} from './SequencePropStatusContext';
 
 export const useSequencePropsSubscription = (
 	sequence: TSequence,
 	originalLocation: OriginalPosition | null,
-): Record<string, CanUpdateSequencePropStatus> | null => {
-	const [propStatuses, setPropStatuses] = useState<Record<
-		string,
-		CanUpdateSequencePropStatus
-	> | null>(null);
+): void => {
+	const {setPropStatuses} = useContext(SequencePropStatusContext);
+	const overrideId = sequence.controls?.overrideId ?? null;
+
+	const setPropStatusesForSequence = useCallback(
+		(statuses: Record<string, CanUpdateSequencePropStatus> | null) => {
+			if (!overrideId) return;
+			setPropStatuses(overrideId, statuses);
+		},
+		[overrideId, setPropStatuses],
+	);
 
 	const {previewServerState: state, subscribeToEvent} = useContext(
 		StudioServerConnectionCtx,
@@ -69,7 +75,7 @@ export const useSequencePropsSubscription = (
 			locationColumn === null ||
 			!schemaKeysString
 		) {
-			setPropStatuses(null);
+			setPropStatusesForSequence(null);
 			return;
 		}
 
@@ -92,16 +98,17 @@ export const useSequencePropsSubscription = (
 				}
 
 				if (result.canUpdate) {
-					setPropStatuses(result.props);
+					setPropStatusesForSequence(result.props);
 				} else {
-					setPropStatuses(null);
+					setPropStatusesForSequence(null);
 				}
 			})
 			.catch(() => {
-				setPropStatuses(null);
+				setPropStatusesForSequence(null);
 			});
 
 		return () => {
+			setPropStatusesForSequence(null);
 			callApi('/api/unsubscribe-from-sequence-props', {
 				fileName: locationSource,
 				line: locationLine,
@@ -117,6 +124,7 @@ export const useSequencePropsSubscription = (
 		locationLine,
 		locationColumn,
 		schemaKeysString,
+		setPropStatusesForSequence,
 	]);
 
 	useEffect(() => {
@@ -138,9 +146,9 @@ export const useSequencePropsSubscription = (
 			}
 
 			if (event.result.canUpdate) {
-				setPropStatuses(event.result.props);
+				setPropStatusesForSequence(event.result.props);
 			} else {
-				setPropStatuses(null);
+				setPropStatusesForSequence(null);
 			}
 		};
 
@@ -148,7 +156,11 @@ export const useSequencePropsSubscription = (
 		return () => {
 			unsub();
 		};
-	}, [locationSource, locationLine, locationColumn, subscribeToEvent]);
-
-	return propStatuses;
+	}, [
+		locationSource,
+		locationLine,
+		locationColumn,
+		subscribeToEvent,
+		setPropStatusesForSequence,
+	]);
 };

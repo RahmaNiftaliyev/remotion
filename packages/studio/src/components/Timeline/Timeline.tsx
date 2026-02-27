@@ -17,6 +17,7 @@ import {
 	MAX_TIMELINE_TRACKS_NOTICE_HEIGHT,
 } from './MaxTimelineTracks';
 import {timelineVerticalScroll} from './timeline-refs';
+import {SequencePropStatusProvider} from './SequencePropStatusContext';
 import {TimelineDragHandler} from './TimelineDragHandler';
 import {TimelineInOutPointer} from './TimelineInOutPointer';
 import {TimelineList} from './TimelineList';
@@ -95,40 +96,42 @@ export const Timeline: React.FC = () => {
 	}, [hasBeenCut, shown]);
 
 	return (
-		<div
-			ref={timelineVerticalScroll}
-			style={container}
-			className={'css-reset ' + VERTICAL_SCROLLBAR_CLASSNAME}
-		>
-			<TimelineWidthProvider>
-				<div style={inner}>
-					<SplitterContainer
-						orientation="vertical"
-						defaultFlex={0.2}
-						id="names-to-timeline"
-						maxFlex={0.5}
-						minFlex={0.15}
-					>
-						<SplitterElement
-							type="flexer"
-							sticky={<TimelineTimePlaceholders />}
+		<SequencePropStatusProvider>
+			<div
+				ref={timelineVerticalScroll}
+				style={container}
+				className={'css-reset ' + VERTICAL_SCROLLBAR_CLASSNAME}
+			>
+				<TimelineWidthProvider>
+					<div style={inner}>
+						<SplitterContainer
+							orientation="vertical"
+							defaultFlex={0.2}
+							id="names-to-timeline"
+							maxFlex={0.5}
+							minFlex={0.15}
 						>
-							<TimelineList timeline={shown} />
-						</SplitterElement>
-						<SplitterHandle onCollapse={noop} allowToCollapse="none" />
-						<SplitterElement type="anti-flexer" sticky={null}>
-							<TimelineScrollable>
-								<TimelineTracks timeline={shown} hasBeenCut={hasBeenCut} />
-								<TimelineInOutPointer />
-								<TimelinePlayCursorSyncer />
-								<TimelineDragHandler />
-								<TimelineTimeIndicators />
-								<TimelineSlider />
-							</TimelineScrollable>
-						</SplitterElement>
-					</SplitterContainer>
-				</div>
-			</TimelineWidthProvider>
-		</div>
+							<SplitterElement
+								type="flexer"
+								sticky={<TimelineTimePlaceholders />}
+							>
+								<TimelineList timeline={shown} />
+							</SplitterElement>
+							<SplitterHandle onCollapse={noop} allowToCollapse="none" />
+							<SplitterElement type="anti-flexer" sticky={null}>
+								<TimelineScrollable>
+									<TimelineTracks timeline={shown} hasBeenCut={hasBeenCut} />
+									<TimelineInOutPointer />
+									<TimelinePlayCursorSyncer />
+									<TimelineDragHandler />
+									<TimelineTimeIndicators />
+									<TimelineSlider />
+								</TimelineScrollable>
+							</SplitterElement>
+						</SplitterContainer>
+					</div>
+				</TimelineWidthProvider>
+			</div>
+		</SequencePropStatusProvider>
 	);
 };

@@ -16,8 +16,8 @@ import {
 	MAX_TIMELINE_TRACKS,
 	MAX_TIMELINE_TRACKS_NOTICE_HEIGHT,
 } from './MaxTimelineTracks';
-import {timelineVerticalScroll} from './timeline-refs';
 import {SequencePropStatusProvider} from './SequencePropStatusContext';
+import {timelineVerticalScroll} from './timeline-refs';
 import {TimelineDragHandler} from './TimelineDragHandler';
 import {TimelineInOutPointer} from './TimelineInOutPointer';
 import {TimelineList} from './TimelineList';

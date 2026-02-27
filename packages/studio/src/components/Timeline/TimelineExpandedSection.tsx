@@ -71,9 +71,7 @@ export const TimelineExpandedSection: React.FC<{
 	readonly originalLocation: OriginalPosition | null;
 }> = ({sequence, originalLocation}) => {
 	const overrideId = sequence.controls?.overrideId ?? sequence.id;
-	const {propStatuses: allPropStatuses} = useContext(
-		SequencePropStatusContext,
-	);
+	const {propStatuses: allPropStatuses} = useContext(SequencePropStatusContext);
 	const propStatuses = allPropStatuses[overrideId] ?? null;
 	const schemaFields = useMemo(
 		() => getSchemaFields(sequence.controls),

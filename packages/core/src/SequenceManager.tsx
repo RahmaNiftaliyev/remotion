@@ -40,10 +40,7 @@ export type SequenceControlOverrideState = {
 	setOverride: (sequenceId: string, key: string, value: unknown) => void;
 	clearOverrides: (sequenceId: string) => void;
 	codeValues: Record<string, Record<string, unknown>>;
-	setCodeValues: (
-		sequenceId: string,
-		values: Record<string, unknown>,
-	) => void;
+	setCodeValues: (sequenceId: string, values: Record<string, unknown>) => void;
 };
 
 export const SequenceControlOverrideContext =
@@ -165,7 +162,13 @@ export const SequenceManagerProvider: React.FC<{
 			codeValues: codeValueOverrides,
 			setCodeValues,
 		};
-	}, [controlOverrides, setOverride, clearOverrides, codeValueOverrides, setCodeValues]);
+	}, [
+		controlOverrides,
+		setOverride,
+		clearOverrides,
+		codeValueOverrides,
+		setCodeValues,
+	]);
 
 	return (
 		<SequenceManager.Provider value={sequenceContext}>

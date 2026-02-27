@@ -49,7 +49,14 @@ const TimelineFieldRow: React.FC<{
 	readonly onDragEnd: () => void;
 	readonly propStatus: CanUpdateSequencePropStatus | null;
 	readonly effectiveValue: unknown;
-}> = ({field, onSave, onDragValueChange, onDragEnd, propStatus, effectiveValue}) => {
+}> = ({
+	field,
+	onSave,
+	onDragValueChange,
+	onDragEnd,
+	propStatus,
+	effectiveValue,
+}) => {
 	return (
 		<div style={{...fieldRow, height: field.rowHeight}}>
 			<div style={fieldLabelRow}>
@@ -152,9 +159,7 @@ export const TimelineExpandedSection: React.FC<{
 				? schemaFields.map((field) => {
 						const codeValue = codeValues[overrideId]?.[field.key];
 						const resolvedCodeValue =
-							codeValue !== undefined
-								? codeValue
-								: field.fieldSchema.default;
+							codeValue !== undefined ? codeValue : field.fieldSchema.default;
 						const dragOverride = overrides[overrideId]?.[field.key];
 						const effectiveValue =
 							dragOverride ?? resolvedCodeValue ?? field.currentValue;

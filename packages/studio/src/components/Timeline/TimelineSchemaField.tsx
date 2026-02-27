@@ -141,7 +141,15 @@ export const TimelineFieldValue: React.FC<{
 	readonly canUpdate: boolean;
 	readonly propStatus: CanUpdateSequencePropStatus | null;
 	readonly effectiveValue: unknown;
-}> = ({field, onSave, onDragValueChange, onDragEnd, propStatus, canUpdate, effectiveValue}) => {
+}> = ({
+	field,
+	onSave,
+	onDragValueChange,
+	onDragEnd,
+	propStatus,
+	canUpdate,
+	effectiveValue,
+}) => {
 	const wrapperStyle: React.CSSProperties | undefined =
 		canUpdate === null || canUpdate === false
 			? notEditableBackground

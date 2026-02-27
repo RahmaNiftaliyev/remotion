@@ -1,5 +1,11 @@
 import type {CanUpdateSequencePropStatus} from '@remotion/studio-shared';
-import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import {Internals} from 'remotion';
 
 type PropStatusMap = Record<
@@ -39,9 +45,7 @@ const extractCodeValues = (
 const CodeValueBridge: React.FC<{
 	readonly propStatuses: PropStatusMap;
 }> = ({propStatuses}) => {
-	const {setCodeValues} = useContext(
-		Internals.SequenceControlOverrideContext,
-	);
+	const {setCodeValues} = useContext(Internals.SequenceControlOverrideContext);
 
 	useEffect(() => {
 		for (const [overrideId, statuses] of Object.entries(propStatuses)) {

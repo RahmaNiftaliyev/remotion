@@ -5,7 +5,6 @@ import {
 	audioIteratorManager,
 	type AudioIteratorManager,
 } from './audio-iterator-manager';
-import {calculatePlaybackTime} from './calculate-playbacktime';
 import {drawPreviewOverlay} from './debug-overlay/preview-overlay';
 import type {DelayPlaybackIfNotPremounting} from './delay-playback-if-not-premounting';
 import {calculateEndTime, getTimeInSeconds} from './get-time-in-seconds';
@@ -41,9 +40,11 @@ export class MediaPlayer {
 	audioIteratorManager: AudioIteratorManager | null = null;
 	videoIteratorManager: VideoIteratorManager | null = null;
 
-	// this is the time difference between Web Audio timeline
-	// and media file timeline
-	private audioSyncAnchor: number = 0;
+	// The media time and AudioContext time at the point of last sync.
+	// Used to derive the current media time:
+	// mediaTime = anchorMediaTime + (ctx.currentTime - anchorContextTime) * playbackRate
+	private anchorMediaTime: number = 0;
+	private anchorContextTime: number = 0;
 
 	private playing = false;
 	private loop = false;
@@ -387,7 +388,7 @@ export class MediaPlayer {
 		await this.seekToWithQueue(newTime);
 	}
 
-	public async seekToDoNotCallDirectly(
+	private async seekToDoNotCallDirectly(
 		newTime: number,
 		nonce: Nonce,
 	): Promise<void> {
@@ -679,11 +680,12 @@ export class MediaPlayer {
 			throw new Error('Shared audio context not found');
 		}
 
-		return calculatePlaybackTime({
-			audioSyncAnchor: this.audioSyncAnchor,
-			currentTime: this.sharedAudioContext.currentTime,
-			playbackRate: this.playbackRate * this.globalPlaybackRate,
-		});
+		const elapsed =
+			this.sharedAudioContext.currentTime - this.anchorContextTime;
+		return (
+			this.anchorMediaTime +
+			elapsed * (this.playbackRate * this.globalPlaybackRate)
+		);
 	}
 
 	private setAudioPlaybackTime(time: number): void {
@@ -691,9 +693,8 @@ export class MediaPlayer {
 			return;
 		}
 
-		const playbackRate = this.playbackRate * this.globalPlaybackRate;
-		this.audioSyncAnchor =
-			this.sharedAudioContext.currentTime - time / playbackRate;
+		this.anchorMediaTime = time;
+		this.anchorContextTime = this.sharedAudioContext.currentTime;
 	}
 
 	public setVideoFrameCallback(
@@ -707,13 +708,11 @@ export class MediaPlayer {
 		if (this.context && this.canvas) {
 			drawPreviewOverlay({
 				context: this.context,
-				audioTime: this.sharedAudioContext?.currentTime ?? null,
+				mediaTime: this.sharedAudioContext ? this.getAudioPlaybackTime() : null,
 				audioContextState: this.sharedAudioContext?.state ?? null,
-				audioSyncAnchor: this.audioSyncAnchor,
 				audioIteratorManager: this.audioIteratorManager,
 				playing: this.playing,
 				videoIteratorManager: this.videoIteratorManager,
-				playbackRate: this.playbackRate * this.globalPlaybackRate,
 			});
 		}
 	};

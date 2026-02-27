@@ -53,10 +53,7 @@ export const useResolvedStack = (
 				})
 				.catch((err) => {
 					// eslint-disable-next-line no-console
-					console.error(
-						'Could not get original location of Sequence',
-						err,
-					);
+					console.error('Could not get original location of Sequence', err);
 				})
 				.finally(() => {
 					inFlight.delete(stack);

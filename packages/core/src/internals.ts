@@ -88,17 +88,17 @@ import type {
 	SequenceFieldSchema,
 	SequenceSchema,
 } from './sequence-field-schema.js';
+import type {ResolvedStackLocation} from './sequence-stack-traces.js';
+import {
+	SequenceStackTracesContext,
+	SequenceStackTracesUpdateContext,
+} from './sequence-stack-traces.js';
 import {SequenceContext} from './SequenceContext.js';
 import {
 	SequenceControlOverrideContext,
 	SequenceManager,
 	SequenceVisibilityToggleContext,
 } from './SequenceManager.js';
-import type {ResolvedStackLocation} from './sequence-stack-traces.js';
-import {
-	SequenceStackTracesContext,
-	SequenceStackTracesUpdateContext,
-} from './sequence-stack-traces.js';
 import {setupEnvVariables} from './setup-env-variables.js';
 import * as TimelinePosition from './timeline-position-state.js';
 import {

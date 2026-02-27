@@ -23,7 +23,7 @@ const prepare = async () => {
 		getIsLooping: () => false,
 		getEndTime: () => Infinity,
 		getStartTime: () => 0,
-		updatePlaybackTime: () => {},
+
 		initialMuted: false,
 		drawDebugOverlay: () => {},
 	});
@@ -204,7 +204,7 @@ test('should not schedule duplicate chunks with playbackRate=0.5', async () => {
 		getIsLooping: () => false,
 		getEndTime: () => Infinity,
 		getStartTime: () => 0,
-		updatePlaybackTime: () => {},
+
 		initialMuted: false,
 		drawDebugOverlay: () => {},
 	});
@@ -273,7 +273,6 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 		getIsLooping: () => false,
 		getEndTime: () => endTime,
 		getStartTime: () => 0,
-		updatePlaybackTime: () => {},
 		initialMuted: false,
 		drawDebugOverlay: () => {},
 	});

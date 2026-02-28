@@ -39,8 +39,12 @@ export type SequenceControlOverrideState = {
 	overrides: Record<string, Record<string, unknown>>;
 	setOverride: (sequenceId: string, key: string, value: unknown) => void;
 	clearOverrides: (sequenceId: string) => void;
+	propStatuses: Record<string, Record<string, unknown> | null>;
+	setPropStatuses: (
+		sequenceId: string,
+		values: Record<string, unknown> | null,
+	) => void;
 	codeValues: Record<string, Record<string, unknown>>;
-	setCodeValues: (sequenceId: string, values: Record<string, unknown>) => void;
 };
 
 export const SequenceControlOverrideContext =
@@ -52,10 +56,11 @@ export const SequenceControlOverrideContext =
 		clearOverrides: () => {
 			throw new Error('SequenceControlOverrideContext not initialized');
 		},
-		codeValues: {},
-		setCodeValues: () => {
+		propStatuses: {},
+		setPropStatuses: () => {
 			throw new Error('SequenceControlOverrideContext not initialized');
 		},
+		codeValues: {},
 	});
 
 export const SequenceManagerProvider: React.FC<{
@@ -71,8 +76,8 @@ export const SequenceManagerProvider: React.FC<{
 	>({});
 	const controlOverridesRef = useRef(controlOverrides);
 	controlOverridesRef.current = controlOverrides;
-	const [codeValueOverrides, setCodeValueOverrides] = useState<
-		Record<string, Record<string, unknown>>
+	const [propStatusMap, setPropStatusMapState] = useState<
+		Record<string, Record<string, unknown> | null>
 	>({});
 
 	const setOverride = useCallback(
@@ -100,15 +105,51 @@ export const SequenceManagerProvider: React.FC<{
 		});
 	}, []);
 
-	const setCodeValues = useCallback(
-		(sequenceId: string, values: Record<string, unknown>) => {
-			setCodeValueOverrides((prev) => ({
-				...prev,
-				[sequenceId]: values,
-			}));
+	const setPropStatuses = useCallback(
+		(sequenceId: string, values: Record<string, unknown> | null) => {
+			setPropStatusMapState((prev) => {
+				if (prev[sequenceId] === values) {
+					return prev;
+				}
+
+				if (values === null) {
+					if (!(sequenceId in prev)) {
+						return prev;
+					}
+
+					const next = {...prev};
+					delete next[sequenceId];
+					return next;
+				}
+
+				return {...prev, [sequenceId]: values};
+			});
 		},
 		[],
 	);
+
+	const codeValues = useMemo(() => {
+		const result: Record<string, Record<string, unknown>> = {};
+		for (const [id, statuses] of Object.entries(propStatusMap)) {
+			if (!statuses) continue;
+			const vals: Record<string, unknown> = {};
+			for (const [key, status] of Object.entries(statuses)) {
+				if (
+					status &&
+					typeof status === 'object' &&
+					'canUpdate' in status &&
+					(status as {canUpdate: boolean}).canUpdate &&
+					'codeValue' in status
+				) {
+					vals[key] = (status as {codeValue: unknown}).codeValue;
+				}
+			}
+
+			result[id] = vals;
+		}
+
+		return result;
+	}, [propStatusMap]);
 
 	const registerSequence = useCallback((seq: TSequence) => {
 		setSequences((seqs) => {
@@ -159,15 +200,17 @@ export const SequenceManagerProvider: React.FC<{
 			overrides: controlOverrides,
 			setOverride,
 			clearOverrides,
-			codeValues: codeValueOverrides,
-			setCodeValues,
+			propStatuses: propStatusMap,
+			setPropStatuses,
+			codeValues,
 		};
 	}, [
 		controlOverrides,
 		setOverride,
 		clearOverrides,
-		codeValueOverrides,
-		setCodeValues,
+		propStatusMap,
+		setPropStatuses,
+		codeValues,
 	]);
 
 	return (

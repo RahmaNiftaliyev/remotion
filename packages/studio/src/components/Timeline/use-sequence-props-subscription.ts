@@ -3,18 +3,20 @@ import type {
 	EventSourceEvent,
 } from '@remotion/studio-shared';
 import {useCallback, useContext, useEffect, useMemo, useRef} from 'react';
+import {Internals} from 'remotion';
 import type {TSequence} from 'remotion';
 import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import {StudioServerConnectionCtx} from '../../helpers/client-id';
 import {getSchemaFields} from '../../helpers/timeline-layout';
 import {callApi} from '../call-api';
-import {SequencePropStatusContext} from './SequencePropStatusContext';
 
 export const useSequencePropsSubscription = (
 	sequence: TSequence,
 	originalLocation: OriginalPosition | null,
 ): void => {
-	const {setPropStatuses} = useContext(SequencePropStatusContext);
+	const {setPropStatuses} = useContext(
+		Internals.SequenceControlOverrideContext,
+	);
 	const overrideId = sequence.controls?.overrideId ?? null;
 
 	const setPropStatusesForSequence = useCallback(

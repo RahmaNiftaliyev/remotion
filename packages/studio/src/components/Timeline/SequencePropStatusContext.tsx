@@ -1,11 +1,5 @@
 import type {CanUpdateSequencePropStatus} from '@remotion/studio-shared';
-import React, {
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {Internals} from 'remotion';
 
 type PropStatusMap = Record<
@@ -42,27 +36,11 @@ const extractCodeValues = (
 	return codeVals;
 };
 
-const CodeValueBridge: React.FC<{
-	readonly propStatuses: PropStatusMap;
-}> = ({propStatuses}) => {
-	const {setCodeValues} = useContext(Internals.SequenceControlOverrideContext);
-
-	useEffect(() => {
-		for (const [overrideId, statuses] of Object.entries(propStatuses)) {
-			if (statuses) {
-				const extracted = extractCodeValues(statuses);
-				setCodeValues(overrideId, extracted);
-			}
-		}
-	}, [propStatuses, setCodeValues]);
-
-	return null;
-};
-
 export const SequencePropStatusProvider: React.FC<{
 	readonly children: React.ReactNode;
 }> = ({children}) => {
 	const [propStatuses, setPropStatusesState] = useState<PropStatusMap>({});
+	const {setCodeValues} = useContext(Internals.SequenceControlOverrideContext);
 
 	const setPropStatuses = useCallback(
 		(
@@ -86,8 +64,12 @@ export const SequencePropStatusProvider: React.FC<{
 
 				return {...prev, [overrideId]: statuses};
 			});
+
+			if (statuses) {
+				setCodeValues(overrideId, extractCodeValues(statuses));
+			}
 		},
-		[],
+		[setCodeValues],
 	);
 
 	const value = useMemo(
@@ -97,7 +79,6 @@ export const SequencePropStatusProvider: React.FC<{
 
 	return (
 		<SequencePropStatusContext.Provider value={value}>
-			<CodeValueBridge propStatuses={propStatuses} />
 			{children}
 		</SequencePropStatusContext.Provider>
 	);

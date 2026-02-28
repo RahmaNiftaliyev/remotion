@@ -77,7 +77,7 @@ test(
 			throw new Error('Should not reach this');
 		} catch (err) {
 			expect((err as Error).message).toContain(
-				'the function was undefined',
+				'Incompatible site: When visiting',
 			);
 		}
 	},

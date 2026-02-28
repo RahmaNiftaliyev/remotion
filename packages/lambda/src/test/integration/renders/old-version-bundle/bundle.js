@@ -815,37 +815,34 @@
 										throw new Error(
 											'No path elements found in string '.concat(t),
 										);
-									return e.reduce(
-										function (t, e) {
-											var h = e.charAt(0),
-												r = h.toLowerCase(),
-												a = s(e.substr(1));
-											for (
-												'm' === r &&
-												a.length > 2 &&
-												(t.push([h].concat(n(a.splice(0, 2)))),
-												(r = 'l'),
-												(h = 'm' === h ? 'l' : 'L'));
-												a.length >= 0;
-											) {
-												if (a.length === i[r]) {
-													t.push([h].concat(n(a.splice(0, i[r]))));
-													break;
-												}
-												if (a.length < i[r])
-													throw new Error(
-														'Malformed path data: "'
-															.concat(h, '" must have ')
-															.concat(i[r], ' elements and has ')
-															.concat(a.length, ': ')
-															.concat(e),
-													);
+									return e.reduce(function (t, e) {
+										var h = e.charAt(0),
+											r = h.toLowerCase(),
+											a = s(e.substr(1));
+										for (
+											'm' === r &&
+											a.length > 2 &&
+											(t.push([h].concat(n(a.splice(0, 2)))),
+											(r = 'l'),
+											(h = 'm' === h ? 'l' : 'L'));
+											a.length >= 0;
+										) {
+											if (a.length === i[r]) {
 												t.push([h].concat(n(a.splice(0, i[r]))));
+												break;
 											}
-											return t;
-										},
-										[],
-									);
+											if (a.length < i[r])
+												throw new Error(
+													'Malformed path data: "'
+														.concat(h, '" must have ')
+														.concat(i[r], ' elements and has ')
+														.concat(a.length, ': ')
+														.concat(e),
+												);
+											t.push([h].concat(n(a.splice(0, i[r]))));
+										}
+										return t;
+									}, []);
 								})(e),
 								l = [0, 0],
 								c = [0, 0],
@@ -33118,12 +33115,9 @@ object-assign
 						),
 						(m.hash = u.length
 							? u
-									.reduce(
-										function (e, t) {
-											return (t.name || j(15), te(e, t.name));
-										},
-										5381,
-									)
+									.reduce(function (e, t) {
+										return (t.name || j(15), te(e, t.name));
+									}, 5381)
 									.toString()
 							: ''),
 						m

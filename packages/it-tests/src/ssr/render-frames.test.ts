@@ -10,10 +10,12 @@ import {
 	stitchFramesToVideo,
 } from '@remotion/renderer';
 
+const exampleBuild = path.join(__dirname, '..', '..', '..', 'example', 'build');
+
 test('Legacy SSR way of rendering videos should still work', async () => {
 	const puppeteerInstance = await openBrowser('chrome');
 	const compositions = await getCompositions(
-		'https://661808694cad562ef2f35be7--incomparable-dasik-a4482b.netlify.app/',
+		exampleBuild,
 		{
 			puppeteerInstance,
 			inputProps: {},
@@ -41,7 +43,7 @@ test('Legacy SSR way of rendering videos should still work', async () => {
 		inputProps: {},
 		onFrameUpdate: () => undefined,
 		serveUrl:
-			'https://661808694cad562ef2f35be7--incomparable-dasik-a4482b.netlify.app/',
+			exampleBuild,
 		concurrency: null,
 		frameRange: [0, 10],
 		outputDir: framesDir,

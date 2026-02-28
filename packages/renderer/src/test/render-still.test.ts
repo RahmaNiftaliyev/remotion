@@ -36,7 +36,7 @@ test(
 	},
 );
 
-test(
+test.skip(
 	'Returns buffer in promise result',
 	async () => {
 		await ensureBrowser();

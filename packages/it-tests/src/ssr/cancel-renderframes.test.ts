@@ -16,8 +16,7 @@ test('Should be able to cancel render', async () => {
 	try {
 		const {cancel, cancelSignal} = makeCancelSignal();
 		const val = renderFrames({
-			serveUrl:
-				exampleBuild,
+			serveUrl: exampleBuild,
 			composition: {
 				durationInFrames: 1000000,
 				fps: 30,

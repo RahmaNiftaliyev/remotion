@@ -17,13 +17,10 @@ beforeAll(async () => {
 
 test('Render video with browser instance open', async () => {
 	const puppeteerInstance = await openBrowser('chrome');
-	const compositions = await getCompositions(
-		exampleBuild,
-		{
-			puppeteerInstance,
-			inputProps: {},
-		},
-	);
+	const compositions = await getCompositions(exampleBuild, {
+		puppeteerInstance,
+		inputProps: {},
+	});
 
 	const reactSvg = compositions.find((c) => c.id === 'react-svg');
 
@@ -37,8 +34,7 @@ test('Render video with browser instance open', async () => {
 
 	const {buffer} = await renderStill({
 		output: outPath,
-		serveUrl:
-			exampleBuild,
+		serveUrl: exampleBuild,
 		composition: reactSvg,
 		puppeteerInstance,
 	});
@@ -47,9 +43,7 @@ test('Render video with browser instance open', async () => {
 });
 
 test('Render still with browser instance not open and legacy webpack config', async () => {
-	const compositions = await getCompositions(
-		exampleBuild,
-	);
+	const compositions = await getCompositions(exampleBuild);
 
 	const reactSvg = compositions.find((c) => c.id === 'react-svg');
 
@@ -63,8 +57,7 @@ test('Render still with browser instance not open and legacy webpack config', as
 
 	await renderStill({
 		output: outPath,
-		serveUrl:
-			exampleBuild,
+		serveUrl: exampleBuild,
 		composition: reactSvg,
 	});
 	expect(existsSync(outPath)).toBe(true);

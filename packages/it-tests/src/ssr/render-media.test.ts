@@ -10,13 +10,10 @@ test(
 	'Render video with browser instance open',
 	async () => {
 		const puppeteerInstance = await openBrowser('chrome');
-		const compositions = await getCompositions(
-			exampleBuild,
-			{
-				puppeteerInstance,
-				inputProps: {},
-			},
-		);
+		const compositions = await getCompositions(exampleBuild, {
+			puppeteerInstance,
+			inputProps: {},
+		});
 
 		const reactSvg = compositions.find((c) => c.id === 'react-svg');
 
@@ -31,8 +28,7 @@ test(
 		await renderMedia({
 			outputLocation: outPath,
 			codec: 'h264',
-			serveUrl:
-				exampleBuild,
+			serveUrl: exampleBuild,
 			composition: reactSvg,
 			frameRange: [0, 2],
 			puppeteerInstance,
@@ -46,9 +42,7 @@ test(
 );
 
 test('Render video with browser instance not open', async () => {
-	const compositions = await getCompositions(
-		exampleBuild,
-	);
+	const compositions = await getCompositions(exampleBuild);
 
 	const reactSvg = compositions.find((c) => c.id === 'react-svg');
 
@@ -63,8 +57,7 @@ test('Render video with browser instance not open', async () => {
 	await renderMedia({
 		outputLocation: outPath,
 		codec: 'h264',
-		serveUrl:
-			exampleBuild,
+		serveUrl: exampleBuild,
 		composition: reactSvg,
 		frameRange: [0, 2],
 		metadata: {Author: 'Lunar'},
@@ -84,8 +77,7 @@ test('should fail on invalid CRF', async () => {
 			outputLocation: outPath,
 			codec: 'h264',
 			logLevel: 'error',
-			serveUrl:
-				exampleBuild,
+			serveUrl: exampleBuild,
 			// @ts-expect-error
 			crf: 'wrong',
 			composition: {
@@ -116,9 +108,7 @@ test('should fail on invalid CRF', async () => {
 });
 
 test('Render video to a buffer', async () => {
-	const compositions = await getCompositions(
-		exampleBuild,
-	);
+	const compositions = await getCompositions(exampleBuild);
 
 	const reactSvg = compositions.find((c) => c.id === 'react-svg');
 
@@ -128,8 +118,7 @@ test('Render video to a buffer', async () => {
 
 	const {buffer, contentType} = await renderMedia({
 		codec: 'h264',
-		serveUrl:
-			exampleBuild,
+		serveUrl: exampleBuild,
 		composition: reactSvg,
 		frameRange: [0, 2],
 		logLevel: 'error',

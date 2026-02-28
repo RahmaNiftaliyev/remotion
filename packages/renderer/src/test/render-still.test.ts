@@ -28,8 +28,7 @@ test(
 				},
 				frame: 0,
 				output: '/file/output.png',
-				serveUrl:
-					exampleBuild,
+				serveUrl: exampleBuild,
 				verbose: false,
 			}),
 		).toThrow(/not be NaN, but is NaN/);
@@ -60,8 +59,7 @@ test(
 				defaultProResProfile: null,
 			},
 			frame: 0,
-			serveUrl:
-				exampleBuild,
+			serveUrl: exampleBuild,
 			verbose: false,
 		});
 		expect(buffer?.length).toBeGreaterThan(1000);
@@ -95,8 +93,7 @@ test(
 				},
 				frame: 200,
 				output: '/file/output.png',
-				serveUrl:
-					exampleBuild,
+				serveUrl: exampleBuild,
 				verbose: false,
 			}),
 		).toThrow(
@@ -131,8 +128,7 @@ test(
 				imageFormat: 'jjj',
 				frame: 200,
 				output: '/file/output.png',
-				serveUrl:
-					exampleBuild,
+				serveUrl: exampleBuild,
 			}),
 		).toThrow(/Image format should be one of: "png", "jpeg", "pdf", "webp"/);
 	},

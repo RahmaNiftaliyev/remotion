@@ -10,8 +10,7 @@ test('Cancelling after success should not throw error', async () => {
 	const outputLocation = 'out/render.mp4';
 	await renderMedia({
 		codec: 'h264',
-		serveUrl:
-			exampleBuild,
+		serveUrl: exampleBuild,
 		composition: {
 			durationInFrames: 4,
 			fps: 30,

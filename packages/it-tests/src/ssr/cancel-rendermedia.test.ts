@@ -9,8 +9,7 @@ test('Should be able to cancel render', async () => {
 		const {cancel, cancelSignal} = makeCancelSignal();
 		const val = renderMedia({
 			codec: 'h264',
-			serveUrl:
-				exampleBuild,
+			serveUrl: exampleBuild,
 			composition: {
 				durationInFrames: 1000000,
 				fps: 30,

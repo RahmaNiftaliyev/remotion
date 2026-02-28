@@ -23,6 +23,9 @@ export const shouldUseReactDomClient =
 
 export const getResolveConfig = () => ({
 	extensions: ['.ts', '.tsx', '.web.js', '.js', '.jsx', '.mjs', '.cjs'],
+	fallback: {
+		worker_threads: false as const,
+	},
 	alias: {
 		// Only one version of react
 		'react/jsx-runtime': require.resolve('react/jsx-runtime'),

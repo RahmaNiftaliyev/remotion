@@ -25,7 +25,6 @@ import type {
 } from './sequence-field-schema.js';
 import {Sequence} from './Sequence.js';
 import type {UseBufferState} from './use-buffer-state';
-import type {CanUpdateSequencePropStatus} from './use-schema.js';
 import type {VideoConfig} from './video-config.js';
 
 export type VideoConfigWithSerializedProps = Omit<
@@ -280,5 +279,3 @@ export type {
 	SequenceSchema,
 	UseBufferState,
 };
-
-export type {CanUpdateSequencePropStatus};

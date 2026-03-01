@@ -122,6 +122,7 @@ import {
 	useBasicMediaInTimeline,
 	useMediaInTimeline,
 } from './use-media-in-timeline.js';
+import type {CanUpdateSequencePropStatus} from './use-schema.js';
 import {useSchema} from './use-schema.js';
 import {useSequenceControlOverride} from './use-sequence-control-override.js';
 import {useUnsafeVideoConfig} from './use-unsafe-video-config.js';
@@ -290,4 +291,5 @@ export type {
 	TRenderAsset,
 	TSequence,
 	WatchRemotionStaticFilesPayload,
+	CanUpdateSequencePropStatus,
 };

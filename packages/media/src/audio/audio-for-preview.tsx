@@ -540,14 +540,14 @@ const audioSchema = {
 } as const satisfies SequenceSchema;
 
 export const AudioForPreview: React.FC<InnerAudioProps> = ({
-	loop,
+	loop: loopProp = false,
 	src,
 	logLevel,
 	muted,
 	name,
 	volume: volumeProp,
 	loopVolumeCurveBehavior,
-	playbackRate: playbackRateProp,
+	playbackRate: playbackRateProp = 1,
 	trimAfter: trimAfterProp,
 	trimBefore: trimBeforeProp,
 	showInTimeline,
@@ -564,17 +564,14 @@ export const AudioForPreview: React.FC<InnerAudioProps> = ({
 			playbackRate: playbackRateProp,
 			trimBefore: trimBeforeProp,
 			trimAfter: trimAfterProp,
-			loop,
+			loop: loopProp,
 		};
-	}, [volumeProp, playbackRateProp, trimBeforeProp, trimAfterProp, loop]);
+	}, [volumeProp, playbackRateProp, trimBeforeProp, trimAfterProp, loopProp]);
 
-	const {controls, values} = Internals.useSchema(audioSchema, schemaInput);
-
-	const volume = values.volume as typeof volumeProp;
-	const playbackRate = values.playbackRate as typeof playbackRateProp;
-	const trimBefore = values.trimBefore as typeof trimBeforeProp;
-	const trimAfter = values.trimAfter as typeof trimAfterProp;
-	const effectiveLoop = values.loop as typeof loop;
+	const {
+		controls,
+		values: {volume, playbackRate, trimBefore, trimAfter, loop},
+	} = Internals.useSchema(audioSchema, schemaInput);
 
 	const preloadedSrc = usePreload(src);
 
@@ -587,8 +584,8 @@ export const AudioForPreview: React.FC<InnerAudioProps> = ({
 		return (
 			getTimeInSeconds({
 				unloopedTimeInSeconds: currentTime,
-				playbackRate: playbackRate ?? 1,
-				loop: effectiveLoop ?? false,
+				playbackRate,
+				loop,
 				trimBefore,
 				trimAfter,
 				mediaDurationInSeconds: Infinity,
@@ -599,12 +596,12 @@ export const AudioForPreview: React.FC<InnerAudioProps> = ({
 		);
 	}, [
 		currentTime,
-		effectiveLoop,
 		playbackRate,
 		src,
 		trimAfter,
 		trimBefore,
 		videoConfig.fps,
+		loop,
 	]);
 
 	if (!showShow) {
@@ -615,12 +612,12 @@ export const AudioForPreview: React.FC<InnerAudioProps> = ({
 		<AudioForPreviewAssertedShowing
 			audioStreamIndex={audioStreamIndex ?? 0}
 			src={preloadedSrc}
-			playbackRate={playbackRate ?? 1}
+			playbackRate={playbackRate}
 			logLevel={logLevel ?? defaultLogLevel}
 			muted={muted ?? false}
 			volume={volume ?? 1}
 			loopVolumeCurveBehavior={loopVolumeCurveBehavior ?? 'repeat'}
-			loop={effectiveLoop ?? false}
+			loop={loop}
 			trimAfter={trimAfter}
 			trimBefore={trimBefore}
 			name={name}

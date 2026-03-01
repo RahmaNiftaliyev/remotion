@@ -597,15 +597,17 @@ const videoSchema = {
 } as const satisfies SequenceSchema;
 
 export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
-	const {controls, values} = Internals.useSchema(videoSchema, {
-		volume: props.volume,
-		playbackRate: props.playbackRate,
-		loop: props.loop,
-	});
-
-	const playbackRate = values.playbackRate as typeof props.playbackRate;
-	const loop = values.loop as typeof props.loop;
-	const volume = values.volume as typeof props.volume;
+	const schemaInput = useMemo(() => {
+		return {
+			volume: props.volume,
+			playbackRate: props.playbackRate,
+			loop: props.loop,
+		};
+	}, [props.volume, props.playbackRate, props.loop]);
+	const {
+		controls,
+		values: {loop, playbackRate, volume},
+	} = Internals.useSchema(videoSchema, schemaInput);
 
 	const frame = useCurrentFrame();
 	const videoConfig = useVideoConfig();

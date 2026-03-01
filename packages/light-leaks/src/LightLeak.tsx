@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import type {SequenceSchema} from 'remotion';
 import {
 	AbsoluteFill,
@@ -249,13 +249,17 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 	from: fromProp,
 	...sequenceProps
 }) => {
+	const schemaInput = useMemo(() => {
+		return {
+			seed: seedProp,
+			hueShift: hueShiftProp,
+		};
+	}, [seedProp, hueShiftProp]);
+
 	const {
 		controls,
 		values: {seed, hueShift},
-	} = Internals.useSchema(lightLeakSchema, {
-		seed: seedProp,
-		hueShift: hueShiftProp,
-	});
+	} = Internals.useSchema(lightLeakSchema, schemaInput);
 
 	const {durationInFrames: videoDuration} = useVideoConfig();
 	const resolvedDuration = durationInFrames ?? videoDuration;

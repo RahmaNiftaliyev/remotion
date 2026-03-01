@@ -54,7 +54,6 @@ export const TimelineFieldRow: React.FC<{
 		runtimeValue: field.currentValue,
 		dragOverrideValue,
 		defaultValue: field.fieldSchema.default,
-		fallbackToDefaultValue: true,
 	});
 
 	const onSave = useCallback(

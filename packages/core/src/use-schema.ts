@@ -94,7 +94,6 @@ export const useSchema = <
 				runtimeValue: currentValue[key as keyof SchemaKeysRecord<S>] as unknown,
 				dragOverrideValue: overrideValues[key],
 				defaultValue: schema[key]?.default,
-				fallbackToDefaultValue: false,
 			});
 		}
 

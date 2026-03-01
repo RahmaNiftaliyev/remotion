@@ -3,6 +3,21 @@ import {stringifyDefaultProps, type EnumPath} from '@remotion/studio-shared';
 import type {ExpressionKind} from 'ast-types/lib/gen/kinds';
 import * as recast from 'recast';
 import {parseAst, serializeAst} from './parse-ast';
+import {updateNestedProp} from './update-nested-prop';
+
+const b = recast.types.builders;
+
+const parseValueExpression = (
+	value: unknown,
+	enumPaths: EnumPath[],
+): ExpressionKind => {
+	return (
+		(
+			parseAst(`a = ${stringifyDefaultProps({props: value, enumPaths})}`)
+				.program.body[0] as unknown as ExpressionStatement
+		).expression as AssignmentExpression
+	).right as ExpressionKind;
+};
 
 export const updateSequenceProps = ({
 	input,
@@ -27,11 +42,30 @@ export const updateSequenceProps = ({
 		defaultValue !== null &&
 		JSON.stringify(value) === JSON.stringify(defaultValue);
 
+	const dotIndex = key.indexOf('.');
+	const isNested = dotIndex !== -1;
+	const parentKey = isNested ? key.slice(0, dotIndex) : key;
+	const childKey = isNested ? key.slice(dotIndex + 1) : '';
+
 	recast.types.visit(ast, {
 		visitJSXOpeningElement(path) {
 			const {node} = path;
 
 			if (!node.loc || node.loc.start.line !== targetLine) {
+				return this.traverse(path);
+			}
+
+			if (isNested) {
+				oldValueString = updateNestedProp({
+					node,
+					parentKey,
+					childKey,
+					value,
+					enumPaths,
+					defaultValue,
+					isDefault,
+				});
+				found = true;
 				return this.traverse(path);
 			}
 
@@ -75,23 +109,13 @@ export const updateSequenceProps = ({
 				return this.traverse(path);
 			}
 
-			const parsed = (
-				(
-					parseAst(`a = ${stringifyDefaultProps({props: value, enumPaths})}`)
-						.program.body[0] as unknown as ExpressionStatement
-				).expression as AssignmentExpression
-			).right as ExpressionKind;
+			const parsed = parseValueExpression(value, enumPaths);
 
 			const newValue =
-				value === true
-					? null
-					: recast.types.builders.jsxExpressionContainer(parsed);
+				value === true ? null : b.jsxExpressionContainer(parsed);
 
 			if (!attr || attr.type === 'JSXSpreadAttribute') {
-				const newAttr = recast.types.builders.jsxAttribute(
-					recast.types.builders.jsxIdentifier(key),
-					newValue,
-				);
+				const newAttr = b.jsxAttribute(b.jsxIdentifier(key), newValue);
 
 				if (!node.attributes) {
 					node.attributes = [];

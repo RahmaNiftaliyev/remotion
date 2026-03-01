@@ -240,6 +240,14 @@ const lightLeakSchema = {
 		default: 0,
 		description: 'Hue Shift',
 	},
+	'style.opacity': {
+		type: 'number',
+		min: 0,
+		max: 1,
+		step: 0.01,
+		default: 1,
+		description: 'Opacity',
+	},
 } as const satisfies SequenceSchema;
 
 export const LightLeak: React.FC<LightLeakProps> = ({
@@ -249,16 +257,21 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 	from: fromProp,
 	...sequenceProps
 }) => {
+	const styleProp = (sequenceProps as {style?: React.CSSProperties}).style;
+	const opacityProp =
+		typeof styleProp?.opacity === 'number' ? styleProp.opacity : 1;
+
 	const schemaInput = useMemo(() => {
 		return {
 			seed: seedProp,
 			hueShift: hueShiftProp,
+			'style.opacity': opacityProp,
 		};
-	}, [seedProp, hueShiftProp]);
+	}, [seedProp, hueShiftProp, opacityProp]);
 
 	const {
 		controls,
-		values: {seed, hueShift},
+		values: {seed, hueShift, 'style.opacity': opacity},
 	} = Internals.useSchema(lightLeakSchema, schemaInput);
 
 	const {durationInFrames: videoDuration} = useVideoConfig();
@@ -287,6 +300,7 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 			name="<LightLeak>"
 			controls={controls}
 			{...sequenceProps}
+			style={{...styleProp, opacity: opacity as number}}
 		>
 			<LightLeakCanvas seed={seed} hueShift={hueShift} />
 		</Sequence>

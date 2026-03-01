@@ -215,3 +215,214 @@ test('updateSequenceProps should throw for non-existent line', () => {
 		}),
 	).toThrow('Could not find a JSX element at the specified line to update');
 });
+
+// --- Nested prop (dotted key) tests ---
+
+const nestedInput = `import React from 'react';
+import {AbsoluteFill} from 'remotion';
+
+export const Example: React.FC = () => {
+	return (
+		<AbsoluteFill>
+			<div style={{opacity: 0.5, scale: 2}} />
+			<div />
+		</AbsoluteFill>
+	);
+};
+`;
+
+test('updateSequenceProps should update a nested style property', () => {
+	const {output, oldValueString} = updateSequenceProps({
+		input: nestedInput,
+		targetLine: 7,
+		key: 'style.opacity',
+		value: 0.8,
+		enumPaths: [],
+		defaultValue: null,
+	});
+
+	expect(oldValueString).toBe('0.5');
+	expect(output).toContain('opacity: 0.8');
+	expect(output).toContain('scale: 2');
+});
+
+test('updateSequenceProps should add a nested property to existing object', () => {
+	const {output, oldValueString} = updateSequenceProps({
+		input: nestedInput,
+		targetLine: 7,
+		key: 'style.rotate',
+		value: 45,
+		enumPaths: [],
+		defaultValue: null,
+	});
+
+	expect(oldValueString).toBe('');
+	expect(output).toContain('rotate: 45');
+	// Existing properties should be preserved
+	expect(output).toContain('opacity: 0.5');
+	expect(output).toContain('scale: 2');
+});
+
+test('updateSequenceProps should create style attribute when it does not exist', () => {
+	const {output, oldValueString} = updateSequenceProps({
+		input: nestedInput,
+		targetLine: 8,
+		key: 'style.opacity',
+		value: 0.3,
+		enumPaths: [],
+		defaultValue: null,
+	});
+
+	expect(oldValueString).toBe('');
+	expect(output).toContain('style={{');
+	expect(output).toContain('opacity: 0.3');
+});
+
+test('updateSequenceProps should remove nested property when value equals default', () => {
+	const {output, oldValueString} = updateSequenceProps({
+		input: nestedInput,
+		targetLine: 7,
+		key: 'style.opacity',
+		value: 1,
+		enumPaths: [],
+		defaultValue: 1,
+	});
+
+	expect(oldValueString).toBe('0.5');
+	expect(output).not.toContain('opacity');
+	// Other properties should remain
+	expect(output).toContain('scale: 2');
+});
+
+test('updateSequenceProps should remove entire style attribute when object becomes empty', () => {
+	// First remove scale, leaving only opacity
+	const singlePropInput = `import React from 'react';
+
+export const Example: React.FC = () => {
+	return <div style={{opacity: 0.5}} />;
+};
+`;
+
+	const {output, oldValueString} = updateSequenceProps({
+		input: singlePropInput,
+		targetLine: 4,
+		key: 'style.opacity',
+		value: 1,
+		enumPaths: [],
+		defaultValue: 1,
+	});
+
+	expect(oldValueString).toBe('0.5');
+	expect(output).not.toContain('style');
+});
+
+test('updateSequenceProps should report default as oldValueString for missing nested property', () => {
+	const {oldValueString} = updateSequenceProps({
+		input: nestedInput,
+		targetLine: 8,
+		key: 'style.opacity',
+		value: 0.5,
+		enumPaths: [],
+		defaultValue: 1,
+	});
+
+	expect(oldValueString).toBe('1');
+});
+
+// --- computeSequencePropsStatus nested prop tests ---
+
+test('computeSequencePropsStatus should detect static nested props', () => {
+	const result = computeSequencePropsStatus({
+		fileName: path.join(__dirname, 'snapshots', 'nested-props.txt'),
+		line: 7,
+		keys: ['style.opacity', 'style.scale'],
+		remotionRoot: '/',
+	});
+
+	expect(result.canUpdate).toBe(true);
+	if (!result.canUpdate) throw new Error('Expected canUpdate to be true');
+
+	expect(result.props['style.opacity']).toEqual({
+		canUpdate: true,
+		codeValue: 0.5,
+	});
+	expect(result.props['style.scale']).toEqual({
+		canUpdate: true,
+		codeValue: 2,
+	});
+});
+
+test('computeSequencePropsStatus should flag computed nested props', () => {
+	const result = computeSequencePropsStatus({
+		fileName: path.join(__dirname, 'snapshots', 'nested-props.txt'),
+		line: 8,
+		keys: ['style.opacity', 'style.scale'],
+		remotionRoot: '/',
+	});
+
+	expect(result.canUpdate).toBe(true);
+	if (!result.canUpdate) throw new Error('Expected canUpdate to be true');
+
+	// opacity uses getOpacity() — computed
+	expect(result.props['style.opacity']).toEqual({
+		canUpdate: false,
+		reason: 'computed',
+	});
+	// scale is static
+	expect(result.props['style.scale']).toEqual({
+		canUpdate: true,
+		codeValue: 2,
+	});
+});
+
+test('computeSequencePropsStatus should flag computed when parent is not an object', () => {
+	const result = computeSequencePropsStatus({
+		fileName: path.join(__dirname, 'snapshots', 'nested-props.txt'),
+		line: 9,
+		keys: ['style.opacity'],
+		remotionRoot: '/',
+	});
+
+	expect(result.canUpdate).toBe(true);
+	if (!result.canUpdate) throw new Error('Expected canUpdate to be true');
+
+	// style={dynamicStyles} — entire parent is computed
+	expect(result.props['style.opacity']).toEqual({
+		canUpdate: false,
+		reason: 'computed',
+	});
+});
+
+test('computeSequencePropsStatus should report unset nested props as undefined', () => {
+	const result = computeSequencePropsStatus({
+		fileName: path.join(__dirname, 'snapshots', 'nested-props.txt'),
+		line: 7,
+		keys: ['style.rotate'],
+		remotionRoot: '/',
+	});
+
+	expect(result.canUpdate).toBe(true);
+	if (!result.canUpdate) throw new Error('Expected canUpdate to be true');
+
+	expect(result.props['style.rotate']).toEqual({
+		canUpdate: true,
+		codeValue: undefined,
+	});
+});
+
+test('computeSequencePropsStatus should report unset when parent attribute missing', () => {
+	const result = computeSequencePropsStatus({
+		fileName: path.join(__dirname, 'snapshots', 'nested-props.txt'),
+		line: 10,
+		keys: ['style.opacity'],
+		remotionRoot: '/',
+	});
+
+	expect(result.canUpdate).toBe(true);
+	if (!result.canUpdate) throw new Error('Expected canUpdate to be true');
+
+	expect(result.props['style.opacity']).toEqual({
+		canUpdate: true,
+		codeValue: undefined,
+	});
+});

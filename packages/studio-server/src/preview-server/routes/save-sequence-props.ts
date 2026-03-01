@@ -13,7 +13,7 @@ import {suppressHmrForFile} from '../hmr-suppression';
 export const saveSequencePropsHandler: ApiHandler<
 	SaveSequencePropsRequest,
 	SaveSequencePropsResponse
-> = async ({
+> = ({
 	input: {fileName, line, column, key, value, enumPaths, defaultValue},
 	remotionRoot,
 	logLevel,
@@ -53,13 +53,13 @@ export const saveSequencePropsHandler: ApiHandler<
 			),
 		);
 
-		return {
+		return Promise.resolve({
 			success: true,
-		};
+		} as const);
 	} catch (err) {
-		return {
+		return Promise.resolve({
 			success: false,
 			reason: (err as Error).message,
-		};
+		} as const);
 	}
 };

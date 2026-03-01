@@ -39,8 +39,20 @@ export const useSchema = <T extends Record<string, unknown>>(
 		SequenceControlOverrideContext,
 	);
 
-	return useMemo(() => {
+	const controls = useMemo(() => {
 		if (schema === null || currentValue === null) {
+			return undefined;
+		}
+
+		return {
+			schema,
+			currentValue,
+			overrideId,
+		};
+	}, [schema, currentValue, overrideId]);
+
+	return useMemo(() => {
+		if (controls === undefined || currentValue === null) {
 			return {
 				controls: undefined,
 				values: (currentValue ?? {}) as T,
@@ -74,12 +86,8 @@ export const useSchema = <T extends Record<string, unknown>>(
 		}
 
 		return {
-			controls: {
-				schema,
-				currentValue,
-				overrideId,
-			},
+			controls,
 			values: merged as T,
 		};
-	}, [schema, currentValue, overrides, overrideId, propStatuses]);
+	}, [controls, currentValue, overrideId, overrides, propStatuses]);
 };

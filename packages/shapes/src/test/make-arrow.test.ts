@@ -100,3 +100,35 @@ test('Should throw if headLength > length', () => {
 		}),
 	).toThrow('"headLength" must be less than or equal to "length"');
 });
+
+test('Should be able to make an arrow with cornerRadius', () => {
+	const arrow = makeArrow({
+		length: 200,
+		headWidth: 80,
+		headLength: 80,
+		shaftWidth: 40,
+		cornerRadius: 10,
+	});
+
+	expect(arrow.width).toEqual(200);
+	expect(arrow.height).toEqual(80);
+	expect(arrow.transformOrigin).toEqual('100 40');
+	expect(arrow.path).toBeTruthy();
+	expect(arrow.instructions).toEqual(expect.any(Array));
+});
+
+test('Should be able to make an arrow with edgeRoundness', () => {
+	const arrow = makeArrow({
+		length: 200,
+		headWidth: 80,
+		headLength: 80,
+		shaftWidth: 40,
+		edgeRoundness: 0.5,
+	});
+
+	expect(arrow.width).toEqual(200);
+	expect(arrow.height).toEqual(80);
+	expect(arrow.transformOrigin).toEqual('100 40');
+	expect(arrow.path).toBeTruthy();
+	expect(arrow.instructions).toEqual(expect.any(Array));
+});

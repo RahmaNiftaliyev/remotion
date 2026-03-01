@@ -58,6 +58,12 @@ export const shapeComponents: ShapeComponent[] = [
 				type: '"left" | "right" | "up" | "down"',
 				description: 'The direction the arrow points. Default right.',
 			},
+			{
+				name: 'edgeRoundness',
+				type: 'number | null',
+				description:
+					'Allows to modify the shape by rounding the edges using bezier curves. Default null.',
+			},
 		],
 	},
 	{

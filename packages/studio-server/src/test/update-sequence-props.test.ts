@@ -100,8 +100,8 @@ export const LightLeakExample: React.FC = () => {
 };
 `;
 
-test('updateSequenceProps should update a number value', () => {
-	const {output, oldValueString} = updateSequenceProps({
+test('updateSequenceProps should update a number value', async () => {
+	const {output, oldValueString} = await updateSequenceProps({
 		input: lightLeakInput,
 		targetLine: 8,
 		key: 'hueShift',
@@ -116,8 +116,8 @@ test('updateSequenceProps should update a number value', () => {
 	expect(output.split('\n')[8]).toContain('hueShift={30}');
 });
 
-test('updateSequenceProps should update durationInFrames', () => {
-	const {output, oldValueString} = updateSequenceProps({
+test('updateSequenceProps should update durationInFrames', async () => {
+	const {output, oldValueString} = await updateSequenceProps({
 		input: lightLeakInput,
 		targetLine: 9,
 		key: 'durationInFrames',
@@ -132,8 +132,8 @@ test('updateSequenceProps should update durationInFrames', () => {
 	expect(output.split('\n')[7]).toContain('durationInFrames={60}');
 });
 
-test('updateSequenceProps should add a new attribute', () => {
-	const {output, oldValueString} = updateSequenceProps({
+test('updateSequenceProps should add a new attribute', async () => {
+	const {output, oldValueString} = await updateSequenceProps({
 		input: lightLeakInput,
 		targetLine: 9,
 		key: 'speed',
@@ -146,8 +146,8 @@ test('updateSequenceProps should add a new attribute', () => {
 	expect(output.split('\n')[8]).toContain('speed={2}');
 });
 
-test('updateSequenceProps should remove attribute when value equals default', () => {
-	const {output, oldValueString} = updateSequenceProps({
+test('updateSequenceProps should remove attribute when value equals default', async () => {
+	const {output, oldValueString} = await updateSequenceProps({
 		input: lightLeakInput,
 		targetLine: 9,
 		key: 'hueShift',
@@ -162,8 +162,8 @@ test('updateSequenceProps should remove attribute when value equals default', ()
 	expect(output.split('\n')[7]).toContain('hueShift={30}');
 });
 
-test('updateSequenceProps should set boolean true as shorthand', () => {
-	const {output} = updateSequenceProps({
+test('updateSequenceProps should set boolean true as shorthand', async () => {
+	const {output} = await updateSequenceProps({
 		input: lightLeakInput,
 		targetLine: 8,
 		key: 'loop',
@@ -177,8 +177,8 @@ test('updateSequenceProps should set boolean true as shorthand', () => {
 	expect(output.split('\n')[7]).not.toContain('loop={true}');
 });
 
-test('updateSequenceProps should report oldValueString for computed expressions', () => {
-	const {oldValueString} = updateSequenceProps({
+test('updateSequenceProps should report oldValueString for computed expressions', async () => {
+	const {oldValueString} = await updateSequenceProps({
 		input: lightLeakInput,
 		targetLine: 8,
 		key: 'seed',
@@ -190,8 +190,8 @@ test('updateSequenceProps should report oldValueString for computed expressions'
 	expect(oldValueString).toBe('1 + 2');
 });
 
-test('updateSequenceProps should report default as oldValueString for missing attribute', () => {
-	const {oldValueString} = updateSequenceProps({
+test('updateSequenceProps should report default as oldValueString for missing attribute', async () => {
+	const {oldValueString} = await updateSequenceProps({
 		input: lightLeakInput,
 		targetLine: 8,
 		key: 'speed',
@@ -203,8 +203,8 @@ test('updateSequenceProps should report default as oldValueString for missing at
 	expect(oldValueString).toBe('1');
 });
 
-test('updateSequenceProps should throw for non-existent line', () => {
-	expect(() =>
+test('updateSequenceProps should throw for non-existent line', async () => {
+	await expect(
 		updateSequenceProps({
 			input: lightLeakInput,
 			targetLine: 999,
@@ -213,7 +213,9 @@ test('updateSequenceProps should throw for non-existent line', () => {
 			enumPaths: [],
 			defaultValue: null,
 		}),
-	).toThrow('Could not find a JSX element at the specified line to update');
+	).rejects.toThrow(
+		'Could not find a JSX element at the specified line to update',
+	);
 });
 
 // --- Nested prop (dotted key) tests ---
@@ -231,8 +233,8 @@ export const Example: React.FC = () => {
 };
 `;
 
-test('updateSequenceProps should update a nested style property', () => {
-	const {output, oldValueString} = updateSequenceProps({
+test('updateSequenceProps should update a nested style property', async () => {
+	const {output, oldValueString} = await updateSequenceProps({
 		input: nestedInput,
 		targetLine: 7,
 		key: 'style.opacity',
@@ -246,8 +248,8 @@ test('updateSequenceProps should update a nested style property', () => {
 	expect(output).toContain('scale: 2');
 });
 
-test('updateSequenceProps should add a nested property to existing object', () => {
-	const {output, oldValueString} = updateSequenceProps({
+test('updateSequenceProps should add a nested property to existing object', async () => {
+	const {output, oldValueString} = await updateSequenceProps({
 		input: nestedInput,
 		targetLine: 7,
 		key: 'style.rotate',
@@ -263,8 +265,8 @@ test('updateSequenceProps should add a nested property to existing object', () =
 	expect(output).toContain('scale: 2');
 });
 
-test('updateSequenceProps should create style attribute when it does not exist', () => {
-	const {output, oldValueString} = updateSequenceProps({
+test('updateSequenceProps should create style attribute when it does not exist', async () => {
+	const {output, oldValueString} = await updateSequenceProps({
 		input: nestedInput,
 		targetLine: 8,
 		key: 'style.opacity',
@@ -278,8 +280,8 @@ test('updateSequenceProps should create style attribute when it does not exist',
 	expect(output).toContain('opacity: 0.3');
 });
 
-test('updateSequenceProps should remove nested property when value equals default', () => {
-	const {output, oldValueString} = updateSequenceProps({
+test('updateSequenceProps should remove nested property when value equals default', async () => {
+	const {output, oldValueString} = await updateSequenceProps({
 		input: nestedInput,
 		targetLine: 7,
 		key: 'style.opacity',
@@ -294,7 +296,7 @@ test('updateSequenceProps should remove nested property when value equals defaul
 	expect(output).toContain('scale: 2');
 });
 
-test('updateSequenceProps should remove entire style attribute when object becomes empty', () => {
+test('updateSequenceProps should remove entire style attribute when object becomes empty', async () => {
 	// First remove scale, leaving only opacity
 	const singlePropInput = `import React from 'react';
 
@@ -303,7 +305,7 @@ export const Example: React.FC = () => {
 };
 `;
 
-	const {output, oldValueString} = updateSequenceProps({
+	const {output, oldValueString} = await updateSequenceProps({
 		input: singlePropInput,
 		targetLine: 4,
 		key: 'style.opacity',
@@ -316,8 +318,8 @@ export const Example: React.FC = () => {
 	expect(output).not.toContain('style');
 });
 
-test('updateSequenceProps should report default as oldValueString for missing nested property', () => {
-	const {oldValueString} = updateSequenceProps({
+test('updateSequenceProps should report default as oldValueString for missing nested property', async () => {
+	const {oldValueString} = await updateSequenceProps({
 		input: nestedInput,
 		targetLine: 8,
 		key: 'style.opacity',

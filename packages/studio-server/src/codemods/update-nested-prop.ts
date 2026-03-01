@@ -7,7 +7,7 @@ import {parseAst} from './parse-ast';
 
 const b = recast.types.builders;
 
-const parseValueExpression = (
+export const parseValueExpression = (
 	value: unknown,
 	enumPaths: EnumPath[],
 ): ExpressionKind => {
@@ -205,7 +205,7 @@ export const updateNestedProp = ({
 		node.attributes = [];
 	}
 
-	const attributes = node.attributes;
+	const {attributes} = node;
 	const {attrIndex, attr} = findJsxAttribute(attributes, parentKey);
 
 	const oldValueString = getOldValueString({attr, childKey, defaultValue});

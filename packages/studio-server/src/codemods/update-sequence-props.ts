@@ -1,23 +1,9 @@
-import type {AssignmentExpression, ExpressionStatement} from '@babel/types';
-import {stringifyDefaultProps, type EnumPath} from '@remotion/studio-shared';
-import type {ExpressionKind} from 'ast-types/lib/gen/kinds';
+import type {EnumPath} from '@remotion/studio-shared';
 import * as recast from 'recast';
 import {parseAst, serializeAst} from './parse-ast';
-import {updateNestedProp} from './update-nested-prop';
+import {parseValueExpression, updateNestedProp} from './update-nested-prop';
 
 const b = recast.types.builders;
-
-const parseValueExpression = (
-	value: unknown,
-	enumPaths: EnumPath[],
-): ExpressionKind => {
-	return (
-		(
-			parseAst(`a = ${stringifyDefaultProps({props: value, enumPaths})}`)
-				.program.body[0] as unknown as ExpressionStatement
-		).expression as AssignmentExpression
-	).right as ExpressionKind;
-};
 
 export const updateSequenceProps = async ({
 	input,

@@ -27,7 +27,7 @@ export const saveSequencePropsHandler: ApiHandler<
 
 		const fileContents = readFileSync(absolutePath, 'utf-8');
 
-		const {output, oldValueString} = await updateSequenceProps({
+		const {output, oldValueString} = updateSequenceProps({
 			input: fileContents,
 			targetLine: line,
 			key,

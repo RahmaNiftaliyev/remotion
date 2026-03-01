@@ -243,6 +243,14 @@ const lightLeakSchema = {
 		default: 0,
 		description: 'Hue Shift',
 	},
+	'style.scale': {
+		type: 'number',
+		min: 0.05,
+		max: 100,
+		step: 0.01,
+		default: 1,
+		description: 'Scale',
+	},
 	'style.opacity': {
 		type: 'number',
 		min: 0,
@@ -261,20 +269,28 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 	style,
 	...sequenceProps
 }) => {
-	const opacityProp = style?.opacity ?? 1;
-
+	const opacityProp = style?.opacity;
+	const scaleProp = style?.scale;
 	const schemaInput = useMemo(() => {
 		return {
 			seed: seedProp,
 			hueShift: hueShiftProp,
 			'style.opacity': opacityProp,
+			'style.scale': scaleProp,
 		};
-	}, [seedProp, hueShiftProp, opacityProp]);
+	}, [seedProp, hueShiftProp, opacityProp, scaleProp]);
 
 	const {
 		controls,
-		values: {seed, hueShift, 'style.opacity': opacity},
+		values: {
+			seed,
+			hueShift,
+			'style.opacity': opacity,
+			'style.scale': scale,
+			..._rest
+		},
 	} = Internals.useSchema(lightLeakSchema, schemaInput);
+	_rest satisfies Record<string, never>;
 
 	const {durationInFrames: videoDuration} = useVideoConfig();
 	const resolvedDuration = durationInFrames ?? videoDuration;
@@ -300,8 +316,9 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 		return {
 			...style,
 			opacity,
+			scale,
 		};
-	}, [style, opacity]);
+	}, [style, opacity, scale]);
 
 	return (
 		<Sequence

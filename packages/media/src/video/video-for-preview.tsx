@@ -594,7 +594,7 @@ const videoSchema = {
 		description: 'Playback Rate',
 	},
 	trimBefore: {type: 'number', min: 0, default: undefined},
-	trimAfter: {type: 'number', min: 0, default: undefined},
+	trimAfter: {type: 'number', min: 1, default: undefined},
 	loop: {type: 'boolean', default: false, description: 'Loop'},
 } as const satisfies SequenceSchema;
 
@@ -624,8 +624,7 @@ export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
 		schemaInput,
 	);
 
-	const volume =
-		schemaInput !== null ? (values.volume as number) : props.volume;
+	const volume = schemaInput !== null ? values.volume : props.volume;
 	const playbackRate =
 		schemaInput !== null ? (values.playbackRate as number) : props.playbackRate;
 	const trimBefore =
@@ -674,7 +673,7 @@ export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
 	return (
 		<VideoForPreviewAssertedShowing
 			{...props}
-			volume={volume}
+			volume={volume ?? 1}
 			playbackRate={playbackRate}
 			loop={effectiveLoop}
 			trimBefore={trimBefore}

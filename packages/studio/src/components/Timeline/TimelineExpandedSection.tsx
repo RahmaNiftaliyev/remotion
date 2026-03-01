@@ -1,15 +1,15 @@
-import React, {useCallback, useContext, useMemo} from 'react';
-import {Internals} from 'remotion';
-import type {TSequence, CanUpdateSequencePropStatus} from 'remotion';
-import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
+import React, {useMemo} from 'react';
+import type {TSequence} from 'remotion';
+import type {
+	CodePosition,
+	OriginalPosition,
+} from '../../error-overlay/react-overlay/utils/get-source-map';
 import {TIMELINE_TRACK_SEPARATOR} from '../../helpers/colors';
-import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
 import {
 	getExpandedTrackHeight,
 	getSchemaFields,
 } from '../../helpers/timeline-layout';
-import {callApi} from '../call-api';
-import {TimelineFieldValue} from './TimelineSchemaField';
+import {TimelineFieldRow} from './TimelineFieldRow';
 
 const expandedSectionBase: React.CSSProperties = {
 	color: 'white',
@@ -22,57 +22,6 @@ const expandedSectionBase: React.CSSProperties = {
 	borderBottom: `1px solid ${TIMELINE_TRACK_SEPARATOR}`,
 };
 
-const fieldRow: React.CSSProperties = {
-	display: 'flex',
-	alignItems: 'center',
-	gap: 8,
-};
-
-const fieldName: React.CSSProperties = {
-	fontSize: 12,
-};
-
-const fieldLabelRow: React.CSSProperties = {
-	flex: 1,
-	display: 'flex',
-	flexDirection: 'row',
-	alignItems: 'center',
-	gap: 6,
-};
-
-const TimelineFieldRow: React.FC<{
-	readonly field: SchemaFieldInfo;
-	readonly onSave: (key: string, value: unknown) => Promise<void>;
-	readonly onDragValueChange: (key: string, value: unknown) => void;
-	readonly onDragEnd: () => void;
-	readonly propStatus: CanUpdateSequencePropStatus | null;
-	readonly effectiveValue: unknown;
-}> = ({
-	field,
-	onSave,
-	onDragValueChange,
-	onDragEnd,
-	propStatus,
-	effectiveValue,
-}) => {
-	return (
-		<div style={{...fieldRow, height: field.rowHeight}}>
-			<div style={fieldLabelRow}>
-				<span style={fieldName}>{field.description ?? field.key}</span>
-			</div>
-			<TimelineFieldValue
-				field={field}
-				propStatus={propStatus}
-				onSave={onSave}
-				onDragValueChange={onDragValueChange}
-				onDragEnd={onDragEnd}
-				canUpdate={propStatus?.canUpdate ?? false}
-				effectiveValue={effectiveValue}
-			/>
-		</div>
-	);
-};
-
 export const TimelineExpandedSection: React.FC<{
 	readonly sequence: TSequence;
 	readonly originalLocation: OriginalPosition | null;
@@ -83,7 +32,7 @@ export const TimelineExpandedSection: React.FC<{
 		[sequence.controls],
 	);
 
-	const validatedLocation = useMemo(() => {
+	const validatedLocation: CodePosition | null = useMemo(() => {
 		if (
 			!originalLocation ||
 			!originalLocation.source ||
@@ -104,58 +53,6 @@ export const TimelineExpandedSection: React.FC<{
 		[sequence.controls],
 	);
 
-	const {
-		setDragOverrides: setOverride,
-		clearDragOverrides,
-		dragOverrides: overrides,
-		propStatuses: allPropStatuses,
-	} = useContext(Internals.SequenceControlOverrideContext);
-	const propStatuses = (allPropStatuses[overrideId] ?? null) as Record<
-		string,
-		CanUpdateSequencePropStatus
-	> | null;
-
-	const onSave = useCallback(
-		(key: string, value: unknown): Promise<void> => {
-			if (!propStatuses || !validatedLocation) {
-				return Promise.reject(new Error('Cannot save'));
-			}
-
-			const status = propStatuses[key];
-			if (!status || !status.canUpdate) {
-				return Promise.reject(new Error('Cannot save'));
-			}
-
-			const field = schemaFields?.find((f) => f.key === key);
-			const defaultValue =
-				field && field.fieldSchema.default !== undefined
-					? JSON.stringify(field.fieldSchema.default)
-					: null;
-
-			return callApi('/api/save-sequence-props', {
-				fileName: validatedLocation.source,
-				line: validatedLocation.line,
-				column: validatedLocation.column,
-				key,
-				value: JSON.stringify(value),
-				enumPaths: [],
-				defaultValue,
-			}).then(() => undefined);
-		},
-		[propStatuses, validatedLocation, schemaFields],
-	);
-
-	const onDragValueChange = useCallback(
-		(key: string, value: unknown) => {
-			setOverride(overrideId, key, value);
-		},
-		[setOverride, overrideId],
-	);
-
-	const onDragEnd = useCallback(() => {
-		clearDragOverrides(overrideId);
-	}, [clearDragOverrides, overrideId]);
-
 	const style = useMemo(() => {
 		return {
 			...expandedSectionBase,
@@ -163,31 +60,16 @@ export const TimelineExpandedSection: React.FC<{
 		};
 	}, [expandedHeight]);
 
-	const dragOverrideValues = useMemo(() => {
-		return overrides[overrideId] ?? {};
-	}, [overrides, overrideId]);
-
 	return (
 		<div style={style}>
 			{schemaFields
 				? schemaFields.map((field) => {
-						const dragOverrideValue = dragOverrideValues[field.key];
-						const codeValue = propStatuses?.[field.key] ?? null;
-						const effectiveValue = Internals.getEffectiveVisualModeValue({
-							codeValue,
-							runtimeValue: field.currentValue,
-							dragOverrideValue,
-						});
-
 						return (
 							<TimelineFieldRow
 								key={field.key}
 								field={field}
-								propStatus={codeValue}
-								onSave={onSave}
-								onDragValueChange={onDragValueChange}
-								onDragEnd={onDragEnd}
-								effectiveValue={effectiveValue}
+								overrideId={overrideId}
+								validatedLocation={validatedLocation}
 							/>
 						);
 					})

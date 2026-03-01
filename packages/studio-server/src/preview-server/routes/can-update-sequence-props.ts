@@ -11,11 +11,10 @@ import type {
 } from '@babel/types';
 import type {CanUpdateSequencePropsResponse} from '@remotion/studio-shared';
 import * as recast from 'recast';
+import type {CanUpdateSequencePropStatus} from 'remotion';
 import {parseAst} from '../../codemods/parse-ast';
 
-type CanUpdatePropStatus =
-	| {canUpdate: true; codeValue: unknown}
-	| {canUpdate: false; reason: 'computed'};
+type CanUpdatePropStatus = CanUpdateSequencePropStatus;
 
 export const isStaticValue = (node: Expression): boolean => {
 	switch (node.type) {

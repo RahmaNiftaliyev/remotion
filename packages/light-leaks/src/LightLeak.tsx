@@ -7,17 +7,20 @@ import {
 	useCurrentFrame,
 	useDelayRender,
 	useVideoConfig,
+	type AbsoluteFillLayout,
+	type LayoutAndStyle,
 	type SequenceProps,
 } from 'remotion';
 
 export type LightLeakProps = Omit<
 	SequenceProps,
-	'children' | 'layout' | 'durationInFrames'
-> & {
-	readonly durationInFrames?: number;
-	readonly seed?: number;
-	readonly hueShift?: number;
-};
+	'children' | 'durationInFrames' | keyof LayoutAndStyle
+> &
+	Omit<AbsoluteFillLayout, 'layout'> & {
+		readonly durationInFrames?: number;
+		readonly seed?: number;
+		readonly hueShift?: number;
+	};
 
 const VERTEX_SHADER = `
 attribute vec2 position;
@@ -255,11 +258,11 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 	hueShift: hueShiftProp = 0,
 	durationInFrames,
 	from: fromProp,
+	style,
 	...sequenceProps
 }) => {
-	const styleProp = (sequenceProps as {style?: React.CSSProperties}).style;
 	const opacityProp =
-		typeof styleProp?.opacity === 'number' ? styleProp.opacity : 1;
+		typeof style?.opacity === 'number' ? style.opacity : 1;
 
 	const schemaInput = useMemo(() => {
 		return {
@@ -294,13 +297,20 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 		);
 	}
 
+	const mergedStyle = useMemo(() => {
+		return {
+			...style,
+			opacity: opacity as number,
+		};
+	}, [style, opacity]);
+
 	return (
 		<Sequence
 			durationInFrames={resolvedDuration}
 			name="<LightLeak>"
 			controls={controls}
 			{...sequenceProps}
-			style={{...styleProp, opacity: opacity as number}}
+			style={mergedStyle}
 		>
 			<LightLeakCanvas seed={seed} hueShift={hueShift} />
 		</Sequence>

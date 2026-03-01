@@ -299,7 +299,7 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 	const mergedStyle = useMemo(() => {
 		return {
 			...style,
-			opacity: opacity as number,
+			opacity,
 		};
 	}, [style, opacity]);
 

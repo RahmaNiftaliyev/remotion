@@ -1,9 +1,6 @@
-import type {
-	CanUpdateSequencePropStatus,
-	EventSourceEvent,
-} from '@remotion/studio-shared';
+import type {EventSourceEvent} from '@remotion/studio-shared';
 import {useCallback, useContext, useEffect, useMemo, useRef} from 'react';
-import {Internals} from 'remotion';
+import {Internals, type CanUpdateSequencePropStatus} from 'remotion';
 import type {TSequence} from 'remotion';
 import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import {StudioServerConnectionCtx} from '../../helpers/client-id';

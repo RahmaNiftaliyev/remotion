@@ -5,6 +5,7 @@ import {
 	SequenceStackTracesContext,
 	SequenceStackTracesUpdateContext,
 } from './sequence-stack-traces.js';
+import type {CanUpdateSequencePropStatus} from './use-schema.js';
 
 export type SequenceManagerContext = {
 	registerSequence: (seq: TSequence) => void;
@@ -36,31 +37,29 @@ export const SequenceVisibilityToggleContext =
 	});
 
 export type SequenceControlOverrideState = {
-	overrides: Record<string, Record<string, unknown>>;
-	setOverride: (sequenceId: string, key: string, value: unknown) => void;
-	clearOverrides: (sequenceId: string) => void;
-	propStatuses: Record<string, Record<string, unknown> | null>;
+	dragOverrides: Record<string, Record<string, unknown>>;
+	setDragOverrides: (sequenceId: string, key: string, value: unknown) => void;
+	clearDragOverrides: (sequenceId: string) => void;
+	propStatuses: Record<string, Record<string, CanUpdateSequencePropStatus>>;
 	setPropStatuses: (
 		sequenceId: string,
-		values: Record<string, unknown> | null,
+		values: Record<string, CanUpdateSequencePropStatus> | null,
 	) => void;
-	codeValues: Record<string, Record<string, unknown>>;
 };
 
 export const SequenceControlOverrideContext =
 	React.createContext<SequenceControlOverrideState>({
-		overrides: {},
-		setOverride: () => {
+		dragOverrides: {},
+		setDragOverrides: () => {
 			throw new Error('SequenceControlOverrideContext not initialized');
 		},
-		clearOverrides: () => {
+		clearDragOverrides: () => {
 			throw new Error('SequenceControlOverrideContext not initialized');
 		},
 		propStatuses: {},
 		setPropStatuses: () => {
 			throw new Error('SequenceControlOverrideContext not initialized');
 		},
-		codeValues: {},
 	});
 
 export const SequenceManagerProvider: React.FC<{
@@ -71,16 +70,16 @@ export const SequenceManagerProvider: React.FC<{
 	const [resolvedStacks, setResolvedStacks] = useState<
 		Record<string, ResolvedStackLocation | null>
 	>({});
-	const [controlOverrides, setControlOverrides] = useState<
+	const [dragOverrides, setControlOverrides] = useState<
 		Record<string, Record<string, unknown>>
 	>({});
-	const controlOverridesRef = useRef(controlOverrides);
-	controlOverridesRef.current = controlOverrides;
-	const [propStatusMap, setPropStatusMapState] = useState<
-		Record<string, Record<string, unknown> | null>
+	const controlOverridesRef = useRef(dragOverrides);
+	controlOverridesRef.current = dragOverrides;
+	const [propStatuses, setPropStatusMapState] = useState<
+		Record<string, Record<string, CanUpdateSequencePropStatus>>
 	>({});
 
-	const setOverride = useCallback(
+	const setDragOverrides = useCallback(
 		(sequenceId: string, key: string, value: unknown) => {
 			setControlOverrides((prev) => ({
 				...prev,
@@ -93,7 +92,7 @@ export const SequenceManagerProvider: React.FC<{
 		[],
 	);
 
-	const clearOverrides = useCallback((sequenceId: string) => {
+	const clearDragOverrides = useCallback((sequenceId: string) => {
 		setControlOverrides((prev) => {
 			if (!prev[sequenceId]) {
 				return prev;
@@ -106,7 +105,10 @@ export const SequenceManagerProvider: React.FC<{
 	}, []);
 
 	const setPropStatuses = useCallback(
-		(sequenceId: string, values: Record<string, unknown> | null) => {
+		(
+			sequenceId: string,
+			values: Record<string, CanUpdateSequencePropStatus> | null,
+		) => {
 			setPropStatusMapState((prev) => {
 				if (prev[sequenceId] === values) {
 					return prev;
@@ -130,7 +132,7 @@ export const SequenceManagerProvider: React.FC<{
 
 	const codeValues = useMemo(() => {
 		const result: Record<string, Record<string, unknown>> = {};
-		for (const [id, statuses] of Object.entries(propStatusMap)) {
+		for (const [id, statuses] of Object.entries(propStatuses)) {
 			if (!statuses) continue;
 			const vals: Record<string, unknown> = {};
 			for (const [key, status] of Object.entries(statuses)) {
@@ -149,7 +151,7 @@ export const SequenceManagerProvider: React.FC<{
 		}
 
 		return result;
-	}, [propStatusMap]);
+	}, [propStatuses]);
 
 	const registerSequence = useCallback((seq: TSequence) => {
 		setSequences((seqs) => {
@@ -197,18 +199,18 @@ export const SequenceManagerProvider: React.FC<{
 
 	const overrideContext: SequenceControlOverrideState = useMemo(() => {
 		return {
-			overrides: controlOverrides,
-			setOverride,
-			clearOverrides,
-			propStatuses: propStatusMap,
+			dragOverrides,
+			setDragOverrides,
+			clearDragOverrides,
+			propStatuses,
 			setPropStatuses,
 			codeValues,
 		};
 	}, [
-		controlOverrides,
-		setOverride,
-		clearOverrides,
-		propStatusMap,
+		dragOverrides,
+		setDragOverrides,
+		clearDragOverrides,
+		propStatuses,
 		setPropStatuses,
 		codeValues,
 	]);

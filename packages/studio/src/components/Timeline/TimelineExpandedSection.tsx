@@ -1,7 +1,6 @@
-import type {CanUpdateSequencePropStatus} from '@remotion/studio-shared';
 import React, {useCallback, useContext, useMemo} from 'react';
 import {Internals} from 'remotion';
-import type {TSequence} from 'remotion';
+import type {TSequence, CanUpdateSequencePropStatus} from 'remotion';
 import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import {TIMELINE_TRACK_SEPARATOR} from '../../helpers/colors';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
@@ -106,10 +105,9 @@ export const TimelineExpandedSection: React.FC<{
 	);
 
 	const {
-		setOverride,
-		clearOverrides,
-		codeValues,
-		overrides,
+		setDragOverrides: setOverride,
+		clearDragOverrides,
+		dragOverrides: overrides,
 		propStatuses: allPropStatuses,
 	} = useContext(Internals.SequenceControlOverrideContext);
 	const propStatuses = (allPropStatuses[overrideId] ?? null) as Record<
@@ -155,25 +153,37 @@ export const TimelineExpandedSection: React.FC<{
 	);
 
 	const onDragEnd = useCallback(() => {
-		clearOverrides(overrideId);
-	}, [clearOverrides, overrideId]);
+		clearDragOverrides(overrideId);
+	}, [clearDragOverrides, overrideId]);
+
+	const style = useMemo(() => {
+		return {
+			...expandedSectionBase,
+			height: expandedHeight,
+		};
+	}, [expandedHeight]);
+
+	const dragOverrideValues = useMemo(() => {
+		return overrides[overrideId] ?? {};
+	}, [overrides, overrideId]);
 
 	return (
-		<div style={{...expandedSectionBase, height: expandedHeight}}>
+		<div style={style}>
 			{schemaFields
 				? schemaFields.map((field) => {
-						const codeValue = codeValues[overrideId]?.[field.key];
-						const resolvedCodeValue =
-							codeValue !== undefined ? codeValue : field.fieldSchema.default;
-						const dragOverride = overrides[overrideId]?.[field.key];
-						const effectiveValue =
-							dragOverride ?? resolvedCodeValue ?? field.currentValue;
+						const dragOverrideValue = dragOverrideValues[field.key];
+						const codeValue = propStatuses?.[field.key] ?? null;
+						const effectiveValue = Internals.getEffectiveVisualModeValue({
+							codeValue,
+							runtimeValue: field.currentValue,
+							dragOverrideValue,
+						});
 
 						return (
 							<TimelineFieldRow
 								key={field.key}
 								field={field}
-								propStatus={propStatuses?.[field.key] ?? null}
+								propStatus={codeValue}
 								onSave={onSave}
 								onDragValueChange={onDragValueChange}
 								onDragEnd={onDragEnd}

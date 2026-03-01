@@ -6,7 +6,7 @@ export const useSequenceControlOverride = (
 	key: string,
 ): unknown | undefined => {
 	const seqContext = useContext(SequenceContext);
-	const {overrides} = useContext(SequenceControlOverrideContext);
+	const {dragOverrides: overrides} = useContext(SequenceControlOverrideContext);
 	if (!seqContext) {
 		return undefined;
 	}

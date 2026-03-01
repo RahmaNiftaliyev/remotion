@@ -1,5 +1,5 @@
-import type {CanUpdateSequencePropStatus} from '@remotion/studio-shared';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
+import type {CanUpdateSequencePropStatus} from 'remotion';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
 import {Checkbox} from '../Checkbox';
 import {InputDragger} from '../NewComposition/InputDragger';

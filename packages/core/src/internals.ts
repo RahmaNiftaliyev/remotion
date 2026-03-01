@@ -45,6 +45,7 @@ import {
 	addSequenceStackTraces,
 	getComponentsToAddStacksTo,
 } from './enable-sequence-stack-traces.js';
+import {getEffectiveVisualModeValue} from './get-effective-visual-mode-value.js';
 import {
 	getPreviewDomElement,
 	REMOTION_STUDIO_CONTAINER_ELEMENT,
@@ -272,6 +273,7 @@ export const Internals = {
 	DelayRenderContextType,
 	TimelineContext,
 	RenderAssetManagerProvider,
+	getEffectiveVisualModeValue,
 } as const;
 
 export type {

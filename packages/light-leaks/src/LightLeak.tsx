@@ -261,7 +261,7 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 	style,
 	...sequenceProps
 }) => {
-	const opacityProp = typeof style?.opacity === 'number' ? style.opacity : 1;
+	const opacityProp = style?.opacity ?? 1;
 
 	const schemaInput = useMemo(() => {
 		return {

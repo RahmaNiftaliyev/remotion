@@ -1,10 +1,5 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import type {TSequence} from './CompositionManager.js';
-import type {ResolvedStackLocation} from './sequence-stack-traces.js';
-import {
-	SequenceStackTracesContext,
-	SequenceStackTracesUpdateContext,
-} from './sequence-stack-traces.js';
 import type {CanUpdateSequencePropStatus} from './use-schema.js';
 
 export type SequenceManagerContext = {
@@ -67,9 +62,6 @@ export const SequenceManagerProvider: React.FC<{
 }> = ({children}) => {
 	const [sequences, setSequences] = useState<TSequence[]>([]);
 	const [hidden, setHidden] = useState<Record<string, boolean>>({});
-	const [resolvedStacks, setResolvedStacks] = useState<
-		Record<string, ResolvedStackLocation | null>
-	>({});
 	const [dragOverrides, setControlOverrides] = useState<
 		Record<string, Record<string, unknown>>
 	>({});
@@ -178,25 +170,6 @@ export const SequenceManagerProvider: React.FC<{
 		};
 	}, [hidden]);
 
-	const updateResolvedStackTrace = useCallback(
-		(stack: string, location: ResolvedStackLocation | null) => {
-			setResolvedStacks((prev) => {
-				if (stack in prev) {
-					return prev;
-				}
-
-				return {...prev, [stack]: location};
-			});
-		},
-		[],
-	);
-
-	const stackTracesContext = useMemo(() => {
-		return {
-			resolvedStacks,
-		};
-	}, [resolvedStacks]);
-
 	const overrideContext: SequenceControlOverrideState = useMemo(() => {
 		return {
 			dragOverrides,
@@ -218,15 +191,9 @@ export const SequenceManagerProvider: React.FC<{
 	return (
 		<SequenceManager.Provider value={sequenceContext}>
 			<SequenceVisibilityToggleContext.Provider value={hiddenContext}>
-				<SequenceStackTracesContext.Provider value={stackTracesContext}>
-					<SequenceStackTracesUpdateContext.Provider
-						value={updateResolvedStackTrace}
-					>
-						<SequenceControlOverrideContext.Provider value={overrideContext}>
-							{children}
-						</SequenceControlOverrideContext.Provider>
-					</SequenceStackTracesUpdateContext.Provider>
-				</SequenceStackTracesContext.Provider>
+				<SequenceControlOverrideContext.Provider value={overrideContext}>
+					{children}
+				</SequenceControlOverrideContext.Provider>
 			</SequenceVisibilityToggleContext.Provider>
 		</SequenceManager.Provider>
 	);

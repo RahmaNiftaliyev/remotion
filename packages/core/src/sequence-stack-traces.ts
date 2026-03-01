@@ -6,15 +6,6 @@ export type ResolvedStackLocation = {
 	source: string | null;
 };
 
-export type SequenceStackTracesContextType = {
-	resolvedStacks: Record<string, ResolvedStackLocation | null>;
-};
-
-export const SequenceStackTracesContext =
-	React.createContext<SequenceStackTracesContextType>({
-		resolvedStacks: {},
-	});
-
 export type UpdateResolvedStackTraceFn = (
 	stack: string,
 	location: ResolvedStackLocation | null,

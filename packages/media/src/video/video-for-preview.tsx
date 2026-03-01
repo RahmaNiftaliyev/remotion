@@ -599,44 +599,12 @@ const videoSchema = {
 } as const satisfies SequenceSchema;
 
 export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
-	const schemaInput = useMemo(() => {
-		if (typeof props.volume !== 'number') {
-			return null;
-		}
+	const {controls, values} = Internals.useSchema(videoSchema, props);
 
-		return {
-			volume: props.volume,
-			playbackRate: props.playbackRate,
-			trimBefore: props.trimBefore,
-			trimAfter: props.trimAfter,
-			loop: props.loop,
-		};
-	}, [
-		props.volume,
-		props.playbackRate,
-		props.trimBefore,
-		props.trimAfter,
-		props.loop,
-	]);
-
-	const {controls, values} = Internals.useSchema(
-		schemaInput ? videoSchema : null,
-		schemaInput,
-	);
-
-	const volume = schemaInput !== null ? values.volume : props.volume;
-	const playbackRate =
-		schemaInput !== null ? (values.playbackRate as number) : props.playbackRate;
-	const trimBefore =
-		schemaInput !== null
-			? (values.trimBefore as number | undefined)
-			: props.trimBefore;
-	const trimAfter =
-		schemaInput !== null
-			? (values.trimAfter as number | undefined)
-			: props.trimAfter;
-	const effectiveLoop =
-		schemaInput !== null ? (values.loop as boolean) : props.loop;
+	const {playbackRate} = values;
+	const {trimBefore} = values;
+	const {trimAfter} = values;
+	const effectiveLoop = values.loop;
 
 	const frame = useCurrentFrame();
 	const videoConfig = useVideoConfig();
@@ -673,11 +641,11 @@ export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
 	return (
 		<VideoForPreviewAssertedShowing
 			{...props}
-			volume={volume ?? 1}
-			playbackRate={playbackRate}
-			loop={effectiveLoop}
-			trimBefore={trimBefore}
-			trimAfter={trimAfter}
+			volume={values.volume ?? 1}
+			playbackRate={values.playbackRate}
+			loop={values.loop}
+			trimBefore={values.trimBefore}
+			trimAfter={values.trimAfter}
 			controls={controls}
 		/>
 	);

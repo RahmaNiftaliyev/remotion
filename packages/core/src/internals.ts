@@ -90,10 +90,7 @@ import type {
 	SequenceSchema,
 } from './sequence-field-schema.js';
 import type {ResolvedStackLocation} from './sequence-stack-traces.js';
-import {
-	SequenceStackTracesContext,
-	SequenceStackTracesUpdateContext,
-} from './sequence-stack-traces.js';
+import {SequenceStackTracesUpdateContext} from './sequence-stack-traces.js';
 import {SequenceContext} from './SequenceContext.js';
 import {
 	SequenceControlOverrideContext,
@@ -187,7 +184,6 @@ export const Internals = {
 	CompositionSetters,
 	SequenceControlOverrideContext,
 	SequenceManager,
-	SequenceStackTracesContext,
 	SequenceStackTracesUpdateContext,
 	SequenceVisibilityToggleContext,
 	useSchema,

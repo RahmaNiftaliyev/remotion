@@ -10,10 +10,12 @@ const fieldRow: React.CSSProperties = {
 	display: 'flex',
 	alignItems: 'center',
 	gap: 8,
+	paddingLeft: 24,
 };
 
 const fieldName: React.CSSProperties = {
 	fontSize: 12,
+	color: 'rgba(255, 255, 255, 0.8)',
 };
 
 const fieldLabelRow: React.CSSProperties = {
@@ -94,8 +96,15 @@ export const TimelineFieldRow: React.FC<{
 		clearDragOverrides(overrideId);
 	}, [clearDragOverrides, overrideId]);
 
+	const style = useMemo(() => {
+		return {
+			...fieldRow,
+			height: field.rowHeight,
+		};
+	}, [field.rowHeight]);
+
 	return (
-		<div style={{...fieldRow, height: field.rowHeight}}>
+		<div style={style}>
 			<div style={fieldLabelRow}>
 				<span style={fieldName}>{field.description ?? field.key}</span>
 			</div>

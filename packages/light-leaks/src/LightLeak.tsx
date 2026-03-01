@@ -232,14 +232,14 @@ const LightLeakCanvas: React.FC<{
  * @see [Documentation](https://www.remotion.dev/docs/light-leaks/light-leak)
  */
 const lightLeakSchema = {
-	seed: {type: 'number', description: 'Seed'},
+	seed: {type: 'number', default: 0, description: 'Seed'},
 	hueShift: {
 		type: 'number',
 		min: 0,
 		max: 360,
+		default: 0,
 		description: 'Hue Shift',
 	},
-	from: {type: 'number', description: 'From'},
 } as const satisfies SequenceSchema;
 
 export const LightLeak: React.FC<LightLeakProps> = ({
@@ -251,11 +251,10 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 }) => {
 	const {
 		controls,
-		values: {seed, hueShift, from},
+		values: {seed, hueShift},
 	} = Internals.useSchema(lightLeakSchema, {
 		seed: seedProp,
 		hueShift: hueShiftProp,
-		from: fromProp,
 	});
 
 	const {durationInFrames: videoDuration} = useVideoConfig();
@@ -283,7 +282,6 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 			durationInFrames={resolvedDuration}
 			name="<LightLeak>"
 			controls={controls}
-			from={from}
 			{...sequenceProps}
 		>
 			<LightLeakCanvas seed={seed} hueShift={hueShift} />

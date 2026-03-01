@@ -593,18 +593,19 @@ const videoSchema = {
 		default: 1,
 		description: 'Playback Rate',
 	},
-	trimBefore: {type: 'number', min: 0, default: undefined},
-	trimAfter: {type: 'number', min: 1, default: undefined},
 	loop: {type: 'boolean', default: false, description: 'Loop'},
 } as const satisfies SequenceSchema;
 
 export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
-	const {controls, values} = Internals.useSchema(videoSchema, props);
+	const {controls, values} = Internals.useSchema(videoSchema, {
+		volume: props.volume,
+		playbackRate: props.playbackRate,
+		loop: props.loop,
+	});
 
-	const {playbackRate} = values;
-	const {trimBefore} = values;
-	const {trimAfter} = values;
-	const effectiveLoop = values.loop;
+	const playbackRate = values.playbackRate as typeof props.playbackRate;
+	const loop = values.loop as typeof props.loop;
+	const volume = values.volume as typeof props.volume;
 
 	const frame = useCurrentFrame();
 	const videoConfig = useVideoConfig();
@@ -615,9 +616,9 @@ export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
 			getTimeInSeconds({
 				unloopedTimeInSeconds: currentTime,
 				playbackRate,
-				loop: effectiveLoop,
-				trimBefore,
-				trimAfter,
+				loop,
+				trimBefore: props.trimBefore,
+				trimAfter: props.trimAfter,
 				mediaDurationInSeconds: Infinity,
 				fps: videoConfig.fps,
 				ifNoMediaDuration: 'infinity',
@@ -626,12 +627,12 @@ export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
 		);
 	}, [
 		currentTime,
-		effectiveLoop,
+		loop,
 		playbackRate,
 		props.src,
-		trimAfter,
-		trimBefore,
 		videoConfig.fps,
+		props.trimBefore,
+		props.trimAfter,
 	]);
 
 	if (!showShow) {
@@ -641,11 +642,9 @@ export const VideoForPreview: React.FC<VideoForPreviewProps> = (props) => {
 	return (
 		<VideoForPreviewAssertedShowing
 			{...props}
-			volume={values.volume ?? 1}
-			playbackRate={values.playbackRate}
-			loop={values.loop}
-			trimBefore={values.trimBefore}
-			trimAfter={values.trimAfter}
+			volume={volume ?? 1}
+			playbackRate={playbackRate}
+			loop={loop}
 			controls={controls}
 		/>
 	);

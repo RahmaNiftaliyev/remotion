@@ -2,7 +2,10 @@
 import {useContext, useMemo, useState} from 'react';
 import type {SequenceControls} from './CompositionManager.js';
 import {getEffectiveVisualModeValue} from './get-effective-visual-mode-value.js';
-import type {SequenceSchema} from './sequence-field-schema.js';
+import type {
+	SchemaKeysRecord,
+	SequenceSchema,
+} from './sequence-field-schema.js';
 import {SequenceControlOverrideContext} from './SequenceManager.js';
 import {useRemotionEnvironment} from './use-remotion-environment.js';
 
@@ -10,19 +13,24 @@ export type CanUpdateSequencePropStatus =
 	| {canUpdate: true; codeValue: unknown}
 	| {canUpdate: false; reason: 'computed'};
 
-export const useSchema = <T extends Record<string, unknown>>(
-	schema: SequenceSchema | null,
-	currentValue: T | null,
+export const useSchema = <
+	S extends SequenceSchema,
+	T extends SchemaKeysRecord<S>,
+>(
+	schema: S | null,
+	currentValue: (T & Record<Exclude<keyof T, keyof S>, never>) | null,
 ): {
 	controls: SequenceControls | undefined;
-	values: T;
+	values: SchemaKeysRecord<S>;
 } => {
+	type Values = SchemaKeysRecord<S>;
+
 	const env = useRemotionEnvironment();
 	const earlyReturn = useMemo(() => {
 		if (!env.isStudio || env.isReadOnlyStudio) {
 			return {
 				controls: undefined,
-				values: (currentValue ?? {}) as T,
+				values: (currentValue ?? {}) as Values,
 			};
 		}
 
@@ -52,25 +60,19 @@ export const useSchema = <T extends Record<string, unknown>>(
 	}, [schema, currentValue, overrideId]);
 
 	return useMemo(() => {
-		if (controls === undefined || currentValue === null) {
+		if (controls === undefined || currentValue === null || schema === null) {
 			return {
 				controls: undefined,
-				values: (currentValue ?? {}) as T,
+				values: (currentValue ?? {}) as Values,
 			};
 		}
 
 		const overrideValues = overrides[overrideId] ?? {};
 		const propStatus = propStatuses[overrideId];
 
-		const overrideKeys = Object.keys(overrideValues);
-		const propStatusKeys = Object.keys(propStatus ?? {});
 		const currentValueKeys = Object.keys(currentValue);
 
-		const keysToUpdate = new Set([
-			...overrideKeys,
-			...propStatusKeys,
-			...currentValueKeys,
-		]).values();
+		const keysToUpdate = new Set([...currentValueKeys]).values();
 
 		const merged = {} as Record<string, unknown>;
 
@@ -80,14 +82,15 @@ export const useSchema = <T extends Record<string, unknown>>(
 
 			merged[key] = getEffectiveVisualModeValue({
 				codeValue: codeValueStatus,
-				runtimeValue: currentValue[key],
+				runtimeValue: currentValue[key as keyof SchemaKeysRecord<S>] as unknown,
 				dragOverrideValue: overrideValues[key],
+				defaultValue: schema[key]?.default,
 			});
 		}
 
 		return {
 			controls,
-			values: merged as T,
+			values: merged as Values,
 		};
-	}, [controls, currentValue, overrideId, overrides, propStatuses]);
+	}, [controls, currentValue, overrideId, overrides, propStatuses, schema]);
 };

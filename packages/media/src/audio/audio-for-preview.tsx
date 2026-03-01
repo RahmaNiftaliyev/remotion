@@ -559,37 +559,22 @@ export const AudioForPreview: React.FC<InnerAudioProps> = ({
 	onError,
 }) => {
 	const schemaInput = useMemo(() => {
-		if (typeof volumeProp !== 'number') {
-			return null;
-		}
-
 		return {
 			volume: volumeProp,
 			playbackRate: playbackRateProp,
 			trimBefore: trimBeforeProp,
 			trimAfter: trimAfterProp,
-			loop: loop ?? false,
+			loop,
 		};
 	}, [volumeProp, playbackRateProp, trimBeforeProp, trimAfterProp, loop]);
 
-	const {controls, values} = Internals.useSchema(
-		schemaInput ? audioSchema : null,
-		schemaInput,
-	);
+	const {controls, values} = Internals.useSchema(audioSchema, schemaInput);
 
-	const volume = schemaInput !== null ? (values.volume as number) : volumeProp;
-	const playbackRate =
-		schemaInput !== null ? (values.playbackRate as number) : playbackRateProp;
-	const trimBefore =
-		schemaInput !== null
-			? (values.trimBefore as number | undefined)
-			: trimBeforeProp;
-	const trimAfter =
-		schemaInput !== null
-			? (values.trimAfter as number | undefined)
-			: trimAfterProp;
-	const effectiveLoop =
-		schemaInput !== null ? (values.loop as boolean) : (loop ?? false);
+	const volume = values.volume as typeof volumeProp;
+	const playbackRate = values.playbackRate as typeof playbackRateProp;
+	const trimBefore = values.trimBefore as typeof trimBeforeProp;
+	const trimAfter = values.trimAfter as typeof trimAfterProp;
+	const effectiveLoop = values.loop as typeof loop;
 
 	const preloadedSrc = usePreload(src);
 
@@ -603,7 +588,7 @@ export const AudioForPreview: React.FC<InnerAudioProps> = ({
 			getTimeInSeconds({
 				unloopedTimeInSeconds: currentTime,
 				playbackRate: playbackRate ?? 1,
-				loop: effectiveLoop,
+				loop: effectiveLoop ?? false,
 				trimBefore,
 				trimAfter,
 				mediaDurationInSeconds: Infinity,
@@ -635,7 +620,7 @@ export const AudioForPreview: React.FC<InnerAudioProps> = ({
 			muted={muted ?? false}
 			volume={volume ?? 1}
 			loopVolumeCurveBehavior={loopVolumeCurveBehavior ?? 'repeat'}
-			loop={effectiveLoop}
+			loop={effectiveLoop ?? false}
 			trimAfter={trimAfter}
 			trimBefore={trimBefore}
 			name={name}

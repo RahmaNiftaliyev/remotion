@@ -33,8 +33,8 @@ export const TimelineFieldRow: React.FC<{
 		setDragOverrides,
 		clearDragOverrides,
 		dragOverrides,
-		propStatuses: allPropStatuses,
-	} = useContext(Internals.SequenceControlOverrideContext);
+		codeValues: allPropStatuses,
+	} = useContext(Internals.VisualModeOverridesContext);
 
 	const propStatuses = (allPropStatuses[overrideId] ?? null) as Record<
 		string,

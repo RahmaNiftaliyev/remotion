@@ -11,17 +11,18 @@ export const useSequencePropsSubscription = (
 	sequence: TSequence,
 	originalLocation: OriginalPosition | null,
 ): void => {
-	const {setPropStatuses} = useContext(
-		Internals.SequenceControlOverrideContext,
-	);
+	const {setCodeValues} = useContext(Internals.VisualModeOverridesContext);
 	const overrideId = sequence.controls?.overrideId ?? null;
 
 	const setPropStatusesForSequence = useCallback(
 		(statuses: Record<string, CanUpdateSequencePropStatus> | null) => {
-			if (!overrideId) return;
-			setPropStatuses(overrideId, statuses);
+			if (!overrideId) {
+				return;
+			}
+
+			setCodeValues(overrideId, statuses);
 		},
-		[overrideId, setPropStatuses],
+		[overrideId, setCodeValues],
 	);
 
 	const {previewServerState: state, subscribeToEvent} = useContext(

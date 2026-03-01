@@ -31,35 +31,38 @@ export const SequenceVisibilityToggleContext =
 		},
 	});
 
-export type SequenceControlOverrideState = {
+export type VisualModeOverrides = {
+	visualModeEnabled: boolean;
 	dragOverrides: Record<string, Record<string, unknown>>;
 	setDragOverrides: (sequenceId: string, key: string, value: unknown) => void;
 	clearDragOverrides: (sequenceId: string) => void;
-	propStatuses: Record<string, Record<string, CanUpdateSequencePropStatus>>;
-	setPropStatuses: (
+	codeValues: Record<string, Record<string, CanUpdateSequencePropStatus>>;
+	setCodeValues: (
 		sequenceId: string,
 		values: Record<string, CanUpdateSequencePropStatus> | null,
 	) => void;
 };
 
-export const SequenceControlOverrideContext =
-	React.createContext<SequenceControlOverrideState>({
+export const VisualModeOverridesContext =
+	React.createContext<VisualModeOverrides>({
 		dragOverrides: {},
 		setDragOverrides: () => {
-			throw new Error('SequenceControlOverrideContext not initialized');
+			throw new Error('VisualModeOverridesContext not initialized');
 		},
 		clearDragOverrides: () => {
-			throw new Error('SequenceControlOverrideContext not initialized');
+			throw new Error('VisualModeOverridesContext not initialized');
 		},
-		propStatuses: {},
-		setPropStatuses: () => {
-			throw new Error('SequenceControlOverrideContext not initialized');
+		codeValues: {},
+		setCodeValues: () => {
+			throw new Error('VisualModeOverridesContext not initialized');
 		},
+		visualModeEnabled: false,
 	});
 
 export const SequenceManagerProvider: React.FC<{
 	readonly children: React.ReactNode;
-}> = ({children}) => {
+	readonly visualModeEnabled: boolean;
+}> = ({children, visualModeEnabled}) => {
 	const [sequences, setSequences] = useState<TSequence[]>([]);
 	const [hidden, setHidden] = useState<Record<string, boolean>>({});
 	const [dragOverrides, setControlOverrides] = useState<
@@ -67,7 +70,7 @@ export const SequenceManagerProvider: React.FC<{
 	>({});
 	const controlOverridesRef = useRef(dragOverrides);
 	controlOverridesRef.current = dragOverrides;
-	const [propStatuses, setPropStatusMapState] = useState<
+	const [codeValues, setCodeValuesMapState] = useState<
 		Record<string, Record<string, CanUpdateSequencePropStatus>>
 	>({});
 
@@ -96,12 +99,12 @@ export const SequenceManagerProvider: React.FC<{
 		});
 	}, []);
 
-	const setPropStatuses = useCallback(
+	const setCodeValues = useCallback(
 		(
 			sequenceId: string,
 			values: Record<string, CanUpdateSequencePropStatus> | null,
 		) => {
-			setPropStatusMapState((prev) => {
+			setCodeValuesMapState((prev) => {
 				if (prev[sequenceId] === values) {
 					return prev;
 				}
@@ -147,28 +150,30 @@ export const SequenceManagerProvider: React.FC<{
 		};
 	}, [hidden]);
 
-	const overrideContext: SequenceControlOverrideState = useMemo(() => {
+	const overrideContext: VisualModeOverrides = useMemo(() => {
 		return {
+			visualModeEnabled,
 			dragOverrides,
 			setDragOverrides,
 			clearDragOverrides,
-			propStatuses,
-			setPropStatuses,
+			codeValues,
+			setCodeValues,
 		};
 	}, [
+		visualModeEnabled,
 		dragOverrides,
 		setDragOverrides,
 		clearDragOverrides,
-		propStatuses,
-		setPropStatuses,
+		codeValues,
+		setCodeValues,
 	]);
 
 	return (
 		<SequenceManager.Provider value={sequenceContext}>
 			<SequenceVisibilityToggleContext.Provider value={hiddenContext}>
-				<SequenceControlOverrideContext.Provider value={overrideContext}>
+				<VisualModeOverridesContext.Provider value={overrideContext}>
 					{children}
-				</SequenceControlOverrideContext.Provider>
+				</VisualModeOverridesContext.Provider>
 			</SequenceVisibilityToggleContext.Provider>
 		</SequenceManager.Provider>
 	);

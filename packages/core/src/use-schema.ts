@@ -6,7 +6,7 @@ import type {
 	SchemaKeysRecord,
 	SequenceSchema,
 } from './sequence-field-schema.js';
-import {SequenceControlOverrideContext} from './SequenceManager.js';
+import {VisualModeOverridesContext} from './SequenceManager.js';
 import {useRemotionEnvironment} from './use-remotion-environment.js';
 
 export type CanUpdateSequencePropStatus =
@@ -43,11 +43,17 @@ export const useSchema = <
 
 	// Intentional conditional hook call, useRemotionEnvironment is stable.
 	const [overrideId] = useState(() => String(Math.random()));
-	const {dragOverrides: overrides, propStatuses} = useContext(
-		SequenceControlOverrideContext,
-	);
+	const {
+		visualModeEnabled,
+		dragOverrides: overrides,
+		codeValues,
+	} = useContext(VisualModeOverridesContext);
 
 	const controls = useMemo(() => {
+		if (!visualModeEnabled) {
+			return undefined;
+		}
+
 		if (schema === null || currentValue === null) {
 			return undefined;
 		}
@@ -57,10 +63,15 @@ export const useSchema = <
 			currentValue,
 			overrideId,
 		};
-	}, [schema, currentValue, overrideId]);
+	}, [schema, currentValue, overrideId, visualModeEnabled]);
 
 	return useMemo(() => {
-		if (controls === undefined || currentValue === null || schema === null) {
+		if (
+			controls === undefined ||
+			currentValue === null ||
+			schema === null ||
+			!visualModeEnabled
+		) {
 			return {
 				controls: undefined,
 				values: (currentValue ?? {}) as Values,
@@ -68,7 +79,7 @@ export const useSchema = <
 		}
 
 		const overrideValues = overrides[overrideId] ?? {};
-		const propStatus = propStatuses[overrideId];
+		const propStatus = codeValues[overrideId];
 
 		const currentValueKeys = Object.keys(currentValue);
 
@@ -92,5 +103,13 @@ export const useSchema = <
 			controls,
 			values: merged as Values,
 		};
-	}, [controls, currentValue, overrideId, overrides, propStatuses, schema]);
+	}, [
+		controls,
+		currentValue,
+		overrideId,
+		overrides,
+		codeValues,
+		schema,
+		visualModeEnabled,
+	]);
 };

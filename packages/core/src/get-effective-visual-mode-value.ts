@@ -21,5 +21,9 @@ export const getEffectiveVisualModeValue = ({
 		return runtimeValue;
 	}
 
+	if (codeValue.codeValue === undefined) {
+		return runtimeValue;
+	}
+
 	return codeValue.codeValue;
 };

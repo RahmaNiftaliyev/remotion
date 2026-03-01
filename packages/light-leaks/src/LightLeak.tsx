@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import type {SequenceSchema} from 'remotion';
 import {
 	AbsoluteFill,
@@ -232,14 +232,14 @@ const LightLeakCanvas: React.FC<{
  * @see [Documentation](https://www.remotion.dev/docs/light-leaks/light-leak)
  */
 const lightLeakSchema = {
-	seed: {type: 'number', description: 'Seed'},
+	seed: {type: 'number', default: 0, description: 'Seed'},
 	hueShift: {
 		type: 'number',
 		min: 0,
 		max: 360,
+		default: 0,
 		description: 'Hue Shift',
 	},
-	from: {type: 'number', description: 'From'},
 } as const satisfies SequenceSchema;
 
 export const LightLeak: React.FC<LightLeakProps> = ({
@@ -249,14 +249,17 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 	from: fromProp,
 	...sequenceProps
 }) => {
+	const schemaInput = useMemo(() => {
+		return {
+			seed: seedProp,
+			hueShift: hueShiftProp,
+		};
+	}, [seedProp, hueShiftProp]);
+
 	const {
 		controls,
-		values: {seed, hueShift, from},
-	} = Internals.useSchema(lightLeakSchema, {
-		seed: seedProp,
-		hueShift: hueShiftProp,
-		from: fromProp,
-	});
+		values: {seed, hueShift},
+	} = Internals.useSchema(lightLeakSchema, schemaInput);
 
 	const {durationInFrames: videoDuration} = useVideoConfig();
 	const resolvedDuration = durationInFrames ?? videoDuration;
@@ -283,7 +286,6 @@ export const LightLeak: React.FC<LightLeakProps> = ({
 			durationInFrames={resolvedDuration}
 			name="<LightLeak>"
 			controls={controls}
-			from={from}
 			{...sequenceProps}
 		>
 			<LightLeakCanvas seed={seed} hueShift={hueShift} />

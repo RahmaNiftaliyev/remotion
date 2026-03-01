@@ -1,4 +1,5 @@
 import {
+	makeArrow,
 	makeCircle,
 	makeEllipse,
 	makeHeart,
@@ -28,6 +29,37 @@ export type ShapeComponent = {
 };
 
 export const shapeComponents: ShapeComponent[] = [
+	{
+		shape: 'Arrow',
+		fn: makeArrow,
+		params: [
+			{
+				name: 'length',
+				type: 'number',
+				description: 'The total length of the arrow along its direction axis.',
+			},
+			{
+				name: 'headWidth',
+				type: 'number',
+				description: 'The width of the arrowhead at its widest point.',
+			},
+			{
+				name: 'headLength',
+				type: 'number',
+				description: 'The length of the arrowhead portion.',
+			},
+			{
+				name: 'shaftWidth',
+				type: 'number',
+				description: 'The width of the arrow shaft.',
+			},
+			{
+				name: 'direction',
+				type: '"left" | "right" | "up" | "down"',
+				description: 'The direction the arrow points. Default right.',
+			},
+		],
+	},
 	{
 		shape: 'Rect',
 		fn: makeRect,
@@ -316,7 +348,8 @@ export const ShapeOptions: React.FC<{
 				);
 			})}
 			{all &&
-			(shapeComponent.shape === 'Rect' ||
+			(shapeComponent.shape === 'Arrow' ||
+				shapeComponent.shape === 'Rect' ||
 				shapeComponent.shape === 'Triangle' ||
 				shapeComponent.shape === 'Polygon') ? (
 				<>

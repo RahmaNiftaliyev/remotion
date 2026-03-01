@@ -111,8 +111,7 @@ export const updateSequenceProps = ({
 
 			const parsed = parseValueExpression(value, enumPaths);
 
-			const newValue =
-				value === true ? null : b.jsxExpressionContainer(parsed);
+			const newValue = value === true ? null : b.jsxExpressionContainer(parsed);
 
 			if (!attr || attr.type === 'JSXSpreadAttribute') {
 				const newAttr = b.jsxAttribute(b.jsxIdentifier(key), newValue);

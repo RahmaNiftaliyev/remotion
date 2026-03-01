@@ -54,12 +54,11 @@ const findObjectProperty = (
 		(p) =>
 			p.type === 'ObjectProperty' &&
 			(((p as namedTypes.ObjectProperty).key.type === 'Identifier' &&
-				((p as namedTypes.ObjectProperty).key as namedTypes.Identifier)
-					.name === propertyName) ||
+				((p as namedTypes.ObjectProperty).key as namedTypes.Identifier).name ===
+					propertyName) ||
 				((p as namedTypes.ObjectProperty).key.type === 'StringLiteral' &&
-					(
-						(p as namedTypes.ObjectProperty).key as namedTypes.StringLiteral
-					).value === propertyName)),
+					((p as namedTypes.ObjectProperty).key as namedTypes.StringLiteral)
+						.value === propertyName)),
 	);
 
 	return {

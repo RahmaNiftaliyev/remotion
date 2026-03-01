@@ -1,9 +1,9 @@
 ---
 title: makeArrow()
-crumb: "@remotion/shapes"
+crumb: '@remotion/shapes'
 ---
 
-import {MakeShapeSeeAlso, ShapeOptions, MakeShapeReturnType} from "../../components/shapes/shapes-info"
+import {MakeShapeSeeAlso, ShapeOptions, MakeShapeReturnType} from '../../components/shapes/shapes-info';
 
 _Part of the [`@remotion/shapes`](/docs/shapes) package._
 
@@ -12,14 +12,14 @@ Generates an SVG path for an arrow shape.
 ## Example
 
 ```tsx twoslash title="arrow.ts"
-import { makeArrow } from "@remotion/shapes";
+import {makeArrow} from '@remotion/shapes';
 
-const { path, width, height, transformOrigin } = makeArrow({
+const {path, width, height, transformOrigin} = makeArrow({
   length: 200,
   headWidth: 80,
   headLength: 80,
   shaftWidth: 40,
-  direction: "right",
+  direction: 'right',
 });
 
 console.log(path); // M 0 20 L 120 20 L 120 0 L 200 40 L 120 80 L 120 60 L 0 60 L 0 20 Z
@@ -30,12 +30,12 @@ console.log(transformOrigin); // '100 40'
 
 ## Arguments
 
-<ShapeOptions shape="arrow"/>
+<ShapeOptions shape="arrow" />
 
 ## Return type
 
-<MakeShapeReturnType shape="arrow"/>
+<MakeShapeReturnType shape="arrow" />
 
 ## See also
 
-<MakeShapeSeeAlso shape="arrow"/>
+<MakeShapeSeeAlso shape="arrow" />

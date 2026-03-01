@@ -534,8 +534,6 @@ const audioSchema = {
 		default: 1,
 		description: 'Playback Rate',
 	},
-	trimBefore: {type: 'number', min: 0, default: undefined},
-	trimAfter: {type: 'number', min: 0, default: undefined},
 	loop: {type: 'boolean', default: false, description: 'Loop'},
 } as const satisfies SequenceSchema;
 
@@ -548,8 +546,8 @@ export const AudioForPreview: React.FC<InnerAudioProps> = ({
 	volume: volumeProp,
 	loopVolumeCurveBehavior,
 	playbackRate: playbackRateProp = 1,
-	trimAfter: trimAfterProp,
-	trimBefore: trimBeforeProp,
+	trimAfter,
+	trimBefore,
 	showInTimeline,
 	stack,
 	disallowFallbackToHtml5Audio,
@@ -562,15 +560,13 @@ export const AudioForPreview: React.FC<InnerAudioProps> = ({
 		return {
 			volume: volumeProp,
 			playbackRate: playbackRateProp,
-			trimBefore: trimBeforeProp,
-			trimAfter: trimAfterProp,
 			loop: loopProp,
 		};
-	}, [volumeProp, playbackRateProp, trimBeforeProp, trimAfterProp, loopProp]);
+	}, [volumeProp, playbackRateProp, loopProp]);
 
 	const {
 		controls,
-		values: {volume, playbackRate, trimBefore, trimAfter, loop},
+		values: {volume, playbackRate, loop},
 	} = Internals.useSchema(audioSchema, schemaInput);
 
 	const preloadedSrc = usePreload(src);

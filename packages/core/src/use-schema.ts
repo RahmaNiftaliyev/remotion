@@ -16,20 +16,19 @@ export type CanUpdateSequencePropStatus =
 export const useSchema = <
 	S extends SequenceSchema,
 	T extends SchemaKeysRecord<S>,
-	Q extends (T & Record<Exclude<keyof T, keyof S>, never>) | null,
 >(
 	schema: S | null,
-	currentValue: Q,
+	currentValue: (T & Record<Exclude<keyof T, keyof S>, never>) | null,
 ): {
 	controls: SequenceControls | undefined;
-	values: Q;
+	values: T;
 } => {
 	const env = useRemotionEnvironment();
 	const earlyReturn = useMemo(() => {
 		if (!env.isStudio || env.isReadOnlyStudio) {
 			return {
 				controls: undefined,
-				values: (currentValue ?? {}) as Q,
+				values: (currentValue ?? {}) as T,
 			};
 		}
 
@@ -73,7 +72,7 @@ export const useSchema = <
 		) {
 			return {
 				controls: undefined,
-				values: (currentValue ?? {}) as Q,
+				values: (currentValue ?? {}) as T,
 			};
 		}
 
@@ -100,7 +99,7 @@ export const useSchema = <
 
 		return {
 			controls,
-			values: merged as Q,
+			values: merged as T,
 		};
 	}, [
 		controls,

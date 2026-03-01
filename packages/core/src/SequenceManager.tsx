@@ -122,29 +122,6 @@ export const SequenceManagerProvider: React.FC<{
 		[],
 	);
 
-	const codeValues = useMemo(() => {
-		const result: Record<string, Record<string, unknown>> = {};
-		for (const [id, statuses] of Object.entries(propStatuses)) {
-			if (!statuses) continue;
-			const vals: Record<string, unknown> = {};
-			for (const [key, status] of Object.entries(statuses)) {
-				if (
-					status &&
-					typeof status === 'object' &&
-					'canUpdate' in status &&
-					(status as {canUpdate: boolean}).canUpdate &&
-					'codeValue' in status
-				) {
-					vals[key] = (status as {codeValue: unknown}).codeValue;
-				}
-			}
-
-			result[id] = vals;
-		}
-
-		return result;
-	}, [propStatuses]);
-
 	const registerSequence = useCallback((seq: TSequence) => {
 		setSequences((seqs) => {
 			return [...seqs, seq];
@@ -177,7 +154,6 @@ export const SequenceManagerProvider: React.FC<{
 			clearDragOverrides,
 			propStatuses,
 			setPropStatuses,
-			codeValues,
 		};
 	}, [
 		dragOverrides,
@@ -185,7 +161,6 @@ export const SequenceManagerProvider: React.FC<{
 		clearDragOverrides,
 		propStatuses,
 		setPropStatuses,
-		codeValues,
 	]);
 
 	return (

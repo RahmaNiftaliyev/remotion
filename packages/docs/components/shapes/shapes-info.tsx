@@ -64,6 +64,12 @@ export const shapeComponents: ShapeComponent[] = [
 				description:
 					'Allows to modify the shape by rounding the edges using bezier curves. Default null.',
 			},
+			{
+				name: 'cornerRadius',
+				type: 'number',
+				description:
+					"Rounds the corner using an arc. Similar to CSS's border-radius. Cannot be used together with edgeRoundness.",
+			},
 		],
 	},
 	{

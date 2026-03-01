@@ -35,6 +35,12 @@ export const makeArrow = ({
 	cornerRadius = 0,
 	edgeRoundness = null,
 }: MakeArrowProps): ShapeInfo => {
+	if (length <= 0 || headWidth <= 0 || headLength <= 0 || shaftWidth <= 0) {
+		throw new Error(
+			'All dimension parameters ("length", "headWidth", "headLength", "shaftWidth") must be positive numbers',
+		);
+	}
+
 	if (headWidth < shaftWidth) {
 		throw new Error(
 			`"headWidth" must be greater than or equal to "shaftWidth", got headWidth=${headWidth} and shaftWidth=${shaftWidth}`,
@@ -107,7 +113,7 @@ export const makeArrow = ({
 		...joinPoints([...points, points[0]], {
 			edgeRoundness,
 			cornerRadius,
-			roundCornerStrategy: cornerRadius > 0 ? 'bezier' : 'arc',
+			roundCornerStrategy: 'bezier',
 		}),
 		{type: 'Z'},
 	];

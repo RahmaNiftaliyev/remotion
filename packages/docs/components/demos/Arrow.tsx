@@ -8,7 +8,7 @@ export const ArrowDemo: React.FC<{
 	readonly headWidth: number;
 	readonly headLength: number;
 	readonly shaftWidth: number;
-	readonly edgeRoundness: number;
+	readonly edgeRoundness: ArrowProps['edgeRoundness'];
 	readonly darkMode: boolean;
 	readonly direction: ArrowProps['direction'];
 	readonly cornerRadius: number;

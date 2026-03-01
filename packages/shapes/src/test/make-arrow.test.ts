@@ -101,6 +101,44 @@ test('Should throw if headLength > length', () => {
 	).toThrow('"headLength" must be less than or equal to "length"');
 });
 
+test('Should throw if any dimension is non-positive', () => {
+	expect(() =>
+		makeArrow({
+			length: 0,
+			headWidth: 80,
+			headLength: 80,
+			shaftWidth: 40,
+		}),
+	).toThrow('must be positive numbers');
+
+	expect(() =>
+		makeArrow({
+			length: 200,
+			headWidth: 0,
+			headLength: 80,
+			shaftWidth: 40,
+		}),
+	).toThrow('must be positive numbers');
+
+	expect(() =>
+		makeArrow({
+			length: 200,
+			headWidth: 80,
+			headLength: 0,
+			shaftWidth: 40,
+		}),
+	).toThrow('must be positive numbers');
+
+	expect(() =>
+		makeArrow({
+			length: 200,
+			headWidth: 80,
+			headLength: 80,
+			shaftWidth: 0,
+		}),
+	).toThrow('must be positive numbers');
+});
+
 test('Should be able to make an arrow with cornerRadius', () => {
 	const arrow = makeArrow({
 		length: 200,

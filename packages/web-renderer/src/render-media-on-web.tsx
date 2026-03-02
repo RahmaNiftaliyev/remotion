@@ -333,9 +333,17 @@ const internalRenderMediaOnWeb = async <
 					})
 				: null;
 
+		const totalFrames = realFrameRange[1] - realFrameRange[0] + 1;
+		const durationInSeconds = totalFrames / resolved.fps;
+
 		if (videoSampleSource) {
 			outputWithCleanup.output.addVideoTrack(
 				videoSampleSource.videoSampleSource,
+				{
+					// 1 packet per frame, + 33% buffer
+					// https://mediabunny.dev/api/BaseTrackMetadata#maximumpacketcount
+					maximumPacketCount: Math.ceil(totalFrames * 1.33),
+				},
 			);
 		}
 
@@ -350,6 +358,11 @@ const internalRenderMediaOnWeb = async <
 		if (audioSampleSource) {
 			outputWithCleanup.output.addAudioTrack(
 				audioSampleSource.audioSampleSource,
+				{
+					// ~1 packet per 10ms, + 33% buffer
+					// https://mediabunny.dev/api/BaseTrackMetadata#maximumpacketcount
+					maximumPacketCount: Math.ceil(durationInSeconds * 100 * 1.33),
+				},
 			);
 		}
 

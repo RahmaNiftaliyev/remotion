@@ -75,7 +75,7 @@ export const containerToMediabunnyContainer = (
 ): OutputFormat => {
 	switch (container) {
 		case 'mp4':
-			return new Mp4OutputFormat({fastStart: 'in-memory'});
+			return new Mp4OutputFormat({fastStart: 'reserve'});
 		case 'webm':
 			return new WebMOutputFormat();
 		case 'mkv':
@@ -89,7 +89,7 @@ export const containerToMediabunnyContainer = (
 		case 'ogg':
 			return new OggOutputFormat();
 		case 'mov':
-			return new MovOutputFormat({fastStart: 'in-memory'});
+			return new MovOutputFormat({fastStart: 'reserve'});
 		default:
 			throw new Error(`Unsupported container: ${container satisfies never}`);
 	}

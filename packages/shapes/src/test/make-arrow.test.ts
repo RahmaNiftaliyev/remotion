@@ -12,7 +12,7 @@ test('Should be able to make a right-pointing arrow path', () => {
 	expect(arrow).toEqual({
 		width: 200,
 		height: 80,
-		path: 'M 0 20 L 120 20 L 120 0 L 200 40 L 120 80 L 120 60 L 0 60 L 0 20 Z',
+		path: 'M 0 20 L 120 20 L 120 0 L 200 40 L 120 80 L 120 60 L 0 60 Z',
 		transformOrigin: '100 40',
 		instructions: [
 			{type: 'M', x: 0, y: 20},
@@ -22,7 +22,6 @@ test('Should be able to make a right-pointing arrow path', () => {
 			{type: 'L', x: 120, y: 80},
 			{type: 'L', x: 120, y: 60},
 			{type: 'L', x: 0, y: 60},
-			{type: 'L', x: 0, y: 20},
 			{type: 'Z'},
 		],
 	});
@@ -41,7 +40,7 @@ test('Should be able to make a left-pointing arrow path', () => {
 	expect(arrow.height).toEqual(80);
 	expect(arrow.transformOrigin).toEqual('100 40');
 	expect(arrow.path).toEqual(
-		'M 200 20 L 80 20 L 80 0 L 0 40 L 80 80 L 80 60 L 200 60 L 200 20 Z',
+		'M 200 20 L 80 20 L 80 0 L 0 40 L 80 80 L 80 60 L 200 60 Z',
 	);
 });
 
@@ -58,7 +57,7 @@ test('Should be able to make an upward-pointing arrow path', () => {
 	expect(arrow.height).toEqual(200);
 	expect(arrow.transformOrigin).toEqual('40 100');
 	expect(arrow.path).toEqual(
-		'M 20 200 L 60 200 L 60 80 L 80 80 L 40 0 L 0 80 L 20 80 L 20 200 Z',
+		'M 20 200 L 60 200 L 60 80 L 80 80 L 40 0 L 0 80 L 20 80 Z',
 	);
 });
 
@@ -75,7 +74,7 @@ test('Should be able to make a downward-pointing arrow path', () => {
 	expect(arrow.height).toEqual(200);
 	expect(arrow.transformOrigin).toEqual('40 100');
 	expect(arrow.path).toEqual(
-		'M 20 0 L 60 0 L 60 120 L 80 120 L 40 200 L 0 120 L 20 120 L 20 0 Z',
+		'M 20 0 L 60 0 L 60 120 L 80 120 L 40 200 L 0 120 L 20 120 Z',
 	);
 });
 

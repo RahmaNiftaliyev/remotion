@@ -1,6 +1,5 @@
 import type {Instruction} from '@remotion/paths';
 import {serializeInstructions} from '@remotion/paths';
-import {joinPoints} from './join-points';
 import type {ShapeInfo} from './shape-info';
 
 type ArrowDirection = 'right' | 'left' | 'up' | 'down';
@@ -12,6 +11,91 @@ export type MakeArrowProps = {
 	shaftWidth?: number;
 	direction?: ArrowDirection;
 	cornerRadius?: number;
+};
+
+const unitDir = (
+	from: [number, number],
+	to: [number, number],
+): [number, number] => {
+	const dx = to[0] - from[0];
+	const dy = to[1] - from[1];
+	const len = Math.sqrt(dx * dx + dy * dy);
+	return len === 0 ? [0, 0] : [dx / len, dy / len];
+};
+
+const buildArrowPath = (
+	points: [number, number][],
+	roundedIndices: Set<number>,
+	cornerRadius: number,
+): Instruction[] => {
+	const n = points.length;
+
+	if (cornerRadius === 0) {
+		return [
+			{type: 'M', x: points[0][0], y: points[0][1]},
+			...points
+				.slice(1)
+				.map(([x, y]): Instruction => ({type: 'L' as const, x, y})),
+			{type: 'Z'},
+		];
+	}
+
+	// Corner 0 is always rounded — start at its depart point
+	const d0 = unitDir(points[0], points[1]);
+	const startX = points[0][0] + d0[0] * cornerRadius;
+	const startY = points[0][1] + d0[1] * cornerRadius;
+	const instrs: Instruction[] = [{type: 'M', x: startX, y: startY}];
+
+	for (let i = 1; i < n; i++) {
+		const curr = points[i];
+		if (roundedIndices.has(i)) {
+			const prev = points[i - 1];
+			const next = points[(i + 1) % n];
+			const dIn = unitDir(prev, curr);
+			const dOut = unitDir(curr, next);
+
+			instrs.push(
+				{
+					type: 'L',
+					x: curr[0] - dIn[0] * cornerRadius,
+					y: curr[1] - dIn[1] * cornerRadius,
+				},
+				{
+					type: 'C',
+					cp1x: curr[0],
+					cp1y: curr[1],
+					cp2x: curr[0],
+					cp2y: curr[1],
+					x: curr[0] + dOut[0] * cornerRadius,
+					y: curr[1] + dOut[1] * cornerRadius,
+				},
+			);
+		} else {
+			instrs.push({type: 'L', x: curr[0], y: curr[1]});
+		}
+	}
+
+	// Close back to corner 0 (rounded)
+	const dIn0 = unitDir(points[n - 1], points[0]);
+	instrs.push(
+		{
+			type: 'L',
+			x: points[0][0] - dIn0[0] * cornerRadius,
+			y: points[0][1] - dIn0[1] * cornerRadius,
+		},
+		{
+			type: 'C',
+			cp1x: points[0][0],
+			cp1y: points[0][1],
+			cp2x: points[0][0],
+			cp2y: points[0][1],
+			x: startX,
+			y: startY,
+		},
+		{type: 'Z'},
+	);
+
+	return instrs;
 };
 
 /**
@@ -106,14 +190,16 @@ export const makeArrow = ({
 		height = length;
 	}
 
-	const instructions: Instruction[] = [
-		...joinPoints([...points, points[0]], {
-			edgeRoundness: null,
-			cornerRadius,
-			roundCornerStrategy: 'bezier',
-		}),
-		{type: 'Z'},
-	];
+	// Round the back corners and all 3 arrowhead tips, but not the inner
+	// shaft-to-head junctions so the shaft edges stay straight.
+	// right/left: back = 0,6; head tips = 2,3,4; inner junctions (skip) = 1,5
+	// up/down:    back = 0,1; head tips = 3,4,5; inner junctions (skip) = 2,6
+	const roundedIndices =
+		direction === 'right' || direction === 'left'
+			? new Set([0, 2, 3, 4, 6])
+			: new Set([0, 1, 3, 4, 5]);
+
+	const instructions = buildArrowPath(points, roundedIndices, cornerRadius);
 
 	const path = serializeInstructions(instructions);
 

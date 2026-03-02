@@ -1287,15 +1287,6 @@ export const articles = [
 		slug: 'continue-render',
 	},
 	{
-		id: 'contributing/bounty',
-		title: 'Take and solve bounty issues',
-		relativePath: 'docs/contributing/bounty.mdx',
-		compId: 'articles-docs-contributing-bounty',
-		crumb: 'Contributing',
-		noAi: false,
-		slug: 'contributing/bounty',
-	},
-	{
 		id: 'contributing/docs',
 		title: 'Contributing to the documentation',
 		relativePath: 'docs/contributing/docs.mdx',
@@ -1330,15 +1321,6 @@ export const articles = [
 		crumb: 'How to be awesome',
 		noAi: false,
 		slug: 'contributing/index',
-	},
-	{
-		id: 'contributing/ineligible',
-		title: 'Ineligible for bounties',
-		relativePath: 'docs/contributing/ineligible.mdx',
-		compId: 'articles-docs-contributing-ineligible',
-		crumb: 'Contributing',
-		noAi: false,
-		slug: 'contributing/ineligible',
 	},
 	{
 		id: 'contributing/option',

@@ -48,7 +48,6 @@
 		"mime-types": "2.1.34",
 		"@types/mime-types": "2.1.1",
 		"@types/minimist": "1.2.2",
-		"@types/prompt": "^1.1.0",
 		"eslint": "catalog:",
 		"next": "catalog:",
 		"pureimage": "0.4.13",

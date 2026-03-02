@@ -601,6 +601,7 @@ const sidebars: SidebarsConfig = {
 				id: 'shapes/index',
 			},
 			items: [
+				'shapes/arrow',
 				'shapes/rect',
 				'shapes/triangle',
 				'shapes/circle',
@@ -609,6 +610,7 @@ const sidebars: SidebarsConfig = {
 				'shapes/star',
 				'shapes/pie',
 				'shapes/polygon',
+				'shapes/make-arrow',
 				'shapes/make-rect',
 				'shapes/make-triangle',
 				'shapes/make-circle',

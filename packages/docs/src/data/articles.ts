@@ -5305,6 +5305,15 @@ export const articles = [
 		slug: 'shaders',
 	},
 	{
+		id: 'shapes/arrow',
+		title: '<Arrow />',
+		relativePath: 'docs/shapes/arrow.mdx',
+		compId: 'articles-docs-shapes-arrow',
+		crumb: '@remotion/shapes',
+		noAi: false,
+		slug: 'shapes/arrow',
+	},
+	{
 		id: 'shapes/circle',
 		title: '<Circle />',
 		relativePath: 'docs/shapes/circle.mdx',
@@ -5339,6 +5348,15 @@ export const articles = [
 		crumb: 'SVG component library',
 		noAi: false,
 		slug: 'shapes/index',
+	},
+	{
+		id: 'shapes/make-arrow',
+		title: 'makeArrow()',
+		relativePath: 'docs/shapes/make-arrow.mdx',
+		compId: 'articles-docs-shapes-make-arrow',
+		crumb: '@remotion/shapes',
+		noAi: false,
+		slug: 'shapes/make-arrow',
 	},
 	{
 		id: 'shapes/make-circle',

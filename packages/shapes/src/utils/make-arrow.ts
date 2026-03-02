@@ -6,34 +6,31 @@ import type {ShapeInfo} from './shape-info';
 type ArrowDirection = 'right' | 'left' | 'up' | 'down';
 
 export type MakeArrowProps = {
-	length: number;
-	headWidth: number;
-	headLength: number;
-	shaftWidth: number;
+	length?: number;
+	headWidth?: number;
+	headLength?: number;
+	shaftWidth?: number;
 	direction?: ArrowDirection;
-	edgeRoundness?: number | null;
 	cornerRadius?: number;
 };
 
 /**
  * @description Generates an SVG path for an arrow shape.
- * @param {Number} length The total length of the arrow along its direction axis.
- * @param {Number} headWidth The width of the arrowhead at its widest point.
- * @param {Number} headLength The length of the arrowhead portion.
- * @param {Number} shaftWidth The width of the arrow shaft.
+ * @param {Number} length The total length of the arrow along its direction axis. Default 300.
+ * @param {Number} headWidth The width of the arrowhead at its widest point. Default 185.
+ * @param {Number} headLength The length of the arrowhead portion. Default 120.
+ * @param {Number} shaftWidth The width of the arrow shaft. Default 80.
  * @param {string} direction The direction the arrow points. Default 'right'.
- * @param {Number} cornerRadius Rounds the corner using an arc. Similar to CSS's border-radius. Cannot be used together with edgeRoundness.
- * @param {null|Number} edgeRoundness Allows to modify the shape by rounding the edges using bezier curves. Default null.
+ * @param {Number} cornerRadius Rounds the corner using an arc. Similar to CSS's border-radius.
  * @see [Documentation](https://www.remotion.dev/docs/shapes/make-arrow)
  */
 export const makeArrow = ({
-	length,
-	headWidth,
-	headLength,
-	shaftWidth,
+	length = 300,
+	headWidth = 185,
+	headLength = 120,
+	shaftWidth = 80,
 	direction = 'right',
 	cornerRadius = 0,
-	edgeRoundness = null,
 }: MakeArrowProps): ShapeInfo => {
 	if (length <= 0 || headWidth <= 0 || headLength <= 0 || shaftWidth <= 0) {
 		throw new Error(
@@ -111,7 +108,7 @@ export const makeArrow = ({
 
 	const instructions: Instruction[] = [
 		...joinPoints([...points, points[0]], {
-			edgeRoundness,
+			edgeRoundness: null,
 			cornerRadius,
 			roundCornerStrategy: 'bezier',
 		}),

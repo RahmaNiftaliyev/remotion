@@ -36,22 +36,24 @@ export const shapeComponents: ShapeComponent[] = [
 			{
 				name: 'length',
 				type: 'number',
-				description: 'The total length of the arrow along its direction axis.',
+				description:
+					'The total length of the arrow along its direction axis. Default 300.',
 			},
 			{
 				name: 'headWidth',
 				type: 'number',
-				description: 'The width of the arrowhead at its widest point.',
+				description:
+					'The width of the arrowhead at its widest point. Default 185.',
 			},
 			{
 				name: 'headLength',
 				type: 'number',
-				description: 'The length of the arrowhead portion.',
+				description: 'The length of the arrowhead portion. Default 120.',
 			},
 			{
 				name: 'shaftWidth',
 				type: 'number',
-				description: 'The width of the arrow shaft.',
+				description: 'The width of the arrow shaft. Default 80.',
 			},
 			{
 				name: 'direction',
@@ -59,16 +61,10 @@ export const shapeComponents: ShapeComponent[] = [
 				description: 'The direction the arrow points. Default right.',
 			},
 			{
-				name: 'edgeRoundness',
-				type: 'number | null',
-				description:
-					'Allows to modify the shape by rounding the edges using bezier curves. Default null.',
-			},
-			{
 				name: 'cornerRadius',
 				type: 'number',
 				description:
-					"Rounds the corner using an arc. Similar to CSS's border-radius. Cannot be used together with edgeRoundness.",
+					"Rounds the corner using an arc. Similar to CSS's border-radius.",
 			},
 		],
 	},
@@ -360,8 +356,7 @@ export const ShapeOptions: React.FC<{
 				);
 			})}
 			{all &&
-			(shapeComponent.shape === 'Arrow' ||
-				shapeComponent.shape === 'Rect' ||
+			(shapeComponent.shape === 'Rect' ||
 				shapeComponent.shape === 'Triangle' ||
 				shapeComponent.shape === 'Polygon') ? (
 				<>

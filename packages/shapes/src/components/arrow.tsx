@@ -8,13 +8,12 @@ export type ArrowProps = MakeArrowProps & AllShapesProps;
 
 /**
  * @description Renders an SVG element containing an arrow shape.
- * @param {Number} length The total length of the arrow along its direction axis.
- * @param {Number} headWidth The width of the arrowhead at its widest point.
- * @param {Number} headLength The length of the arrowhead portion.
- * @param {Number} shaftWidth The width of the arrow shaft.
+ * @param {Number} length The total length of the arrow along its direction axis. Default 300.
+ * @param {Number} headWidth The width of the arrowhead at its widest point. Default 185.
+ * @param {Number} headLength The length of the arrowhead portion. Default 120.
+ * @param {Number} shaftWidth The width of the arrow shaft. Default 80.
  * @param {string} direction The direction the arrow points. Default 'right'.
- * @param {Number} cornerRadius Rounds the corner using an arc. Similar to CSS's border-radius. Cannot be used together with edgeRoundness.
- * @param {null|Number} edgeRoundness Allows to modify the shape by rounding the edges using bezier curves. Default null.
+ * @param {Number} cornerRadius Rounds the corner using an arc. Similar to CSS's border-radius.
  * @see [Documentation](https://www.remotion.dev/docs/shapes/arrow)
  */
 export const Arrow: React.FC<ArrowProps> = ({
@@ -24,7 +23,6 @@ export const Arrow: React.FC<ArrowProps> = ({
 	shaftWidth,
 	direction,
 	cornerRadius,
-	edgeRoundness,
 	...props
 }) => {
 	return (
@@ -36,7 +34,6 @@ export const Arrow: React.FC<ArrowProps> = ({
 				shaftWidth,
 				direction,
 				cornerRadius,
-				edgeRoundness,
 			})}
 			{...props}
 		/>

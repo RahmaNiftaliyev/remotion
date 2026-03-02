@@ -15,17 +15,12 @@ Generates an SVG path for an arrow shape.
 import {makeArrow} from '@remotion/shapes';
 
 const {path, width, height, transformOrigin} = makeArrow({
-  length: 200,
-  headWidth: 80,
-  headLength: 80,
-  shaftWidth: 40,
+  length: 300,
+  headWidth: 185,
+  headLength: 120,
+  shaftWidth: 80,
   direction: 'right',
 });
-
-console.log(path); // M 0 20 L 120 20 L 120 0 L 200 40 L 120 80 L 120 60 L 0 60 L 0 20 Z
-console.log(width); // 200
-console.log(height); // 80
-console.log(transformOrigin); // '100 40'
 ```
 
 ## Arguments

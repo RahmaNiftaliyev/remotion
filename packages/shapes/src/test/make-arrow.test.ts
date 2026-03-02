@@ -154,4 +154,3 @@ test('Should be able to make an arrow with cornerRadius', () => {
 	expect(arrow.path).toBeTruthy();
 	expect(arrow.instructions).toEqual(expect.any(Array));
 });
-

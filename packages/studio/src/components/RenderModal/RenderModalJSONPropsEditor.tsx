@@ -1,6 +1,8 @@
 import React, {useCallback, useEffect, useMemo} from 'react';
+import {useContext} from 'react';
 import type {SerializedJSONWithCustomFields} from 'remotion';
 import {NoReactInternals} from 'remotion/no-react';
+import {StudioServerConnectionCtx} from '../../helpers/client-id';
 import {FAIL_COLOR} from '../../helpers/colors';
 import {Button} from '../Button';
 import {Flex, Row, Spacing} from '../layout';
@@ -24,6 +26,27 @@ const scrollable: React.CSSProperties = {
 	flex: 1,
 };
 
+const parseJS = (
+	value: Record<string, unknown>,
+	schema: AnyZodSchema,
+): State => {
+	try {
+		const zodValidation = zodSafeParse(schema, value);
+		return {
+			str: JSON.stringify(value, null, 2),
+			value,
+			validJSON: true,
+			zodValidation,
+		};
+	} catch (e) {
+		return {
+			str: JSON.stringify(value, null, 2),
+			validJSON: false,
+			error: (e as Error).message,
+		};
+	}
+};
+
 const parseJSON = (str: string, schema: AnyZodSchema): State => {
 	try {
 		const value = NoReactInternals.deserializeJSONWithSpecialTypes(str);
@@ -43,14 +66,46 @@ export const RenderModalJSONPropsEditor: React.FC<{
 	readonly serializedJSON: SerializedJSONWithCustomFields | null;
 	readonly defaultProps: Record<string, unknown>;
 	readonly schema: AnyZodSchema;
-}> = ({setValue, value, defaultProps, onSave, serializedJSON, schema}) => {
+	readonly compositionId: string;
+}> = ({
+	setValue,
+	value,
+	defaultProps,
+	onSave,
+	serializedJSON,
+	schema,
+	compositionId,
+}) => {
 	if (serializedJSON === null) {
 		throw new Error('expecting serializedJSON to be defined');
 	}
 
+	const {subscribeToEvent} = useContext(StudioServerConnectionCtx);
+
 	const [localValue, setLocalValue] = React.useState<State>(() => {
 		return parseJSON(serializedJSON.serializedString, schema);
 	});
+
+	useEffect(() => {
+		const unsub = subscribeToEvent('default-props-updatable-changed', (e) => {
+			if (e.type !== 'default-props-updatable-changed') {
+				return;
+			}
+
+			if (e.compositionId !== compositionId) {
+				return;
+			}
+
+			const {result} = e;
+			if (result.canUpdate) {
+				setLocalValue(parseJS(result.currentDefaultProps, schema));
+			}
+		});
+
+		return () => {
+			unsub();
+		};
+	}, [subscribeToEvent, compositionId, schema]);
 
 	const onPretty = useCallback(() => {
 		if (!localValue.validJSON) {

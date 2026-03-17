@@ -4,17 +4,14 @@ import {getInputProps} from 'remotion';
 import {NoReactInternals} from 'remotion/no-react';
 import {StudioServerConnectionCtx} from '../../helpers/client-id';
 import {BACKGROUND, BORDER_COLOR, LIGHT_TEXT} from '../../helpers/colors';
-import {useZodIfPossible, useZodTypesIfPossible} from '../get-zod-if-possible';
+import {useZodIfPossible} from '../get-zod-if-possible';
 import {Flex, Spacing} from '../layout';
 import {ValidationMessage} from '../NewComposition/ValidationMessage';
-import {showNotification} from '../Notifications/NotificationCenter';
-import {callUpdateDefaultPropsApi} from '../RenderQueue/actions';
 import type {SegmentedControlItem} from '../SegmentedControl';
 import {SegmentedControl} from '../SegmentedControl';
 import type {TypeCanSaveState} from './get-render-modal-warnings';
 import {getRenderModalWarnings} from './get-render-modal-warnings';
 import {RenderModalJSONPropsEditor} from './RenderModalJSONPropsEditor';
-import {extractEnumJsonPaths} from './SchemaEditor/extract-enum-json-paths';
 import {SchemaEditor} from './SchemaEditor/SchemaEditor';
 import {
 	NoDefaultProps,
@@ -130,6 +127,10 @@ export const DataEditor: React.FC<{
 		[setDefaultProps],
 	);
 
+	const onSave = useCallback(() => {
+		setDefaultProps((p) => p, {shouldSave: true});
+	}, [setDefaultProps]);
+
 	const inJSONEditor = mode === 'json';
 	const serializedJSON: SerializedJSONWithCustomFields | null = useMemo(() => {
 		if (!inJSONEditor) {
@@ -147,7 +148,6 @@ export const DataEditor: React.FC<{
 	const cliProps = getInputProps();
 
 	const z = useZodIfPossible();
-	const zodTypes = useZodTypesIfPossible();
 
 	const schema = useMemo(() => {
 		if (!z) {
@@ -219,26 +219,6 @@ export const DataEditor: React.FC<{
 			},
 		];
 	}, [mode]);
-
-	const onUpdate = useCallback(() => {
-		if (schema === 'no-zod' || schema === 'no-schema' || z === null) {
-			showNotification('Cannot update default props: No Zod schema', 2000);
-			return;
-		}
-
-		callUpdateDefaultPropsApi(
-			unresolvedComposition.id,
-			defaultProps,
-			extractEnumJsonPaths({schema, zodRuntime: z, currentPath: [], zodTypes}),
-		).then((response) => {
-			if (!response.success) {
-				showNotification(
-					`Cannot update default props: ${response.reason}`,
-					2000,
-				);
-			}
-		});
-	}, [schema, z, unresolvedComposition.id, defaultProps, zodTypes]);
 
 	const connectionStatus = previewServerState.type;
 
@@ -336,17 +316,16 @@ export const DataEditor: React.FC<{
 					value={defaultProps}
 					setValue={setDefaultProps}
 					schema={schema}
-					zodValidationResult={zodValidationResult}
-					savedDefaultProps={unresolvedComposition.defaultProps}
 				/>
 			) : (
 				<RenderModalJSONPropsEditor
 					value={defaultProps ?? {}}
 					setValue={jsonEditorSetValue}
-					onSave={onUpdate}
+					onSave={onSave}
 					serializedJSON={serializedJSON}
 					defaultProps={unresolvedComposition.defaultProps}
 					schema={schema}
+					compositionId={unresolvedComposition.id}
 				/>
 			)}
 		</div>

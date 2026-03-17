@@ -1,14 +1,10 @@
 import React from 'react';
 import {useZodIfPossible} from '../../get-zod-if-possible';
 import {VERTICAL_SCROLLBAR_CLASSNAME} from '../../Menu/is-menu-item';
-import {
-	InvalidDefaultProps,
-	InvalidSchema,
-	TopLevelZodValue,
-} from './SchemaErrorMessages';
+import {TopLevelZodValue} from './SchemaErrorMessages';
 import {defaultPropsEditorScrollableAreaRef} from './scroll-to-default-props-path';
-import type {AnyZodSchema, ZodSafeParseResult} from './zod-schema-type';
-import {getZodSchemaType, zodSafeParse} from './zod-schema-type';
+import type {AnyZodSchema} from './zod-schema-type';
+import {getZodSchemaType} from './zod-schema-type';
 import {ZodObjectEditor} from './ZodObjectEditor';
 import type {UpdaterFunction} from './ZodSwitch';
 
@@ -22,25 +18,13 @@ export const SchemaEditor: React.FC<{
 	readonly schema: AnyZodSchema;
 	readonly value: Record<string, unknown>;
 	readonly setValue: UpdaterFunction<Record<string, unknown>>;
-	readonly zodValidationResult: ZodSafeParseResult;
-	readonly savedDefaultProps: Record<string, unknown>;
-}> = ({schema, value, setValue, zodValidationResult, savedDefaultProps}) => {
+}> = ({schema, value, setValue}) => {
 	const z = useZodIfPossible();
 	if (!z) {
 		throw new Error('expected zod');
 	}
 
 	const typeName = getZodSchemaType(schema);
-
-	if (!zodValidationResult.success) {
-		const defaultPropsValid = zodSafeParse(schema, savedDefaultProps);
-
-		if (!defaultPropsValid.success) {
-			return <InvalidDefaultProps zodValidationResult={zodValidationResult} />;
-		}
-
-		return <InvalidSchema zodValidationResult={zodValidationResult} />;
-	}
 
 	if (typeName !== 'object') {
 		return <TopLevelZodValue typeReceived={typeName} />;

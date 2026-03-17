@@ -56,14 +56,35 @@ test.describe('visual mode', () => {
 
 		await textarea.fill('{invalid json');
 
-		await expect(
-			page.locator('[data-testid="json-props-error"]'),
-		).not.toBeEmpty({timeout: 5_000});
+		const errorDiv = page.locator('[data-testid="json-props-error"]');
+
+		await expect(errorDiv).not.toBeEmpty({timeout: 5_000});
 
 		await textarea.blur();
 
 		await page.waitForTimeout(500);
 		expect(fs.readFileSync(rootFile, 'utf-8')).toBe(contentBefore);
+
+		// Update the root file on disk — the textarea should auto-update and the error should clear
+		const updatedTitle = 'disk-update-clears-error';
+		const updatedContent = contentBefore.replace(
+			/title: '[^']*'/,
+			`title: '${updatedTitle}'`,
+		);
+		fs.writeFileSync(rootFile, updatedContent);
+
+		await expect(textarea).toHaveValue(new RegExp(updatedTitle), {
+			timeout: 10_000,
+		});
+
+		await expect(errorDiv).toBeEmpty({timeout: 5_000});
+
+		// Restore original file
+		fs.writeFileSync(rootFile, contentBefore);
+
+		await expect(textarea).not.toHaveValue(new RegExp(updatedTitle), {
+			timeout: 10_000,
+		});
 	});
 
 	test('should show error and not save on blur when JSON does not match schema', async ({

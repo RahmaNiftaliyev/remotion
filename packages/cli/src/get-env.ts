@@ -37,31 +37,24 @@ const watchEnvFile = ({
 	onUpdate: (newProps: Record<string, string>) => void;
 	logLevel: LogLevel;
 }): (() => void) => {
-	const updateFile = async () => {
-		const file = await fs.promises.readFile(envFile, 'utf-8');
-		onUpdate({
-			...processEnv,
-			...dotenv.parse(file),
-		});
-	};
-
 	const {unwatch} = StudioServerInternals.installFileWatcher({
 		file: envFile,
-		onChange: async (type) => {
+		onChange: async (event) => {
 			try {
-				if (type === 'deleted') {
+				if (event.type === 'deleted') {
 					Log.warn({indent: false, logLevel}, `${envFile} was deleted.`);
-				} else if (type === 'changed') {
-					await updateFile();
+				} else {
+					onUpdate({
+						...processEnv,
+						...dotenv.parse(event.content),
+					});
 					Log.info(
 						{indent: false, logLevel},
-						chalk.blueBright(`Updated env file ${envFile}`),
-					);
-				} else if (type === 'created') {
-					await updateFile();
-					Log.info(
-						{indent: false, logLevel},
-						chalk.blueBright(`Created env file ${envFile}`),
+						chalk.blueBright(
+							event.type === 'created'
+								? `Created env file ${envFile}`
+								: `Updated env file ${envFile}`,
+						),
 					);
 				}
 			} catch (err) {

@@ -1,4 +1,4 @@
-import {readFileSync, writeFileSync} from 'node:fs';
+import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {RenderInternals} from '@remotion/renderer';
 import type {
@@ -7,6 +7,7 @@ import type {
 } from '@remotion/studio-shared';
 import {parseAst, serializeAst} from '../../codemods/parse-ast';
 import {applyCodemod} from '../../codemods/recast-mods';
+import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
 import {makeHyperlink} from '../../hyperlinks/make-link';
 import type {ApiHandler} from '../api-types';
 import {suppressHmrForFile} from '../hmr-suppression';
@@ -68,7 +69,7 @@ export const applyVisualControlHandler: ApiHandler<
 	pushToUndoStack(absolutePath, fileContents, logLevel);
 	suppressUndoStackInvalidation(absolutePath);
 	suppressHmrForFile(absolutePath);
-	writeFileSync(absolutePath, output);
+	writeFileAndNotifyFileWatchers(absolutePath, output);
 
 	const locationLabel = `${fileRelativeToRoot}`;
 	const fileLink = makeHyperlink({

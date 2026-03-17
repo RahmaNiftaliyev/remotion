@@ -115,6 +115,34 @@ const extractDefaultPropsFromSource = (
 	return result;
 };
 
+export const computeCanUpdateDefaultPropsFromContent = (
+	content: string,
+	compositionId: string,
+): CanUpdateDefaultPropsResponse => {
+	try {
+		const currentDefaultProps = extractDefaultPropsFromSource(
+			content,
+			compositionId,
+		);
+
+		if (currentDefaultProps === null) {
+			throw new Error(
+				`Could not find or extract defaultProps for composition "${compositionId}"`,
+			);
+		}
+
+		return {
+			canUpdate: true,
+			currentDefaultProps,
+		};
+	} catch (err) {
+		return {
+			canUpdate: false,
+			reason: (err as Error).message,
+		};
+	}
+};
+
 export const computeCanUpdateDefaultProps = async ({
 	compositionId,
 	remotionRoot,
@@ -136,22 +164,13 @@ export const computeCanUpdateDefaultProps = async ({
 		checkIfTypeScriptFile(projectInfo.rootFile);
 
 		const input = readFileSync(projectInfo.rootFile, 'utf-8');
-		const currentDefaultProps = extractDefaultPropsFromSource(
+		const result = computeCanUpdateDefaultPropsFromContent(
 			input,
 			compositionId,
 		);
 
-		if (currentDefaultProps === null) {
-			throw new Error(
-				`Could not find or extract defaultProps for composition "${compositionId}"`,
-			);
-		}
-
 		return {
-			result: {
-				canUpdate: true,
-				currentDefaultProps,
-			},
+			result,
 			rootFile: projectInfo.rootFile,
 		};
 	} catch (err) {

@@ -30,7 +30,12 @@ import {
 	removeCompletedClientRender,
 } from './client-render-queue';
 import {parseAndApplyCodemod} from './codemods/duplicate-composition';
-import {installFileWatcher} from './file-watcher';
+import {
+	createFileWatcherRegistry,
+	installFileWatcher,
+	setFileWatcherRegistry,
+	writeFileAndNotifyFileWatchers,
+} from './file-watcher';
 import {getLatestRemotionVersion} from './get-latest-remotion-version';
 import {
 	getInstalledDependencies,
@@ -59,6 +64,9 @@ export const StudioServerInternals = {
 	setMaxTimelineTracks,
 	getLatestRemotionVersion,
 	installFileWatcher,
+	writeFileAndNotifyFileWatchers,
+	createFileWatcherRegistry,
+	setFileWatcherRegistry,
 	AnsiDiff,
 	formatBytes,
 	parseAndApplyCodemod,

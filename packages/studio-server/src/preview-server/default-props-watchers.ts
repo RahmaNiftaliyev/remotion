@@ -1,7 +1,10 @@
 import type {CanUpdateDefaultPropsResponse} from '@remotion/studio-shared';
 import {installFileWatcher} from '../file-watcher';
 import {waitForLiveEventsListener} from './live-events';
-import {computeCanUpdateDefaultProps} from './routes/can-update-default-props';
+import {
+	computeCanUpdateDefaultProps,
+	computeCanUpdateDefaultPropsFromContent,
+} from './routes/can-update-default-props';
 
 // Global file watcher — at most one for the root file
 let globalWatcher: {
@@ -27,8 +30,8 @@ const ensureGlobalWatcher = (rootFile: string) => {
 
 	const {unwatch} = installFileWatcher({
 		file: rootFile,
-		onChange: (type) => {
-			if (type === 'deleted') {
+		onChange: (event) => {
+			if (event.type === 'deleted') {
 				return;
 			}
 
@@ -43,21 +46,19 @@ const ensureGlobalWatcher = (rootFile: string) => {
 				}
 
 				const clientIds = [...subscriptions[compositionId]];
-				computeCanUpdateDefaultProps({
+				const newResult = computeCanUpdateDefaultPropsFromContent(
+					event.content,
 					compositionId,
-					remotionRoot: watcherConfig.remotionRoot,
-					entryPoint: watcherConfig.entryPoint,
-				}).then(({result: newResult}) => {
-					waitForLiveEventsListener().then((listener) => {
-						const event = {
-							type: 'default-props-updatable-changed' as const,
-							compositionId,
-							result: newResult,
-						};
-						for (const cId of clientIds) {
-							listener.sendEventToClientId(cId, event);
-						}
-					});
+				);
+				waitForLiveEventsListener().then((listener) => {
+					const updateEvent = {
+						type: 'default-props-updatable-changed' as const,
+						compositionId,
+						result: newResult,
+					};
+					for (const cId of clientIds) {
+						listener.sendEventToClientId(cId, updateEvent);
+					}
 				});
 			}
 		},

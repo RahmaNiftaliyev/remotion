@@ -17,8 +17,8 @@ export const subscribeToFileExistenceWatchers = ({
 
 	const {unwatch, exists} = installFileWatcher({
 		file,
-		onChange: (type) => {
-			if (type === 'created') {
+		onChange: (event) => {
+			if (event.type === 'created') {
 				waitForLiveEventsListener().then((listener) => {
 					listener.sendEventToClient({
 						type: 'watched-file-undeleted',
@@ -28,7 +28,7 @@ export const subscribeToFileExistenceWatchers = ({
 				});
 			}
 
-			if (type === 'deleted') {
+			if (event.type === 'deleted') {
 				waitForLiveEventsListener().then((listener) => {
 					listener.sendEventToClient({
 						type: 'watched-file-deleted',

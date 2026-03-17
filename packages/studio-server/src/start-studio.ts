@@ -9,6 +9,10 @@ import type {
 	RenderDefaults,
 	RenderJob,
 } from '@remotion/studio-shared';
+import {
+	createFileWatcherRegistry,
+	setFileWatcherRegistry,
+} from './file-watcher';
 import {getNetworkAddress} from './get-network-address';
 import {maybeOpenBrowser} from './maybe-open-browser';
 import type {QueueMethods} from './preview-server/api-types';
@@ -97,6 +101,10 @@ export const startStudio = async ({
 			process.title = `bun (bunx remotionb studio)`;
 		}
 	} catch {}
+
+	const cleanupFileWatcherRegistry = setFileWatcherRegistry(
+		createFileWatcherRegistry(),
+	);
 
 	watchRootFile(remotionRoot, previewEntry);
 	const publicDir = getAbsolutePublicDir({
@@ -223,6 +231,7 @@ export const startStudio = async ({
 
 	await liveEventsServer.closeConnections();
 	cleanupLiveEventsListener();
+	cleanupFileWatcherRegistry();
 	await close();
 	RenderInternals.Log.info(
 		{indent: false, logLevel},

@@ -6,7 +6,7 @@ import type {
 import {installFileWatcher} from '../file-watcher';
 import {waitForLiveEventsListener} from './live-events';
 import {
-	computeSequencePropsStatus,
+	computeSequencePropsStatusFromContent,
 	computeSequencePropsStatusByLine,
 } from './routes/can-update-sequence-props';
 
@@ -63,17 +63,16 @@ export const subscribeToSequencePropsWatchers = ({
 
 	const {unwatch} = installFileWatcher({
 		file: absolutePath,
-		onChange: (type) => {
-			if (type === 'deleted') {
+		onChange: (event) => {
+			if (event.type === 'deleted') {
 				return;
 			}
 
-			const result = computeSequencePropsStatus({
-				fileName,
+			const result = computeSequencePropsStatusFromContent(
+				event.content,
 				nodePath,
 				keys,
-				remotionRoot,
-			});
+			);
 
 			waitForLiveEventsListener().then((listener) => {
 				listener.sendEventToClientId(clientId, {

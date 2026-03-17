@@ -1,10 +1,11 @@
-import {readFileSync, writeFileSync} from 'node:fs';
+import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import type {
 	SaveSequencePropsRequest,
 	SaveSequencePropsResponse,
 } from '@remotion/studio-shared';
 import {updateSequenceProps} from '../../codemods/update-sequence-props';
+import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
 import type {ApiHandler} from '../api-types';
 import {suppressHmrForFile} from '../hmr-suppression';
 import {pushToUndoStack, suppressUndoStackInvalidation} from '../undo-stack';
@@ -39,7 +40,7 @@ export const saveSequencePropsHandler: ApiHandler<
 		pushToUndoStack(absolutePath, fileContents, logLevel);
 		suppressUndoStackInvalidation(absolutePath);
 		suppressHmrForFile(absolutePath);
-		writeFileSync(absolutePath, output);
+		writeFileAndNotifyFileWatchers(absolutePath, output);
 
 		const newValueString = JSON.stringify(JSON.parse(value));
 		const parsedDefault =

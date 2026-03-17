@@ -1,7 +1,10 @@
-import {readFileSync, writeFileSync} from 'node:fs';
+import {readFileSync} from 'node:fs';
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
-import {installFileWatcher} from '../file-watcher';
+import {
+	installFileWatcher,
+	writeFileAndNotifyFileWatchers,
+} from '../file-watcher';
 import {suppressHmrForFile} from './hmr-suppression';
 import {waitForLiveEventsListener} from './live-events';
 
@@ -16,6 +19,7 @@ const redoStack: UndoEntry[] = [];
 const suppressedWrites = new Map<string, number>();
 const watchers = new Map<string, {unwatch: () => void}>();
 let storedLogLevel: LogLevel = 'info';
+let printedUndoHint = false;
 
 function broadcastState() {
 	const undoFile =
@@ -51,6 +55,15 @@ export function pushToUndoStack(
 			`Undo stack: added entry for ${filePath} (${undoStack.length} items)`,
 		),
 	);
+
+	if (!printedUndoHint) {
+		printedUndoHint = true;
+		const shortcut = process.platform === 'darwin' ? 'Cmd+Z' : 'Ctrl+Z';
+		RenderInternals.Log.info(
+			{indent: false, logLevel},
+			RenderInternals.chalk.gray(`${shortcut} in Studio to undo`),
+		);
+	}
 
 	ensureWatching(filePath);
 	broadcastState();
@@ -177,7 +190,7 @@ export function popUndo(): {success: true} | {success: false; reason: string} {
 
 	suppressUndoStackInvalidation(entry.filePath);
 	suppressHmrForFile(entry.filePath);
-	writeFileSync(entry.filePath, entry.oldContents);
+	writeFileAndNotifyFileWatchers(entry.filePath, entry.oldContents);
 
 	RenderInternals.Log.verbose(
 		{indent: false, logLevel: storedLogLevel},
@@ -202,7 +215,7 @@ export function popRedo(): {success: true} | {success: false; reason: string} {
 
 	suppressUndoStackInvalidation(entry.filePath);
 	suppressHmrForFile(entry.filePath);
-	writeFileSync(entry.filePath, entry.oldContents);
+	writeFileAndNotifyFileWatchers(entry.filePath, entry.oldContents);
 
 	RenderInternals.Log.verbose(
 		{indent: false, logLevel: storedLogLevel},

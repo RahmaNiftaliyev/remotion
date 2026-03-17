@@ -1,4 +1,4 @@
-import {readFileSync, writeFileSync} from 'node:fs';
+import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {RenderInternals} from '@remotion/renderer';
 import type {
@@ -6,6 +6,7 @@ import type {
 	UpdateDefaultPropsResponse,
 } from '@remotion/studio-shared';
 import {updateDefaultProps} from '../../codemods/update-default-props';
+import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
 import {makeHyperlink} from '../../hyperlinks/make-link';
 import type {ApiHandler} from '../api-types';
 import {suppressHmrForFile} from '../hmr-suppression';
@@ -42,7 +43,7 @@ export const updateDefaultPropsHandler: ApiHandler<
 		pushToUndoStack(projectInfo.rootFile, fileContents, logLevel);
 		suppressUndoStackInvalidation(projectInfo.rootFile);
 		suppressHmrForFile(projectInfo.rootFile);
-		writeFileSync(projectInfo.rootFile, output);
+		writeFileAndNotifyFileWatchers(projectInfo.rootFile, output);
 
 		const fileRelativeToRoot = path.relative(
 			remotionRoot,

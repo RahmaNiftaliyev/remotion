@@ -93,8 +93,8 @@ test('writeFileAndNotifyFileWatchers passes content to subscribers', () => {
 
 	const w = registry.installFileWatcher({
 		file: tmpFile,
-		onChange: (event) => {
-			receivedEvent = event;
+		onChange: (evt) => {
+			receivedEvent = evt;
 		},
 	});
 

@@ -28,7 +28,15 @@ const serializeMessage = (message: EventSourceEvent) => {
 
 let printPortMessageTimeout: Timer | null = null;
 
-export const makeLiveEventsRouter = (logLevel: LogLevel): LiveEventsServer => {
+export type InitialUndoRedoState = {
+	undoFile: string | null;
+	redoFile: string | null;
+};
+
+export const makeLiveEventsRouter = (
+	logLevel: LogLevel,
+	getInitialUndoRedoState: () => InitialUndoRedoState,
+): LiveEventsServer => {
 	let clients: Client[] = [];
 
 	const router = (
@@ -49,7 +57,10 @@ export const makeLiveEventsRouter = (logLevel: LogLevel): LiveEventsServer => {
 		}
 
 		const clientId = String(Math.random());
-		response.write(serializeMessage({type: 'init', clientId}));
+		const {undoFile, redoFile} = getInitialUndoRedoState();
+		response.write(
+			serializeMessage({type: 'init', clientId, undoFile, redoFile}),
+		);
 
 		const newClient = {
 			id: clientId,

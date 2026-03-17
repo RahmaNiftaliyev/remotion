@@ -16,6 +16,7 @@ import {wdm} from './dev-middleware';
 import {webpackHotMiddleware} from './hot-middleware';
 import type {LiveEventsServer} from './live-events';
 import {makeLiveEventsRouter} from './live-events';
+import {getRedoStack, getUndoStack} from './undo-stack';
 
 export type StartServerResult =
 	| {
@@ -111,7 +112,16 @@ export const startServer = async (options: {
 	const wdmMiddleware = wdm(compiler, options.logLevel);
 	const whm = webpackHotMiddleware(compiler, options.logLevel);
 
-	const liveEventsServer = makeLiveEventsRouter(options.logLevel);
+	const liveEventsServer = makeLiveEventsRouter(options.logLevel, () => {
+		const undoStack = getUndoStack();
+		const redoStack = getRedoStack();
+		return {
+			undoFile:
+				undoStack.length > 0 ? undoStack[undoStack.length - 1].filePath : null,
+			redoFile:
+				redoStack.length > 0 ? redoStack[redoStack.length - 1].filePath : null,
+		};
+	});
 
 	const server = http.createServer((request, response) => {
 		if (options.enableCrossSiteIsolation) {

@@ -80,6 +80,16 @@ export const PreviewServerConnection: React.FC<{
 					type: 'connected',
 					clientId: newEvent.clientId,
 				});
+
+				listeners.current.forEach((l) => {
+					if (l.type === 'undo-redo-stack-changed') {
+						l.listener({
+							type: 'undo-redo-stack-changed',
+							undoFile: newEvent.undoFile,
+							redoFile: newEvent.redoFile,
+						});
+					}
+				});
 			}
 
 			if (newEvent.type === 'render-queue-updated') {

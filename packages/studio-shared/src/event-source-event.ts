@@ -14,6 +14,8 @@ export type EventSourceEvent =
 	| {
 			type: 'init';
 			clientId: string;
+			undoFile: string | null;
+			redoFile: string | null;
 	  }
 	| {
 			type: 'new-env-variables';

@@ -11,6 +11,7 @@ export const exampleDir = path.resolve(
 );
 
 export const rootFile = path.join(exampleDir, 'src', 'Root.tsx');
+export const newVideoFile = path.join(exampleDir, 'src', 'NewVideo.tsx');
 export const remotionBin = path.join(
 	exampleDir,
 	'node_modules',

@@ -24,6 +24,7 @@ const fieldRowBase: React.CSSProperties = {
 const fieldName: React.CSSProperties = {
 	fontSize: 12,
 	color: 'rgba(255, 255, 255, 0.8)',
+	userSelect: 'none',
 };
 
 const fieldLabelRow: React.CSSProperties = {

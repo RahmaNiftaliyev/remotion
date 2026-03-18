@@ -53,7 +53,7 @@ export const useResponsiveSidebarStatus = (): 'collapsed' | 'expanded' => {
 	return actualStateLeft;
 };
 
-export const TopPanel: React.FC<{
+const TopPanelInner: React.FC<{
 	readonly readOnlyStudio: boolean;
 	readonly onMounted: () => void;
 	readonly drawRef: React.RefObject<HTMLDivElement | null>;
@@ -178,3 +178,5 @@ export const TopPanel: React.FC<{
 		</ObserveDefaultProps>
 	);
 };
+
+export const TopPanel = React.memo(TopPanelInner);

@@ -1,5 +1,4 @@
-import {readFileSync, writeFileSync} from 'node:fs';
-import fs from 'node:fs';
+import fs, {readFileSync, writeFileSync} from 'node:fs';
 
 export type FileChangeEvent =
 	| {type: 'created'; content: string}
@@ -161,10 +160,21 @@ export const getFileWatcherRegistry = (): FileWatcherRegistry => {
 export const installFileWatcher: FileWatcherRegistry['installFileWatcher'] = (
 	options,
 ) => {
+	if (!currentRegistry) {
+		return {
+			exists: false,
+			unwatch: () => {},
+		};
+	}
+
 	return getFileWatcherRegistry().installFileWatcher(options);
 };
 
 export const writeFileAndNotifyFileWatchers: FileWatcherRegistry['writeFileAndNotifyFileWatchers'] =
 	(file, content) => {
+		if (!currentRegistry) {
+			return;
+		}
+
 		getFileWatcherRegistry().writeFileAndNotifyFileWatchers(file, content);
 	};

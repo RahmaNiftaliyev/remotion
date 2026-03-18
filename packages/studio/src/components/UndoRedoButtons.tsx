@@ -1,5 +1,11 @@
 import type {EventSourceEvent} from '@remotion/studio-shared';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from 'react';
 import {cmdOrCtrlCharacter} from '../error-overlay/remotion-overlay/ShortcutHint';
 import {StudioServerConnectionCtx} from '../helpers/client-id';
 import {
@@ -22,6 +28,8 @@ export const UndoRedoButtons: React.FC = () => {
 	const [redoFile, setRedoFile] = useState<string | null>(null);
 	const {subscribeToEvent} = useContext(StudioServerConnectionCtx);
 	const keybindings = useKeybinding();
+	const undoInFlight = useRef(false);
+	const redoInFlight = useRef(false);
 
 	useEffect(() => {
 		const unsub = subscribeToEvent(
@@ -40,15 +48,33 @@ export const UndoRedoButtons: React.FC = () => {
 	}, [subscribeToEvent]);
 
 	const onUndo = useCallback(() => {
-		callApi('/api/undo', {}).catch(() => {
-			// Ignore errors
-		});
+		if (undoInFlight.current) {
+			return;
+		}
+
+		undoInFlight.current = true;
+		callApi('/api/undo', {})
+			.catch(() => {
+				// Ignore errors
+			})
+			.finally(() => {
+				undoInFlight.current = false;
+			});
 	}, []);
 
 	const onRedo = useCallback(() => {
-		callApi('/api/redo', {}).catch(() => {
-			// Ignore errors
-		});
+		if (redoInFlight.current) {
+			return;
+		}
+
+		redoInFlight.current = true;
+		callApi('/api/redo', {})
+			.catch(() => {
+				// Ignore errors
+			})
+			.finally(() => {
+				redoInFlight.current = false;
+			});
 	}, []);
 
 	useEffect(() => {

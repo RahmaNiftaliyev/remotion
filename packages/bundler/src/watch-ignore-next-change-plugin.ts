@@ -48,6 +48,8 @@ type NodeWatchFileSystem = {
 		once: (event: string, listener: (...args: unknown[]) => void) => void;
 		pause: () => void;
 		paused: boolean;
+		aggregatedChanges: Set<string>;
+		aggregatedRemovals: Set<string>;
 	};
 	inputFileSystem: {
 		purge?: (item: string) => void;
@@ -63,12 +65,19 @@ type NodeWatchFileSystem = {
 	) => Watcher;
 };
 
+type TraceLogFn = (...args: Parameters<typeof console.log>) => void;
+
 export class WatchIgnoreNextChangePlugin {
 	private filesToIgnore = new Set<string>();
 	private dirsToIgnore = new Set<string>();
 	private snapshotFileTimestamps = new Map<string, TimeInfoEntry>();
 	private snapshotDirTimestamps = new Map<string, TimeInfoEntry>();
 	private currentWatcher: Watcher | null = null;
+	private trace: TraceLogFn;
+
+	constructor(trace: TraceLogFn) {
+		this.trace = trace;
+	}
 
 	ignoreNextChange(file: string): void {
 		this.filesToIgnore.add(file);
@@ -88,6 +97,8 @@ export class WatchIgnoreNextChangePlugin {
 				this.snapshotDirTimestamps.set(dir, dirTs);
 			}
 		}
+
+		this.trace('[WatchIgnoreNextChange] Registered ignore for', file);
 	}
 
 	unignoreNextChange(file: string): void {
@@ -127,6 +138,10 @@ export class WatchIgnoreNextChangePlugin {
 						self.filesToIgnore.has(fileName) ||
 						self.dirsToIgnore.has(fileName)
 					) {
+						self.trace(
+							'[WatchIgnoreNextChange] Suppressed callbackUndelayed for',
+							fileName,
+						);
 						return;
 					}
 
@@ -141,6 +156,8 @@ export class WatchIgnoreNextChangePlugin {
 					removedFiles,
 				) => {
 					const hasIgnoredFiles = self.filesToIgnore.size > 0;
+					const suppressedFiles: string[] = [];
+					const suppressedDirs: string[] = [];
 
 					if (fileTimestamps) {
 						for (const file of [...self.filesToIgnore]) {
@@ -155,6 +172,7 @@ export class WatchIgnoreNextChangePlugin {
 							}
 
 							if (wasInChanged) {
+								suppressedFiles.push(file);
 								self.filesToIgnore.delete(file);
 								self.snapshotFileTimestamps.delete(file);
 							}
@@ -174,6 +192,7 @@ export class WatchIgnoreNextChangePlugin {
 							}
 
 							if (wasInChanged) {
+								suppressedDirs.push(dir);
 								self.dirsToIgnore.delete(dir);
 								self.snapshotDirTimestamps.delete(dir);
 							}
@@ -198,6 +217,13 @@ export class WatchIgnoreNextChangePlugin {
 						remainingChanges === 0 &&
 						remainingRemovals === 0
 					) {
+						self.trace(
+							'[WatchIgnoreNextChange] All changes suppressed, re-registering watcher. Suppressed files:',
+							suppressedFiles,
+							'dirs:',
+							suppressedDirs,
+						);
+
 						// Don't call the callback — that would trigger _invalidate() → compile().
 						// Instead, re-register the watchpack listeners and unpause,
 						// so the watch loop stays alive for future changes.
@@ -253,6 +279,19 @@ export class WatchIgnoreNextChangePlugin {
 								);
 							});
 							watchpack.paused = false;
+							// Clear suppressed files from accumulated changes.
+							// While paused, watchpack's _onChange still adds to
+							// aggregatedChanges. If we don't clear them, unpausing
+							// will cause the same files to re-trigger via _onTimeout.
+							for (const file of suppressedFiles) {
+								watchpack.aggregatedChanges.delete(file);
+								watchpack.aggregatedRemovals.delete(file);
+							}
+
+							for (const dir of suppressedDirs) {
+								watchpack.aggregatedChanges.delete(dir);
+								watchpack.aggregatedRemovals.delete(dir);
+							}
 						} else {
 							callback(
 								err,
@@ -264,6 +303,13 @@ export class WatchIgnoreNextChangePlugin {
 						}
 
 						return;
+					}
+
+					if (hasIgnoredFiles) {
+						self.trace(
+							'[WatchIgnoreNextChange] Partial suppression. Remaining changes:',
+							changedFiles ? [...changedFiles] : [],
+						);
 					}
 
 					callback(

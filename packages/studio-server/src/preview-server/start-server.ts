@@ -86,7 +86,12 @@ export const startServer = async (options: {
 				return detection.type === 'match' ? 'stop' : 'continue';
 			};
 
-	const watchIgnorePlugin = new WatchIgnoreNextChangePlugin();
+	const watchIgnorePlugin = new WatchIgnoreNextChangePlugin((...args) => {
+		RenderInternals.Log.trace(
+			{indent: false, logLevel: options.logLevel},
+			...args,
+		);
+	});
 
 	const configArgs = {
 		entry: options.entry,

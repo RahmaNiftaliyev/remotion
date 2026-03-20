@@ -14,6 +14,7 @@ import {processUpdate} from './process-update';
 declare global {
 	interface Window {
 		__webpack_hot_middleware_reporter__: Reporter;
+		__remotion_processHmrEvent?: (hmrEvent: HotMiddlewareMessage) => void;
 	}
 }
 
@@ -112,10 +113,6 @@ function processMessage(obj: HotMiddlewareMessage) {
 	}
 }
 
-export const processHmrEvent = (hmrEvent: HotMiddlewareMessage) => {
-	processMessage(hmrEvent);
-};
-
 let reporter: Reporter;
 const singletonKey = '__webpack_hot_middleware_reporter__' as const;
 
@@ -127,4 +124,8 @@ export const enableHotMiddleware = () => {
 
 		reporter = window[singletonKey];
 	}
+
+	window.__remotion_processHmrEvent = (hmrEvent: HotMiddlewareMessage) => {
+		processMessage(hmrEvent);
+	};
 };

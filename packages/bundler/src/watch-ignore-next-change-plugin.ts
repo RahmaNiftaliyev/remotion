@@ -1,3 +1,10 @@
+// Webpack plugin that suppresses the next file change for dynamically specified files.
+// Used to prevent a full webpack rebuild when the studio writes to a watched file
+// (e.g. updating default props). On ignoreNextChange(), the current file and directory
+// timestamps are snapshotted. When watchpack fires the aggregated callback, the old
+// timestamps are restored, the file is removed from changedFiles, and the original
+// callback is skipped (which would trigger _invalidate → compile). The watchpack
+// listeners are re-registered and unpaused so subsequent real changes still work.
 import path from 'node:path';
 import type {Compiler} from 'webpack';
 

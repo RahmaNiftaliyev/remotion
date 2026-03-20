@@ -76,15 +76,14 @@ export class WatchIgnoreNextChangePlugin {
 		this.dirsToIgnore.add(dir);
 
 		// Snapshot current timestamps from the watcher BEFORE the file is written
-		if (this.currentWatcher) {
-			const fileEntries = this.currentWatcher.getFileTimeInfoEntries();
-			const fileTs = fileEntries.get(file);
+		if (this.currentWatcher?.getInfo) {
+			const info = this.currentWatcher.getInfo();
+			const fileTs = info.fileTimeInfoEntries.get(file);
 			if (fileTs !== undefined) {
 				this.snapshotFileTimestamps.set(file, fileTs);
 			}
 
-			const dirEntries = this.currentWatcher.getContextTimeInfoEntries();
-			const dirTs = dirEntries.get(dir);
+			const dirTs = info.contextTimeInfoEntries.get(dir);
 			if (dirTs !== undefined) {
 				this.snapshotDirTimestamps.set(dir, dirTs);
 			}

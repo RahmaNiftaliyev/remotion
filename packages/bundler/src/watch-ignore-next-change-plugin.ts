@@ -8,14 +8,11 @@
 import path from 'node:path';
 import type {Compiler} from 'webpack';
 
-type TimeInfoEntry =
-	| {
-			safeTime: number;
-			timestamp?: number;
-			accuracy?: number;
-	  }
-	| 'ignore'
-	| null;
+type TimeInfoEntry = {
+	safeTime: number;
+	timestamp?: number;
+	accuracy?: number;
+} | null;
 
 type WatchCallback = (
 	err: null | Error,
@@ -118,7 +115,6 @@ export class WatchIgnoreNextChangePlugin {
 
 			const originalWatch = wfs.watch.bind(wfs);
 
-			// eslint-disable-next-line @typescript-eslint/no-this-alias
 			const self = this;
 
 			wfs.watch = (

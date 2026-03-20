@@ -40,6 +40,33 @@ export const ObserveDefaultProps: React.FC<{
 			? previewServerState.clientId
 			: null;
 
+	const applyResult = (
+		compId: string,
+		result:
+			| {canUpdate: true; currentDefaultProps: Record<string, unknown>}
+			| {canUpdate: false; reason: string},
+	) => {
+		if (result.canUpdate) {
+			setCanSaveDefaultProps((prevState) => ({
+				...prevState,
+				[compId]: {canUpdate: true},
+			}));
+			Internals.editorPropsProviderRef.current?.setProps((prev) => ({
+				...prev,
+				[compId]: result.currentDefaultProps,
+			}));
+		} else {
+			setCanSaveDefaultProps((prevState) => ({
+				...prevState,
+				[compId]: {
+					canUpdate: false,
+					reason: result.reason,
+					determined: true,
+				},
+			}));
+		}
+	};
+
 	useEffect(() => {
 		if (readOnlyStudio || !clientId || compositionId === null) {
 			return;
@@ -47,31 +74,13 @@ export const ObserveDefaultProps: React.FC<{
 
 		callApi('/api/subscribe-to-default-props', {compositionId, clientId})
 			.then((can) => {
-				if (can.canUpdate) {
-					setCanSaveDefaultProps((prevState) => ({
-						...prevState,
-						[compositionId]: {canUpdate: true},
-					}));
-				} else {
-					setCanSaveDefaultProps((prevState) => ({
-						...prevState,
-						[compositionId]: {
-							canUpdate: false,
-							reason: can.reason,
-							determined: true,
-						},
-					}));
-				}
+				applyResult(compositionId, can);
 			})
 			.catch((err) => {
-				setCanSaveDefaultProps((prevState) => ({
-					...prevState,
-					[compositionId]: {
-						canUpdate: false,
-						reason: (err as Error).message,
-						determined: true,
-					},
-				}));
+				applyResult(compositionId, {
+					canUpdate: false,
+					reason: (err as Error).message,
+				});
 			});
 
 		return () => {
@@ -94,26 +103,7 @@ export const ObserveDefaultProps: React.FC<{
 				return;
 			}
 
-			const {result} = e;
-			if (result.canUpdate) {
-				setCanSaveDefaultProps((prevState) => ({
-					...prevState,
-					[e.compositionId]: {canUpdate: true},
-				}));
-				Internals.editorPropsProviderRef.current?.setProps((prev) => ({
-					...prev,
-					[e.compositionId]: result.currentDefaultProps,
-				}));
-			} else {
-				setCanSaveDefaultProps((prevState) => ({
-					...prevState,
-					[e.compositionId]: {
-						canUpdate: false,
-						reason: result.reason,
-						determined: true,
-					},
-				}));
-			}
+			applyResult(e.compositionId, e.result);
 		});
 
 		return () => {

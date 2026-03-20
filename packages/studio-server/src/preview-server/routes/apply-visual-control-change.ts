@@ -11,7 +11,11 @@ import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
 import {makeHyperlink} from '../../hyperlinks/make-link';
 import type {ApiHandler} from '../api-types';
 import {suppressHmrForFile} from '../hmr-suppression';
-import {pushToUndoStack, suppressUndoStackInvalidation} from '../undo-stack';
+import {
+	printUndoHint,
+	pushToUndoStack,
+	suppressUndoStackInvalidation,
+} from '../undo-stack';
 import {warnAboutPrettierOnce} from './log-update';
 
 export const applyVisualControlHandler: ApiHandler<
@@ -66,7 +70,13 @@ export const applyVisualControlHandler: ApiHandler<
 		// Prettier not available, use unformatted output
 	}
 
-	pushToUndoStack(absolutePath, fileContents, logLevel);
+	pushToUndoStack(
+		absolutePath,
+		fileContents,
+		logLevel,
+		remotionRoot,
+		'visual control change',
+	);
 	suppressUndoStackInvalidation(absolutePath);
 	suppressHmrForFile(absolutePath);
 	writeFileAndNotifyFileWatchers(absolutePath, output);
@@ -84,6 +94,8 @@ export const applyVisualControlHandler: ApiHandler<
 	if (!formatted) {
 		warnAboutPrettierOnce(logLevel);
 	}
+
+	printUndoHint(logLevel);
 
 	return {
 		success: true,

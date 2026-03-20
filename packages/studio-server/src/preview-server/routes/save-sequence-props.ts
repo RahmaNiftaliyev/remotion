@@ -8,7 +8,11 @@ import {updateSequenceProps} from '../../codemods/update-sequence-props';
 import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
 import type {ApiHandler} from '../api-types';
 import {suppressHmrForFile} from '../hmr-suppression';
-import {pushToUndoStack, suppressUndoStackInvalidation} from '../undo-stack';
+import {
+	printUndoHint,
+	pushToUndoStack,
+	suppressUndoStackInvalidation,
+} from '../undo-stack';
 import {computeSequencePropsStatus} from './can-update-sequence-props';
 import {logUpdate} from './log-update';
 
@@ -37,7 +41,13 @@ export const saveSequencePropsHandler: ApiHandler<
 			defaultValue: defaultValue !== null ? JSON.parse(defaultValue) : null,
 		});
 
-		pushToUndoStack(absolutePath, fileContents, logLevel);
+		pushToUndoStack(
+			absolutePath,
+			fileContents,
+			logLevel,
+			remotionRoot,
+			'sequence props update',
+		);
 		suppressUndoStackInvalidation(absolutePath);
 		suppressHmrForFile(absolutePath);
 		writeFileAndNotifyFileWatchers(absolutePath, output);
@@ -56,6 +66,8 @@ export const saveSequencePropsHandler: ApiHandler<
 			formatted,
 			logLevel,
 		});
+
+		printUndoHint(logLevel);
 
 		const newStatus = computeSequencePropsStatus({
 			fileName,

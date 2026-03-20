@@ -11,7 +11,11 @@ import {makeHyperlink} from '../../hyperlinks/make-link';
 import type {ApiHandler} from '../api-types';
 import {suppressHmrForFile} from '../hmr-suppression';
 import {getProjectInfo} from '../project-info';
-import {pushToUndoStack, suppressUndoStackInvalidation} from '../undo-stack';
+import {
+	printUndoHint,
+	pushToUndoStack,
+	suppressUndoStackInvalidation,
+} from '../undo-stack';
 import {suppressBundlerUpdateForFile} from '../watch-ignore-next-change';
 import {checkIfTypeScriptFile} from './can-update-default-props';
 import {warnAboutPrettierOnce} from './log-update';
@@ -41,7 +45,13 @@ export const updateDefaultPropsHandler: ApiHandler<
 			enumPaths,
 		});
 
-		pushToUndoStack(projectInfo.rootFile, fileContents, logLevel);
+		pushToUndoStack(
+			projectInfo.rootFile,
+			fileContents,
+			logLevel,
+			remotionRoot,
+			'default props update',
+		);
 		suppressUndoStackInvalidation(projectInfo.rootFile);
 		suppressHmrForFile(projectInfo.rootFile);
 		suppressBundlerUpdateForFile(projectInfo.rootFile);
@@ -64,6 +74,8 @@ export const updateDefaultPropsHandler: ApiHandler<
 		if (!formatted) {
 			warnAboutPrettierOnce(logLevel);
 		}
+
+		printUndoHint(logLevel);
 
 		return {
 			success: true,

@@ -1,10 +1,12 @@
 import {readFileSync} from 'node:fs';
+import path from 'node:path';
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
 import {
 	installFileWatcher,
 	writeFileAndNotifyFileWatchers,
 } from '../file-watcher';
+import {makeHyperlink} from '../hyperlinks/make-link';
 import {suppressHmrForFile} from './hmr-suppression';
 import {waitForLiveEventsListener} from './live-events';
 import {suppressBundlerUpdateForFile} from './watch-ignore-next-change';
@@ -12,6 +14,7 @@ import {suppressBundlerUpdateForFile} from './watch-ignore-next-change';
 interface UndoEntry {
 	filePath: string;
 	oldContents: string;
+	description: string;
 }
 
 const MAX_ENTRIES = 100;
@@ -20,6 +23,7 @@ const redoStack: UndoEntry[] = [];
 const suppressedWrites = new Map<string, number>();
 const watchers = new Map<string, {unwatch: () => void}>();
 let storedLogLevel: LogLevel = 'info';
+let storedRemotionRoot: string | null = null;
 let printedUndoHint = false;
 
 function broadcastState() {
@@ -41,9 +45,12 @@ export function pushToUndoStack(
 	filePath: string,
 	oldContents: string,
 	logLevel: LogLevel,
+	remotionRoot: string,
+	description: string,
 ) {
 	storedLogLevel = logLevel;
-	undoStack.push({filePath, oldContents});
+	storedRemotionRoot = remotionRoot;
+	undoStack.push({filePath, oldContents, description});
 	if (undoStack.length > MAX_ENTRIES) {
 		undoStack.shift();
 	}
@@ -57,21 +64,27 @@ export function pushToUndoStack(
 		),
 	);
 
+	ensureWatching(filePath);
+	broadcastState();
+}
+
+export function printUndoHint(logLevel: LogLevel) {
 	if (!printedUndoHint) {
 		printedUndoHint = true;
 		const shortcut = process.platform === 'darwin' ? 'Cmd+Z' : 'Ctrl+Z';
 		RenderInternals.Log.info(
 			{indent: false, logLevel},
-			RenderInternals.chalk.gray(`${shortcut} in Studio to undo`),
+			RenderInternals.chalk.gray(`Tip: ${shortcut} in Studio to undo`),
 		);
 	}
-
-	ensureWatching(filePath);
-	broadcastState();
 }
 
-export function pushToRedoStack(filePath: string, oldContents: string) {
-	redoStack.push({filePath, oldContents});
+export function pushToRedoStack(
+	filePath: string,
+	oldContents: string,
+	description: string,
+) {
+	redoStack.push({filePath, oldContents, description});
 	if (redoStack.length > MAX_ENTRIES) {
 		redoStack.shift();
 	}
@@ -180,6 +193,21 @@ function cleanupWatchers() {
 	}
 }
 
+function logFileAction(action: string, filePath: string) {
+	const locationLabel = storedRemotionRoot
+		? path.relative(storedRemotionRoot, filePath)
+		: filePath;
+	const fileLink = makeHyperlink({
+		url: `file://${filePath}`,
+		text: locationLabel,
+		fallback: locationLabel,
+	});
+	RenderInternals.Log.info(
+		{indent: false, logLevel: storedLogLevel},
+		`${RenderInternals.chalk.blueBright(`${fileLink}:`)} ${action}`,
+	);
+}
+
 export function popUndo(): {success: true} | {success: false; reason: string} {
 	const entry = undoStack.pop();
 	if (!entry) {
@@ -187,7 +215,11 @@ export function popUndo(): {success: true} | {success: false; reason: string} {
 	}
 
 	const currentContents = readFileSync(entry.filePath, 'utf-8');
-	redoStack.push({filePath: entry.filePath, oldContents: currentContents});
+	redoStack.push({
+		filePath: entry.filePath,
+		oldContents: currentContents,
+		description: entry.description,
+	});
 
 	suppressUndoStackInvalidation(entry.filePath);
 	suppressHmrForFile(entry.filePath);
@@ -200,6 +232,7 @@ export function popUndo(): {success: true} | {success: false; reason: string} {
 			`Undo: restored ${entry.filePath} (undo: ${undoStack.length}, redo: ${redoStack.length})`,
 		),
 	);
+	logFileAction(`Undid ${entry.description}`, entry.filePath);
 
 	ensureWatching(entry.filePath);
 	broadcastState();
@@ -213,7 +246,11 @@ export function popRedo(): {success: true} | {success: false; reason: string} {
 	}
 
 	const currentContents = readFileSync(entry.filePath, 'utf-8');
-	undoStack.push({filePath: entry.filePath, oldContents: currentContents});
+	undoStack.push({
+		filePath: entry.filePath,
+		oldContents: currentContents,
+		description: entry.description,
+	});
 
 	suppressUndoStackInvalidation(entry.filePath);
 	suppressHmrForFile(entry.filePath);
@@ -226,6 +263,7 @@ export function popRedo(): {success: true} | {success: false; reason: string} {
 			`Redo: restored ${entry.filePath} (undo: ${undoStack.length}, redo: ${redoStack.length})`,
 		),
 	);
+	logFileAction(`Redid ${entry.description}`, entry.filePath);
 
 	ensureWatching(entry.filePath);
 	broadcastState();

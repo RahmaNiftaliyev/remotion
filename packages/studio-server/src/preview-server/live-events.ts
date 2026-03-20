@@ -20,6 +20,7 @@ export type LiveEventsServer = {
 	sendEventToClientId: (clientId: string, event: EventSourceEvent) => void;
 	router: (request: IncomingMessage, response: ServerResponse) => Promise<void>;
 	closeConnections: () => Promise<void>;
+	addNewClientListener: (cb: () => void) => () => void;
 };
 
 const serializeMessage = (message: EventSourceEvent) => {
@@ -38,6 +39,7 @@ export const makeLiveEventsRouter = (
 	getInitialUndoRedoState: () => InitialUndoRedoState,
 ): LiveEventsServer => {
 	let clients: Client[] = [];
+	let newClientListeners: (() => void)[] = [];
 
 	const router = (
 		request: IncomingMessage,
@@ -67,6 +69,7 @@ export const makeLiveEventsRouter = (
 			response,
 		};
 		clients.push(newClient);
+		newClientListeners.forEach((cb) => cb());
 		if (printPortMessageTimeout) {
 			clearTimeout(printPortMessageTimeout);
 		}
@@ -105,10 +108,18 @@ export const makeLiveEventsRouter = (
 		}
 	};
 
+	const addNewClientListener = (cb: () => void) => {
+		newClientListeners.push(cb);
+		return () => {
+			newClientListeners = newClientListeners.filter((l) => l !== cb);
+		};
+	};
+
 	return {
 		sendEventToClient,
 		sendEventToClientId,
 		router,
+		addNewClientListener,
 		closeConnections: () => {
 			return Promise.all(
 				clients.map((client) => {

@@ -4,6 +4,7 @@ import type {
 	CanUpdateSequencePropsResponse,
 	SequenceNodePath,
 } from './api-requests';
+import type {HotMiddlewareMessage} from './hot-middleware';
 import type {CompletedClientRender, RenderJob} from './render-job';
 
 export type EventSourceEvent =
@@ -73,4 +74,8 @@ export type EventSourceEvent =
 				value: unknown;
 				isUndefined: boolean;
 			}>;
+	  }
+	| {
+			type: 'hmr';
+			hmrEvent: HotMiddlewareMessage;
 	  };

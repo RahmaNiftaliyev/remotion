@@ -5,6 +5,7 @@ import {Internals} from 'remotion';
 import {showNotification} from '../components/Notifications/NotificationCenter';
 import playBeepSound from '../components/PlayBeepSound';
 import {renderJobsRef} from '../components/RenderQueue/context';
+import {processHmrEvent} from '../hot-middleware-client/client';
 import {reloadUrl} from './url-state';
 
 type PreviewServerState =
@@ -122,6 +123,10 @@ export const PreviewServerConnection: React.FC<{
 						detail: payload,
 					}),
 				);
+			}
+
+			if (newEvent.type === 'hmr') {
+				processHmrEvent(newEvent.hmrEvent);
 			}
 
 			listeners.current.forEach((l) => {

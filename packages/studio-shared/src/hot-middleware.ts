@@ -16,11 +16,9 @@ export type HotMiddlewareMessage =
 	  };
 
 export const hotMiddlewareOptions = {
-	path: '/__webpack_hmr',
 	timeout: 20 * 1000,
 	reload: true,
 	warn: true,
-	heartbeat: 10 * 1000,
 };
 
 export type HotMiddlewareOptions = typeof hotMiddlewareOptions;

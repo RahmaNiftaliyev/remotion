@@ -17,7 +17,7 @@ import {detectRemotionServer} from '../detect-remotion-server';
 import {handleRoutes} from '../routes';
 import type {QueueMethods} from './api-types';
 import {wdm} from './dev-middleware';
-import {webpackHotMiddleware} from './hot-middleware';
+import {setupWebpackHmr} from './hot-middleware';
 import type {LiveEventsServer} from './live-events';
 import {makeLiveEventsRouter} from './live-events';
 import {getRedoStack, getUndoStack} from './undo-stack';
@@ -125,8 +125,6 @@ export const startServer = async (options: {
 	setWatchIgnoreNextChangePlugin(watchIgnorePlugin);
 
 	const wdmMiddleware = wdm(compiler, options.logLevel);
-	const whm = webpackHotMiddleware(compiler, options.logLevel);
-
 	const liveEventsServer = makeLiveEventsRouter(options.logLevel, () => {
 		const undoStack = getUndoStack();
 		const redoStack = getRedoStack();
@@ -137,6 +135,7 @@ export const startServer = async (options: {
 				redoStack.length > 0 ? redoStack[redoStack.length - 1].filePath : null,
 		};
 	});
+	setupWebpackHmr(compiler, options.logLevel, liveEventsServer);
 
 	const server = http.createServer((request, response) => {
 		if (options.enableCrossSiteIsolation) {
@@ -149,13 +148,6 @@ export const startServer = async (options: {
 				resolve();
 			});
 		})
-			.then(() => {
-				return new Promise<void>((resolve) => {
-					whm(request as IncomingMessage, response, () => {
-						resolve();
-					});
-				});
-			})
 			.then(() => {
 				return handleRoutes({
 					staticHash: options.staticHash,

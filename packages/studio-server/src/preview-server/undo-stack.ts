@@ -11,10 +11,15 @@ import {suppressHmrForFile} from './hmr-suppression';
 import {waitForLiveEventsListener} from './live-events';
 import {suppressBundlerUpdateForFile} from './watch-ignore-next-change';
 
+export interface UndoEntryDescription {
+	undoMessage: string;
+	redoMessage: string;
+}
+
 interface UndoEntry {
 	filePath: string;
 	oldContents: string;
-	description: string;
+	description: UndoEntryDescription;
 }
 
 const MAX_ENTRIES = 100;
@@ -46,7 +51,7 @@ export function pushToUndoStack(
 	oldContents: string,
 	logLevel: LogLevel,
 	remotionRoot: string,
-	description: string,
+	description: UndoEntryDescription,
 ) {
 	storedLogLevel = logLevel;
 	storedRemotionRoot = remotionRoot;
@@ -82,7 +87,7 @@ export function printUndoHint(logLevel: LogLevel) {
 export function pushToRedoStack(
 	filePath: string,
 	oldContents: string,
-	description: string,
+	description: UndoEntryDescription,
 ) {
 	redoStack.push({filePath, oldContents, description});
 	if (redoStack.length > MAX_ENTRIES) {
@@ -232,7 +237,7 @@ export function popUndo(): {success: true} | {success: false; reason: string} {
 			`Undo: restored ${entry.filePath} (undo: ${undoStack.length}, redo: ${redoStack.length})`,
 		),
 	);
-	logFileAction(`Undid ${entry.description}`, entry.filePath);
+	logFileAction(entry.description.undoMessage, entry.filePath);
 
 	ensureWatching(entry.filePath);
 	broadcastState();
@@ -263,7 +268,7 @@ export function popRedo(): {success: true} | {success: false; reason: string} {
 			`Redo: restored ${entry.filePath} (undo: ${undoStack.length}, redo: ${redoStack.length})`,
 		),
 	);
-	logFileAction(`Redid ${entry.description}`, entry.filePath);
+	logFileAction(entry.description.redoMessage, entry.filePath);
 
 	ensureWatching(entry.filePath);
 	broadcastState();

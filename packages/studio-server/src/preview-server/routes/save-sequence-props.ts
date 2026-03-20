@@ -14,7 +14,7 @@ import {
 	suppressUndoStackInvalidation,
 } from '../undo-stack';
 import {computeSequencePropsStatus} from './can-update-sequence-props';
-import {logUpdate} from './log-update';
+import {formatPropChange, logUpdate, normalizeQuotes} from './log-update';
 
 export const saveSequencePropsHandler: ApiHandler<
 	SaveSequencePropsRequest,
@@ -41,28 +41,45 @@ export const saveSequencePropsHandler: ApiHandler<
 			defaultValue: defaultValue !== null ? JSON.parse(defaultValue) : null,
 		});
 
-		pushToUndoStack(
-			absolutePath,
-			fileContents,
-			logLevel,
-			remotionRoot,
-			'sequence props update',
-		);
+		const newValueString = JSON.stringify(JSON.parse(value));
+		const parsedDefault =
+			defaultValue !== null ? JSON.parse(defaultValue) : null;
+		const defaultValueString =
+			parsedDefault !== null ? JSON.stringify(parsedDefault) : null;
+
+		const normalizedOld = normalizeQuotes(oldValueString);
+		const normalizedNew = normalizeQuotes(newValueString);
+		const normalizedDefault =
+			defaultValueString !== null ? normalizeQuotes(defaultValueString) : null;
+
+		const undoPropChange = formatPropChange({
+			key,
+			oldValueString: normalizedNew,
+			newValueString: normalizedOld,
+			defaultValueString: normalizedDefault,
+		});
+		const redoPropChange = formatPropChange({
+			key,
+			oldValueString: normalizedOld,
+			newValueString: normalizedNew,
+			defaultValueString: normalizedDefault,
+		});
+
+		pushToUndoStack(absolutePath, fileContents, logLevel, remotionRoot, {
+			undoMessage: `Undid ${undoPropChange}`,
+			redoMessage: `Redid ${redoPropChange}`,
+		});
 		suppressUndoStackInvalidation(absolutePath);
 		suppressHmrForFile(absolutePath);
 		writeFileAndNotifyFileWatchers(absolutePath, output);
 
-		const newValueString = JSON.stringify(JSON.parse(value));
-		const parsedDefault =
-			defaultValue !== null ? JSON.parse(defaultValue) : null;
 		logUpdate({
 			absolutePath,
 			fileRelativeToRoot,
 			key,
 			oldValueString,
 			newValueString,
-			defaultValueString:
-				parsedDefault !== null ? JSON.stringify(parsedDefault) : null,
+			defaultValueString,
 			formatted,
 			logLevel,
 		});

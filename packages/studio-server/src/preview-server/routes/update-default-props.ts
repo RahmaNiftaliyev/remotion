@@ -50,7 +50,10 @@ export const updateDefaultPropsHandler: ApiHandler<
 			fileContents,
 			logLevel,
 			remotionRoot,
-			'default props update',
+			{
+				undoMessage: `Undid default props update for "${compositionId}"`,
+				redoMessage: `Redid default props update for "${compositionId}"`,
+			},
 		);
 		suppressUndoStackInvalidation(projectInfo.rootFile);
 		suppressHmrForFile(projectInfo.rootFile);

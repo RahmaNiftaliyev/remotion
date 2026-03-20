@@ -1,7 +1,11 @@
 import type {IncomingMessage} from 'node:http';
 import http from 'node:http';
 import type {WebpackOverrideFn} from '@remotion/bundler';
-import {BundlerInternals, webpack} from '@remotion/bundler';
+import {
+	BundlerInternals,
+	WatchIgnoreNextChangePlugin,
+	webpack,
+} from '@remotion/bundler';
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
 import type {
@@ -17,6 +21,7 @@ import {webpackHotMiddleware} from './hot-middleware';
 import type {LiveEventsServer} from './live-events';
 import {makeLiveEventsRouter} from './live-events';
 import {getRedoStack, getUndoStack} from './undo-stack';
+import {setWatchIgnoreNextChangePlugin} from './watch-ignore-next-change';
 
 export type StartServerResult =
 	| {
@@ -81,6 +86,13 @@ export const startServer = async (options: {
 				return detection.type === 'match' ? 'stop' : 'continue';
 			};
 
+	const watchIgnorePlugin = new WatchIgnoreNextChangePlugin((...args) => {
+		RenderInternals.Log.trace(
+			{indent: false, logLevel: options.logLevel},
+			...args,
+		);
+	});
+
 	const configArgs = {
 		entry: options.entry,
 		userDefinedComponent: options.userDefinedComponent,
@@ -96,6 +108,7 @@ export const startServer = async (options: {
 		poll: options.poll,
 		bufferStateDelayInMilliseconds: options.bufferStateDelayInMilliseconds,
 		askAIEnabled: options.askAIEnabled,
+		extraPlugins: [watchIgnorePlugin],
 	};
 
 	let compiler: webpack.Compiler;
@@ -108,6 +121,8 @@ export const startServer = async (options: {
 		const [, webpackConf] = await BundlerInternals.webpackConfig(configArgs);
 		compiler = webpack(webpackConf);
 	}
+
+	setWatchIgnoreNextChangePlugin(watchIgnorePlugin);
 
 	const wdmMiddleware = wdm(compiler, options.logLevel);
 	const whm = webpackHotMiddleware(compiler, options.logLevel);

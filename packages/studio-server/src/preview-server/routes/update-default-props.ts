@@ -12,6 +12,7 @@ import type {ApiHandler} from '../api-types';
 import {suppressHmrForFile} from '../hmr-suppression';
 import {getProjectInfo} from '../project-info';
 import {pushToUndoStack, suppressUndoStackInvalidation} from '../undo-stack';
+import {suppressBundlerUpdateForFile} from '../watch-ignore-next-change';
 import {checkIfTypeScriptFile} from './can-update-default-props';
 import {warnAboutPrettierOnce} from './log-update';
 
@@ -43,6 +44,7 @@ export const updateDefaultPropsHandler: ApiHandler<
 		pushToUndoStack(projectInfo.rootFile, fileContents, logLevel);
 		suppressUndoStackInvalidation(projectInfo.rootFile);
 		suppressHmrForFile(projectInfo.rootFile);
+		suppressBundlerUpdateForFile(projectInfo.rootFile);
 		writeFileAndNotifyFileWatchers(projectInfo.rootFile, output);
 
 		const fileRelativeToRoot = path.relative(

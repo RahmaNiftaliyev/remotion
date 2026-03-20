@@ -56,7 +56,14 @@ export default async function globalSetup(): Promise<void> {
 
 	const studioProcess = spawn(
 		remotionBin,
-		['studio', '--port', String(STUDIO_PORT), '--props', 'src/my-props.json'],
+		[
+			'studio',
+			'--port',
+			String(STUDIO_PORT),
+			'--props',
+			'src/my-props.json',
+			'--log=trace',
+		],
 		{
 			cwd: exampleDir,
 			stdio: 'pipe',

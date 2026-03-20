@@ -7,6 +7,7 @@ import {
 } from '../file-watcher';
 import {suppressHmrForFile} from './hmr-suppression';
 import {waitForLiveEventsListener} from './live-events';
+import {suppressBundlerUpdateForFile} from './watch-ignore-next-change';
 
 interface UndoEntry {
 	filePath: string;
@@ -190,6 +191,7 @@ export function popUndo(): {success: true} | {success: false; reason: string} {
 
 	suppressUndoStackInvalidation(entry.filePath);
 	suppressHmrForFile(entry.filePath);
+	suppressBundlerUpdateForFile(entry.filePath);
 	writeFileAndNotifyFileWatchers(entry.filePath, entry.oldContents);
 
 	RenderInternals.Log.verbose(
@@ -215,6 +217,7 @@ export function popRedo(): {success: true} | {success: false; reason: string} {
 
 	suppressUndoStackInvalidation(entry.filePath);
 	suppressHmrForFile(entry.filePath);
+	suppressBundlerUpdateForFile(entry.filePath);
 	writeFileAndNotifyFileWatchers(entry.filePath, entry.oldContents);
 
 	RenderInternals.Log.verbose(

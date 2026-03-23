@@ -1758,8 +1758,8 @@ export const Index: React.FC = () => {
 				<Composition
 					id="visual-controls"
 					component={VisualControls}
-					width={1080}
-					height={1080}
+					width={1920}
+					height={2400}
 					fps={30}
 					durationInFrames={900}
 				/>

@@ -59,4 +59,144 @@ test.describe('visual controls', () => {
 			)
 			.toBe(true);
 	});
+
+	test('should edit label string and update source file', async ({page}) => {
+		await navigateToVisualControls(page);
+
+		// Click the Controls tab on the right panel
+		const controlsTab = page.getByText('Controls', {exact: true});
+		await expect(controlsTab).toBeVisible({timeout: 15_000});
+		await controlsTab.click();
+
+		// Find the label string input by its name attribute
+		const labelInput = page.locator('input[name="label"]');
+		await expect(labelInput).toBeVisible({timeout: 10_000});
+
+		const newLabel = 'e2e-test-label';
+		await labelInput.fill(newLabel);
+		await labelInput.blur();
+
+		// Wait for the source file to be updated on disk
+		await expect
+			.poll(
+				() => {
+					const content = fs.readFileSync(visualControlsFile, 'utf-8');
+					return content.includes(newLabel);
+				},
+				{
+					message: `Expected VisualControls/index.tsx to contain label "${newLabel}"`,
+					timeout: 10_000,
+				},
+			)
+			.toBe(true);
+	});
+
+	test('should edit nullable subtitle and update source file', async ({
+		page,
+	}) => {
+		await navigateToVisualControls(page);
+
+		const controlsTab = page.getByText('Controls', {exact: true});
+		await expect(controlsTab).toBeVisible({timeout: 15_000});
+		await controlsTab.click();
+
+		// Edit the subtitle text (nullable string, default 'A subtitle')
+		const subtitleInput = page.locator('input[name="subtitle"]');
+		await expect(subtitleInput).toBeVisible({timeout: 10_000});
+
+		const newSubtitle = 'e2e-nullable-test';
+		await subtitleInput.fill(newSubtitle);
+		await subtitleInput.blur();
+
+		await expect
+			.poll(
+				() => {
+					const content = fs.readFileSync(visualControlsFile, 'utf-8');
+					return content.includes(newSubtitle);
+				},
+				{
+					message: `Expected VisualControls/index.tsx to contain subtitle "${newSubtitle}"`,
+					timeout: 10_000,
+				},
+			)
+			.toBe(true);
+
+		// Now toggle to null via the checkbox
+		const nullCheckbox = page.locator('input[name="subtitle"][type="checkbox"]');
+		await expect(nullCheckbox).toBeVisible({timeout: 5_000});
+		await nullCheckbox.check();
+
+		await expect
+			.poll(
+				() => {
+					const content = fs.readFileSync(visualControlsFile, 'utf-8');
+					return content.includes("'subtitle', null");
+				},
+				{
+					message:
+						'Expected VisualControls/index.tsx to contain subtitle set to null',
+					timeout: 10_000,
+				},
+			)
+			.toBe(true);
+	});
+
+	test('should edit optional extra-rotation and update source file', async ({
+		page,
+	}) => {
+		await navigateToVisualControls(page);
+
+		const controlsTab = page.getByText('Controls', {exact: true});
+		await expect(controlsTab).toBeVisible({timeout: 15_000});
+		await controlsTab.click();
+
+		// Find the extra-rotation fieldset and its dragger
+		const fieldset = page
+			.locator('[data-json-path="extra-rotation"]')
+			.locator('..');
+		const dragger = fieldset.locator('button.__remotion_input_dragger');
+		await expect(dragger).toBeVisible({timeout: 10_000});
+		await dragger.click();
+
+		const input = fieldset.locator('input[type="number"]');
+		await expect(input).toBeVisible({timeout: 5_000});
+
+		const newValue = '90';
+		await input.fill(newValue);
+		await input.press('Enter');
+
+		await expect
+			.poll(
+				() => {
+					const content = fs.readFileSync(visualControlsFile, 'utf-8');
+					return content.includes(`'extra-rotation', ${newValue}`);
+				},
+				{
+					message: `Expected VisualControls/index.tsx to contain extra-rotation value ${newValue}`,
+					timeout: 10_000,
+				},
+			)
+			.toBe(true);
+
+		// Now toggle to undefined via the checkbox
+		const undefinedCheckbox = page.locator(
+			'input[name="extra-rotation"][type="checkbox"]',
+		);
+		await expect(undefinedCheckbox).toBeVisible({timeout: 5_000});
+		await undefinedCheckbox.check();
+
+		await expect
+			.poll(
+				() => {
+					const content = fs.readFileSync(visualControlsFile, 'utf-8');
+					return content.includes("'extra-rotation', undefined");
+				},
+				{
+					message:
+						'Expected VisualControls/index.tsx to contain extra-rotation set to undefined',
+					timeout: 10_000,
+				},
+			)
+			.toBe(true);
+	});
 });

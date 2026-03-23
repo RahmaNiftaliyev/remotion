@@ -48,8 +48,8 @@ export const ZodTextareaEditor: React.FC<{
 
 	const onBlur: React.FocusEventHandler<HTMLTextAreaElement> =
 		useCallback(() => {
-			setValue((v) => v, {shouldSave: true});
-		}, [setValue]);
+			setValue(() => value, {shouldSave: true});
+		}, [setValue, value]);
 
 	const zodValidation = React.useMemo(
 		() => zodSafeParse(schema, value),

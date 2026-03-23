@@ -2,6 +2,8 @@ import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
+import {parseAst} from '../codemods/parse-ast';
+import {readVisualControlValues} from '../codemods/read-visual-control-values';
 import {
 	installFileWatcher,
 	writeFileAndNotifyFileWatchers,
@@ -198,6 +200,23 @@ function cleanupWatchers() {
 	}
 }
 
+function emitVisualControlChanges(fileContents: string) {
+	try {
+		const ast = parseAst(fileContents);
+		const values = readVisualControlValues(ast);
+		if (values.length > 0) {
+			waitForLiveEventsListener().then((listener) => {
+				listener.sendEventToClient({
+					type: 'visual-control-values-changed',
+					values,
+				});
+			});
+		}
+	} catch {
+		// File might not contain visual controls or might not be parseable
+	}
+}
+
 function logFileAction(action: string, filePath: string) {
 	const locationLabel = storedRemotionRoot
 		? path.relative(storedRemotionRoot, filePath)
@@ -239,6 +258,7 @@ export function popUndo(): {success: true} | {success: false; reason: string} {
 	);
 	logFileAction(entry.description.undoMessage, entry.filePath);
 
+	emitVisualControlChanges(entry.oldContents);
 	ensureWatching(entry.filePath);
 	broadcastState();
 	return {success: true};
@@ -270,6 +290,7 @@ export function popRedo(): {success: true} | {success: false; reason: string} {
 	);
 	logFileAction(entry.description.redoMessage, entry.filePath);
 
+	emitVisualControlChanges(entry.oldContents);
 	ensureWatching(entry.filePath);
 	broadcastState();
 	return {success: true};

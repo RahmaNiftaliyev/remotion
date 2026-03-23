@@ -11,6 +11,7 @@ import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
 import {makeHyperlink} from '../../hyperlinks/make-link';
 import type {ApiHandler} from '../api-types';
 import {suppressHmrForFile} from '../hmr-suppression';
+import {waitForLiveEventsListener} from '../live-events';
 import {
 	printUndoHint,
 	pushToUndoStack,
@@ -77,6 +78,19 @@ export const applyVisualControlHandler: ApiHandler<
 	suppressUndoStackInvalidation(absolutePath);
 	suppressHmrForFile(absolutePath);
 	writeFileAndNotifyFileWatchers(absolutePath, output);
+
+	waitForLiveEventsListener().then((listener) => {
+		listener.sendEventToClient({
+			type: 'visual-control-values-changed',
+			values: changes.map((change) => ({
+				id: change.id,
+				value: change.newValueIsUndefined
+					? null
+					: JSON.parse(change.newValueSerialized),
+				isUndefined: change.newValueIsUndefined,
+			})),
+		});
+	});
 
 	const locationLabel = `${fileRelativeToRoot}`;
 	const fileLink = makeHyperlink({

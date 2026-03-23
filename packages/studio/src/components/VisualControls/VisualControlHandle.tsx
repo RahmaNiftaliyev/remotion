@@ -75,11 +75,14 @@ export const VisualControlHandle: React.FC<{
 							{
 								id: keyName,
 								newValueSerialized:
-									NoReactInternals.serializeJSONWithSpecialTypes({
-										data: val as Record<string, unknown>,
-										indent: 2,
-										staticBase: window.remotion_staticBase,
-									}).serializedString,
+									val === undefined
+										? ''
+										: NoReactInternals.serializeJSONWithSpecialTypes({
+												data: val as Record<string, unknown>,
+												indent: 2,
+												staticBase: window.remotion_staticBase,
+											}).serializedString,
+								newValueIsUndefined: val === undefined,
 								enumPaths,
 							},
 						],

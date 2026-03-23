@@ -1,6 +1,36 @@
 import {stringifyDefaultProps, type EnumPath} from '@remotion/studio-shared';
 import * as recast from 'recast';
-import {parseAst, serializeAst} from './parse-ast';
+import {formatInlineContent} from './format-inline-content';
+import {parseAst} from './parse-ast';
+
+// Recast uses tabWidth=4 for column counting, so columns don't
+// correspond to character indices when tabs are present.
+// This converts a recast loc (line/column) to a character offset.
+const RECAST_TAB_WIDTH = 4;
+
+const recastLocToOffset = (
+	input: string,
+	loc: {line: number; column: number},
+): number => {
+	const lines = input.split('\n');
+	let offset = 0;
+	for (let i = 0; i < loc.line - 1; i++) {
+		offset += lines[i].length + 1;
+	}
+
+	// Convert recast's tab-expanded column to character index
+	const line = lines[loc.line - 1];
+	let col = 0;
+	for (let i = 0; i < line.length; i++) {
+		if (col >= loc.column) {
+			return offset + i;
+		}
+
+		col += line[i] === '\t' ? RECAST_TAB_WIDTH : 1;
+	}
+
+	return offset + line.length;
+};
 
 export const updateDefaultProps = async ({
 	input,
@@ -14,6 +44,13 @@ export const updateDefaultProps = async ({
 	enumPaths: EnumPath[];
 }): Promise<{output: string; formatted: boolean}> => {
 	const ast = parseAst(input);
+	const stringified = stringifyDefaultProps({
+		props: newDefaultProps,
+		enumPaths,
+	});
+
+	let replaceStart: number | undefined;
+	let replaceEnd: number | undefined;
 
 	recast.types.visit(ast, {
 		visitJSXElement(path) {
@@ -113,44 +150,43 @@ export const updateDefaultProps = async ({
 				);
 			}
 
-			defaultPropsAttr.value.expression = recast.types.builders.identifier(
-				stringifyDefaultProps({props: newDefaultProps, enumPaths}),
-			);
+			// Capture source positions for direct string replacement
+			// instead of modifying the AST and serializing (avoids recast artifacts)
+			const valueLoc = defaultPropsAttr.value.loc;
+			if (!valueLoc) {
+				throw new Error('Could not determine source location of defaultProps');
+			}
+
+			replaceStart = recastLocToOffset(input, valueLoc.start);
+			replaceEnd = recastLocToOffset(input, valueLoc.end);
 
 			this.traverse(path); // Continue traversing the AST
 		},
 	});
 
-	const finalfile = serializeAst(ast);
-
-	//	5: finally, format the file
-	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-	type PrettierType = typeof import('prettier');
-	let prettier: PrettierType | null = null;
-
-	try {
-		prettier = await import('prettier');
-	} catch {
-		return {output: finalfile, formatted: false};
+	if (replaceStart === undefined || replaceEnd === undefined) {
+		throw new Error(
+			`Could not find defaultProps for composition "${compositionId}"`,
+		);
 	}
 
-	const {format, resolveConfig, resolveConfigFile} = prettier as PrettierType;
+	// linePrefix includes the JSX container opening brace
+	const lineStart = input.lastIndexOf('\n', replaceStart) + 1;
+	const linePrefix = input.substring(lineStart, replaceStart + 1);
 
-	const configFilePath = await resolveConfigFile();
-	if (!configFilePath) {
-		return {output: finalfile, formatted: false};
-	}
-
-	const prettierConfig = await resolveConfig(configFilePath);
-	if (!prettierConfig) {
-		return {output: finalfile, formatted: false};
-	}
-
-	const prettified = await format(finalfile, {
-		...prettierConfig,
-		filepath: 'test.tsx',
-		plugins: [],
+	const {formatted, didFormat} = await formatInlineContent({
+		inlineContent: stringified,
+		linePrefix,
 		endOfLine: 'auto',
 	});
-	return {output: prettified, formatted: true};
+
+	// Replace the JSX expression container in the original input
+	const output =
+		input.substring(0, replaceStart) +
+		'{' +
+		formatted +
+		'}' +
+		input.substring(replaceEnd);
+
+	return {output, formatted: didFormat};
 };

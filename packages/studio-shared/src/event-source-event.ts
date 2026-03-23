@@ -65,4 +65,12 @@ export type EventSourceEvent =
 			type: 'undo-redo-stack-changed';
 			undoFile: string | null;
 			redoFile: string | null;
+	  }
+	| {
+			type: 'visual-control-values-changed';
+			values: Array<{
+				id: string;
+				value: unknown;
+				isUndefined: boolean;
+			}>;
 	  };

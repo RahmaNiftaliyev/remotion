@@ -83,18 +83,21 @@ export const VisualControlsProvider: React.FC<{
 
 	const setControl = useCallback(
 		(key: string, value: VisualControlValueWithoutUnsaved) => {
-			const currentUnsaved = imperativeHandles.current?.[key]?.unsavedValue;
-			const currentSavedState = imperativeHandles.current?.[key]?.valueInCode;
+			const existingHandle = imperativeHandles.current?.[key];
+			const currentSavedState = existingHandle?.valueInCode;
 
 			const changedSavedValue = value.valueInCode !== currentSavedState;
 			const changedUnsavedValue =
-				currentUnsaved === undefined && value.valueInCode !== undefined;
+				existingHandle === undefined && value.valueInCode !== undefined;
 
 			imperativeHandles.current = {
 				...imperativeHandles.current,
 				[key]: {
 					...value,
-					unsavedValue: currentUnsaved ?? value.valueInCode,
+					unsavedValue:
+						existingHandle !== undefined
+							? existingHandle.unsavedValue
+							: value.valueInCode,
 					valueInCode: value.valueInCode,
 				},
 			};

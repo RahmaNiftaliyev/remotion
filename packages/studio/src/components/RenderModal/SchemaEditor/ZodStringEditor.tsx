@@ -39,8 +39,8 @@ export const ZodStringEditor: React.FC<{
 	);
 
 	const onBlur: React.FocusEventHandler<HTMLInputElement> = useCallback(() => {
-		setValue((v) => v, {shouldSave: true});
-	}, [setValue]);
+		setValue(() => value, {shouldSave: true});
+	}, [setValue, value]);
 
 	return (
 		<Fieldset shouldPad={mayPad}>

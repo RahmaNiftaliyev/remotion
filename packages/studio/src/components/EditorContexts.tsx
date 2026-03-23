@@ -17,6 +17,7 @@ import {RenderQueueContextProvider} from './RenderQueue/context';
 import {SetTimelineInOutProvider} from './SetTimelineInOutProvider';
 import {ShowGuidesProvider} from './ShowGuidesProvider';
 import {ShowRulersProvider} from './ShowRulersProvider';
+import {VisualControlsUndoSync} from './VisualControls/VisualControlsUndoSync';
 import {ZoomGesturesProvider} from './ZoomGesturesProvider';
 
 export const EditorContexts: React.FC<{
@@ -27,6 +28,7 @@ export const EditorContexts: React.FC<{
 		<ZodProvider>
 			<VisualControlsProvider>
 				<PreviewServerConnection readOnlyStudio={readOnlyStudio}>
+					<VisualControlsUndoSync />
 					<RenderQueueContextProvider>
 						<ClientRenderQueueProcessor />
 						<KeybindingContextProvider>

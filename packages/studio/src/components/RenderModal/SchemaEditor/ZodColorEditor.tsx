@@ -60,14 +60,8 @@ export const ZodColorEditor: React.FC<{
 
 	const onColorBlur: React.FocusEventHandler<HTMLInputElement> =
 		useCallback(() => {
-			setValue(
-				(v) => {
-					// TODO: Does not yet work
-					return v;
-				},
-				{shouldSave: true},
-			);
-		}, [setValue]);
+			setValue(() => value, {shouldSave: true});
+		}, [setValue, value]);
 
 	const onTextChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
 		(e) => {
@@ -79,8 +73,8 @@ export const ZodColorEditor: React.FC<{
 
 	const onTextBlur: React.FocusEventHandler<HTMLInputElement> =
 		useCallback(() => {
-			setValue((v) => v, {shouldSave: true});
-		}, [setValue]);
+			setValue(() => value, {shouldSave: true});
+		}, [setValue, value]);
 
 	const rgb = `#${r.toString(16).padStart(2, '0')}${g
 		.toString(16)

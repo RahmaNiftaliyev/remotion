@@ -70,7 +70,7 @@ export const indexHtml = ({
 	<body>
 		<script>window.remotion_numberOfAudioTags = ${numberOfAudioTags};</script>
 		<script>window.remotion_audioLatencyHint = "${audioLatencyHint}";</script>
-		${mode === 'dev' ? `<script>window.remotion_logLevel = "${logLevel}";</script>` : ''}
+		<script>window.remotion_logLevel = "${logLevel}";</script>
 		<script>window.remotion_staticBase = "${staticHash}";</script>
 		${
 			editorName

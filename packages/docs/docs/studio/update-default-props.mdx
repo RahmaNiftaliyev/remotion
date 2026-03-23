@@ -4,14 +4,15 @@ title: updateDefaultProps()
 crumb: "@remotion/studio"
 ---
 
-# updateDefaultProps()<AvailableFrom v="4.0.154"/>
+# ~updateDefaultProps()~<AvailableFrom v="4.0.154"/>
 
 Updates the [`defaultProps`](/docs/composition) for a [composition](/docs/terminology/composition) and saves them back to the [root file](/docs/terminology/root-file).
 
-This function is an alias for [`saveDefaultProps()`](/docs/studio/save-default-props).
-
 :::info
-Before v4.0.437, this function only updated the props in the Props Editor without saving them to the root file. Starting from v4.0.437, it also saves the props to the root file.
+**Deprecated**: Before v4.0.437, this function only updated the props in the Props Editor without saving them to the root file.  
+Starting from v4.0.437, we eliminated the concept of "unsaved props" and now changes are always immediately reflected in the Props Editor.
+
+This function is now an alias for [`saveDefaultProps()`](/docs/studio/save-default-props).
 :::
 
 ## Examples

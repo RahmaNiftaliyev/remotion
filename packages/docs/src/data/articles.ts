@@ -693,6 +693,15 @@ export const articles = [
 		slug: 'cli/compositions',
 	},
 	{
+		id: 'cli/create-video',
+		title: 'npx create-video',
+		relativePath: 'docs/cli/create-video.mdx',
+		compId: 'articles-docs-cli-create-video',
+		crumb: 'CLI Reference',
+		noAi: false,
+		slug: 'cli/create-video',
+	},
+	{
 		id: 'ffmpeg',
 		title: 'npx remotion ffmpeg',
 		relativePath: 'docs/cli/ffmpeg.mdx',
@@ -1690,6 +1699,15 @@ export const articles = [
 		crumb: 'Editor Starter',
 		noAi: false,
 		slug: 'editor-starter/vs-studio',
+	},
+	{
+		id: 'electron',
+		title: 'Using Remotion in Electron',
+		relativePath: 'docs/electron.mdx',
+		compId: 'articles-docs-electron',
+		crumb: 'Integrations',
+		noAi: false,
+		slug: 'electron',
 	},
 	{
 		id: 'enable-scss/enable-scss',

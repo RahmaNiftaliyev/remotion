@@ -13,6 +13,7 @@ const sidebars: SidebarsConfig = {
 			},
 			collapsed: true,
 			items: [
+				'cli/create-video',
 				'cli/studio',
 				'cli/render',
 				'cli/still',
@@ -1225,6 +1226,7 @@ const sidebars: SidebarsConfig = {
 				'font-picker',
 				'building-a-timeline',
 				'multiple-fps',
+				'electron',
 				'angular',
 				'svelte',
 				'vue',

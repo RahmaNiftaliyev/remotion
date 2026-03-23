@@ -24,6 +24,7 @@ import {filter} from './fixtures/filter';
 import {filterImage} from './fixtures/filter-image';
 import {flexContainer} from './fixtures/flex-container';
 import {flexPositionedScaled} from './fixtures/flex-positioned-scaled';
+import {gradientTransparentKeyword} from './fixtures/gradient-transparent-keyword';
 import {hugeImageTransform} from './fixtures/huge-image-transform';
 import {inside3dTransform} from './fixtures/inside-3d-transform';
 import {lineHeight} from './fixtures/line-height';
@@ -55,6 +56,7 @@ import {backgroundClipText} from './fixtures/text/background-clip-text';
 import {backgroundClipText3dTransform} from './fixtures/text/background-clip-text-3d-transform';
 import {filterText} from './fixtures/text/filter-text';
 import {fontStyle} from './fixtures/text/font-style';
+import {fontVariantCaps} from './fixtures/text/font-variant-caps';
 import {letterSpacing} from './fixtures/text/letter-spacing';
 import {paragraphs} from './fixtures/text/paragraphs';
 import {textFixture} from './fixtures/text/text';
@@ -116,6 +118,7 @@ export const Root: React.FC = () => {
 				<Composition {...maskImage} />
 				<Composition {...backfaceVisibilityMask} />
 				<Composition {...linearGradient} />
+				<Composition {...gradientTransparentKeyword} />
 			</Folder>
 			<Composition {...outline} />
 			<Composition {...boxShadow} />
@@ -142,6 +145,7 @@ export const Root: React.FC = () => {
 				<Composition {...letterSpacing} />
 				<Composition {...textTransform} />
 				<Composition {...fontStyle} />
+				<Composition {...fontVariantCaps} />
 				<Composition {...lineHeight} />
 				<Composition {...webkitTextFillColor} />
 				<Composition {...webkitTextStroke} />

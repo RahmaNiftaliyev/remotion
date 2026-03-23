@@ -6,9 +6,13 @@ crumb: "@remotion/studio"
 
 # updateDefaultProps()<AvailableFrom v="4.0.154"/>
 
-Updates the default props in the Props Editor (in the right sidebar in the Studio).  
-Your component will be re-rendered with the new props.  
-The props will **not** be saved to the [Root file](/docs/terminology/root-file) - use [`saveDefaultProps()`](/docs/studio/save-default-props) for that.
+Updates the [`defaultProps`](/docs/composition) for a [composition](/docs/terminology/composition) and saves them back to the [root file](/docs/terminology/root-file).
+
+This function is an alias for [`saveDefaultProps()`](/docs/studio/save-default-props).
+
+:::info
+Before v4.0.437, this function only updated the props in the Props Editor without saving them to the root file. Starting from v4.0.437, it also saves the props to the root file.
+:::
 
 ## Examples
 
@@ -16,7 +20,7 @@ The props will **not** be saved to the [Root file](/docs/terminology/root-file) 
 // @target: esnext
 import { updateDefaultProps } from "@remotion/studio";
 
-updateDefaultProps({
+await updateDefaultProps({
   compositionId: "my-composition",
   defaultProps: () => {
     return {
@@ -30,9 +34,9 @@ You can access the current unsaved default props to only override part of it (re
 
 ```tsx twoslash title="Accessing the current props"
 // @target: esnext
-import { saveDefaultProps } from "@remotion/studio";
+import { updateDefaultProps } from "@remotion/studio";
 
-await saveDefaultProps({
+await updateDefaultProps({
   compositionId: "my-composition",
   defaultProps: ({ unsavedDefaultProps }) => {
     return { ...unsavedDefaultProps, color: "green" };
@@ -46,7 +50,7 @@ If you only want to override on top of the saved changes:
 // @target: esnext
 import { updateDefaultProps } from "@remotion/studio";
 
-updateDefaultProps({
+await updateDefaultProps({
   compositionId: "my-composition",
   defaultProps: ({ savedDefaultProps }) => {
     return {
@@ -63,7 +67,7 @@ If you have a Zod schema, you can also access its runtime value:
 // @target: esnext
 import { updateDefaultProps } from "@remotion/studio";
 
-updateDefaultProps({
+await updateDefaultProps({
   compositionId: "my-composition",
   defaultProps: ({ schema, unsavedDefaultProps }) => {
     // Do something with the Zod schema
@@ -92,4 +96,5 @@ Otherwise, the function will throw.
 
 ## See also
 
+- [`saveDefaultProps()`](/docs/studio/save-default-props)
 - [Source code for this function](https://github.com/remotion-dev/remotion/blob/main/packages/studio/src/api/update-default-props.ts)

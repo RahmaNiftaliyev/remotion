@@ -11,6 +11,12 @@ export const exampleDir = path.resolve(
 );
 
 export const rootFile = path.join(exampleDir, 'src', 'Root.tsx');
+export const visualControlsFile = path.join(
+	exampleDir,
+	'src',
+	'VisualControls',
+	'index.tsx',
+);
 export const newVideoFile = path.join(exampleDir, 'src', 'NewVideo.tsx');
 export const remotionBin = path.join(
 	exampleDir,
@@ -26,6 +32,10 @@ export const LOGS_FILE = path.join(
 export const ORIGINAL_CONTENT_FILE = path.join(
 	os.tmpdir(),
 	'remotion-e2e-original-root.tsx',
+);
+export const ORIGINAL_VISUAL_CONTROLS_FILE = path.join(
+	os.tmpdir(),
+	'remotion-e2e-original-visual-controls.tsx',
 );
 export const PID_FILE = path.join(os.tmpdir(), 'remotion-e2e-studio.pid');
 export const EXPANDED_SIDEBAR_STATE = path.join(

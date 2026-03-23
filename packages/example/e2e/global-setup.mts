@@ -4,12 +4,14 @@ import {
 	EXPANDED_SIDEBAR_STATE,
 	LOGS_FILE,
 	ORIGINAL_CONTENT_FILE,
+	ORIGINAL_VISUAL_CONTROLS_FILE,
 	PID_FILE,
 	STUDIO_PORT,
 	STUDIO_URL,
 	exampleDir,
 	remotionBin,
 	rootFile,
+	visualControlsFile,
 } from './constants.mts';
 
 async function waitForServer(
@@ -35,6 +37,10 @@ async function waitForServer(
 
 export default async function globalSetup(): Promise<void> {
 	fs.writeFileSync(ORIGINAL_CONTENT_FILE, fs.readFileSync(rootFile, 'utf-8'));
+	fs.writeFileSync(
+		ORIGINAL_VISUAL_CONTROLS_FILE,
+		fs.readFileSync(visualControlsFile, 'utf-8'),
+	);
 	fs.writeFileSync(LOGS_FILE, '');
 	fs.writeFileSync(
 		EXPANDED_SIDEBAR_STATE,

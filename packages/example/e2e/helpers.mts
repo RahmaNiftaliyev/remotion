@@ -12,6 +12,17 @@ export async function navigateToSchemaTest(page: Page): Promise<void> {
 	await expect(page).toHaveURL(/schema-test/, {timeout: 10_000});
 }
 
+export async function navigateToVisualControls(page: Page): Promise<void> {
+	await page.goto(STUDIO_URL);
+	const folder = page.getByTitle('visual-controls');
+	await folder.click({timeout: 15_000});
+	const compositionLink = page
+		.getByText('visual-controls', {exact: true})
+		.first();
+	await compositionLink.click({timeout: 10_000});
+	await expect(page).toHaveURL(/visual-controls/, {timeout: 10_000});
+}
+
 export const stripAnsi = (s: string) =>
 	// eslint-disable-next-line no-control-regex
 	s.replace(/\x1b\[[0-9;]*m/g, '').replace(/\]8;;[^\x1b]*\x1b\\/g, '');

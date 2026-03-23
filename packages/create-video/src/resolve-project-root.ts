@@ -98,7 +98,10 @@ export const resolveProjectRoot = async (options?: {
 				});
 
 				if (typeof answer === 'string') {
-					projectName = answer.trim();
+					// Strip control characters (U+0000–U+001F, U+007F) that terminal
+					// emulators may inject via readline shortcuts (e.g. Ctrl+U → U+0015)
+					// eslint-disable-next-line no-control-regex
+					projectName = answer.replace(/[\x00-\x1f\x7f]/g, '').trim();
 				}
 			}
 		} catch (error) {

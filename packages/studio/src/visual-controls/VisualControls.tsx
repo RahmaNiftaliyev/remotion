@@ -13,6 +13,7 @@ import {getZodSchemaFromPrimitive} from '../api/get-zod-schema-from-primitive';
 import {useZodIfPossible} from '../components/get-zod-if-possible';
 import type {AnyZodSchema} from '../components/RenderModal/SchemaEditor/zod-schema-type';
 import {getVisualControlEditedValue} from './get-current-edited-value';
+import {visualControlStore} from './visual-control-store';
 
 export type VisualControlValueWithoutUnsaved = {
 	valueInCode: unknown;
@@ -161,6 +162,7 @@ export const VisualControlsProvider: React.FC<{
 				},
 			};
 			updateHandles();
+			visualControlStore.emitChange();
 		},
 		[updateHandles],
 	);

@@ -1,4 +1,6 @@
+import {useSyncExternalStore} from 'react';
 import {getRemotionEnvironment} from 'remotion';
+import {visualControlStore} from '../visual-controls/visual-control-store';
 import {
 	visualControlRef,
 	type VisualControlRef,
@@ -9,6 +11,15 @@ export const visualControl: VisualControlRef['globalVisualControl'] = (
 	value,
 	schema,
 ) => {
+	// Subscribe to store changes so the calling component
+	// re-renders when a visual control value is edited in the sidebar.
+	// eslint-disable-next-line react-hooks/rules-of-hooks
+	useSyncExternalStore(
+		visualControlStore.subscribe,
+		visualControlStore.getSnapshot,
+		visualControlStore.getSnapshot,
+	);
+
 	if (getRemotionEnvironment().isRendering) {
 		return value;
 	}

@@ -3,8 +3,6 @@ import type {AnyRenderJob} from '../components/RenderQueue/context';
 import {isClientRenderJob} from '../components/RenderQueue/context';
 
 let currentItemName: string | null = null;
-const unsavedProps = false;
-let tabInactive = false;
 let renderJobs: AnyRenderJob[] = [];
 
 export const setCurrentCanvasContentId = (id: string | null) => {
@@ -24,11 +22,6 @@ export const setRenderJobs = (jobs: AnyRenderJob[]) => {
 	updateTitle();
 };
 
-document.addEventListener('visibilitychange', () => {
-	tabInactive = document.visibilityState === 'hidden';
-	updateTitle();
-});
-
 const productName = 'Remotion Studio';
 const suffix = `- ${productName}`;
 
@@ -42,7 +35,6 @@ const updateTitle = () => {
 
 	document.title = [
 		getProgressInBrackets(currentItemName, renderJobs),
-		unsavedProps && tabInactive ? '✏️' : null,
 		`${currentCompTitle} ${suffix}`,
 	]
 		.filter(NoReactInternals.truthy)
@@ -77,8 +69,3 @@ const getProgressInBrackets = (
 			: `[${progInPercent}% ${currentRender.compositionId}]`;
 	return progressInBrackets;
 };
-
-document.addEventListener('visibilitychange', () => {
-	tabInactive = document.visibilityState === 'hidden';
-	updateTitle();
-});

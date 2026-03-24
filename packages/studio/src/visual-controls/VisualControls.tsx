@@ -191,6 +191,19 @@ export const VisualControlsProvider: React.FC<{
 		};
 	}, [updateHandles]);
 
+	useEffect(() => {
+		const prev = window.remotion_finishedBuilding;
+		window.remotion_finishedBuilding = () => {
+			prev?.();
+			imperativeHandles.current = {};
+			setHandles({});
+		};
+
+		return () => {
+			window.remotion_finishedBuilding = prev;
+		};
+	}, []);
+
 	const setState: SetVisualControlsContextType = useMemo(() => {
 		return {
 			setControl,

@@ -23,6 +23,10 @@ export const applyVisualControlHandler: ApiHandler<
 	ApplyVisualControlRequest,
 	ApplyVisualControlResponse
 > = async ({input: {fileName, changes}, remotionRoot, logLevel}) => {
+	RenderInternals.Log.trace(
+		{indent: false, logLevel},
+		`[apply-visual-control] Received request for ${fileName} with ${changes.length} changes`,
+	);
 	const absolutePath = path.resolve(remotionRoot, fileName);
 	const fileRelativeToRoot = path.relative(remotionRoot, absolutePath);
 	if (fileRelativeToRoot.startsWith('..')) {
@@ -71,17 +75,17 @@ export const applyVisualControlHandler: ApiHandler<
 		// Prettier not available, use unformatted output
 	}
 
-	pushToUndoStack(
-		absolutePath,
-		fileContents,
+	pushToUndoStack({
+		filePath: absolutePath,
+		oldContents: fileContents,
 		logLevel,
 		remotionRoot,
-		{
+		description: {
 			undoMessage: 'Undid visual control change',
 			redoMessage: 'Redid visual control change',
 		},
-		'visual-control',
-	);
+		entryType: 'visual-control',
+	});
 	suppressUndoStackInvalidation(absolutePath);
 	suppressBundlerUpdateForFile(absolutePath);
 	writeFileAndNotifyFileWatchers(absolutePath, output);

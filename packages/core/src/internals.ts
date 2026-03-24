@@ -40,7 +40,6 @@ import {OBJECTFIT_CONTAIN_CLASS_NAME} from './default-css.js';
 import {
 	EditorPropsContext,
 	EditorPropsProvider,
-	editorPropsProviderRef,
 	timeValueRef,
 } from './EditorProps.js';
 import {
@@ -254,7 +253,6 @@ export const Internals = {
 	CurrentScaleContext,
 	PreviewSizeContext,
 	calculateScale,
-	editorPropsProviderRef,
 	validateRenderAsset,
 	Log,
 	LogLevelContext,

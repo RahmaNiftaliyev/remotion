@@ -53,14 +53,21 @@ function broadcastState() {
 	});
 }
 
-export function pushToUndoStack(
-	filePath: string,
-	oldContents: string,
-	logLevel: LogLevel,
-	remotionRoot: string,
-	description: UndoEntryDescription,
-	entryType: UndoEntryType,
-) {
+export function pushToUndoStack({
+	filePath,
+	oldContents,
+	logLevel,
+	remotionRoot,
+	description,
+	entryType,
+}: {
+	filePath: string;
+	oldContents: string;
+	logLevel: LogLevel;
+	remotionRoot: string;
+	description: UndoEntryDescription;
+	entryType: UndoEntryType;
+}) {
 	storedLogLevel = logLevel;
 	storedRemotionRoot = remotionRoot;
 	undoStack.push({filePath, oldContents, description, entryType});

@@ -29,6 +29,10 @@ export const updateDefaultPropsHandler: ApiHandler<
 	logLevel,
 }) => {
 	try {
+		RenderInternals.Log.trace(
+			{indent: false, logLevel},
+			`[update-default-props] Received request for compositionId="${compositionId}"`,
+		);
 		const projectInfo = await getProjectInfo(remotionRoot, entryPoint);
 		if (!projectInfo.rootFile) {
 			throw new Error('Cannot find root file in project');
@@ -44,17 +48,17 @@ export const updateDefaultPropsHandler: ApiHandler<
 			enumPaths,
 		});
 
-		pushToUndoStack(
-			projectInfo.rootFile,
-			fileContents,
+		pushToUndoStack({
+			filePath: projectInfo.rootFile,
+			oldContents: fileContents,
 			logLevel,
 			remotionRoot,
-			{
+			description: {
 				undoMessage: `Undid default props update for "${compositionId}"`,
 				redoMessage: `Redid default props update for "${compositionId}"`,
 			},
-			'default-props',
-		);
+			entryType: 'default-props',
+		});
 		suppressUndoStackInvalidation(projectInfo.rootFile);
 		suppressBundlerUpdateForFile(projectInfo.rootFile);
 		writeFileAndNotifyFileWatchers(projectInfo.rootFile, output);

@@ -1,10 +1,5 @@
 import type {SyntheticEvent} from 'react';
-import React, {
-	createContext,
-	useCallback,
-	useImperativeHandle,
-	useMemo,
-} from 'react';
+import React, {createContext, useCallback, useMemo} from 'react';
 
 // Key: Composition ID, Value: initialized defaultProps
 type Props = Record<string, Record<string, unknown>>;
@@ -26,11 +21,6 @@ export const EditorPropsContext = createContext<EditorPropsContextType>({
 		throw new Error('Not implemented');
 	},
 });
-
-export const editorPropsProviderRef = React.createRef<{
-	getProps: () => Props;
-	setProps: React.Dispatch<React.SetStateAction<Props>>;
-}>();
 
 export const timeValueRef = React.createRef<{
 	goToFrame: () => void;
@@ -67,13 +57,6 @@ export const EditorPropsProvider: React.FC<{
 		},
 		[],
 	);
-
-	useImperativeHandle(editorPropsProviderRef, () => {
-		return {
-			getProps: () => props,
-			setProps,
-		};
-	}, [props]);
 
 	const ctx = useMemo((): EditorPropsContextType => {
 		return {props, updateProps};

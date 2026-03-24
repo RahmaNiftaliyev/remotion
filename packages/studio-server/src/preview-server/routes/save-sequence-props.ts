@@ -1,5 +1,6 @@
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
+import {RenderInternals} from '@remotion/renderer';
 import type {
 	SaveSequencePropsRequest,
 	SaveSequencePropsResponse,
@@ -25,6 +26,10 @@ export const saveSequencePropsHandler: ApiHandler<
 	logLevel,
 }) => {
 	try {
+		RenderInternals.Log.trace(
+			{indent: false, logLevel},
+			`[save-sequence-props] Received request for fileName="${fileName}" key="${key}"`,
+		);
 		const absolutePath = path.resolve(remotionRoot, fileName);
 		const fileRelativeToRoot = path.relative(remotionRoot, absolutePath);
 		if (fileRelativeToRoot.startsWith('..')) {
@@ -65,17 +70,17 @@ export const saveSequencePropsHandler: ApiHandler<
 			defaultValueString: normalizedDefault,
 		});
 
-		pushToUndoStack(
-			absolutePath,
-			fileContents,
+		pushToUndoStack({
+			filePath: absolutePath,
+			oldContents: fileContents,
 			logLevel,
 			remotionRoot,
-			{
+			description: {
 				undoMessage: `Undid ${undoPropChange}`,
 				redoMessage: `Redid ${redoPropChange}`,
 			},
-			'sequence-props',
-		);
+			entryType: 'sequence-props',
+		});
 		suppressUndoStackInvalidation(absolutePath);
 		suppressBundlerUpdateForFile(absolutePath);
 		writeFileAndNotifyFileWatchers(absolutePath, output);

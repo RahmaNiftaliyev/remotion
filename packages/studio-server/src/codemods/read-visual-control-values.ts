@@ -41,7 +41,7 @@ const evaluateExpression = (node: ExpressionKind): unknown => {
 		case 'NullLiteral':
 			return null;
 		case 'Identifier': {
-			const name = (node as unknown as {name: string}).name;
+			const {name} = node as unknown as {name: string};
 			if (name === 'undefined') {
 				return undefined;
 			}
@@ -73,15 +73,13 @@ const evaluateExpression = (node: ExpressionKind): unknown => {
 
 		case 'ObjectExpression': {
 			const obj: Record<string, unknown> = {};
-			const properties = (
-				node as unknown as {
-					properties: Array<{
-						type: string;
-						key: {type: string; name?: string; value?: string | number};
-						value: ExpressionKind;
-					}>;
-				}
-			).properties;
+			const {properties} = node as unknown as {
+				properties: Array<{
+					type: string;
+					key: {type: string; name?: string; value?: string | number};
+					value: ExpressionKind;
+				}>;
+			};
 			for (const prop of properties) {
 				if (prop.type !== 'ObjectProperty') {
 					continue;
@@ -105,9 +103,9 @@ const evaluateExpression = (node: ExpressionKind): unknown => {
 		}
 
 		case 'ArrayExpression': {
-			const elements = (
-				node as unknown as {elements: Array<ExpressionKind | null>}
-			).elements;
+			const {elements} = node as unknown as {
+				elements: Array<ExpressionKind | null>;
+			};
 			return elements.map((el) => {
 				if (el === null) {
 					return null;

@@ -90,14 +90,14 @@ export const formatPropChange = ({
 	defaultValueString: string | null;
 }) => {
 	if (!colorEnabled()) {
-		const dotIndex = key.indexOf('.');
-		if (dotIndex === -1) {
+		const dotIdx = key.indexOf('.');
+		if (dotIdx === -1) {
 			return `${key}={${oldValueString}} \u2192 ${key}={${newValueString}}`;
 		}
 
-		const parentKey = key.slice(0, dotIndex);
-		const childKey = key.slice(dotIndex + 1);
-		return `${parentKey}={{${childKey}: ${oldValueString}}} \u2192 ${parentKey}={{${childKey}: ${newValueString}}}`;
+		const parent = key.slice(0, dotIdx);
+		const child = key.slice(dotIdx + 1);
+		return `${parent}={{${child}: ${oldValueString}}} \u2192 ${parent}={{${child}: ${newValueString}}}`;
 	}
 
 	const isResetToDefault =

@@ -15,7 +15,9 @@ import {VisualControlsTabActivatedContext} from '../visual-controls/VisualContro
 import {DefaultPropsEditor} from './DefaultPropsEditor';
 import {useZodIfPossible, useZodTypesIfPossible} from './get-zod-if-possible';
 import {showNotification} from './Notifications/NotificationCenter';
+import {deepEqual} from './RenderModal/SchemaEditor/deep-equal';
 import {extractEnumJsonPaths} from './RenderModal/SchemaEditor/extract-enum-json-paths';
+import {SchemaResetButton} from './RenderModal/SchemaEditor/SchemaResetButton';
 import type {AnyZodSchema} from './RenderModal/SchemaEditor/zod-schema-type';
 import type {UpdaterFunction} from './RenderModal/SchemaEditor/ZodSwitch';
 import {RenderQueue} from './RenderQueue';
@@ -171,6 +173,10 @@ export const OptionsPanel: React.FC<{
 
 	const saveToFile = useCallback(
 		(updater: (old: Record<string, unknown>) => Record<string, unknown>) => {
+			if (readOnlyStudio) {
+				return;
+			}
+
 			if (
 				schema === 'no-zod' ||
 				schema === 'no-schema' ||
@@ -213,7 +219,7 @@ export const OptionsPanel: React.FC<{
 					showNotification(`Cannot update default props: ${err.message}`, 2000);
 				});
 		},
-		[composition, currentDefaultProps, schema, z, zodTypes],
+		[composition, currentDefaultProps, readOnlyStudio, schema, z, zodTypes],
 	);
 
 	const compositionId = useMemo(() => {
@@ -223,6 +229,26 @@ export const OptionsPanel: React.FC<{
 	const compositionDefaultProps = useMemo(() => {
 		return composition?.defaultProps ?? {};
 	}, [composition?.defaultProps]);
+
+	const hasLocalModifications = useMemo(() => {
+		if (!readOnlyStudio || !composition || !composition.defaultProps) {
+			return false;
+		}
+
+		return !deepEqual(composition.defaultProps, currentDefaultProps);
+	}, [readOnlyStudio, composition, currentDefaultProps]);
+
+	const resetToOriginal = useCallback(() => {
+		if (!composition) {
+			return;
+		}
+
+		updateProps({
+			id: composition.id,
+			defaultProps: (composition.defaultProps ?? {}) as Record<string, unknown>,
+			newProps: (composition.defaultProps ?? {}) as Record<string, unknown>,
+		});
+	}, [composition, updateProps]);
 
 	const setDefaultProps: UpdaterFunction<Record<string, unknown>> = useCallback(
 		(updater, {shouldSave}) => {
@@ -257,6 +283,9 @@ export const OptionsPanel: React.FC<{
 						style={{justifyContent: 'space-between'}}
 					>
 						Props
+						{hasLocalModifications ? (
+							<SchemaResetButton onClick={resetToOriginal} />
+						) : null}
 					</Tab>
 					{renderingAvailable ? (
 						<RendersTab

@@ -9,6 +9,7 @@ import type {
 	RenderDefaults,
 	RenderJob,
 } from '@remotion/studio-shared';
+import {getFileWatcherRegistry} from './file-watcher';
 import {getNetworkAddress} from './get-network-address';
 import {maybeOpenBrowser} from './maybe-open-browser';
 import type {QueueMethods} from './preview-server/api-types';
@@ -97,6 +98,9 @@ export const startStudio = async ({
 			process.title = `bun (bunx remotionb studio)`;
 		}
 	} catch {}
+
+	// Validate that the file watcher registry has been initialized
+	getFileWatcherRegistry();
 
 	watchRootFile(remotionRoot, previewEntry);
 	const publicDir = getAbsolutePublicDir({

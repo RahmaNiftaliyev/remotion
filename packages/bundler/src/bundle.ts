@@ -120,6 +120,7 @@ export const getConfig = ({
 		experimentalClientSideRenderingEnabled,
 		experimentalVisualModeEnabled,
 		askAIEnabled: options?.askAIEnabled ?? true,
+		extraPlugins: [],
 	};
 
 	if (options.rspack) {

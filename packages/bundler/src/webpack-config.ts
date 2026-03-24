@@ -43,6 +43,7 @@ export const webpackConfig = async ({
 	experimentalClientSideRenderingEnabled,
 	experimentalVisualModeEnabled,
 	askAIEnabled,
+	extraPlugins,
 }: {
 	entry: string;
 	userDefinedComponent: string;
@@ -59,6 +60,7 @@ export const webpackConfig = async ({
 	askAIEnabled: boolean;
 	experimentalClientSideRenderingEnabled: boolean;
 	experimentalVisualModeEnabled: boolean;
+	extraPlugins: webpack.WebpackPluginInstance[];
 }): Promise<[string, WebpackConfiguration]> => {
 	const esbuildLoaderOptions: LoaderOptions = {
 		target: 'chrome85',
@@ -108,6 +110,7 @@ export const webpackConfig = async ({
 						new AllowOptionalDependenciesPlugin(),
 						new AllowDependencyExpressionPlugin(),
 						new IgnorePackFileCacheWarningsPlugin(),
+						...extraPlugins,
 					]
 				: [
 						new ProgressPlugin((p) => {

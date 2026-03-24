@@ -1,4 +1,4 @@
-import {readFileSync, writeFileSync} from 'node:fs';
+import {readFileSync} from 'node:fs';
 import {RenderInternals} from '@remotion/renderer';
 import type {
 	ApplyCodemodRequest,
@@ -9,6 +9,7 @@ import {
 	parseAndApplyCodemod,
 } from '../../codemods/duplicate-composition';
 import {simpleDiff} from '../../codemods/simple-diff';
+import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
 import type {ApiHandler} from '../api-types';
 import {getProjectInfo} from '../project-info';
 import {checkIfTypeScriptFile} from './can-update-default-props';
@@ -40,7 +41,7 @@ export const applyCodemodHandler: ApiHandler<
 		});
 
 		if (!dryRun) {
-			writeFileSync(projectInfo.rootFile, formatted);
+			writeFileAndNotifyFileWatchers(projectInfo.rootFile, formatted);
 			const end = Date.now() - time;
 			RenderInternals.Log.info(
 				{indent: false, logLevel},

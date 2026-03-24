@@ -1,7 +1,11 @@
 import type {IncomingMessage} from 'node:http';
 import http from 'node:http';
 import type {WebpackOverrideFn} from '@remotion/bundler';
-import {BundlerInternals, webpack} from '@remotion/bundler';
+import {
+	BundlerInternals,
+	WatchIgnoreNextChangePlugin,
+	webpack,
+} from '@remotion/bundler';
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
 import type {
@@ -16,6 +20,8 @@ import {wdm} from './dev-middleware';
 import {webpackHotMiddleware} from './hot-middleware';
 import type {LiveEventsServer} from './live-events';
 import {makeLiveEventsRouter} from './live-events';
+import {getRedoStack, getUndoStack} from './undo-stack';
+import {setWatchIgnoreNextChangePlugin} from './watch-ignore-next-change';
 
 export type StartServerResult =
 	| {
@@ -80,6 +86,13 @@ export const startServer = async (options: {
 				return detection.type === 'match' ? 'stop' : 'continue';
 			};
 
+	const watchIgnorePlugin = new WatchIgnoreNextChangePlugin((...args) => {
+		RenderInternals.Log.trace(
+			{indent: false, logLevel: options.logLevel},
+			...args,
+		);
+	});
+
 	const configArgs = {
 		entry: options.entry,
 		userDefinedComponent: options.userDefinedComponent,
@@ -95,6 +108,7 @@ export const startServer = async (options: {
 		poll: options.poll,
 		bufferStateDelayInMilliseconds: options.bufferStateDelayInMilliseconds,
 		askAIEnabled: options.askAIEnabled,
+		extraPlugins: [watchIgnorePlugin],
 	};
 
 	let compiler: webpack.Compiler;
@@ -108,10 +122,21 @@ export const startServer = async (options: {
 		compiler = webpack(webpackConf);
 	}
 
+	setWatchIgnoreNextChangePlugin(watchIgnorePlugin);
+
 	const wdmMiddleware = wdm(compiler, options.logLevel);
 	const whm = webpackHotMiddleware(compiler, options.logLevel);
 
-	const liveEventsServer = makeLiveEventsRouter(options.logLevel);
+	const liveEventsServer = makeLiveEventsRouter(options.logLevel, () => {
+		const undoStack = getUndoStack();
+		const redoStack = getRedoStack();
+		return {
+			undoFile:
+				undoStack.length > 0 ? undoStack[undoStack.length - 1].filePath : null,
+			redoFile:
+				redoStack.length > 0 ? redoStack[redoStack.length - 1].filePath : null,
+		};
+	});
 
 	const server = http.createServer((request, response) => {
 		if (options.enableCrossSiteIsolation) {

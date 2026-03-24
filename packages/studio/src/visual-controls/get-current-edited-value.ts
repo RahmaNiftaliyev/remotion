@@ -7,6 +7,10 @@ export const getVisualControlEditedValue = ({
 	handles: Handles;
 	key: string;
 }): unknown => {
-	// TODO: What if z.null()
-	return handles?.[key]?.unsavedValue ?? null;
+	const handle = handles?.[key];
+	if (handle === undefined) {
+		return null;
+	}
+
+	return handle.unsavedValue;
 };

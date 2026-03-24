@@ -65,13 +65,23 @@ export const applyVisualControl = ({
 					continue;
 				}
 
-				const parsed = (
-					(
-						parseAst(
-							`a = ${stringifyDefaultProps({props: JSON.parse(change.newValueSerialized), enumPaths: change.enumPaths})}`,
-						).program.body[0] as unknown as ExpressionStatement
-					).expression as AssignmentExpression
-				).right as ExpressionKind;
+				let parsed: ExpressionKind;
+				if (change.newValueIsUndefined) {
+					parsed = (
+						(
+							parseAst('a = undefined').program
+								.body[0] as unknown as ExpressionStatement
+						).expression as AssignmentExpression
+					).right as ExpressionKind;
+				} else {
+					parsed = (
+						(
+							parseAst(
+								`a = ${stringifyDefaultProps({props: JSON.parse(change.newValueSerialized), enumPaths: change.enumPaths})}`,
+							).program.body[0] as unknown as ExpressionStatement
+						).expression as AssignmentExpression
+					).right as ExpressionKind;
+				}
 
 				node.arguments[1] = parsed;
 

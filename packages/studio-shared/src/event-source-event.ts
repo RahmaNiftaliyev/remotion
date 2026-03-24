@@ -1,5 +1,6 @@
 import type {StaticFile} from 'remotion';
 import type {
+	CanUpdateDefaultPropsResponse,
 	CanUpdateSequencePropsResponse,
 	SequenceNodePath,
 } from './api-requests';
@@ -13,6 +14,8 @@ export type EventSourceEvent =
 	| {
 			type: 'init';
 			clientId: string;
+			undoFile: string | null;
+			redoFile: string | null;
 	  }
 	| {
 			type: 'new-env-variables';
@@ -52,4 +55,22 @@ export type EventSourceEvent =
 			fileName: string;
 			nodePath: SequenceNodePath;
 			result: CanUpdateSequencePropsResponse;
+	  }
+	| {
+			type: 'default-props-updatable-changed';
+			compositionId: string;
+			result: CanUpdateDefaultPropsResponse;
+	  }
+	| {
+			type: 'undo-redo-stack-changed';
+			undoFile: string | null;
+			redoFile: string | null;
+	  }
+	| {
+			type: 'visual-control-values-changed';
+			values: Array<{
+				id: string;
+				value: unknown;
+				isUndefined: boolean;
+			}>;
 	  };

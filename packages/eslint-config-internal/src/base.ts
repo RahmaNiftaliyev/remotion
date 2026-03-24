@@ -43,7 +43,7 @@ export const rules = ({react}: {react: boolean}) => {
 		'no-loss-of-precision': 'error',
 		'no-misleading-character-class': 'error',
 		'no-obj-calls': 'error',
-		'no-promise-executor-return': 'error',
+		'no-promise-executor-return': 'off',
 		'no-prototype-builtins': 'error',
 		'no-regex-spaces': 'error',
 		'no-setter-return': 'error',

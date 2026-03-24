@@ -1,41 +1,8 @@
-import {Internals} from 'remotion';
-import type {UpdateDefaultPropsFunction} from './helpers/calc-new-props';
-import {calcNewProps} from './helpers/calc-new-props';
+import {saveDefaultProps} from './save-default-props';
 
-export const updateDefaultProps = ({
-	compositionId,
-	defaultProps,
-}: {
-	compositionId: string;
-	defaultProps: UpdateDefaultPropsFunction;
-}) => {
-	const {generatedDefaultProps, composition} = calcNewProps(
-		compositionId,
-		defaultProps,
-	);
-
-	const propsStore = Internals.editorPropsProviderRef.current;
-	if (!propsStore) {
-		throw new Error(
-			'No props store found. Are you in the Remotion Studio and are the Remotion versions aligned?',
-		);
-	}
-
-	propsStore.setProps((prev) => {
-		return {
-			...prev,
-			[composition.id]: generatedDefaultProps,
-		};
-	});
-
-	window.dispatchEvent(
-		new CustomEvent<{resetUnsaved: string | null}>(
-			Internals.PROPS_UPDATED_EXTERNALLY,
-			{
-				detail: {
-					resetUnsaved: null,
-				},
-			},
-		),
-	);
-};
+/**
+ * @deprecated Use `saveDefaultProps()` instead. This function is now an alias for `saveDefaultProps()`.
+ * @description Updates and saves the defaultProps for a composition back to the root file.
+ * @see [Documentation](https://www.remotion.dev/docs/studio/update-default-props)
+ */
+export const updateDefaultProps = saveDefaultProps;

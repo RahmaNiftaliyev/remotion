@@ -73,6 +73,11 @@ const RemTextareaFRFunction: React.ForwardRefRenderFunction<
 				return;
 			}
 
+			if (e.code === 'Escape') {
+				inputRef.current.blur();
+				return;
+			}
+
 			if (e.code === 'Tab') {
 				e.preventDefault();
 				// Always match up with value in JSON.stringify(content, null, 2)

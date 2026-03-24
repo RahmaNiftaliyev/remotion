@@ -40,7 +40,6 @@ import {OBJECTFIT_CONTAIN_CLASS_NAME} from './default-css.js';
 import {
 	EditorPropsContext,
 	EditorPropsProvider,
-	editorPropsProviderRef,
 	timeValueRef,
 } from './EditorProps.js';
 import {
@@ -83,7 +82,6 @@ import {
 	resolveVideoConfigOrCatch,
 } from './resolve-video-config.js';
 import {
-	PROPS_UPDATED_EXTERNALLY,
 	ResolveCompositionContext,
 	resolveCompositionsRef,
 	useResolvedVideoConfig,
@@ -255,8 +253,6 @@ export const Internals = {
 	CurrentScaleContext,
 	PreviewSizeContext,
 	calculateScale,
-	editorPropsProviderRef,
-	PROPS_UPDATED_EXTERNALLY,
 	validateRenderAsset,
 	Log,
 	LogLevelContext,

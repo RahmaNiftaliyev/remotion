@@ -29,6 +29,7 @@ export const rspackConfig = async ({
 	experimentalClientSideRenderingEnabled,
 	experimentalVisualModeEnabled,
 	askAIEnabled,
+	extraPlugins,
 }: {
 	entry: string;
 	userDefinedComponent: string;
@@ -45,6 +46,8 @@ export const rspackConfig = async ({
 	askAIEnabled: boolean;
 	experimentalClientSideRenderingEnabled: boolean;
 	experimentalVisualModeEnabled: boolean;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	extraPlugins: any[];
 }): Promise<[string, RspackConfiguration]> => {
 	let lastProgress = 0;
 
@@ -118,6 +121,7 @@ export const rspackConfig = async ({
 						new ReactRefreshPlugin({overlay: false}),
 						new rspack.HotModuleReplacementPlugin(),
 						define,
+						...extraPlugins,
 					]
 				: [
 						new ProgressPlugin((p: number) => {

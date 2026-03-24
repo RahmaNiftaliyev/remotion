@@ -13,6 +13,7 @@ import {getZodSchemaFromPrimitive} from '../api/get-zod-schema-from-primitive';
 import {useZodIfPossible} from '../components/get-zod-if-possible';
 import type {AnyZodSchema} from '../components/RenderModal/SchemaEditor/zod-schema-type';
 import {getVisualControlEditedValue} from './get-current-edited-value';
+import {visualControlStore} from './visual-control-store';
 
 export type VisualControlValueWithoutUnsaved = {
 	valueInCode: unknown;
@@ -82,18 +83,21 @@ export const VisualControlsProvider: React.FC<{
 
 	const setControl = useCallback(
 		(key: string, value: VisualControlValueWithoutUnsaved) => {
-			const currentUnsaved = imperativeHandles.current?.[key]?.unsavedValue;
-			const currentSavedState = imperativeHandles.current?.[key]?.valueInCode;
+			const existingHandle = imperativeHandles.current?.[key];
+			const currentSavedState = existingHandle?.valueInCode;
 
 			const changedSavedValue = value.valueInCode !== currentSavedState;
 			const changedUnsavedValue =
-				currentUnsaved === undefined && value.valueInCode !== undefined;
+				existingHandle === undefined && value.valueInCode !== undefined;
 
 			imperativeHandles.current = {
 				...imperativeHandles.current,
 				[key]: {
 					...value,
-					unsavedValue: currentUnsaved ?? value.valueInCode,
+					unsavedValue:
+						existingHandle !== undefined && !changedSavedValue
+							? existingHandle.unsavedValue
+							: value.valueInCode,
 					valueInCode: value.valueInCode,
 				},
 			};
@@ -161,6 +165,7 @@ export const VisualControlsProvider: React.FC<{
 				},
 			};
 			updateHandles();
+			visualControlStore.emitChange();
 		},
 		[updateHandles],
 	);

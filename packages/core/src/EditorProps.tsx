@@ -1,10 +1,5 @@
 import type {SyntheticEvent} from 'react';
-import React, {
-	createContext,
-	useCallback,
-	useImperativeHandle,
-	useMemo,
-} from 'react';
+import React, {createContext, useCallback, useMemo} from 'react';
 
 // Key: Composition ID, Value: initialized defaultProps
 type Props = Record<string, Record<string, unknown>>;
@@ -18,7 +13,6 @@ export type EditorPropsContextType = {
 			| Record<string, unknown>
 			| ((oldProps: Record<string, unknown>) => Record<string, unknown>);
 	}) => void;
-	resetUnsaved: (compositionId: string) => void;
 };
 
 export const EditorPropsContext = createContext<EditorPropsContextType>({
@@ -26,15 +20,7 @@ export const EditorPropsContext = createContext<EditorPropsContextType>({
 	updateProps: () => {
 		throw new Error('Not implemented');
 	},
-	resetUnsaved: () => {
-		throw new Error('Not implemented');
-	},
 });
-
-export const editorPropsProviderRef = React.createRef<{
-	getProps: () => Props;
-	setProps: React.Dispatch<React.SetStateAction<Props>>;
-}>();
 
 export const timeValueRef = React.createRef<{
 	goToFrame: () => void;
@@ -72,28 +58,9 @@ export const EditorPropsProvider: React.FC<{
 		[],
 	);
 
-	const resetUnsaved = useCallback((compositionId: string) => {
-		setProps((prev) => {
-			if (prev[compositionId]) {
-				const newProps = {...prev};
-				delete newProps[compositionId];
-				return newProps;
-			}
-
-			return prev;
-		});
-	}, []);
-
-	useImperativeHandle(editorPropsProviderRef, () => {
-		return {
-			getProps: () => props,
-			setProps,
-		};
-	}, [props]);
-
 	const ctx = useMemo((): EditorPropsContextType => {
-		return {props, updateProps, resetUnsaved};
-	}, [props, resetUnsaved, updateProps]);
+		return {props, updateProps};
+	}, [props, updateProps]);
 
 	return (
 		<EditorPropsContext.Provider value={ctx}>

@@ -13,9 +13,9 @@ export const SaveDefaultProps: React.FC = () => {
 	const onClickUpdate = useCallback(() => {
 		updateDefaultProps({
 			compositionId: id,
-			defaultProps: ({unsavedDefaultProps}) => {
+			defaultProps: ({savedDefaultProps}) => {
 				return {
-					...unsavedDefaultProps,
+					...savedDefaultProps,
 					color: 'red',
 				};
 			},
@@ -25,9 +25,9 @@ export const SaveDefaultProps: React.FC = () => {
 	const onClickSave = useCallback(async () => {
 		await saveDefaultProps({
 			compositionId: id,
-			defaultProps: ({unsavedDefaultProps}) => {
-				console.log(unsavedDefaultProps);
-				return unsavedDefaultProps;
+			defaultProps: ({savedDefaultProps}) => {
+				console.log(savedDefaultProps);
+				return savedDefaultProps;
 			},
 		});
 

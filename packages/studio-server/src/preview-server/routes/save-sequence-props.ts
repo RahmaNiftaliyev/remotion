@@ -1,23 +1,35 @@
-import {readFileSync, writeFileSync} from 'node:fs';
+import {readFileSync} from 'node:fs';
 import path from 'node:path';
+import {RenderInternals} from '@remotion/renderer';
 import type {
 	SaveSequencePropsRequest,
 	SaveSequencePropsResponse,
 } from '@remotion/studio-shared';
 import {updateSequenceProps} from '../../codemods/update-sequence-props';
+import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
 import type {ApiHandler} from '../api-types';
-import {suppressHmrForFile} from '../hmr-suppression';
-import {logUpdate} from './log-update';
+import {
+	printUndoHint,
+	pushToUndoStack,
+	suppressUndoStackInvalidation,
+} from '../undo-stack';
+import {suppressBundlerUpdateForFile} from '../watch-ignore-next-change';
+import {computeSequencePropsStatus} from './can-update-sequence-props';
+import {formatPropChange, logUpdate, normalizeQuotes} from './log-update';
 
 export const saveSequencePropsHandler: ApiHandler<
 	SaveSequencePropsRequest,
 	SaveSequencePropsResponse
 > = async ({
-	input: {fileName, nodePath, key, value, defaultValue},
+	input: {fileName, nodePath, key, value, defaultValue, observedKeys},
 	remotionRoot,
 	logLevel,
 }) => {
 	try {
+		RenderInternals.Log.trace(
+			{indent: false, logLevel},
+			`[save-sequence-props] Received request for fileName="${fileName}" key="${key}"`,
+		);
 		const absolutePath = path.resolve(remotionRoot, fileName);
 		const fileRelativeToRoot = path.relative(remotionRoot, absolutePath);
 		if (fileRelativeToRoot.startsWith('..')) {
@@ -34,31 +46,74 @@ export const saveSequencePropsHandler: ApiHandler<
 			defaultValue: defaultValue !== null ? JSON.parse(defaultValue) : null,
 		});
 
-		suppressHmrForFile(absolutePath);
-		writeFileSync(absolutePath, output);
-
 		const newValueString = JSON.stringify(JSON.parse(value));
 		const parsedDefault =
 			defaultValue !== null ? JSON.parse(defaultValue) : null;
+		const defaultValueString =
+			parsedDefault !== null ? JSON.stringify(parsedDefault) : null;
+
+		const normalizedOld = normalizeQuotes(oldValueString);
+		const normalizedNew = normalizeQuotes(newValueString);
+		const normalizedDefault =
+			defaultValueString !== null ? normalizeQuotes(defaultValueString) : null;
+
+		const undoPropChange = formatPropChange({
+			key,
+			oldValueString: normalizedNew,
+			newValueString: normalizedOld,
+			defaultValueString: normalizedDefault,
+		});
+		const redoPropChange = formatPropChange({
+			key,
+			oldValueString: normalizedOld,
+			newValueString: normalizedNew,
+			defaultValueString: normalizedDefault,
+		});
+
+		pushToUndoStack({
+			filePath: absolutePath,
+			oldContents: fileContents,
+			logLevel,
+			remotionRoot,
+			description: {
+				undoMessage: `Undid ${undoPropChange}`,
+				redoMessage: `Redid ${redoPropChange}`,
+			},
+			entryType: 'sequence-props',
+		});
+		suppressUndoStackInvalidation(absolutePath);
+		suppressBundlerUpdateForFile(absolutePath);
+		writeFileAndNotifyFileWatchers(absolutePath, output);
+
 		logUpdate({
 			absolutePath,
 			fileRelativeToRoot,
 			key,
 			oldValueString,
 			newValueString,
-			defaultValueString:
-				parsedDefault !== null ? JSON.stringify(parsedDefault) : null,
+			defaultValueString,
 			formatted,
 			logLevel,
 		});
 
+		printUndoHint(logLevel);
+
+		const newStatus = computeSequencePropsStatus({
+			fileName,
+			keys: observedKeys,
+			nodePath,
+			remotionRoot,
+		});
+
 		return {
 			success: true,
+			newStatus,
 		};
 	} catch (err) {
 		return {
 			success: false,
 			reason: (err as Error).message,
+			stack: (err as Error).stack as string,
 		};
 	}
 };

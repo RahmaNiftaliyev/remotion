@@ -4,7 +4,21 @@ import {makeHyperlink} from '../../hyperlinks/make-link';
 
 let warnedAboutPrettier = false;
 
-const normalizeQuotes = (str: string): string => {
+export const warnAboutPrettierOnce = (logLevel: LogLevel) => {
+	if (warnedAboutPrettier) {
+		return;
+	}
+
+	warnedAboutPrettier = true;
+	RenderInternals.Log.warn(
+		{indent: false, logLevel},
+		RenderInternals.chalk.yellow(
+			'Could not format with Prettier. File will need to be formatted manually.',
+		),
+	);
+};
+
+export const normalizeQuotes = (str: string): string => {
 	if (
 		str.length >= 2 &&
 		((str.startsWith("'") && str.endsWith("'")) ||
@@ -16,29 +30,55 @@ const normalizeQuotes = (str: string): string => {
 	return str;
 };
 
-const formatValueChange = ({
-	oldValueString,
-	newValueString,
-	defaultValueString,
-}: {
-	oldValueString: string;
-	newValueString: string;
-	defaultValueString: string | null;
-}) => {
-	// Changed to default value (prop gets deleted) → show only old value in red
-	if (defaultValueString !== null && newValueString === defaultValueString) {
-		return RenderInternals.chalk.red(oldValueString);
+// 24-bit ANSI helpers
+const fg = (r: number, g: number, b: number, str: string) =>
+	`\u001b[38;2;${r};${g};${b}m${str}\u001b[39m`;
+const bg = (r: number, g: number, b: number, str: string) =>
+	`\u001b[48;2;${r};${g};${b}m${str}\u001b[49m`;
+
+// Monokai-inspired syntax colors
+const attrName = (str: string) => fg(166, 226, 46, str);
+const equals = (str: string) => fg(249, 38, 114, str);
+const punctuation = (str: string) => fg(248, 248, 242, str);
+const stringValue = (str: string) => fg(230, 219, 116, str);
+const numberValue = (str: string) => fg(174, 129, 255, str);
+
+const colorValue = (str: string) => {
+	if (
+		(str.startsWith("'") && str.endsWith("'")) ||
+		(str.startsWith('"') && str.endsWith('"'))
+	) {
+		return stringValue(str);
 	}
 
-	// Changed from default value (prop gets added) → show only new value in green
-	if (defaultValueString !== null && oldValueString === defaultValueString) {
-		return RenderInternals.chalk.green(newValueString);
+	if (/^-?\d+(\.\d+)?$/.test(str)) {
+		return numberValue(str);
 	}
 
-	return `${RenderInternals.chalk.red(oldValueString)} \u2192 ${RenderInternals.chalk.green(newValueString)}`;
+	return punctuation(str);
 };
 
-const formatPropChange = ({
+// Subtle background tints
+const removedBg = (str: string) => bg(80, 20, 20, str);
+const addedBg = (str: string) => bg(30, 80, 30, str);
+
+const colorEnabled = () => RenderInternals.chalk.enabled();
+
+// Format key={value} with Monokai syntax highlighting
+const formatSimpleProp = (key: string, value: string) => {
+	return `${attrName(key)}${equals('=')}${punctuation('{')}${colorValue(value)}${punctuation('}')}`;
+};
+
+// Format parentKey={{childKey: value}} with Monokai syntax highlighting
+const formatNestedProp = (
+	parentKey: string,
+	childKey: string,
+	value: string,
+) => {
+	return `${attrName(parentKey)}${equals('=')}${punctuation('{{')}${punctuation(childKey)}${punctuation(':')} ${colorValue(value)}${punctuation('}}')}`;
+};
+
+export const formatPropChange = ({
 	key,
 	oldValueString,
 	newValueString,
@@ -49,42 +89,47 @@ const formatPropChange = ({
 	newValueString: string;
 	defaultValueString: string | null;
 }) => {
+	if (!colorEnabled()) {
+		const dotIdx = key.indexOf('.');
+		if (dotIdx === -1) {
+			return `${key}={${oldValueString}} \u2192 ${key}={${newValueString}}`;
+		}
+
+		const parent = key.slice(0, dotIdx);
+		const child = key.slice(dotIdx + 1);
+		return `${parent}={{${child}: ${oldValueString}}} \u2192 ${parent}={{${child}: ${newValueString}}}`;
+	}
+
 	const isResetToDefault =
 		defaultValueString !== null && newValueString === defaultValueString;
 	const isChangeFromDefault =
 		defaultValueString !== null && oldValueString === defaultValueString;
 
-	const valueChange = formatValueChange({
-		oldValueString,
-		newValueString,
-		defaultValueString,
-	});
-
 	const dotIndex = key.indexOf('.');
 	if (dotIndex === -1) {
 		if (isResetToDefault) {
-			return RenderInternals.chalk.red(`${key}={${oldValueString}}`);
+			return removedBg(formatSimpleProp(key, oldValueString));
 		}
 
 		if (isChangeFromDefault) {
-			return RenderInternals.chalk.green(`${key}={${newValueString}}`);
+			return addedBg(formatSimpleProp(key, newValueString));
 		}
 
-		return `${key}={${valueChange}}`;
+		return `${removedBg(formatSimpleProp(key, oldValueString))} \u2192 ${addedBg(formatSimpleProp(key, newValueString))}`;
 	}
 
 	const parentKey = key.slice(0, dotIndex);
 	const childKey = key.slice(dotIndex + 1);
 
 	if (isResetToDefault) {
-		return `${parentKey}={{${RenderInternals.chalk.red(`${childKey}: ${oldValueString}`)}}}`;
+		return removedBg(formatNestedProp(parentKey, childKey, oldValueString));
 	}
 
 	if (isChangeFromDefault) {
-		return `${parentKey}={{${RenderInternals.chalk.green(`${childKey}: ${newValueString}`)}}}`;
+		return addedBg(formatNestedProp(parentKey, childKey, newValueString));
 	}
 
-	return `${parentKey}={{${childKey}: ${valueChange}}}`;
+	return `${removedBg(formatNestedProp(parentKey, childKey, oldValueString))} \u2192 ${addedBg(formatNestedProp(parentKey, childKey, newValueString))}`;
 };
 
 export const logUpdate = ({
@@ -123,13 +168,7 @@ export const logUpdate = ({
 		{indent: false, logLevel},
 		`${RenderInternals.chalk.blueBright(`${fileLink}:`)} ${propChange}`,
 	);
-	if (!formatted && !warnedAboutPrettier) {
-		warnedAboutPrettier = true;
-		RenderInternals.Log.warn(
-			{indent: false, logLevel},
-			RenderInternals.chalk.yellow(
-				'Could not format with Prettier. File will need to be formatted manually.',
-			),
-		);
+	if (!formatted) {
+		warnAboutPrettierOnce(logLevel);
 	}
 };

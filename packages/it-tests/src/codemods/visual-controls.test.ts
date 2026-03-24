@@ -45,11 +45,13 @@ test('Should be able to create visual control', () => {
 				{
 					id: 'my-matrix-4',
 					newValueSerialized: JSON.stringify(123),
+					newValueIsUndefined: false,
 					enumPaths: [],
 				},
 				{
 					id: 'my-matrix-2',
 					newValueSerialized: JSON.stringify(456),
+					newValueIsUndefined: false,
 					enumPaths: [[]],
 				},
 			],

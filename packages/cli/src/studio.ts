@@ -77,6 +77,10 @@ export const studioCommand = async (
 
 	const fullEntryPath = convertEntryPointToServeUrl(file);
 
+	StudioServerInternals.setFileWatcherRegistry(
+		StudioServerInternals.createFileWatcherRegistry(),
+	);
+
 	let inputProps = getInputProps((newProps) => {
 		StudioServerInternals.waitForLiveEventsListener().then((listener) => {
 			inputProps = newProps;

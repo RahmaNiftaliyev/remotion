@@ -10,13 +10,13 @@ import {applyCodemod} from '../../codemods/recast-mods';
 import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
 import {makeHyperlink} from '../../hyperlinks/make-link';
 import type {ApiHandler} from '../api-types';
-import {suppressHmrForFile} from '../hmr-suppression';
 import {waitForLiveEventsListener} from '../live-events';
 import {
 	printUndoHint,
 	pushToUndoStack,
 	suppressUndoStackInvalidation,
 } from '../undo-stack';
+import {suppressBundlerUpdateForFile} from '../watch-ignore-next-change';
 import {warnAboutPrettierOnce} from './log-update';
 
 export const applyVisualControlHandler: ApiHandler<
@@ -83,7 +83,7 @@ export const applyVisualControlHandler: ApiHandler<
 		'visual-control',
 	);
 	suppressUndoStackInvalidation(absolutePath);
-	suppressHmrForFile(absolutePath);
+	suppressBundlerUpdateForFile(absolutePath);
 	writeFileAndNotifyFileWatchers(absolutePath, output);
 
 	waitForLiveEventsListener().then((listener) => {

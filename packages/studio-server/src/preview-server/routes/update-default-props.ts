@@ -9,7 +9,6 @@ import {updateDefaultProps} from '../../codemods/update-default-props';
 import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
 import {makeHyperlink} from '../../hyperlinks/make-link';
 import type {ApiHandler} from '../api-types';
-import {suppressHmrForFile} from '../hmr-suppression';
 import {getProjectInfo} from '../project-info';
 import {
 	printUndoHint,
@@ -57,7 +56,6 @@ export const updateDefaultPropsHandler: ApiHandler<
 			'default-props',
 		);
 		suppressUndoStackInvalidation(projectInfo.rootFile);
-		suppressHmrForFile(projectInfo.rootFile);
 		suppressBundlerUpdateForFile(projectInfo.rootFile);
 		writeFileAndNotifyFileWatchers(projectInfo.rootFile, output);
 

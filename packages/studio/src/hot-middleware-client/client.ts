@@ -180,12 +180,7 @@ function processMessage(obj: HotMiddlewareMessage) {
 
 			if (applyUpdate) {
 				window.remotion_finishedBuilding?.();
-				processUpdate(
-					obj.hash,
-					obj.modules,
-					hotMiddlewareOptions,
-					obj.suppressed,
-				);
+				processUpdate(obj.hash, obj.modules, hotMiddlewareOptions);
 			}
 
 			break;

@@ -13,7 +13,6 @@ export type HotMiddlewareMessage =
 			modules: {
 				[key: string]: string;
 			};
-			suppressed: boolean;
 	  };
 
 export const hotMiddlewareOptions = {

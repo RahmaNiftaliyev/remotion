@@ -11,7 +11,6 @@ import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
 import type {HotMiddlewareMessage, ModuleMap} from '@remotion/studio-shared';
 import {hotMiddlewareOptions} from '@remotion/studio-shared';
-import {shouldSuppressHmr} from '../hmr-suppression';
 import type {WebpackStats} from './types';
 
 declare global {
@@ -137,19 +136,11 @@ export const webpackHotMiddleware = (
 		hotMiddlewareOptions.heartbeat,
 	);
 	let latestStats: webpack.Stats | null = null;
-	let currentBuildSuppressed = false;
 
 	compiler.hooks.invalid.tap('remotion', onInvalid);
 	compiler.hooks.done.tap('remotion', onDone);
 
-	function onInvalid(filename: string | null) {
-		if (shouldSuppressHmr(filename)) {
-			currentBuildSuppressed = true;
-			latestStats = null;
-			return;
-		}
-
-		currentBuildSuppressed = false;
+	function onInvalid() {
 		latestStats = null;
 		RenderInternals.Log.info({indent: false, logLevel}, 'Building...');
 		eventStream?.publish({
@@ -160,9 +151,7 @@ export const webpackHotMiddleware = (
 	function onDone(statsResult: webpack.Stats) {
 		// Keep hold of latest stats so they can be propagated to new clients
 		latestStats = statsResult;
-		publishStats('built', latestStats, eventStream, currentBuildSuppressed);
-
-		currentBuildSuppressed = false;
+		publishStats('built', latestStats, eventStream);
 	}
 
 	const middleware = function (
@@ -173,7 +162,7 @@ export const webpackHotMiddleware = (
 		if (!pathMatch(req.url as string, hotMiddlewareOptions.path)) return next();
 		eventStream?.handler(req, res);
 		if (latestStats) {
-			publishStats('sync', latestStats, eventStream, false);
+			publishStats('sync', latestStats, eventStream);
 		}
 	};
 
@@ -241,7 +230,6 @@ function publishStats(
 	action: HotMiddlewareMessage['action'],
 	statsResult: webpack.Stats,
 	eventStream: EventStream | null,
-	suppressed: boolean,
 ) {
 	const stats = statsResult.toJson({
 		all: false,
@@ -269,7 +257,6 @@ function publishStats(
 			warnings: _stats.warnings || [],
 			errors: _stats.errors || [],
 			modules: buildModuleMap(_stats.modules),
-			suppressed,
 		});
 	});
 }

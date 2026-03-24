@@ -7,12 +7,12 @@ import type {
 import {updateSequenceProps} from '../../codemods/update-sequence-props';
 import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
 import type {ApiHandler} from '../api-types';
-import {suppressHmrForFile} from '../hmr-suppression';
 import {
 	printUndoHint,
 	pushToUndoStack,
 	suppressUndoStackInvalidation,
 } from '../undo-stack';
+import {suppressBundlerUpdateForFile} from '../watch-ignore-next-change';
 import {computeSequencePropsStatus} from './can-update-sequence-props';
 import {formatPropChange, logUpdate, normalizeQuotes} from './log-update';
 
@@ -77,7 +77,7 @@ export const saveSequencePropsHandler: ApiHandler<
 			'sequence-props',
 		);
 		suppressUndoStackInvalidation(absolutePath);
-		suppressHmrForFile(absolutePath);
+		suppressBundlerUpdateForFile(absolutePath);
 		writeFileAndNotifyFileWatchers(absolutePath, output);
 
 		logUpdate({

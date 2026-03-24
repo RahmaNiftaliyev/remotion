@@ -65,12 +65,7 @@ export const processUpdate = function (
 	hash: string | undefined,
 	moduleMap: ModuleMap,
 	options: HotMiddlewareOptions,
-	suppressed: boolean,
 ) {
-	if (suppressed) {
-		return;
-	}
-
 	async function check() {
 		const cb = function (err: Error | null, updatedModules: ModuleId[] | null) {
 			if (err) return handleError(err);

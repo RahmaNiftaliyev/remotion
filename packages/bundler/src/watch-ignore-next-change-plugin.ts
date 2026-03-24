@@ -93,6 +93,18 @@ export class WatchIgnoreNextChangePlugin {
 			if (dirTs !== undefined) {
 				this.snapshotDirTimestamps.set(dir, dirTs);
 			}
+
+			// Also snapshot ancestor directories — watchpack may report them
+			// as changed alongside the file itself.
+			let ancestor = path.dirname(dir);
+			while (ancestor !== path.dirname(ancestor)) {
+				const ancestorTs = info.contextTimeInfoEntries.get(ancestor);
+				if (ancestorTs !== undefined) {
+					this.snapshotDirTimestamps.set(ancestor, ancestorTs);
+				}
+
+				ancestor = path.dirname(ancestor);
+			}
 		}
 
 		this.trace('[WatchIgnoreNextChange] Registered ignore for', file);
@@ -126,13 +138,24 @@ export class WatchIgnoreNextChangePlugin {
 				callback,
 				callbackUndelayed,
 			) => {
+				const isAncestorOfIgnoredFile = (dir: string): boolean => {
+					for (const file of self.filesToIgnore) {
+						if (file.startsWith(dir + path.sep)) {
+							return true;
+						}
+					}
+
+					return false;
+				};
+
 				const wrappedCallbackUndelayed: CallbackUndelayed = (
 					fileName,
 					changeTime,
 				) => {
 					if (
 						self.filesToIgnore.has(fileName) ||
-						self.dirsToIgnore.has(fileName)
+						self.dirsToIgnore.has(fileName) ||
+						isAncestorOfIgnoredFile(fileName)
 					) {
 						self.trace(
 							'[WatchIgnoreNextChange] Suppressed callbackUndelayed for',
@@ -202,6 +225,29 @@ export class WatchIgnoreNextChangePlugin {
 
 						for (const dir of self.dirsToIgnore) {
 							removedFiles.delete(dir);
+						}
+					}
+
+					// Remove ancestor directories of suppressed files from changedFiles.
+					// Watchpack may report parent directories (e.g. /src) as changed
+					// alongside the file itself (e.g. /src/Sub/index.tsx).
+					// dirsToIgnore only has the immediate parent, so ancestors
+					// like /src would remain and trigger a rebuild.
+					if (changedFiles && suppressedFiles.length > 0) {
+						for (const changed of [...changedFiles]) {
+							for (const file of suppressedFiles) {
+								if (file.startsWith(changed + path.sep)) {
+									changedFiles.delete(changed);
+									if (dirTimestamps) {
+										const prev = self.snapshotDirTimestamps.get(changed);
+										if (prev !== undefined) {
+											dirTimestamps.set(changed, prev);
+										}
+									}
+
+									break;
+								}
+							}
 						}
 					}
 
@@ -287,6 +333,16 @@ export class WatchIgnoreNextChangePlugin {
 							for (const dir of suppressedDirs) {
 								watchpack.aggregatedChanges.delete(dir);
 								watchpack.aggregatedRemovals.delete(dir);
+							}
+
+							// Also clear ancestor directories of suppressed files
+							for (const file of suppressedFiles) {
+								let ancestor = path.dirname(path.dirname(file));
+								while (ancestor !== path.dirname(ancestor)) {
+									watchpack.aggregatedChanges.delete(ancestor);
+									watchpack.aggregatedRemovals.delete(ancestor);
+									ancestor = path.dirname(ancestor);
+								}
 							}
 						} else {
 							callback(

@@ -78,9 +78,11 @@ jobs:
       - name: Test Webcodecs
         run: |
           bun run testwebcodecs
+      - name: Install E2E deps
+        run: cd packages/example && bunx playwright install --with-deps
       - name: Test Example E2E
         run: |
-          cd packages/example && bun run test:e2e
+          bun run teste2e
   webrenderer-tests:
     runs-on: macos-latest
     name: Web renderer tests

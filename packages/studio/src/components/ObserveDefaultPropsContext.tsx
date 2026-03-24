@@ -1,4 +1,10 @@
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import {Internals} from 'remotion';
 import {StudioServerConnectionCtx} from '../helpers/client-id';
 import {callApi} from './call-api';
@@ -23,6 +29,7 @@ export const ObserveDefaultProps: React.FC<{
 	const {previewServerState, subscribeToEvent} = useContext(
 		StudioServerConnectionCtx,
 	);
+	const {updateProps} = useContext(Internals.EditorPropsContext);
 
 	const [canSaveDefaultPropsObjectState, setCanSaveDefaultProps] =
 		useState<AllCompStates>({});
@@ -40,32 +47,36 @@ export const ObserveDefaultProps: React.FC<{
 			? previewServerState.clientId
 			: null;
 
-	const applyResult = (
-		compId: string,
-		result:
-			| {canUpdate: true; currentDefaultProps: Record<string, unknown>}
-			| {canUpdate: false; reason: string},
-	) => {
-		if (result.canUpdate) {
-			setCanSaveDefaultProps((prevState) => ({
-				...prevState,
-				[compId]: {canUpdate: true},
-			}));
-			Internals.editorPropsProviderRef.current?.setProps((prev) => ({
-				...prev,
-				[compId]: result.currentDefaultProps,
-			}));
-		} else {
-			setCanSaveDefaultProps((prevState) => ({
-				...prevState,
-				[compId]: {
-					canUpdate: false,
-					reason: result.reason,
-					determined: true,
-				},
-			}));
-		}
-	};
+	const applyResult = useCallback(
+		(
+			compId: string,
+			result:
+				| {canUpdate: true; currentDefaultProps: Record<string, unknown>}
+				| {canUpdate: false; reason: string},
+		) => {
+			if (result.canUpdate) {
+				setCanSaveDefaultProps((prevState) => ({
+					...prevState,
+					[compId]: {canUpdate: true},
+				}));
+				updateProps({
+					id: compId,
+					defaultProps: result.currentDefaultProps,
+					newProps: result.currentDefaultProps,
+				});
+			} else {
+				setCanSaveDefaultProps((prevState) => ({
+					...prevState,
+					[compId]: {
+						canUpdate: false,
+						reason: result.reason,
+						determined: true,
+					},
+				}));
+			}
+		},
+		[updateProps],
+	);
 
 	useEffect(() => {
 		if (readOnlyStudio || !clientId || compositionId === null) {
@@ -91,7 +102,7 @@ export const ObserveDefaultProps: React.FC<{
 				// Ignore errors during cleanup
 			});
 		};
-	}, [readOnlyStudio, clientId, compositionId]);
+	}, [readOnlyStudio, clientId, compositionId, applyResult]);
 
 	useEffect(() => {
 		const unsub = subscribeToEvent('default-props-updatable-changed', (e) => {
@@ -109,7 +120,7 @@ export const ObserveDefaultProps: React.FC<{
 		return () => {
 			unsub();
 		};
-	}, [subscribeToEvent, compositionId]);
+	}, [subscribeToEvent, compositionId, applyResult]);
 
 	const value = useMemo(() => ({canSaveDefaultProps}), [canSaveDefaultProps]);
 

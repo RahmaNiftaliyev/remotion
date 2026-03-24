@@ -14,11 +14,18 @@ export async function navigateToSchemaTest(page: Page): Promise<void> {
 
 export async function navigateToVisualControls(page: Page): Promise<void> {
 	await page.goto(STUDIO_URL);
+	// Wait for any in-progress build to settle before interacting.
+	// The afterEach of the previous test may have written a file that
+	// triggered a webpack rebuild.
+	await page.waitForFunction(
+		() => !document.querySelector('.__remotion_spinner_line'),
+		{timeout: 30_000},
+	);
 	const folder = page.getByTitle('visual-controls');
 	await folder.click({timeout: 15_000});
-	const compositionLink = page
-		.getByText('visual-controls', {exact: true})
-		.first();
+	const compositionLink = page.locator(
+		'a.__remotion-composition[data-compname="visual-controls"]',
+	);
 	await compositionLink.click({timeout: 10_000});
 	await expect(page).toHaveURL(/visual-controls/, {timeout: 10_000});
 }

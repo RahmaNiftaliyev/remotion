@@ -101,7 +101,9 @@ test.describe('visual controls', () => {
 		await controlsTab.click();
 
 		// Edit the subtitle text (nullable string, default 'A subtitle')
-		const subtitleInput = page.locator('input[name="subtitle"]');
+		const subtitleInput = page.locator(
+			'input[name="subtitle"]:not([type="checkbox"])',
+		);
 		await expect(subtitleInput).toBeVisible({timeout: 10_000});
 
 		const newSubtitle = 'e2e-nullable-test';
@@ -150,7 +152,15 @@ test.describe('visual controls', () => {
 		await expect(controlsTab).toBeVisible({timeout: 15_000});
 		await controlsTab.click();
 
-		// Find the extra-rotation fieldset and its dragger
+		// The extra-rotation control defaults to undefined.
+		// First, enable it by unchecking the "undefined" checkbox.
+		const undefinedToggle = page.locator(
+			'input[name="extra-rotation"][type="checkbox"]',
+		);
+		await expect(undefinedToggle).toBeVisible({timeout: 10_000});
+		await undefinedToggle.uncheck();
+
+		// Now find the dragger and interact with it
 		const fieldset = page
 			.locator('[data-json-path="extra-rotation"]')
 			.locator('..');
@@ -169,7 +179,11 @@ test.describe('visual controls', () => {
 			.poll(
 				() => {
 					const content = fs.readFileSync(visualControlsFile, 'utf-8');
-					return content.includes(`'extra-rotation', ${newValue}`);
+					// The codemod may format the value on the next line
+					const match = content.match(
+						/'extra-rotation',\s*(\d+)/,
+					);
+					return match?.[1] === newValue;
 				},
 				{
 					message: `Expected VisualControls/index.tsx to contain extra-rotation value ${newValue}`,
@@ -178,18 +192,15 @@ test.describe('visual controls', () => {
 			)
 			.toBe(true);
 
-		// Now toggle to undefined via the checkbox
-		const undefinedCheckbox = page.locator(
-			'input[name="extra-rotation"][type="checkbox"]',
-		);
-		await expect(undefinedCheckbox).toBeVisible({timeout: 5_000});
-		await undefinedCheckbox.check();
+		// Now toggle back to undefined via the checkbox
+		await expect(undefinedToggle).toBeVisible({timeout: 5_000});
+		await undefinedToggle.check();
 
 		await expect
 			.poll(
 				() => {
 					const content = fs.readFileSync(visualControlsFile, 'utf-8');
-					return content.includes("'extra-rotation', undefined");
+					return /'extra-rotation',\s*undefined/.test(content);
 				},
 				{
 					message:

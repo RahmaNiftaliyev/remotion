@@ -65,10 +65,17 @@ export const saveSequencePropsHandler: ApiHandler<
 			defaultValueString: normalizedDefault,
 		});
 
-		pushToUndoStack(absolutePath, fileContents, logLevel, remotionRoot, {
-			undoMessage: `Undid ${undoPropChange}`,
-			redoMessage: `Redid ${redoPropChange}`,
-		});
+		pushToUndoStack(
+			absolutePath,
+			fileContents,
+			logLevel,
+			remotionRoot,
+			{
+				undoMessage: `Undid ${undoPropChange}`,
+				redoMessage: `Redid ${redoPropChange}`,
+			},
+			'sequence-props',
+		);
 		suppressUndoStackInvalidation(absolutePath);
 		suppressHmrForFile(absolutePath);
 		writeFileAndNotifyFileWatchers(absolutePath, output);

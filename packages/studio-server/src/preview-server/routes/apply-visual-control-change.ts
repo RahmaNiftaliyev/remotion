@@ -71,10 +71,17 @@ export const applyVisualControlHandler: ApiHandler<
 		// Prettier not available, use unformatted output
 	}
 
-	pushToUndoStack(absolutePath, fileContents, logLevel, remotionRoot, {
-		undoMessage: 'Undid visual control change',
-		redoMessage: 'Redid visual control change',
-	});
+	pushToUndoStack(
+		absolutePath,
+		fileContents,
+		logLevel,
+		remotionRoot,
+		{
+			undoMessage: 'Undid visual control change',
+			redoMessage: 'Redid visual control change',
+		},
+		'visual-control',
+	);
 	suppressUndoStackInvalidation(absolutePath);
 	suppressHmrForFile(absolutePath);
 	writeFileAndNotifyFileWatchers(absolutePath, output);

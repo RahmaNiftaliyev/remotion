@@ -18,11 +18,17 @@ export interface UndoEntryDescription {
 	redoMessage: string;
 }
 
-interface UndoEntry {
+type UndoEntryType = 'visual-control' | 'default-props' | 'sequence-props';
+
+type UndoEntry = {
 	filePath: string;
 	oldContents: string;
 	description: UndoEntryDescription;
-}
+} & (
+	| {entryType: 'visual-control'}
+	| {entryType: 'default-props'}
+	| {entryType: 'sequence-props'}
+);
 
 const MAX_ENTRIES = 100;
 const undoStack: UndoEntry[] = [];
@@ -54,10 +60,11 @@ export function pushToUndoStack(
 	logLevel: LogLevel,
 	remotionRoot: string,
 	description: UndoEntryDescription,
+	entryType: UndoEntryType,
 ) {
 	storedLogLevel = logLevel;
 	storedRemotionRoot = remotionRoot;
-	undoStack.push({filePath, oldContents, description});
+	undoStack.push({filePath, oldContents, description, entryType});
 	if (undoStack.length > MAX_ENTRIES) {
 		undoStack.shift();
 	}
@@ -90,8 +97,9 @@ export function pushToRedoStack(
 	filePath: string,
 	oldContents: string,
 	description: UndoEntryDescription,
+	entryType: UndoEntryType,
 ) {
-	redoStack.push({filePath, oldContents, description});
+	redoStack.push({filePath, oldContents, description, entryType});
 	if (redoStack.length > MAX_ENTRIES) {
 		redoStack.shift();
 	}
@@ -243,6 +251,7 @@ export function popUndo(): {success: true} | {success: false; reason: string} {
 		filePath: entry.filePath,
 		oldContents: currentContents,
 		description: entry.description,
+		entryType: entry.entryType,
 	});
 
 	suppressUndoStackInvalidation(entry.filePath);
@@ -258,7 +267,10 @@ export function popUndo(): {success: true} | {success: false; reason: string} {
 	);
 	logFileAction(entry.description.undoMessage, entry.filePath);
 
-	emitVisualControlChanges(entry.oldContents);
+	if (entry.entryType === 'visual-control') {
+		emitVisualControlChanges(entry.oldContents);
+	}
+
 	ensureWatching(entry.filePath);
 	broadcastState();
 	return {success: true};
@@ -275,6 +287,7 @@ export function popRedo(): {success: true} | {success: false; reason: string} {
 		filePath: entry.filePath,
 		oldContents: currentContents,
 		description: entry.description,
+		entryType: entry.entryType,
 	});
 
 	suppressUndoStackInvalidation(entry.filePath);
@@ -290,7 +303,10 @@ export function popRedo(): {success: true} | {success: false; reason: string} {
 	);
 	logFileAction(entry.description.redoMessage, entry.filePath);
 
-	emitVisualControlChanges(entry.oldContents);
+	if (entry.entryType === 'visual-control') {
+		emitVisualControlChanges(entry.oldContents);
+	}
+
 	ensureWatching(entry.filePath);
 	broadcastState();
 	return {success: true};

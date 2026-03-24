@@ -42,38 +42,33 @@ await saveDefaultProps({
 });
 ```
 
-If you modified props in the Props Editor (right sidebar in the Studio), you can also access the unsaved props from there, and for example save them:
-
-```tsx twoslash title="Save props from the Props Editor"
-// @target: esnext
-import { saveDefaultProps } from "@remotion/studio";
-
-await saveDefaultProps({
-  compositionId: "my-composition",
-  defaultProps: ({ unsavedDefaultProps }) => {
-    return unsavedDefaultProps;
-  },
-});
-```
-
 If you have a Zod schema, you can also access its runtime value:
 
-```tsx twoslash title="Save props from the Props Editor"
+```tsx twoslash title="Accessing the Zod schema"
 // @target: esnext
 import { saveDefaultProps } from "@remotion/studio";
 
 await saveDefaultProps({
   compositionId: "my-composition",
-  defaultProps: ({ schema, unsavedDefaultProps }) => {
+  defaultProps: ({ schema, savedDefaultProps }) => {
     // Do something with the Zod schema
 
     return {
-      ...unsavedDefaultProps,
+      ...savedDefaultProps,
       color: "red",
     };
   },
 });
 ```
+
+## `unsavedDefaultProps`
+
+:::info
+Before v4.0.437, the Props Editor had a concept of "unsaved props" that were not yet written back to the root file.
+Starting from v4.0.437, all prop changes are immediately saved, so `unsavedDefaultProps` is now always the same as `savedDefaultProps`.
+
+It is still accepted for backwards compatibility, but you should use `savedDefaultProps` instead.
+:::
 
 ## Requirements
 

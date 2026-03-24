@@ -6,22 +6,20 @@ crumb: "@remotion/studio"
 
 # ~updateDefaultProps()~<AvailableFrom v="4.0.154"/>
 
-Updates the [`defaultProps`](/docs/composition) for a [composition](/docs/terminology/composition) and saves them back to the [root file](/docs/terminology/root-file).
-
 :::info
-**Deprecated**: Before v4.0.437, this function only updated the props in the Props Editor without saving them to the root file.  
-Starting from v4.0.437, we eliminated the concept of "unsaved props" and now changes are always immediately reflected in the Props Editor.
+**Deprecated**: This function is an alias for [`saveDefaultProps()`](/docs/studio/save-default-props). Use `saveDefaultProps()` instead.
 
-This function is now an alias for [`saveDefaultProps()`](/docs/studio/save-default-props).
+Before v4.0.437, this function only updated the props in the Props Editor without saving them to the root file.
+Starting from v4.0.437, all prop changes are immediately saved, making this function identical to `saveDefaultProps()`.
 :::
 
 ## Examples
 
 ```tsx twoslash title="Setting {color: 'green'} as the default props"
 // @target: esnext
-import { updateDefaultProps } from "@remotion/studio";
+import { saveDefaultProps } from "@remotion/studio";
 
-await updateDefaultProps({
+await saveDefaultProps({
   compositionId: "my-composition",
   defaultProps: () => {
     return {
@@ -31,55 +29,47 @@ await updateDefaultProps({
 });
 ```
 
-You can access the current unsaved default props to only override part of it (reducer-style):
+You can access the current default props to only override part of it (reducer-style):
 
 ```tsx twoslash title="Accessing the current props"
 // @target: esnext
-import { updateDefaultProps } from "@remotion/studio";
+import { saveDefaultProps } from "@remotion/studio";
 
-await updateDefaultProps({
-  compositionId: "my-composition",
-  defaultProps: ({ unsavedDefaultProps }) => {
-    return { ...unsavedDefaultProps, color: "green" };
-  },
-});
-```
-
-If you only want to override on top of the saved changes:
-
-```tsx twoslash title="Accessing the saved props"
-// @target: esnext
-import { updateDefaultProps } from "@remotion/studio";
-
-await updateDefaultProps({
+await saveDefaultProps({
   compositionId: "my-composition",
   defaultProps: ({ savedDefaultProps }) => {
-    return {
-      ...savedDefaultProps,
-      color: "green",
-    };
+    return { ...savedDefaultProps, color: "green" };
   },
 });
 ```
 
 If you have a Zod schema, you can also access its runtime value:
 
-```tsx twoslash title="Save props from the Props Editor"
+```tsx twoslash title="Accessing the Zod schema"
 // @target: esnext
-import { updateDefaultProps } from "@remotion/studio";
+import { saveDefaultProps } from "@remotion/studio";
 
-await updateDefaultProps({
+await saveDefaultProps({
   compositionId: "my-composition",
-  defaultProps: ({ schema, unsavedDefaultProps }) => {
+  defaultProps: ({ schema, savedDefaultProps }) => {
     // Do something with the Zod schema
 
     return {
-      ...unsavedDefaultProps,
+      ...savedDefaultProps,
       color: "red",
     };
   },
 });
 ```
+
+## `unsavedDefaultProps`
+
+:::info
+Before v4.0.437, `unsavedDefaultProps` contained props that were modified in the Props Editor but not yet written back to the root file.
+Starting from v4.0.437, all prop changes are immediately saved, so `unsavedDefaultProps` is now always the same as `savedDefaultProps`.
+
+It is still accepted for backwards compatibility, but you should use `savedDefaultProps` instead.
+:::
 
 ## Requirements
 

@@ -7,9 +7,20 @@ export async function navigateToSchemaTest(page: Page): Promise<void> {
 	await page.goto(STUDIO_URL);
 	const schemaFolder = page.getByTitle('Schema');
 	await schemaFolder.click({timeout: 15_000});
+
+	// Wait for the default-props subscription to resolve so that saves work
+	const subscriptionPromise = page.waitForResponse(
+		(resp) =>
+			resp.url().includes('/api/subscribe-to-default-props') &&
+			resp.status() === 200,
+		{timeout: 15_000},
+	);
+
 	const schemaTestLink = page.getByText('schema-test', {exact: true}).first();
 	await schemaTestLink.click({timeout: 10_000});
 	await expect(page).toHaveURL(/schema-test/, {timeout: 10_000});
+
+	await subscriptionPromise;
 }
 
 export async function navigateToVisualControls(page: Page): Promise<void> {

@@ -95,7 +95,7 @@ export const VisualControlsProvider: React.FC<{
 				[key]: {
 					...value,
 					unsavedValue:
-						existingHandle !== undefined
+						existingHandle !== undefined && !changedSavedValue
 							? existingHandle.unsavedValue
 							: value.valueInCode,
 					valueInCode: value.valueInCode,
@@ -190,19 +190,6 @@ export const VisualControlsProvider: React.FC<{
 			clearInterval(interval);
 		};
 	}, [updateHandles]);
-
-	useEffect(() => {
-		const prev = window.remotion_finishedBuilding;
-		window.remotion_finishedBuilding = () => {
-			prev?.();
-			imperativeHandles.current = {};
-			setHandles({});
-		};
-
-		return () => {
-			window.remotion_finishedBuilding = prev;
-		};
-	}, []);
 
 	const setState: SetVisualControlsContextType = useMemo(() => {
 		return {

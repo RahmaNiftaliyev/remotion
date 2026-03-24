@@ -2,8 +2,17 @@ import fs from 'fs';
 import {expect, test} from '@playwright/test';
 import {rootFile, STUDIO_URL} from './constants.mts';
 import {readStudioLogs, stripAnsi} from './helpers.mts';
+import {startStudio, stopStudio} from './studio-server.mts';
 
 test.describe('suppress webpack rebuild', () => {
+	test.beforeEach(async () => {
+		await startStudio();
+	});
+
+	test.afterEach(async () => {
+		await stopStudio();
+	});
+
 	test('updating default props via API should not trigger a webpack rebuild, but a manual file edit should', async () => {
 		const logCountBefore = readStudioLogs().length;
 

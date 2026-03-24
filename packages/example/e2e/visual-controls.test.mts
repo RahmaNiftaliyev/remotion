@@ -1,28 +1,22 @@
 import fs from 'fs';
 import {expect, test} from '@playwright/test';
 import {EXPANDED_SIDEBAR_STATE, visualControlsFile} from './constants.mts';
-import {navigateToVisualControls} from './helpers.mts';
+import {openVisualControlsPanel} from './helpers.mts';
+import {startStudio, stopStudio} from './studio-server.mts';
 
 test.use({storageState: EXPANDED_SIDEBAR_STATE});
 
 test.describe('visual controls', () => {
-	let originalContent: string;
-
-	test.beforeEach(() => {
-		originalContent = fs.readFileSync(visualControlsFile, 'utf-8');
+	test.beforeEach(async () => {
+		await startStudio();
 	});
 
-	test.afterEach(() => {
-		fs.writeFileSync(visualControlsFile, originalContent);
+	test.afterEach(async () => {
+		await stopStudio();
 	});
 
 	test('should edit rotation and update source file', async ({page}) => {
-		await navigateToVisualControls(page);
-
-		// Click the Controls tab on the right panel
-		const controlsTab = page.getByText('Controls', {exact: true});
-		await expect(controlsTab).toBeVisible({timeout: 15_000});
-		await controlsTab.click();
+		await openVisualControlsPanel(page);
 
 		// Find the rotation control's fieldset via the data-json-path label
 		const rotationFieldset = page
@@ -61,12 +55,7 @@ test.describe('visual controls', () => {
 	});
 
 	test('should edit label string and update source file', async ({page}) => {
-		await navigateToVisualControls(page);
-
-		// Click the Controls tab on the right panel
-		const controlsTab = page.getByText('Controls', {exact: true});
-		await expect(controlsTab).toBeVisible({timeout: 15_000});
-		await controlsTab.click();
+		await openVisualControlsPanel(page);
 
 		// Find the label string input by its name attribute
 		const labelInput = page.locator('input[name="label"]');
@@ -94,11 +83,7 @@ test.describe('visual controls', () => {
 	test('should edit nullable subtitle and update source file', async ({
 		page,
 	}) => {
-		await navigateToVisualControls(page);
-
-		const controlsTab = page.getByText('Controls', {exact: true});
-		await expect(controlsTab).toBeVisible({timeout: 15_000});
-		await controlsTab.click();
+		await openVisualControlsPanel(page);
 
 		// Edit the subtitle text (nullable string, default 'A subtitle')
 		const subtitleInput = page.locator(
@@ -146,11 +131,7 @@ test.describe('visual controls', () => {
 	test('should edit optional extra-rotation and update source file', async ({
 		page,
 	}) => {
-		await navigateToVisualControls(page);
-
-		const controlsTab = page.getByText('Controls', {exact: true});
-		await expect(controlsTab).toBeVisible({timeout: 15_000});
-		await controlsTab.click();
+		await openVisualControlsPanel(page);
 
 		// The extra-rotation control defaults to undefined.
 		// First, enable it by unchecking the "undefined" checkbox.
@@ -180,9 +161,7 @@ test.describe('visual controls', () => {
 				() => {
 					const content = fs.readFileSync(visualControlsFile, 'utf-8');
 					// The codemod may format the value on the next line
-					const match = content.match(
-						/'extra-rotation',\s*(\d+)/,
-					);
+					const match = content.match(/'extra-rotation',\s*(\d+)/);
 					return match?.[1] === newValue;
 				},
 				{

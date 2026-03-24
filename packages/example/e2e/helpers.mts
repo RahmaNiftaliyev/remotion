@@ -14,13 +14,6 @@ export async function navigateToSchemaTest(page: Page): Promise<void> {
 
 export async function navigateToVisualControls(page: Page): Promise<void> {
 	await page.goto(STUDIO_URL);
-	// Wait for any in-progress build to settle before interacting.
-	// The afterEach of the previous test may have written a file that
-	// triggered a webpack rebuild.
-	await page.waitForFunction(
-		() => !document.querySelector('.__remotion_spinner_line'),
-		{timeout: 30_000},
-	);
 	const folder = page.getByTitle('visual-controls');
 	await folder.click({timeout: 15_000});
 	const compositionLink = page.locator(
@@ -28,6 +21,20 @@ export async function navigateToVisualControls(page: Page): Promise<void> {
 	);
 	await compositionLink.click({timeout: 10_000});
 	await expect(page).toHaveURL(/visual-controls/, {timeout: 10_000});
+}
+
+export async function openVisualControlsPanel(page: Page): Promise<void> {
+	await navigateToVisualControls(page);
+	const controlsTab = page.getByText('Controls', {exact: true});
+	await expect(controlsTab).toBeVisible({timeout: 15_000});
+	await controlsTab.click();
+
+	// Wait for the source map to resolve — the header shows "Loading..."
+	// until it's done, then shows the file name.
+	await page.waitForFunction(
+		() => !document.body.innerText.includes('Loading...'),
+		{timeout: 15_000},
+	);
 }
 
 export const stripAnsi = (s: string) =>

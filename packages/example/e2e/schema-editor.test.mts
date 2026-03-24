@@ -2,10 +2,19 @@ import fs from 'fs';
 import {expect, test} from '@playwright/test';
 import {EXPANDED_SIDEBAR_STATE, rootFile} from './constants.mts';
 import {navigateToSchemaTest, readStudioLogs, stripAnsi} from './helpers.mts';
+import {startStudio, stopStudio} from './studio-server.mts';
 
 test.use({storageState: EXPANDED_SIDEBAR_STATE});
 
 test.describe('visual mode', () => {
+	test.beforeEach(async () => {
+		await startStudio();
+	});
+
+	test.afterEach(async () => {
+		await stopStudio();
+	});
+
 	test('should edit a prop and update source code', async ({page}) => {
 		await navigateToSchemaTest(page);
 

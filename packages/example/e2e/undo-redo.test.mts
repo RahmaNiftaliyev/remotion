@@ -5,10 +5,19 @@ import {
 	STUDIO_URL,
 	newVideoFile,
 } from './constants.mts';
+import {startStudio, stopStudio} from './studio-server.mts';
 
 test.use({storageState: EXPANDED_SIDEBAR_STATE});
 
 test.describe('undo redo', () => {
+	test.beforeEach(async () => {
+		await startStudio();
+	});
+
+	test.afterEach(async () => {
+		await stopStudio();
+	});
+
 	test('should undo and redo a playback rate change', async ({page}) => {
 		const originalContent = fs.readFileSync(newVideoFile, 'utf-8');
 		expect(originalContent).not.toContain('playbackRate');

@@ -2,6 +2,7 @@ import {expect, test} from '@playwright/test';
 import fs from 'fs';
 import {EXPANDED_SIDEBAR_STATE, rootFile} from './constants.mts';
 import {navigateToSchemaTest} from './helpers.mts';
+import {startStudio, stopStudio} from './studio-server.mts';
 
 test.use({storageState: EXPANDED_SIDEBAR_STATE});
 
@@ -18,6 +19,14 @@ async function openJsonEditor(page: import('@playwright/test').Page) {
 }
 
 test.describe('visual mode', () => {
+	test.beforeEach(async () => {
+		await startStudio();
+	});
+
+	test.afterEach(async () => {
+		await stopStudio();
+	});
+
 	test('should edit props via JSON editor and save on blur', async ({
 		page,
 	}) => {

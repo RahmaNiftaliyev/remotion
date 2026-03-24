@@ -5,10 +5,19 @@ import {
 	STUDIO_URL,
 	newVideoFile,
 } from './constants.mts';
+import {startStudio, stopStudio} from './studio-server.mts';
 
 test.use({storageState: EXPANDED_SIDEBAR_STATE});
 
 test.describe('undo redo sync across tabs', () => {
+	test.beforeEach(async () => {
+		await startStudio();
+	});
+
+	test.afterEach(async () => {
+		await stopStudio();
+	});
+
 	test('a new studio tab should receive the current undo/redo state', async ({
 		browser,
 	}) => {

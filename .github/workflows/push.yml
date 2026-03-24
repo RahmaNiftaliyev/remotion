@@ -58,9 +58,9 @@ jobs:
         timeout-minutes: 10
         run: |
           cd packages/player-example && bun run build-site
-  webcodecs-tests:
+  browser-tests:
     runs-on: macos-latest
-    name: Webcodecs tests
+    name: Browser tests
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -78,6 +78,9 @@ jobs:
       - name: Test Webcodecs
         run: |
           bun run testwebcodecs
+      - name: Test Example E2E
+        run: |
+          cd packages/example && bun run test:e2e
   webrenderer-tests:
     runs-on: macos-latest
     name: Web renderer tests

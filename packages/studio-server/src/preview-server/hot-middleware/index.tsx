@@ -4,13 +4,11 @@
  * and rewritten in TypeScript. This file is MIT licensed
  */
 
-import type {IncomingMessage, ServerResponse} from 'node:http';
-import {parse} from 'node:url';
 import type {webpack} from '@remotion/bundler';
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
 import type {HotMiddlewareMessage, ModuleMap} from '@remotion/studio-shared';
-import {hotMiddlewareOptions} from '@remotion/studio-shared';
+import type {LiveEventsServer} from '../live-events';
 import type {WebpackStats} from './types';
 
 declare global {
@@ -120,22 +118,16 @@ declare global {
 	type ModuleId = string | number;
 }
 
-const pathMatch = function (url: string, path: string) {
-	try {
-		return parse(url).pathname === path;
-	} catch {
-		return false;
-	}
-};
-
-export const webpackHotMiddleware = (
+export const setupWebpackHmr = (
 	compiler: webpack.Compiler,
 	logLevel: LogLevel,
+	liveEventsServer: LiveEventsServer,
 ) => {
-	const eventStream: EventStream | null = createEventStream(
-		hotMiddlewareOptions.heartbeat,
-	);
 	let latestStats: webpack.Stats | null = null;
+
+	const publishHmr = (hmrEvent: HotMiddlewareMessage) => {
+		liveEventsServer.sendEventToClient({type: 'hmr', hmrEvent});
+	};
 
 	compiler.hooks.invalid.tap('remotion', onInvalid);
 	compiler.hooks.done.tap('remotion', onDone);
@@ -143,7 +135,7 @@ export const webpackHotMiddleware = (
 	function onInvalid() {
 		latestStats = null;
 		RenderInternals.Log.info({indent: false, logLevel}, 'Building...');
-		eventStream?.publish({
+		publishHmr({
 			action: 'building',
 		});
 	}
@@ -151,85 +143,20 @@ export const webpackHotMiddleware = (
 	function onDone(statsResult: webpack.Stats) {
 		// Keep hold of latest stats so they can be propagated to new clients
 		latestStats = statsResult;
-		publishStats('built', latestStats, eventStream);
+		publishStats('built', latestStats, publishHmr);
 	}
 
-	const middleware = function (
-		req: IncomingMessage,
-		res: ServerResponse,
-		next: () => void,
-	) {
-		if (!pathMatch(req.url as string, hotMiddlewareOptions.path)) return next();
-		eventStream?.handler(req, res);
+	liveEventsServer.addNewClientListener(() => {
 		if (latestStats) {
-			publishStats('sync', latestStats, eventStream);
+			publishStats('sync', latestStats, publishHmr);
 		}
-	};
-
-	return middleware;
+	});
 };
-
-type EventStream = ReturnType<typeof createEventStream>;
-
-function createEventStream(heartbeat: number) {
-	let clientId = 0;
-	let clients: {[key: string]: ServerResponse} = {};
-
-	function everyClient(fn: (client: ServerResponse) => void) {
-		Object.keys(clients).forEach((id) => {
-			fn(clients[id]);
-		});
-	}
-
-	const interval = setInterval(() => {
-		everyClient((client: ServerResponse) => {
-			client.write('data: \uD83D\uDC93\n\n');
-		});
-	}, heartbeat).unref();
-	return {
-		close() {
-			clearInterval(interval);
-			everyClient((client: ServerResponse) => {
-				if (!client.finished) client.end();
-			});
-			clients = {};
-		},
-		handler(req: IncomingMessage, res: ServerResponse) {
-			const headers = {
-				'Access-Control-Allow-Origin': '*',
-				'Content-Type': 'text/event-stream;charset=utf-8',
-				'Cache-Control': 'no-cache, no-transform',
-			};
-
-			const isHttp1 = !(parseInt(req.httpVersion, 10) >= 2);
-			if (isHttp1) {
-				req.socket.setKeepAlive(true);
-				Object.assign(headers, {
-					Connection: 'keep-alive',
-				});
-			}
-
-			res.writeHead(200, headers);
-			res.write('\n');
-			const id = clientId++;
-			clients[id] = res;
-			req.on('close', () => {
-				if (!res.finished) res.end();
-				delete clients[id];
-			});
-		},
-		publish(payload: HotMiddlewareMessage) {
-			everyClient((client) => {
-				client.write('data: ' + JSON.stringify(payload) + '\n\n');
-			});
-		},
-	};
-}
 
 function publishStats(
 	action: HotMiddlewareMessage['action'],
 	statsResult: webpack.Stats,
-	eventStream: EventStream | null,
+	publishHmr: (hmrEvent: HotMiddlewareMessage) => void,
 ) {
 	const stats = statsResult.toJson({
 		all: false,
@@ -249,7 +176,7 @@ function publishStats(
 			name = statsResult.compilation.name || '';
 		}
 
-		eventStream?.publish({
+		publishHmr({
 			name,
 			action,
 			time: _stats.time,

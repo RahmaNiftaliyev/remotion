@@ -124,6 +124,10 @@ export const PreviewServerConnection: React.FC<{
 				);
 			}
 
+			if (newEvent.type === 'hmr') {
+				window.__remotion_processHmrEvent?.(newEvent.hmrEvent);
+			}
+
 			listeners.current.forEach((l) => {
 				if (l.type === newEvent.type) {
 					l.listener(newEvent);

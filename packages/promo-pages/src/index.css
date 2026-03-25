@@ -77,12 +77,14 @@ html {
 		'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-* {
-	box-sizing: border-box;
-}
+@layer base {
+	* {
+		box-sizing: border-box;
+	}
 
-body {
-	margin: 0;
+	body {
+		margin: 0;
+	}
 }
 
 @keyframes click {

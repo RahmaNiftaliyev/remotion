@@ -128,4 +128,23 @@ export const enableHotMiddleware = () => {
 	window.__remotion_processHmrEvent = (hmrEvent: HotMiddlewareMessage) => {
 		processMessage(hmrEvent);
 	};
+
+	// Create a standalone SSE listener for HMR events immediately.
+	// This is needed because lazy-compiled modules require HMR updates
+	// to deliver compiled code, but the React-managed /events SSE
+	// (in PreviewServerConnection) only connects after React mounts —
+	// which itself depends on lazy modules loading first.
+	if (typeof window !== 'undefined' && typeof EventSource !== 'undefined') {
+		const source = new EventSource('/events');
+		source.addEventListener('message', (event) => {
+			try {
+				const parsed = JSON.parse(event.data);
+				if (parsed.type === 'hmr') {
+					processMessage(parsed.hmrEvent);
+				}
+			} catch {
+				// Ignore parse errors
+			}
+		});
+	}
 };

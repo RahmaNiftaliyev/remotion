@@ -66,6 +66,7 @@ import EllipseTest from './Shapes/EllipseTest';
 import RectTest from './Shapes/RectTest';
 import StarTest from './Shapes/StarTest';
 import TriangleTest from './Shapes/TriangleTest';
+import {SimpleImg} from './SimpleImg';
 import {SkipZeroFrame} from './SkipZeroFrame';
 import {SlicedVideo} from './SlicedVideo';
 import {BaseSpring, SpringWithDuration} from './Spring/base-spring';
@@ -440,6 +441,14 @@ export const Index: React.FC = () => {
 				/>
 			</Folder>
 			<Folder name="regression-testing">
+				<Composition
+					id="simple-img"
+					component={SimpleImg}
+					width={1080}
+					height={1080}
+					fps={30}
+					durationInFrames={10}
+				/>
 				<Composition
 					id="missing-img"
 					component={MissingImg}

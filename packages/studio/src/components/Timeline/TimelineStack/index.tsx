@@ -45,7 +45,11 @@ export const TimelineStack: React.FC<{
 		.previewServerState.type;
 
 	const assetPath = useMemo(() => {
-		if (sequence.type !== 'video' && sequence.type !== 'audio') {
+		if (
+			sequence.type !== 'video' &&
+			sequence.type !== 'audio' &&
+			sequence.type !== 'image'
+		) {
 			return null;
 		}
 

@@ -63,9 +63,7 @@ export const TimelineTracks: React.FC<{
 						<div key={track.sequence.id}>
 							<div
 								style={{
-									height: getTimelineLayerHeight(
-										track.sequence.type === 'video' ? 'video' : 'other',
-									),
+									height: getTimelineLayerHeight(track.sequence.type),
 									marginBottom: TIMELINE_ITEM_BORDER_BOTTOM,
 								}}
 							>

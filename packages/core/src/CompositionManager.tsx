@@ -81,6 +81,10 @@ type EnhancedTSequenceData =
 			doesVolumeChange: boolean;
 			startMediaFrom: number;
 			playbackRate: number;
+	  }
+	| {
+			type: 'image';
+			src: string;
 	  };
 
 export type LoopDisplay = {

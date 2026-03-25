@@ -5,13 +5,16 @@ import React, {
 	useImperativeHandle,
 	useLayoutEffect,
 	useRef,
+	useState,
 } from 'react';
 import type {IsExact} from './audio/props.js';
+import {addSequenceStackTraces} from './enable-sequence-stack-traces.js';
 import {getCrossOriginValue} from './get-cross-origin-value.js';
 import {usePreload} from './prefetch.js';
 import {SequenceContext} from './SequenceContext.js';
 import {useBufferState} from './use-buffer-state.js';
 import {useDelayRender} from './use-delay-render.js';
+import {useImageInTimeline} from './use-media-in-timeline.js';
 import {useRemotionEnvironment} from './use-remotion-environment.js';
 
 function exponentialBackoff(errorCount: number): number {
@@ -33,6 +36,12 @@ export type ImgProps = NativeImgProps & {
 	readonly delayRenderTimeoutInMilliseconds?: number;
 	readonly onImageFrame?: (imageElement: HTMLImageElement) => void;
 	readonly src: string;
+	readonly showInTimeline?: boolean;
+	readonly name?: string;
+	/**
+	 * @deprecated For internal use only
+	 */
+	readonly stack?: string;
 };
 
 type Expected = Omit<NativeImgProps, 'onError' | 'src' | 'crossOrigin'>;
@@ -50,6 +59,9 @@ const ImgRefForwarding: React.ForwardRefRenderFunction<
 		delayRenderTimeoutInMilliseconds,
 		onImageFrame,
 		crossOrigin,
+		showInTimeline,
+		name,
+		stack,
 		...props
 	},
 	ref,
@@ -58,6 +70,7 @@ const ImgRefForwarding: React.ForwardRefRenderFunction<
 	const errors = useRef<Record<string, number>>({});
 	const {delayPlayback} = useBufferState();
 	const sequenceContext = useContext(SequenceContext);
+	const [timelineId] = useState(() => String(Math.random()));
 
 	if (!src) {
 		throw new Error('No "src" prop was passed to <Img>.');
@@ -72,6 +85,17 @@ const ImgRefForwarding: React.ForwardRefRenderFunction<
 	useImperativeHandle(ref, () => {
 		return imageRef.current as HTMLImageElement;
 	}, []);
+
+	useImageInTimeline({
+		src,
+		displayName: name ?? null,
+		id: timelineId,
+		stack: stack ?? null,
+		showInTimeline: showInTimeline ?? true,
+		premountDisplay: sequenceContext?.premountDisplay ?? null,
+		postmountDisplay: sequenceContext?.postmountDisplay ?? null,
+		loopDisplay: undefined,
+	});
 
 	const actualSrc = usePreload(src as string);
 
@@ -273,3 +297,4 @@ const ImgRefForwarding: React.ForwardRefRenderFunction<
  * @see [Documentation](https://remotion.dev/docs/img)
  */
 export const Img = forwardRef(ImgRefForwarding);
+addSequenceStackTraces(Img);

@@ -35,7 +35,7 @@ export const useBasicMediaInTimeline = ({
 }: {
 	volume: VolumeProp | undefined;
 	mediaVolume: number;
-	mediaType: 'audio' | 'video';
+	mediaType: 'audio' | 'video' | 'image';
 	src: string | undefined;
 	displayName: string | null;
 	trimBefore: number | undefined;
@@ -103,6 +103,93 @@ export const useBasicMediaInTimeline = ({
 		isStudio: env.isStudio,
 		finalDisplayName: displayName ?? getAssetDisplayName(src),
 	};
+};
+
+export const useImageInTimeline = ({
+	src,
+	displayName,
+	id,
+	stack,
+	showInTimeline,
+	premountDisplay,
+	postmountDisplay,
+	loopDisplay,
+}: {
+	src: string | undefined;
+	displayName: string | null;
+	id: string;
+	stack: string | null;
+	showInTimeline: boolean;
+	premountDisplay: number | null;
+	postmountDisplay: number | null;
+	loopDisplay: LoopDisplay | undefined;
+}) => {
+	const parentSequence = useContext(SequenceContext);
+	const {registerSequence, unregisterSequence} = useContext(SequenceManager);
+
+	const {duration, nonce, rootId, isStudio, finalDisplayName} =
+		useBasicMediaInTimeline({
+			volume: undefined,
+			mediaVolume: 0,
+			mediaType: 'image',
+			src,
+			displayName,
+			trimAfter: undefined,
+			trimBefore: undefined,
+			playbackRate: 1,
+		});
+
+	useEffect(() => {
+		if (!src) {
+			throw new Error('No src passed');
+		}
+
+		if (!isStudio && window.process?.env?.NODE_ENV !== 'test') {
+			return;
+		}
+
+		if (!showInTimeline) {
+			return;
+		}
+
+		registerSequence({
+			type: 'image',
+			src,
+			id,
+			duration,
+			from: 0,
+			parent: parentSequence?.id ?? null,
+			displayName: finalDisplayName,
+			rootId,
+			showInTimeline: true,
+			nonce: nonce.get(),
+			loopDisplay,
+			stack,
+			premountDisplay,
+			postmountDisplay,
+			controls: null,
+		});
+
+		return () => {
+			unregisterSequence(id);
+		};
+	}, [
+		duration,
+		id,
+		parentSequence,
+		src,
+		registerSequence,
+		unregisterSequence,
+		nonce,
+		stack,
+		showInTimeline,
+		premountDisplay,
+		postmountDisplay,
+		isStudio,
+		loopDisplay,
+		rootId,
+		finalDisplayName,
+	]);
 };
 
 export const useMediaInTimeline = ({

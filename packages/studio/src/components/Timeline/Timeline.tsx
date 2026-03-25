@@ -88,9 +88,7 @@ const TimelineInner: React.FC = () => {
 						visualModeEnabled && (expandedTracks[track.sequence.id] ?? false);
 					return (
 						acc +
-						getTimelineLayerHeight(
-							track.sequence.type === 'video' ? 'video' : 'other',
-						) +
+						getTimelineLayerHeight(track.sequence.type) +
 						Number(TIMELINE_ITEM_BORDER_BOTTOM) +
 						(isExpanded
 							? getExpandedTrackHeight(track.sequence.controls) +

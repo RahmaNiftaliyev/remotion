@@ -5,6 +5,7 @@ import type {CompositionManagerContext} from '../CompositionManagerContext.js';
 import {CompositionManager} from '../CompositionManagerContext.js';
 import type {LoggingContextValue} from '../log-level-context.js';
 import {LogLevelContext} from '../log-level-context.js';
+import {SequenceManagerProvider} from '../SequenceManager.js';
 import type {TimelineContextValue} from '../TimelineContext.js';
 import {AbsoluteTimeContext, TimelineContext} from '../TimelineContext.js';
 
@@ -86,9 +87,11 @@ export const WrapSequenceContext: React.FC<{
 			<BufferingProvider>
 				<CanUseRemotionHooksProvider>
 					<MaybeTimelineProvider>
-						<CompositionManager.Provider value={mockCompositionContext}>
-							{children}
-						</CompositionManager.Provider>
+						<SequenceManagerProvider visualModeEnabled={false}>
+							<CompositionManager.Provider value={mockCompositionContext}>
+								{children}
+							</CompositionManager.Provider>
+						</SequenceManagerProvider>
 					</MaybeTimelineProvider>
 				</CanUseRemotionHooksProvider>
 			</BufferingProvider>

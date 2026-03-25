@@ -62,8 +62,10 @@ export const getExpandedTrackHeight = (
 	return fields.reduce((sum, f) => sum + f.rowHeight, 0) + separators;
 };
 
-export const getTimelineLayerHeight = (type: 'video' | 'other') => {
-	if (type === 'video') {
+export const getTimelineLayerHeight = (
+	type: 'video' | 'image' | 'audio' | 'sequence' | 'other',
+) => {
+	if (type === 'video' || type === 'image') {
 		return 50;
 	}
 

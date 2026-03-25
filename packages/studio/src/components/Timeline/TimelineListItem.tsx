@@ -90,8 +90,7 @@ export const TimelineListItem: React.FC<{
 	const outer: React.CSSProperties = useMemo(() => {
 		return {
 			height:
-				getTimelineLayerHeight(sequence.type === 'video' ? 'video' : 'other') +
-				TIMELINE_ITEM_BORDER_BOTTOM,
+				getTimelineLayerHeight(sequence.type) + TIMELINE_ITEM_BORDER_BOTTOM,
 			color: 'white',
 			fontFamily: 'Arial, Helvetica, sans-serif',
 			display: 'flex',

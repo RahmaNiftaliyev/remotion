@@ -47,6 +47,11 @@ export const muxVideoAndAudio = async ({
 		videoOutput ? 'copy' : null,
 		audioOutput ? '-c:a' : null,
 		audioOutput ? 'copy' : null,
+		// Set the exact output framerate to prevent drift when combining chunks.
+		// Without this, ffmpeg infers the framerate from the stream which can
+		// result in slightly imprecise values like 95940000/3197999 instead of 30/1.
+		videoOutput ? '-r' : null,
+		videoOutput ? String(fps) : null,
 		numberOfGifLoops === null ? null : '-loop',
 		numberOfGifLoops === null
 			? null

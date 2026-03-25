@@ -125,6 +125,14 @@ export const getCodecName = ({
 		return {encoderName: 'libvpx-vp9', hardwareAccelerated: false};
 	}
 
+	if (codec === 'av1') {
+		Log.warn(
+			{indent, logLevel},
+			'AV1 encoding is significantly slower than other codecs.',
+		);
+		return {encoderName: 'libaom-av1', hardwareAccelerated: false};
+	}
+
 	if (codec === 'gif') {
 		return {encoderName: 'gif', hardwareAccelerated: false};
 	}

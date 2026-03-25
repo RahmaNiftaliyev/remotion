@@ -107,9 +107,11 @@ You may transform input props using [`calculateMetadata()`](/docs/calculate-meta
 
 Which codec should be used to encode the video.
 
-Video codecs `h264`, and `vp8` are supported, `prores` is supported since `v3.2.0`. `h265` support has been added in `v4.0.32`.
+Video codecs `h264`, `h265`, `vp8`, `vp9`, `gif` and `prores` are supported.
 
 Audio codecs `mp3`, `aac` and `wav` are also supported.
+
+`av1` is not available on Lambda due to function size constraints.
 
 The option `h264-mkv` has been renamed to just `h264` since `v3.3.34`. Use `h264` to get the same behavior.
 

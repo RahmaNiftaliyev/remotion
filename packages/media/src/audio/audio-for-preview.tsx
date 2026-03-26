@@ -182,6 +182,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 	const initialGlobalPlaybackRate = useRef(globalPlaybackRate);
 	const initialPlaybackRate = useRef(playbackRate);
 	const initialMuted = useRef(effectiveMuted);
+	const initialDurationInFrames = useRef(videoConfig.durationInFrames);
 	const initialSequenceOffset = useRef(sequenceOffset);
 
 	useCommonEffects({
@@ -235,7 +236,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 				isPostmounting: initialIsPostmounting.current,
 				isPremounting: initialIsPremounting.current,
 				globalPlaybackRate: initialGlobalPlaybackRate.current,
-				durationInFrames: videoConfig.durationInFrames,
+				durationInFrames: initialDurationInFrames.current,
 				onVideoFrameCallback: null,
 				playing: initialPlaying.current,
 				sequenceOffset: initialSequenceOffset.current,
@@ -375,7 +376,6 @@ const AudioForPreviewAssertedShowing: React.FC<
 		debugAudioScheduling,
 		buffer,
 		onError,
-		videoConfig.durationInFrames,
 		credentials,
 	]);
 

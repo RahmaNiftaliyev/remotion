@@ -155,6 +155,11 @@ export const useWindowedAudioData = ({
 
 				continueRender(handle);
 			} catch (err) {
+				if (err instanceof InputDisposedError) {
+					continueRender(handle);
+					return;
+				}
+
 				cancelRender(err);
 			} finally {
 				signal.removeEventListener('abort', cont);

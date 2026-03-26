@@ -56,7 +56,7 @@ export const takeFrame = async ({
 
 	const buf = await screenshot({
 		page: freePage,
-		omitBackground: imageFormat === 'png',
+		omitBackground: imageFormat === 'png' || imageFormat === 'webp',
 		path: (wantsBuffer ? undefined : output) ?? undefined,
 		type: imageFormat,
 		jpegQuality,

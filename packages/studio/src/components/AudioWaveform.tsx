@@ -1,25 +1,18 @@
-import type {MediaUtilsAudioData} from '@remotion/media-utils';
-import {getAudioData, getWaveformPortion} from '@remotion/media-utils';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Internals} from 'remotion';
 import {LIGHT_TRANSPARENT} from '../helpers/colors';
-import {
-	getTimelineLayerHeight,
-	TIMELINE_BORDER,
-} from '../helpers/timeline-layout';
-import {
-	AudioWaveformBar,
-	WAVEFORM_BAR_LENGTH,
-	WAVEFORM_BAR_MARGIN,
-} from './AudioWaveformBar';
+import {TIMELINE_BORDER} from '../helpers/timeline-layout';
+import {drawBars} from './draw-peaks';
+import {loadWaveformPeaks, TARGET_SAMPLE_RATE} from './load-waveform-peaks';
 
 const container: React.CSSProperties = {
 	display: 'flex',
 	flexDirection: 'row',
-	alignItems: 'flex-end',
+	alignItems: 'center',
 	position: 'absolute',
-	height: getTimelineLayerHeight('other'),
+	inset: 0,
 };
+
 const errorMessage: React.CSSProperties = {
 	fontSize: 13,
 	paddingTop: 6,
@@ -31,7 +24,11 @@ const errorMessage: React.CSSProperties = {
 	opacity: 0.75,
 };
 
-const canvasStyle: React.CSSProperties = {
+const waveformCanvasStyle: React.CSSProperties = {
+	pointerEvents: 'none',
+};
+
+const volumeCanvasStyle: React.CSSProperties = {
 	position: 'absolute',
 };
 
@@ -52,54 +49,103 @@ export const AudioWaveform: React.FC<{
 	doesVolumeChange,
 	playbackRate,
 }) => {
-	const [metadata, setMetadata] = useState<MediaUtilsAudioData | null>(null);
+	const [peaks, setPeaks] = useState<Float32Array | null>(null);
 	const [error, setError] = useState<Error | null>(null);
-	const mountState = useRef({isMounted: true});
 	const vidConf = Internals.useUnsafeVideoConfig();
 	if (vidConf === null) {
 		throw new Error('Expected video config');
 	}
 
-	const canvas = useRef<HTMLCanvasElement>(null);
+	const containerRef = useRef<HTMLDivElement>(null);
+	const waveformCanvas = useRef<HTMLCanvasElement>(null);
+	const volumeCanvas = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
-		const {current} = mountState;
-		current.isMounted = true;
-		return () => {
-			current.isMounted = false;
-		};
-	}, []);
+		const controller = new AbortController();
+
+		setError(null);
+		loadWaveformPeaks(src, controller.signal)
+			.then((p) => {
+				if (!controller.signal.aborted) {
+					setPeaks(p);
+				}
+			})
+			.catch((err) => {
+				if (!controller.signal.aborted) {
+					setError(err);
+				}
+			});
+
+		return () => controller.abort();
+	}, [src]);
+
+	const portionPeaks = useMemo(() => {
+		if (!peaks || peaks.length === 0) {
+			return null;
+		}
+
+		const startTimeInSeconds = startFrom / vidConf.fps;
+		const durationInSeconds = (durationInFrames / vidConf.fps) * playbackRate;
+
+		const startPeakIndex = Math.floor(startTimeInSeconds * TARGET_SAMPLE_RATE);
+		const endPeakIndex = Math.ceil(
+			(startTimeInSeconds + durationInSeconds) * TARGET_SAMPLE_RATE,
+		);
+
+		return peaks.slice(
+			Math.max(0, startPeakIndex),
+			Math.min(peaks.length, endPeakIndex),
+		);
+	}, [peaks, startFrom, durationInFrames, vidConf.fps, playbackRate]);
 
 	useEffect(() => {
-		if (!canvas.current) {
+		const {current: canvasElement} = waveformCanvas;
+		const {current: containerElement} = containerRef;
+		if (
+			!canvasElement ||
+			!containerElement ||
+			!portionPeaks ||
+			portionPeaks.length === 0
+		) {
 			return;
 		}
 
-		const context = canvas.current.getContext('2d');
+		const h = containerElement.clientHeight;
+		const w = Math.ceil(visualizationWidth);
+		canvasElement.width = w;
+		canvasElement.height = h;
+
+		const vol = typeof volume === 'number' ? volume : 1;
+		drawBars(canvasElement, portionPeaks, 'rgba(255, 255, 255, 0.6)', vol, w);
+	}, [portionPeaks, visualizationWidth, volume]);
+
+	useEffect(() => {
+		const {current: volumeCanvasElement} = volumeCanvas;
+		const {current: containerElement} = containerRef;
+		if (!volumeCanvasElement || !containerElement) {
+			return;
+		}
+
+		const h = containerElement.clientHeight;
+		const context = volumeCanvasElement.getContext('2d');
 		if (!context) {
 			return;
 		}
 
-		context.clearRect(
-			0,
-			0,
-			visualizationWidth,
-			getTimelineLayerHeight('other'),
-		);
+		volumeCanvasElement.width = Math.ceil(visualizationWidth);
+		volumeCanvasElement.height = h;
+
+		context.clearRect(0, 0, visualizationWidth, h);
 		if (!doesVolumeChange || typeof volume === 'number') {
-			// The volume is a number, meaning it could change on each frame-
-			// User did not use the (f: number) => number syntax, so we can't draw
-			// a visualization.
 			return;
 		}
 
 		const volumes = volume.split(',').map((v) => Number(v));
 		context.beginPath();
-		context.moveTo(0, getTimelineLayerHeight('other'));
+		context.moveTo(0, h);
 		volumes.forEach((v, index) => {
 			const x = (index / (volumes.length - 1)) * visualizationWidth;
-			const y =
-				(1 - v) * (getTimelineLayerHeight('other') - TIMELINE_BORDER * 2) + 1;
+			const y = (1 - v) * (h - TIMELINE_BORDER * 2) + 1;
 			if (index === 0) {
 				context.moveTo(x, y);
 			} else {
@@ -108,50 +154,7 @@ export const AudioWaveform: React.FC<{
 		});
 		context.strokeStyle = LIGHT_TRANSPARENT;
 		context.stroke();
-	}, [visualizationWidth, metadata, startFrom, volume, doesVolumeChange]);
-
-	useEffect(() => {
-		setError(null);
-		getAudioData(src)
-			.then((data) => {
-				if (mountState.current.isMounted) {
-					setMetadata(data);
-				}
-			})
-			.catch((err) => {
-				if (mountState.current.isMounted) {
-					setError(err);
-				}
-			});
-	}, [src, vidConf.fps]);
-
-	const normalized = useMemo(() => {
-		if (!metadata || metadata.numberOfChannels === 0) {
-			return [];
-		}
-
-		const numberOfSamples = Math.floor(
-			visualizationWidth / (WAVEFORM_BAR_LENGTH + WAVEFORM_BAR_MARGIN),
-		);
-
-		return getWaveformPortion({
-			audioData: metadata,
-			startTimeInSeconds: startFrom / vidConf.fps,
-			durationInSeconds: Math.min(
-				(durationInFrames / vidConf.fps) * playbackRate,
-				metadata.durationInSeconds,
-			),
-			numberOfSamples,
-			normalize: false,
-		});
-	}, [
-		durationInFrames,
-		vidConf.fps,
-		metadata,
-		playbackRate,
-		startFrom,
-		visualizationWidth,
-	]);
+	}, [visualizationWidth, volume, doesVolumeChange]);
 
 	if (error) {
 		return (
@@ -163,27 +166,14 @@ export const AudioWaveform: React.FC<{
 		);
 	}
 
-	if (!metadata) {
+	if (!peaks) {
 		return null;
 	}
 
 	return (
-		<div style={container}>
-			{normalized.map((w) => {
-				return (
-					<AudioWaveformBar
-						key={w.index}
-						amplitude={w.amplitude * (typeof volume === 'number' ? volume : 1)}
-					/>
-				);
-			})}
-
-			<canvas
-				ref={canvas}
-				style={canvasStyle}
-				width={visualizationWidth}
-				height={getTimelineLayerHeight('other')}
-			/>
+		<div ref={containerRef} style={container}>
+			<canvas ref={waveformCanvas} style={waveformCanvasStyle} />
+			<canvas ref={volumeCanvas} style={volumeCanvasStyle} />
 		</div>
 	);
 };

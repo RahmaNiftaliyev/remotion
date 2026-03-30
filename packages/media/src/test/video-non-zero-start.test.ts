@@ -28,8 +28,10 @@ test('Should render first frame for videos starting after timestamp 0', async ()
 	assert(result.frame, 'Frame should be returned');
 
 	// Frame should have valid dimensions
+	// codedHeight may include codec padding depending on Chrome version (480 or 482)
 	expect(result.frame.codedWidth).toBe(640);
-	expect(result.frame.codedHeight).toBe(480);
+	expect(result.frame.codedHeight).toBeGreaterThanOrEqual(480);
+	expect(result.frame.codedHeight).toBeLessThanOrEqual(482);
 
 	// Frame timestamp should be at video start (0.15s), NOT at requested time (0s)
 	// This proves we're returning the first actual frame

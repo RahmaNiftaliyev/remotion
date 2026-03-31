@@ -98,7 +98,8 @@ export const RenderModalJSONPropsEditor: React.FC<{
 
 			const {result} = e;
 			if (result.canUpdate) {
-				setLocalValue(parseJS(result.currentDefaultProps, schema));
+				const nextState = parseJS(result.currentDefaultProps, schema);
+				setLocalValue(nextState);
 			}
 		});
 
@@ -106,6 +107,14 @@ export const RenderModalJSONPropsEditor: React.FC<{
 			unsub();
 		};
 	}, [subscribeToEvent, compositionId, schema]);
+
+	useEffect(() => {
+		if (localValue.validJSON && deepEqual(value, localValue.value)) {
+			return;
+		}
+
+		setLocalValue(parseJS(value as Record<string, unknown>, schema));
+	}, [value, schema, localValue]);
 
 	const onPretty = useCallback(() => {
 		if (!localValue.validJSON) {
@@ -143,8 +152,8 @@ export const RenderModalJSONPropsEditor: React.FC<{
 
 	// If schema is changed in code
 	useEffect(() => {
-		setLocalValue(parseJSON(localValue.str, schema));
-	}, [localValue.str, schema]);
+		setLocalValue((v) => parseJSON(v.str, schema));
+	}, [schema]);
 
 	const reset = useCallback(() => {
 		setValue(defaultProps);

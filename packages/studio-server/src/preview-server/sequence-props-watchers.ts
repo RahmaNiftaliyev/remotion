@@ -100,11 +100,16 @@ export const subscribeToSequencePropsWatchers = ({
 				return;
 			}
 
-			const result = computeSequencePropsStatusFromContent(
-				event.content,
-				nodePath,
-				keys,
-			);
+			let result: CanUpdateSequencePropsResponse;
+			try {
+				result = computeSequencePropsStatusFromContent(
+					event.content,
+					nodePath,
+					keys,
+				);
+			} catch {
+				return;
+			}
 
 			waitForLiveEventsListener().then((listener) => {
 				listener.sendEventToClientId(clientId, {

@@ -51,6 +51,7 @@ import {
 	PostmountWithStyles,
 } from './Postmount/PostmountExample';
 import {PremountedExample} from './Premount';
+import {CascadingPremount} from './Premount/CascadingPremount';
 import {PremountedRemoteVideos} from './Premount/RemoteVideos';
 import ReactSvg from './ReactSvg';
 import InfinityVideo from './ReallyLongVideo';
@@ -1438,6 +1439,14 @@ export const Index: React.FC = () => {
 					fps={30}
 					height={1080}
 					durationInFrames={300}
+					width={1920}
+				/>
+				<Composition
+					id="cascading-premount"
+					component={CascadingPremount}
+					fps={30}
+					height={1080}
+					durationInFrames={60}
 					width={1920}
 				/>
 			</Folder>

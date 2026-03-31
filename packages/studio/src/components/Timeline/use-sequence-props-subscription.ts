@@ -89,6 +89,7 @@ export const useSequencePropsSubscription = (
 			return;
 		}
 
+		let cancelled = false;
 		const keys = schemaKeysString.split(',');
 
 		callApi('/api/subscribe-to-sequence-props', {
@@ -99,6 +100,10 @@ export const useSequencePropsSubscription = (
 			clientId,
 		})
 			.then((result) => {
+				if (cancelled) {
+					return;
+				}
+
 				if (
 					currentLocationSource.current !== locationSource ||
 					currentLocationLine.current !== locationLine ||
@@ -116,12 +121,17 @@ export const useSequencePropsSubscription = (
 				}
 			})
 			.catch((err) => {
+				if (cancelled) {
+					return;
+				}
+
 				nodePathRef.current = null;
 				Internals.Log.error(err);
 				setPropStatusesForSequence(null);
 			});
 
 		return () => {
+			cancelled = true;
 			const currentNodePath = nodePathRef.current;
 			// Only clear props on true unmount, not on re-subscribe due to
 			// line number changes — avoids flicker while re-subscribing.

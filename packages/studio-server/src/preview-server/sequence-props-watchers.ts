@@ -14,6 +14,7 @@ import {
 
 type WatcherInfo = {
 	unwatch: () => void;
+	refCount: number;
 };
 
 const sequencePropsWatchers: Record<string, Record<string, WatcherInfo>> = {};
@@ -86,9 +87,10 @@ export const subscribeToSequencePropsWatchers = ({
 	const {nodePath} = initialResult;
 	const watcherKey = makeWatcherKey({absolutePath, nodePath});
 
-	// Unwatch any existing watcher for the same key
+	// If a watcher already exists for this key, just bump the ref count
 	if (sequencePropsWatchers[clientId]?.[watcherKey]) {
-		sequencePropsWatchers[clientId][watcherKey].unwatch();
+		sequencePropsWatchers[clientId][watcherKey].refCount++;
+		return initialResult;
 	}
 
 	const {unwatch} = installFileWatcher({
@@ -119,7 +121,7 @@ export const subscribeToSequencePropsWatchers = ({
 		sequencePropsWatchers[clientId] = {};
 	}
 
-	sequencePropsWatchers[clientId][watcherKey] = {unwatch};
+	sequencePropsWatchers[clientId][watcherKey] = {unwatch, refCount: 1};
 
 	return initialResult;
 };
@@ -142,15 +144,14 @@ export const unsubscribeFromSequencePropsWatchers = ({
 		!sequencePropsWatchers[clientId] ||
 		!sequencePropsWatchers[clientId][watcherKey]
 	) {
-		// eslint-disable-next-line no-console
-		console.warn(
-			`Unexpected: unsubscribe for sequence props watcher that does not exist (clientId=${clientId}, key=${watcherKey})`,
-		);
 		return;
 	}
 
-	sequencePropsWatchers[clientId][watcherKey].unwatch();
-	delete sequencePropsWatchers[clientId][watcherKey];
+	sequencePropsWatchers[clientId][watcherKey].refCount--;
+	if (sequencePropsWatchers[clientId][watcherKey].refCount <= 0) {
+		sequencePropsWatchers[clientId][watcherKey].unwatch();
+		delete sequencePropsWatchers[clientId][watcherKey];
+	}
 };
 
 export const unsubscribeClientSequencePropsWatchers = (clientId: string) => {

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useVideoConfig} from 'remotion';
 import {extractFrames} from '../../helpers/extract-frames';
 import type {FrameDatabaseKey} from '../../helpers/frame-database';
@@ -13,17 +13,27 @@ import {
 	makeFrameDatabaseKey,
 } from '../../helpers/frame-database';
 import {resizeVideoFrame} from '../../helpers/resize-video-frame';
-import {getTimelineLayerHeight} from '../../helpers/timeline-layout';
+import {
+	TIMELINE_LAYER_HEIGHT_AUDIO,
+	TIMELINE_LAYER_HEIGHT_IMAGE,
+} from '../../helpers/timeline-layout';
+import {AudioWaveform} from '../AudioWaveform';
 
-const HEIGHT = getTimelineLayerHeight('video') - 2;
+const FILMSTRIP_HEIGHT = TIMELINE_LAYER_HEIGHT_IMAGE - 2;
 
-const containerStyle: React.CSSProperties = {
-	height: HEIGHT,
+const outerStyle: React.CSSProperties = {
+	width: '100%',
+	height: '100%',
+	display: 'flex',
+	flexDirection: 'column',
+};
+
+const filmstripContainerStyle: React.CSSProperties = {
+	height: FILMSTRIP_HEIGHT,
 	width: '100%',
 	backgroundColor: 'rgba(0, 0, 0, 0.3)',
 	display: 'flex',
 	borderTopLeftRadius: 2,
-	borderBottomLeftRadius: 2,
 	fontSize: 10,
 	fontFamily: 'Arial, Helvetica',
 };
@@ -40,7 +50,8 @@ const getDurationOfOneFrame = ({
 	aspectRatio: number;
 	segmentDuration: number;
 }) => {
-	const framesFitInWidthUnrounded = visualizationWidth / (HEIGHT * aspectRatio);
+	const framesFitInWidthUnrounded =
+		visualizationWidth / (FILMSTRIP_HEIGHT * aspectRatio);
 	return (segmentDuration / framesFitInWidthUnrounded) * WEBCODECS_TIMESCALE;
 };
 
@@ -63,7 +74,8 @@ const calculateTimestampSlots = ({
 	segmentDuration: number;
 	aspectRatio: number;
 }) => {
-	const framesFitInWidthUnrounded = visualizationWidth / (HEIGHT * aspectRatio);
+	const framesFitInWidthUnrounded =
+		visualizationWidth / (FILMSTRIP_HEIGHT * aspectRatio);
 	const framesFitInWidth = Math.ceil(framesFitInWidthUnrounded);
 	const durationOfOneFrame = getDurationOfOneFrame({
 		visualizationWidth,
@@ -272,6 +284,10 @@ export const TimelineVideoInfo: React.FC<{
 	readonly trimBefore: number;
 	readonly durationInFrames: number;
 	readonly playbackRate: number;
+	readonly volume: string | number;
+	readonly doesVolumeChange: boolean;
+	readonly premountWidth: number;
+	readonly postmountWidth: number;
 }> = ({
 	src,
 	visualizationWidth,
@@ -279,6 +295,10 @@ export const TimelineVideoInfo: React.FC<{
 	trimBefore,
 	durationInFrames,
 	playbackRate,
+	volume,
+	doesVolumeChange,
+	premountWidth,
+	postmountWidth,
 }) => {
 	const {fps} = useVideoConfig();
 	const ref = useRef<HTMLDivElement>(null);
@@ -306,7 +326,7 @@ export const TimelineVideoInfo: React.FC<{
 
 		const canvas = document.createElement('canvas');
 		canvas.width = visualizationWidth;
-		canvas.height = HEIGHT;
+		canvas.height = FILMSTRIP_HEIGHT;
 		const ctx = canvas.getContext('2d');
 		if (!ctx) {
 			return;
@@ -382,7 +402,7 @@ export const TimelineVideoInfo: React.FC<{
 				try {
 					frame = sample.toVideoFrame();
 					const scale =
-						(HEIGHT / frame.displayHeight) * window.devicePixelRatio;
+						(FILMSTRIP_HEIGHT / frame.displayHeight) * window.devicePixelRatio;
 
 					const transformed = resizeVideoFrame({
 						frame,
@@ -473,5 +493,31 @@ export const TimelineVideoInfo: React.FC<{
 		visualizationWidth,
 	]);
 
-	return <div ref={ref} style={containerStyle} />;
+	const audioWidth = visualizationWidth - premountWidth - postmountWidth;
+
+	const audioStyle: React.CSSProperties = useMemo(() => {
+		return {
+			height: TIMELINE_LAYER_HEIGHT_AUDIO,
+			width: audioWidth,
+			position: 'relative',
+			marginLeft: premountWidth,
+		};
+	}, [audioWidth, premountWidth]);
+
+	return (
+		<div style={outerStyle}>
+			<div ref={ref} style={filmstripContainerStyle} />
+			<div style={audioStyle}>
+				<AudioWaveform
+					src={src}
+					visualizationWidth={audioWidth}
+					startFrom={trimBefore}
+					durationInFrames={durationInFrames}
+					volume={volume}
+					doesVolumeChange={doesVolumeChange}
+					playbackRate={playbackRate}
+				/>
+			</div>
+		</div>
+	);
 };

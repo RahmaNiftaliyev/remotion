@@ -163,6 +163,10 @@ const Inner: React.FC<{
 					trimBefore={s.startMediaFrom}
 					durationInFrames={s.duration}
 					playbackRate={s.playbackRate}
+					volume={s.volume}
+					doesVolumeChange={s.doesVolumeChange}
+					premountWidth={premountWidth ?? 0}
+					postmountWidth={postmountWidth ?? 0}
 				/>
 			) : null}
 			{s.type === 'image' ? (

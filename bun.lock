@@ -425,6 +425,7 @@
         "@remotion/cloudrun": "workspace:*",
         "@remotion/design": "workspace:*",
         "@remotion/docusaurus-plugin": "workspace:*",
+        "@remotion/elevenlabs": "workspace:*",
         "@remotion/enable-scss": "workspace:*",
         "@remotion/eslint-config-internal": "workspace:*",
         "@remotion/fonts": "workspace:*",
@@ -503,6 +504,8 @@
         "zod": "catalog:",
       },
       "devDependencies": {
+        "@docusaurus/module-type-aliases": "^3.9.2",
+        "@docusaurus/theme-classic": "^3.9.2",
         "@react-three/fiber": "catalog:",
         "@tsconfig/docusaurus": "^1.0.5",
         "@types/bun": "catalog:",
@@ -528,6 +531,18 @@
         "twoslash": "0.3.6",
         "unified": "^11.0.5",
         "unist-util-visit": "^5.0.0",
+      },
+      "devDependencies": {
+        "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
+        "eslint": "catalog:",
+      },
+    },
+    "packages/elevenlabs": {
+      "name": "@remotion/elevenlabs",
+      "version": "4.0.441",
+      "dependencies": {
+        "@remotion/captions": "workspace:*",
       },
       "devDependencies": {
         "@remotion/eslint-config-internal": "workspace:*",
@@ -3755,6 +3770,8 @@
     "@remotion/discord-poster": ["@remotion/discord-poster@workspace:packages/discord-poster"],
 
     "@remotion/docusaurus-plugin": ["@remotion/docusaurus-plugin@workspace:packages/docusaurus-plugin"],
+
+    "@remotion/elevenlabs": ["@remotion/elevenlabs@workspace:packages/elevenlabs"],
 
     "@remotion/enable-scss": ["@remotion/enable-scss@workspace:packages/enable-scss"],
 

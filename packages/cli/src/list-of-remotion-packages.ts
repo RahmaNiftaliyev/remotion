@@ -78,6 +78,7 @@ export const listOfRemotionPackages = [
 	'@remotion/convert',
 	'@remotion/captions',
 	'@remotion/openai-whisper',
+	'@remotion/elevenlabs',
 	'@remotion/compositor',
 	'@remotion/example-videos',
 	'@remotion/whisper-web',

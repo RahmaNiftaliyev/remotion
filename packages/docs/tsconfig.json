@@ -49,6 +49,7 @@
 		{"path": "../renderer"},
 		{"path": "../svg-3d-engine"},
 		{"path": "../transitions"},
+		{"path": "../elevenlabs"},
 		{"path": "../cli"}
 	],
 	"exclude": ["copy-convert.ts", "render-cards.ts"]

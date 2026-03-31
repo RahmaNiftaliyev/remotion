@@ -2,6 +2,7 @@ import './_check-rsc.js';
 import './asset-types.js';
 import {Clipper} from './Clipper.js';
 import type {Codec} from './codec.js';
+import {Composition} from './Composition.js';
 import type {
 	AnyCompMetadata,
 	AnyComposition,
@@ -258,6 +259,7 @@ export const Config = new Proxy(proxyObj, {
 
 Sequence.displayName = 'Sequence';
 addSequenceStackTraces(Sequence);
+addSequenceStackTraces(Composition);
 
 export type _InternalTypes = {
 	AnyComposition: AnyComposition;

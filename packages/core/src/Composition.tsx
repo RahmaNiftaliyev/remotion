@@ -136,7 +136,7 @@ const InnerComposition = <
 	defaultProps,
 	schema,
 	...compProps
-}: CompositionProps<Schema, Props>) => {
+}: CompositionProps<Schema, Props> & {stack?: string}) => {
 	const compManager = useContext(CompositionSetters);
 
 	const {registerComposition, unregisterComposition} = compManager;
@@ -200,6 +200,7 @@ const InnerComposition = <
 			parentFolderName: parentName,
 			schema: schema ?? null,
 			calculateMetadata: compProps.calculateMetadata ?? null,
+			stack: (compProps as {stack?: string}).stack ?? null,
 		} as TComposition<Schema, Props>);
 
 		return () => {

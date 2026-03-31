@@ -1,7 +1,20 @@
-import React, {useContext, useEffect, useState} from 'react';
+import type {GitSource} from '@remotion/studio-shared';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import {StudioServerConnectionCtx} from '../helpers/client-id';
+import {
+	getGitSourceBranchUrl,
+	getGitSourceName,
+} from '../helpers/get-git-menu-item';
+import {openInEditor} from '../helpers/open-in-editor';
 import {Spacing} from './layout';
-import {OpenEditorButton} from './OpenEditorButton';
+import {MenuCompositionName} from './MenuCompositionName';
+import {showNotification} from './Notifications/NotificationCenter';
 import {Spinner} from './Spinner';
 
 const cwd: React.CSSProperties = {
@@ -26,11 +39,79 @@ const noSpinner: React.CSSProperties = {
 	width: spinnerSize,
 };
 
+const projectNameLinkBase: React.CSSProperties = {
+	color: 'inherit',
+	textDecoration: 'none',
+	cursor: 'pointer',
+	fontSize: 'inherit',
+	textUnderlineOffset: 2,
+};
+
+const projectNameLink: React.CSSProperties = {
+	...projectNameLinkBase,
+};
+
+const projectNameLinkHovered: React.CSSProperties = {
+	...projectNameLinkBase,
+	textDecoration: 'underline',
+};
+
 export const MenuBuildIndicator: React.FC = () => {
 	const [isBuilding, setIsBuilding] = useState(false);
+	const [projectNameHovered, setProjectNameHovered] = useState(false);
 	const ctx = useContext(StudioServerConnectionCtx).previewServerState;
 
-	const showButton = window.remotion_editorName && ctx.type === 'connected';
+	const showEditorLink = window.remotion_editorName && ctx.type === 'connected';
+	const showGitLink = !showEditorLink && !!window.remotion_gitSource;
+
+	const handleProjectNameClick = useCallback(async () => {
+		if (showEditorLink) {
+			await openInEditor({
+				originalFileName: `${window.remotion_cwd}`,
+				originalLineNumber: 1,
+				originalColumnNumber: 1,
+				originalFunctionName: null,
+				originalScriptCode: null,
+			})
+				.then((res) => res.json())
+				.then(({success}) => {
+					if (!success) {
+						showNotification(
+							`Could not open ${window.remotion_editorName}`,
+							2000,
+						);
+					}
+				})
+				.catch((err) => {
+					// eslint-disable-next-line no-console
+					console.error(err);
+					showNotification(
+						`Could not open ${window.remotion_editorName}`,
+						2000,
+					);
+				});
+		} else if (showGitLink) {
+			window.open(
+				getGitSourceBranchUrl(window.remotion_gitSource as GitSource),
+				'_blank',
+			);
+		}
+	}, [showEditorLink, showGitLink]);
+
+	const projectNameTitle = useMemo(() => {
+		if (showEditorLink) {
+			return `Open in ${window.remotion_editorName}`;
+		}
+
+		if (showGitLink) {
+			return `Open ${getGitSourceName(window.remotion_gitSource as GitSource)} Repo`;
+		}
+
+		return undefined;
+	}, [showEditorLink, showGitLink]);
+
+	const isClickable = showEditorLink || showGitLink;
+
 	useEffect(() => {
 		window.remotion_isBuilding = () => {
 			setIsBuilding(true);
@@ -48,7 +129,7 @@ export const MenuBuildIndicator: React.FC = () => {
 
 	return (
 		<div style={cwd} title={window.remotion_cwd}>
-			{showButton ? <Spacing x={2} /> : null}
+			{isClickable ? <Spacing x={2} /> : null}
 			{isBuilding ? (
 				<div style={spinner}>
 					<Spinner duration={0.5} size={spinnerSize} />
@@ -56,14 +137,21 @@ export const MenuBuildIndicator: React.FC = () => {
 			) : (
 				<div style={noSpinner} />
 			)}
-			{showButton ? <Spacing x={0.5} /> : null}
-			{window.remotion_projectName}
-			{showButton ? <Spacing x={0.25} /> : null}
-			{showButton ? (
-				<OpenEditorButton type="editor" />
-			) : window.remotion_gitSource ? (
-				<OpenEditorButton type="git" />
-			) : null}
+			{isClickable ? <Spacing x={0.5} /> : null}
+			{isClickable ? (
+				<a
+					style={projectNameHovered ? projectNameLinkHovered : projectNameLink}
+					title={projectNameTitle}
+					onClick={handleProjectNameClick}
+					onPointerEnter={() => setProjectNameHovered(true)}
+					onPointerLeave={() => setProjectNameHovered(false)}
+				>
+					{window.remotion_projectName}
+				</a>
+			) : (
+				window.remotion_projectName
+			)}
+			<MenuCompositionName />
 		</div>
 	);
 };

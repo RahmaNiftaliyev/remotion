@@ -61,8 +61,8 @@ test.describe('node-path cache for stale source maps', () => {
 			}),
 		});
 		const result1 = await res1.json();
-		expect(result1.canUpdate).toBe(true);
-		expect(result1.nodePath).toBeTruthy();
+		expect(result1.data.canUpdate).toBe(true);
+		expect(result1.data.nodePath).toBeTruthy();
 
 		// 2. Simulate prettier wrapping the return in parentheses,
 		//    shifting <Video> down by one line.
@@ -95,10 +95,10 @@ test.describe('node-path cache for stale source maps', () => {
 			}),
 		});
 		const result2 = await res2.json();
-		expect(result2.canUpdate).toBe(true);
-		expect(result2.nodePath).toBeTruthy();
+		expect(result2.data.canUpdate).toBe(true);
+		expect(result2.data.nodePath).toBeTruthy();
 
 		// The nodePath should be the same — both refer to the same <Video> element
-		expect(result2.nodePath).toEqual(result1.nodePath);
+		expect(result2.data.nodePath).toEqual(result1.data.nodePath);
 	});
 });

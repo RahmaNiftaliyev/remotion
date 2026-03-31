@@ -20,6 +20,7 @@ import {wdm} from './dev-middleware';
 import {setupWebpackHmr} from './hot-middleware';
 import type {LiveEventsServer} from './live-events';
 import {makeLiveEventsRouter} from './live-events';
+import {clearNodePathCache} from './node-path-cache';
 import {getRedoStack, getUndoStack} from './undo-stack';
 import {setWatchIgnoreNextChangePlugin} from './watch-ignore-next-change';
 
@@ -136,6 +137,9 @@ export const startServer = async (options: {
 		};
 	});
 	setupWebpackHmr(compiler, options.logLevel, liveEventsServer);
+	compiler.hooks.done.tap('remotion-node-path-cache', () => {
+		clearNodePathCache();
+	});
 
 	const server = http.createServer((request, response) => {
 		if (options.enableCrossSiteIsolation) {

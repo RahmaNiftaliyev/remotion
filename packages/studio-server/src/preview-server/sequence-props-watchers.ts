@@ -5,9 +5,11 @@ import type {
 } from '@remotion/studio-shared';
 import {installFileWatcher} from '../file-watcher';
 import {waitForLiveEventsListener} from './live-events';
+import {getCachedNodePath, setCachedNodePath} from './node-path-cache';
 import {
 	computeSequencePropsStatusFromContent,
 	computeSequencePropsStatusByLine,
+	computeSequencePropsStatus,
 } from './routes/can-update-sequence-props';
 
 type WatcherInfo = {
@@ -29,29 +31,57 @@ const makeWatcherKey = ({
 export const subscribeToSequencePropsWatchers = ({
 	fileName,
 	line,
+	column,
 	keys,
 	remotionRoot,
 	clientId,
 }: {
 	fileName: string;
 	line: number;
+	column: number;
 	keys: string[];
 	remotionRoot: string;
 	clientId: string;
 }): CanUpdateSequencePropsResponse => {
 	const absolutePath = path.resolve(remotionRoot, fileName);
 
-	// Initial lookup by line+column to resolve the nodePath
-	const initialResult = computeSequencePropsStatusByLine({
-		fileName,
-		line,
-		keys,
-		remotionRoot,
-	});
+	// Try cached nodePath first (handles stale source maps after suppressed rebuilds)
+	const cachedNodePath = getCachedNodePath(fileName, line, column);
+	let initialResult: CanUpdateSequencePropsResponse;
+
+	if (cachedNodePath) {
+		const cachedResult = computeSequencePropsStatus({
+			fileName,
+			nodePath: cachedNodePath,
+			keys,
+			remotionRoot,
+		});
+		if (cachedResult.canUpdate) {
+			initialResult = cachedResult;
+		} else {
+			// Cached nodePath no longer valid, fall back to line-based lookup
+			initialResult = computeSequencePropsStatusByLine({
+				fileName,
+				line,
+				keys,
+				remotionRoot,
+			});
+		}
+	} else {
+		initialResult = computeSequencePropsStatusByLine({
+			fileName,
+			line,
+			keys,
+			remotionRoot,
+		});
+	}
 
 	if (!initialResult.canUpdate) {
 		return initialResult;
 	}
+
+	// Cache the resolved nodePath for future lookups with stale source maps
+	setCachedNodePath(fileName, line, column, initialResult.nodePath);
 
 	const {nodePath} = initialResult;
 	const watcherKey = makeWatcherKey({absolutePath, nodePath});

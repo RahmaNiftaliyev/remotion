@@ -4,6 +4,28 @@ import {InputDragger} from '../NewComposition/InputDragger';
 import {draggerStyle, getDecimalPlaces} from './timeline-field-utils';
 
 const parseCssRotationToDegrees = (value: string): number => {
+	const trimmed = value.trim();
+
+	const degMatch = trimmed.match(/^(-?\d+(?:\.\d+)?)deg$/);
+	if (degMatch) {
+		return Number(degMatch[1]);
+	}
+
+	const radMatch = trimmed.match(/^(-?\d+(?:\.\d+)?)rad$/);
+	if (radMatch) {
+		return Number(radMatch[1]) * (180 / Math.PI);
+	}
+
+	const turnMatch = trimmed.match(/^(-?\d+(?:\.\d+)?)turn$/);
+	if (turnMatch) {
+		return Number(turnMatch[1]) * 360;
+	}
+
+	const gradMatch = trimmed.match(/^(-?\d+(?:\.\d+)?)grad$/);
+	if (gradMatch) {
+		return Number(gradMatch[1]) * (360 / 400);
+	}
+
 	try {
 		const m = new DOMMatrix(`rotate(${value})`);
 		return Math.round(Math.atan2(m.b, m.a) * (180 / Math.PI) * 1e6) / 1e6;

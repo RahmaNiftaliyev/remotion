@@ -136,7 +136,7 @@ const InnerComposition = <
 	defaultProps,
 	schema,
 	...compProps
-}: CompositionProps<Schema, Props>) => {
+}: CompositionProps<Schema, Props> & {readonly stack?: string}) => {
 	const compManager = useContext(CompositionSetters);
 
 	const {registerComposition, unregisterComposition} = compManager;
@@ -176,6 +176,7 @@ const InnerComposition = <
 	}
 
 	const {folderName, parentName} = useContext(FolderContext);
+	const stack = (compProps as {stack?: string}).stack ?? null;
 
 	useEffect(() => {
 		// Ensure it's a URL safe id
@@ -200,6 +201,7 @@ const InnerComposition = <
 			parentFolderName: parentName,
 			schema: schema ?? null,
 			calculateMetadata: compProps.calculateMetadata ?? null,
+			stack,
 		} as TComposition<Schema, Props>);
 
 		return () => {
@@ -218,6 +220,7 @@ const InnerComposition = <
 		parentName,
 		schema,
 		compProps.calculateMetadata,
+		stack,
 		registerComposition,
 		unregisterComposition,
 	]);

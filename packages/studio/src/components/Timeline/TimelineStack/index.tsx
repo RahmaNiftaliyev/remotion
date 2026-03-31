@@ -199,7 +199,8 @@ export const TimelineStack: React.FC<{
 			color: opening && isCompact ? VERY_LIGHT_TEXT : LIGHT_COLOR,
 			userSelect: 'none',
 			WebkitUserSelect: 'none',
-			borderBottom: hoverEffect ? '1px solid #fff' : 'none',
+			textDecoration: hoverEffect ? 'underline' : 'none',
+			textUnderlineOffset: 2,
 			cursor: hoverEffect ? 'pointer' : undefined,
 		};
 	}, [titleHoverable, isCompact, opening, titleHovered]);

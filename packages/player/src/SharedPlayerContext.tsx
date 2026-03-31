@@ -64,6 +64,7 @@ export const SharedPlayerContexts: React.FC<{
 					parentFolderName: null,
 					schema: null,
 					calculateMetadata: null,
+					stack: null,
 				},
 			],
 			folders: [],

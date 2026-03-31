@@ -62,7 +62,7 @@ export const MenuBuildIndicator: React.FC = () => {
 	const ctx = useContext(StudioServerConnectionCtx).previewServerState;
 
 	const showEditorLink = window.remotion_editorName && ctx.type === 'connected';
-	const showGitLink = !showEditorLink && !!window.remotion_gitSource;
+	const showGitLink = !showEditorLink && Boolean(window.remotion_gitSource);
 
 	const handleProjectNameClick = useCallback(async () => {
 		if (showEditorLink) {

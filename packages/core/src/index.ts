@@ -203,6 +203,7 @@ export {
 	RemotionVideoProps,
 	Video,
 } from './video/index.js';
+export {MediaPlaybackError} from './video/MediaPlaybackError.js';
 export type {OnVideoFrame} from './video/props.js';
 export type {VolumeProp} from './volume-prop.js';
 export {watchStaticFile} from './watch-static-file.js';

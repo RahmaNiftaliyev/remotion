@@ -64,9 +64,13 @@ export const Editor: React.FC<{
 
 	const [renderError, setRenderError] = useState<Error | null>(null);
 
+	const clearError = useCallback(() => {
+		setRenderError(null);
+	}, []);
+
 	const compositionRenderErrorContextValue = useMemo(
-		() => ({setError: setRenderError, clearError: () => setRenderError(null)}),
-		[],
+		() => ({setError: setRenderError, clearError}),
+		[clearError],
 	);
 
 	const renderErrorContextValue = useMemo(

@@ -21,8 +21,8 @@ export class CompositionErrorBoundary extends React.Component<Props, State> {
 		this.props.onError(error);
 	}
 
-	componentDidUpdate(_prevProps: Props, prevState: State): void {
-		if (prevState.hasError && !this.state.hasError) {
+	componentDidUpdate(_prevProps: Props): void {
+		if (!this.state.hasError) {
 			this.props.onClear();
 		}
 	}

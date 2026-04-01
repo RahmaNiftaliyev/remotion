@@ -1,5 +1,6 @@
 import {getLocationFromBuildError} from '@remotion/studio-shared';
 import React, {useMemo} from 'react';
+import {MediaPlaybackError} from 'remotion';
 import {Spacing} from '../../components/layout';
 import {HORIZONTAL_SCROLLBAR_CLASSNAME} from '../../components/Menu/is-menu-item';
 import {getRoute} from '../../helpers/url-state';
@@ -10,6 +11,7 @@ import {CompositionIdsDropdown} from './CompositionIdsDropdown';
 import {ErrorTitle} from './ErrorTitle';
 import {getHelpLink} from './get-help-link';
 import {HelpLink} from './HelpLink';
+import {MediaPlaybackErrorExplainer} from './MediaPlaybackErrorExplainer';
 import {OpenInEditor} from './OpenInEditor';
 import {RetryButton} from './Retry';
 import {SearchGithubIssues} from './SearchGitHubIssues';
@@ -125,6 +127,13 @@ export const ErrorDisplay: React.FC<{
 					<br />
 					<Spacing y={0.5} />
 					<CalculateMetadataErrorExplainer />
+				</>
+			) : null}
+			{display.error instanceof MediaPlaybackError ? (
+				<>
+					<br />
+					<Spacing y={0.5} />
+					<MediaPlaybackErrorExplainer src={display.error.src} />
 				</>
 			) : null}
 			<div style={stack} className={HORIZONTAL_SCROLLBAR_CLASSNAME}>

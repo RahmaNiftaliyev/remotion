@@ -1,5 +1,5 @@
 import type {ComponentType} from 'react';
-import React, {Suspense, useContext, useEffect} from 'react';
+import React, {Suspense, useCallback, useContext, useEffect} from 'react';
 import {createPortal} from 'react-dom';
 import type {z} from 'zod';
 import type {AnyZodObject} from './any-zod-type.js';
@@ -8,6 +8,8 @@ import {
 	CanUseRemotionHooksProvider,
 } from './CanUseRemotionHooks.js';
 import type {Codec} from './codec.js';
+import {CompositionRenderErrorContext} from './composition-render-error-context.js';
+import {CompositionErrorBoundary} from './CompositionErrorBoundary.js';
 import type {TComposition} from './CompositionManager.js';
 import {CompositionSetters} from './CompositionManagerContext.js';
 import {FolderContext} from './Folder.js';
@@ -227,6 +229,19 @@ const InnerComposition = <
 
 	const resolved = useResolvedVideoConfig(id);
 
+	const {setError, clearError} = useContext(CompositionRenderErrorContext);
+
+	const onError = useCallback(
+		(error: Error) => {
+			setError(error);
+		},
+		[setError],
+	);
+
+	const onClear = useCallback(() => {
+		clearError();
+	}, [clearError]);
+
 	if (
 		environment.isStudio &&
 		video &&
@@ -244,14 +259,16 @@ const InnerComposition = <
 
 		return createPortal(
 			<CanUseRemotionHooksProvider>
-				<Suspense fallback={<Loading />}>
-					<Comp
-						{
-							// eslint-disable-next-line @typescript-eslint/no-explicit-any
-							...((resolved.result.props ?? {}) as any)
-						}
-					/>
-				</Suspense>
+				<CompositionErrorBoundary onError={onError} onClear={onClear}>
+					<Suspense fallback={<Loading />}>
+						<Comp
+							{
+								// eslint-disable-next-line @typescript-eslint/no-explicit-any
+								...((resolved.result.props ?? {}) as any)
+							}
+						/>
+					</Suspense>
+				</CompositionErrorBoundary>
 			</CanUseRemotionHooksProvider>,
 			portalNode(),
 		);

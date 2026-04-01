@@ -21,6 +21,7 @@ import {
 	CanUseRemotionHooks,
 	CanUseRemotionHooksProvider,
 } from './CanUseRemotionHooks.js';
+import {CompositionRenderErrorContext} from './composition-render-error-context.js';
 import {type CompProps} from './Composition.js';
 import type {
 	TCompMetadata,
@@ -277,6 +278,7 @@ export const Internals = {
 	AbsoluteTimeContext,
 	RenderAssetManagerProvider,
 	getEffectiveVisualModeValue,
+	CompositionRenderErrorContext,
 } as const;
 
 export type {

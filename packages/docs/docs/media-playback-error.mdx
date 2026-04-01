@@ -25,6 +25,26 @@ This error happens when you are trying to embed a [`<Html5Video/>`](/docs/html5-
 Chrome does not support all codecs for playback. For example: HEVC on Linux, `.avi`, `.flv`.  
 Convert the video to a format that is supported by Chrome.
 
+## Asset not found (404)
+
+If the asset is returning a 404 status code, the file might not be served correctly.  
+If the file is in your `public/` folder, you must use [`staticFile()`](/docs/staticfile) to reference it. A plain path like `"/my-video.mp4"` will not work because Remotion serves static files under a special prefix.
+
+```tsx twoslash title="❌ Wrong - plain path"
+import {Html5Video} from 'remotion';
+
+<Html5Video src="/my-video.mp4" />;
+```
+
+```tsx twoslash title="✅ Correct - using staticFile()"
+import {Html5Video} from 'remotion';
+import {staticFile} from 'remotion';
+
+<Html5Video src={staticFile('my-video.mp4')} />;
+```
+
+Also make sure the file actually exists in your `public/` folder and is spelled correctly.
+
 ## Invalid source
 
 Make sure you are trying to load a video that is either available locally or publicly on the internet. Open the DevTools, go to the Network tab, track the asset being loaded, and open it in a new tab. Does it actually start playing?

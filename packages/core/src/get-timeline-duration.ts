@@ -1,6 +1,6 @@
 import {calculateMediaDuration} from './calculate-media-duration.js';
 
-export const getMediaDuration = ({
+export const getTimelineDuration = ({
 	compositionDurationInFrames,
 	playbackRate,
 	trimBefore,

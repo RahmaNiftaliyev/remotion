@@ -2,7 +2,7 @@ import {useContext, useEffect, useMemo, useState} from 'react';
 import {useMediaStartsAt} from './audio/use-audio-frame.js';
 import type {LoopDisplay, SequenceControls} from './CompositionManager.js';
 import {getAssetDisplayName} from './get-asset-file-name.js';
-import {getMediaDuration} from './get-media-duration.js';
+import {getTimelineDuration} from './get-timeline-duration.js';
 import {useNonce} from './nonce.js';
 import {SequenceContext} from './SequenceContext.js';
 import {SequenceManager} from './SequenceManager.js';
@@ -52,7 +52,7 @@ export const useBasicMediaInTimeline = ({
 
 	const [initialVolume] = useState<VolumeProp | undefined>(() => volume);
 
-	const duration = getMediaDuration({
+	const duration = getTimelineDuration({
 		compositionDurationInFrames: videoConfig.durationInFrames,
 		playbackRate,
 		trimBefore,

@@ -1,8 +1,8 @@
 import {expect, test} from 'bun:test';
-import {getMediaDuration} from '../get-media-duration.js';
+import {getTimelineDuration} from '../get-timeline-duration.js';
 
 test('playbackRate 2.45 with 300 composition frames returns 300', () => {
-	const duration = getMediaDuration({
+	const duration = getTimelineDuration({
 		compositionDurationInFrames: 300,
 		playbackRate: 2.45,
 		trimBefore: undefined,
@@ -14,7 +14,7 @@ test('playbackRate 2.45 with 300 composition frames returns 300', () => {
 });
 
 test('playbackRate 1 returns composition duration unchanged', () => {
-	const duration = getMediaDuration({
+	const duration = getTimelineDuration({
 		compositionDurationInFrames: 300,
 		playbackRate: 1,
 		trimBefore: undefined,
@@ -26,7 +26,7 @@ test('playbackRate 1 returns composition duration unchanged', () => {
 });
 
 test('playbackRate 0.5 with 300 composition frames returns 300', () => {
-	const duration = getMediaDuration({
+	const duration = getTimelineDuration({
 		compositionDurationInFrames: 300,
 		playbackRate: 0.5,
 		trimBefore: undefined,
@@ -38,7 +38,7 @@ test('playbackRate 0.5 with 300 composition frames returns 300', () => {
 });
 
 test('parentSequence caps the duration', () => {
-	const duration = getMediaDuration({
+	const duration = getTimelineDuration({
 		compositionDurationInFrames: 300,
 		playbackRate: 1,
 		trimBefore: undefined,
@@ -50,7 +50,7 @@ test('parentSequence caps the duration', () => {
 });
 
 test('parentSequence with playbackRate 2.45 caps correctly', () => {
-	const duration = getMediaDuration({
+	const duration = getTimelineDuration({
 		compositionDurationInFrames: 300,
 		playbackRate: 2.45,
 		trimBefore: undefined,
@@ -62,7 +62,7 @@ test('parentSequence with playbackRate 2.45 caps correctly', () => {
 });
 
 test('trimBefore is accounted for', () => {
-	const duration = getMediaDuration({
+	const duration = getTimelineDuration({
 		compositionDurationInFrames: 300,
 		playbackRate: 2.45,
 		trimBefore: 30,

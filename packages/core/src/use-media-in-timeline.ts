@@ -1,8 +1,8 @@
 import {useContext, useEffect, useMemo, useState} from 'react';
 import {useMediaStartsAt} from './audio/use-audio-frame.js';
-import {calculateMediaDuration} from './calculate-media-duration.js';
 import type {LoopDisplay, SequenceControls} from './CompositionManager.js';
 import {getAssetDisplayName} from './get-asset-file-name.js';
+import {getMediaDuration} from './get-media-duration.js';
 import {useNonce} from './nonce.js';
 import {SequenceContext} from './SequenceContext.js';
 import {SequenceManager} from './SequenceManager.js';
@@ -52,16 +52,13 @@ export const useBasicMediaInTimeline = ({
 
 	const [initialVolume] = useState<VolumeProp | undefined>(() => volume);
 
-	const mediaDuration = calculateMediaDuration({
-		mediaDurationInFrames: videoConfig.durationInFrames + (trimBefore ?? 0),
+	const duration = getMediaDuration({
+		compositionDurationInFrames: videoConfig.durationInFrames,
 		playbackRate,
 		trimBefore,
 		trimAfter,
+		parentSequenceDurationInFrames: parentSequence?.durationInFrames ?? null,
 	});
-
-	const duration = parentSequence
-		? Math.min(parentSequence.durationInFrames, mediaDuration)
-		: mediaDuration;
 
 	const volumes: string | number = useMemo(() => {
 		if (typeof volume === 'number') {

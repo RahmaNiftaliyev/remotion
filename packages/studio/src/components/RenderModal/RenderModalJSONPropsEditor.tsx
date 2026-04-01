@@ -109,12 +109,14 @@ export const RenderModalJSONPropsEditor: React.FC<{
 	}, [subscribeToEvent, compositionId, schema]);
 
 	useEffect(() => {
-		if (localValue.validJSON && deepEqual(value, localValue.value)) {
-			return;
-		}
+		setLocalValue((prev) => {
+			if (prev.validJSON && deepEqual(value, prev.value)) {
+				return prev;
+			}
 
-		setLocalValue(parseJS(value as Record<string, unknown>, schema));
-	}, [value, schema, localValue]);
+			return parseJS(value as Record<string, unknown>, schema);
+		});
+	}, [value, schema]);
 
 	const onPretty = useCallback(() => {
 		if (!localValue.validJSON) {

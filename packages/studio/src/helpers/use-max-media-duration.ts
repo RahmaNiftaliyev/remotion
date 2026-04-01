@@ -63,7 +63,7 @@ export const useMaxMediaDuration = (s: TSequence, fps: number) => {
 	}, [src, fps]);
 
 	if (maxMediaDuration !== null && (s.type === 'audio' || s.type === 'video')) {
-		return maxMediaDuration / s.playbackRate;
+		return maxMediaDuration;
 	}
 
 	return maxMediaDuration;

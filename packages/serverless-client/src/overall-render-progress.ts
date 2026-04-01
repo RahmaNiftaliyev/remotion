@@ -22,6 +22,7 @@ export type OverallRenderProgress<Provider extends CloudProvider> = {
 	timings: ParsedTiming[];
 	renderMetadata: RenderMetadata<Provider> | null;
 	errors: FunctionErrorInfo[];
+	fatalErrorTimestamp: number | null;
 	timeoutTimestamp: number;
 	functionLaunched: number;
 	serveUrlOpened: number | null;

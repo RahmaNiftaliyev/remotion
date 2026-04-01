@@ -209,6 +209,7 @@ export const getProgress = async <Provider extends CloudProvider>({
 		timings: overallProgress.timings ?? [],
 		region,
 		providerSpecifics,
+		fatalErrorTimestamp: overallProgress.fatalErrorTimestamp ?? null,
 	});
 
 	const chunkMultiplier = [hasAudio, hasVideo].filter(truthy).length;

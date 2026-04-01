@@ -5,6 +5,7 @@ type ProbeResult =
 	| {type: 'loading'}
 	| {type: 'not-found'}
 	| {type: 'other-error'; statusCode: number}
+	| {type: 'wrong-content-type'; contentType: string}
 	| {type: 'ok'}
 	| {type: 'fetch-error'};
 
@@ -43,7 +44,15 @@ export const MediaPlaybackErrorExplainer: React.FC<{
 				} else if (!res.ok) {
 					setResult({type: 'other-error', statusCode: res.status});
 				} else {
-					setResult({type: 'ok'});
+					const contentType = res.headers.get('content-type') ?? '';
+					if (
+						contentType.includes('text/html') ||
+						contentType.includes('application/json')
+					) {
+						setResult({type: 'wrong-content-type', contentType});
+					} else {
+						setResult({type: 'ok'});
+					}
 				}
 			})
 			.catch(() => {
@@ -87,6 +96,36 @@ export const MediaPlaybackErrorExplainer: React.FC<{
 			<div style={container}>
 				Fetching <code style={codeStyle}>{src}</code> returned status code{' '}
 				{result.statusCode}.
+				<br />
+				<a
+					style={linkStyle}
+					href="https://remotion.dev/docs/media-playback-error"
+					target="_blank"
+				>
+					Learn more
+				</a>
+			</div>
+		);
+	}
+
+	if (result.type === 'wrong-content-type') {
+		return (
+			<div style={container}>
+				Fetching <code style={codeStyle}>{src}</code> returned a{' '}
+				<code style={codeStyle}>{result.contentType}</code> response instead of
+				a video. This usually means the URL does not point to an actual media
+				file.
+				<br />
+				If the file is in your <code style={codeStyle}>public/</code> folder,
+				make sure to use{' '}
+				<a
+					style={linkStyle}
+					href="https://remotion.dev/docs/staticfile"
+					target="_blank"
+				>
+					<code style={codeStyle}>staticFile()</code>
+				</a>{' '}
+				to reference it.
 				<br />
 				<a
 					style={linkStyle}

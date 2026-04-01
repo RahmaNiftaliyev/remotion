@@ -26,6 +26,7 @@ import {useUnsafeVideoConfig} from '../use-unsafe-video-config.js';
 import {evaluateVolume} from '../volume-prop.js';
 import {warnAboutTooHighVolume} from '../volume-safeguard.js';
 import {getMediaTime} from './get-current-time.js';
+import {MediaPlaybackError} from './MediaPlaybackError.js';
 import type {OnVideoFrame, RemotionVideoProps} from './props';
 import {seekToTimeMultipleUntilRight} from './seek-until-right.js';
 
@@ -223,11 +224,15 @@ const VideoForRenderingForwardFunction: React.ForwardRefRenderFunction<
 					return;
 				}
 
-				throw new Error(
-					`The browser threw an error while playing the video ${props.src}: Code ${current.error.code} - ${current?.error?.message}. See https://remotion.dev/docs/media-playback-error for help. Pass an onError() prop to handle the error.`,
-				);
+				throw new MediaPlaybackError({
+					message: `The browser threw an error while playing the video ${props.src}: Code ${current.error.code} - ${current?.error?.message}. See https://remotion.dev/docs/media-playback-error for help. Pass an onError() prop to handle the error.`,
+					src: props.src as string,
+				});
 			} else {
-				throw new Error('The browser threw an error');
+				throw new MediaPlaybackError({
+					message: 'The browser threw an error',
+					src: props.src as string,
+				});
 			}
 		};
 

@@ -94,7 +94,7 @@ export const MediaPlaybackErrorExplainer: React.FC<{
 	if (result.type === 'other-error') {
 		return (
 			<div style={container}>
-				Fetching <code style={codeStyle}>{src}</code> returned status code{' '}
+				⚠️ Fetching <code style={codeStyle}>{src}</code> returned status code{' '}
 				{result.statusCode}.
 				<br />
 				<a
@@ -111,13 +111,12 @@ export const MediaPlaybackErrorExplainer: React.FC<{
 	if (result.type === 'wrong-content-type') {
 		return (
 			<div style={container}>
-				Fetching <code style={codeStyle}>{src}</code> returned a{' '}
-				<code style={codeStyle}>{result.contentType}</code> response instead of
-				a video. This usually means the URL does not point to an actual media
-				file.
-				<br />
-				If the file is in your <code style={codeStyle}>public/</code> folder,
-				make sure to use{' '}
+				⚠️ Fetching <code style={codeStyle}>{src}</code> returned a{' '}
+				<code style={codeStyle}>{result.contentType}</code> content type.
+				<br />👉 If the file is in your <code style={codeStyle}>
+					public/
+				</code>{' '}
+				folder, make sure to use{' '}
 				<a
 					style={linkStyle}
 					href="https://remotion.dev/docs/staticfile"

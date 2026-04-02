@@ -1,3 +1,4 @@
+import type {Readable} from 'stream';
 import {
 	type AudioCodec,
 	type ChromiumOptions,
@@ -232,7 +233,6 @@ const internalRenderMediaOnCloudrunRaw = async ({
 	const renderResponse = await new Promise<
 		RenderMediaOnCloudrunOutput | CloudRunCrashResponse
 	>((resolve, reject) => {
-		// TODO: Add any sort of type safety
 		let response:
 			| RenderMediaOnCloudrunOutput
 			| ErrorResponsePayload
@@ -241,7 +241,7 @@ const internalRenderMediaOnCloudrunRaw = async ({
 		const startTime = Date.now();
 		const formattedStartTime = new Date().toISOString();
 
-		const stream: any = postResponse.data;
+		const stream: Readable = postResponse.data as Readable;
 
 		let accumulatedChunks = ''; // A buffer to accumulate chunks.
 

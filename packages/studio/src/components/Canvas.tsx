@@ -4,6 +4,7 @@ import React, {
 	useContext,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from 'react';
 import type {CanvasContent} from 'remotion';
@@ -12,7 +13,7 @@ import {BACKGROUND} from '../helpers/colors';
 import type {AssetMetadata} from '../helpers/get-asset-metadata';
 import {getAssetMetadata} from '../helpers/get-asset-metadata';
 import {
-	getCenterPointWhileScrolling,
+	applyZoomAroundFocalPoint,
 	getEffectiveTranslation,
 } from '../helpers/get-effective-translation';
 import {
@@ -32,13 +33,16 @@ import {SPACING_UNIT} from './layout';
 import {VideoPreview} from './Preview';
 import {ResetZoomButton} from './ResetZoomButton';
 
-const container: React.CSSProperties = {
+const getContainerStyle = (
+	editorZoomGestures: boolean,
+): React.CSSProperties => ({
 	flex: 1,
 	display: 'flex',
 	overflow: 'hidden',
 	position: 'relative',
 	backgroundColor: BACKGROUND,
-};
+	...(editorZoomGestures ? {touchAction: 'none' as const} : {}),
+});
 
 const resetZoom: React.CSSProperties = {
 	position: 'absolute',
@@ -48,12 +52,29 @@ const resetZoom: React.CSSProperties = {
 
 const ZOOM_PX_FACTOR = 0.003;
 
+type WebKitGestureEvent = UIEvent & {
+	scale: number;
+	clientX: number;
+	clientY: number;
+};
+
 export const Canvas: React.FC<{
 	readonly canvasContent: CanvasContent;
 	readonly size: Size;
 }> = ({canvasContent, size}) => {
 	const {setSize, size: previewSize} = useContext(Internals.PreviewSizeContext);
 	const {editorZoomGestures} = useContext(EditorZoomGesturesContext);
+	const previewSnapshotRef = useRef({
+		previewSize,
+		canvasSize: size,
+		contentDimensions: null as {width: number; height: number} | 'none' | null,
+	});
+	const pinchBaseZoomRef = useRef<number | null>(null);
+	const suppressWheelFromWebKitPinchRef = useRef(false);
+	const touchPinchRef = useRef<{
+		initialDistance: number;
+		initialZoom: number;
+	} | null>(null);
 	const keybindings = useKeybinding();
 	const config = Internals.useUnsafeVideoConfig();
 	const areRulersVisible = useIsRulerVisible();
@@ -83,8 +104,15 @@ export const Canvas: React.FC<{
 
 	const isFit = previewSize.size === 'auto';
 
+	previewSnapshotRef.current = {
+		previewSize,
+		canvasSize: size,
+		contentDimensions,
+	};
+
 	const onWheel = useCallback(
-		(e: WheelEvent) => {
+		(e: Event) => {
+			const ev = e as WheelEvent;
 			if (!editorZoomGestures) {
 				return;
 			}
@@ -97,13 +125,18 @@ export const Canvas: React.FC<{
 				return;
 			}
 
-			const wantsToZoom = e.ctrlKey || e.metaKey;
+			const wantsToZoom = ev.ctrlKey || ev.metaKey;
 
 			if (!wantsToZoom && isFit) {
 				return;
 			}
 
-			e.preventDefault();
+			if (suppressWheelFromWebKitPinchRef.current && wantsToZoom) {
+				ev.preventDefault();
+				return;
+			}
+
+			ev.preventDefault();
 
 			setSize((prevSize) => {
 				const scale = Internals.calculateScale({
@@ -113,48 +146,21 @@ export const Canvas: React.FC<{
 					previewSize: prevSize.size,
 				});
 
-				// Zoom in/out
 				if (wantsToZoom) {
 					const oldSize = prevSize.size === 'auto' ? scale : prevSize.size;
 					const smoothened = smoothenZoom(oldSize);
-					const added = smoothened + e.deltaY * ZOOM_PX_FACTOR;
+					const added = smoothened + ev.deltaY * ZOOM_PX_FACTOR;
 					const unsmoothened = unsmoothenZoom(added);
 
-					const {centerX, centerY} = getCenterPointWhileScrolling({
-						size,
-						clientX: e.clientX,
-						clientY: e.clientY,
-						compositionWidth: contentDimensions.width,
-						compositionHeight: contentDimensions.height,
-						scale,
-						translation: prevSize.translation,
+					return applyZoomAroundFocalPoint({
+						canvasSize: size,
+						contentDimensions,
+						previewSizeBefore: prevSize,
+						oldNumericSize: oldSize,
+						newNumericSize: unsmoothened,
+						clientX: ev.clientX,
+						clientY: ev.clientY,
 					});
-
-					const zoomDifference = unsmoothened - oldSize;
-
-					const uvCoordinatesX = centerX / contentDimensions.width;
-					const uvCoordinatesY = centerY / contentDimensions.height;
-
-					const correctionLeft =
-						-uvCoordinatesX * (zoomDifference * contentDimensions.width) +
-						(1 - uvCoordinatesX) * zoomDifference * contentDimensions.width;
-					const correctionTop =
-						-uvCoordinatesY * (zoomDifference * contentDimensions.height) +
-						(1 - uvCoordinatesY) * zoomDifference * contentDimensions.height;
-
-					return {
-						translation: getEffectiveTranslation({
-							translation: {
-								x: prevSize.translation.x - correctionLeft / 2,
-								y: prevSize.translation.y - correctionTop / 2,
-							},
-							canvasSize: size,
-							compositionHeight: contentDimensions.height,
-							compositionWidth: contentDimensions.width,
-							scale,
-						}),
-						size: unsmoothened,
-					};
 				}
 
 				const effectiveTranslation = getEffectiveTranslation({
@@ -165,13 +171,12 @@ export const Canvas: React.FC<{
 					scale,
 				});
 
-				// Pan
 				return {
 					...prevSize,
 					translation: getEffectiveTranslation({
 						translation: {
-							x: effectiveTranslation.x + e.deltaX,
-							y: effectiveTranslation.y + e.deltaY,
+							x: effectiveTranslation.x + ev.deltaX,
+							y: effectiveTranslation.y + ev.deltaY,
 						},
 						canvasSize: size,
 						compositionHeight: contentDimensions.height,
@@ -192,12 +197,210 @@ export const Canvas: React.FC<{
 
 		current.addEventListener('wheel', onWheel, {passive: false});
 
-		return () =>
-			// @ts-expect-error
-			current.removeEventListener('wheel', onWheel, {
-				passive: false,
-			});
+		return () => {
+			current.removeEventListener('wheel', onWheel);
+		};
 	}, [onWheel]);
+
+	const supportsWebKitPinch =
+		typeof window !== 'undefined' && 'GestureEvent' in window;
+
+	useEffect(() => {
+		const {current} = canvasRef;
+		if (!current || !editorZoomGestures || !supportsWebKitPinch) {
+			return;
+		}
+
+		const endWebKitPinch = () => {
+			pinchBaseZoomRef.current = null;
+			suppressWheelFromWebKitPinchRef.current = false;
+		};
+
+		const onGestureStart = (event: Event) => {
+			const e = event as WebKitGestureEvent;
+			const snap = previewSnapshotRef.current;
+			const canvasSz = snap.canvasSize;
+			const cdim = snap.contentDimensions;
+			if (!canvasSz || !cdim || cdim === 'none') {
+				return;
+			}
+
+			e.preventDefault();
+			suppressWheelFromWebKitPinchRef.current = true;
+
+			const fitted = Internals.calculateScale({
+				canvasSize: canvasSz,
+				compositionHeight: cdim.height,
+				compositionWidth: cdim.width,
+				previewSize: snap.previewSize.size,
+			});
+			pinchBaseZoomRef.current =
+				snap.previewSize.size === 'auto' ? fitted : snap.previewSize.size;
+		};
+
+		const onGestureChange = (event: Event) => {
+			const e = event as WebKitGestureEvent;
+			const base = pinchBaseZoomRef.current;
+			const snap = previewSnapshotRef.current;
+			const canvasSz = snap.canvasSize;
+			const cdim = snap.contentDimensions;
+			if (base === null || !canvasSz || !cdim || cdim === 'none') {
+				return;
+			}
+
+			const dimensions = cdim;
+
+			e.preventDefault();
+
+			setSize((prevSize) => {
+				const scale = Internals.calculateScale({
+					canvasSize: canvasSz,
+					compositionHeight: dimensions.height,
+					compositionWidth: dimensions.width,
+					previewSize: prevSize.size,
+				});
+				const oldNumeric = prevSize.size === 'auto' ? scale : prevSize.size;
+
+				return applyZoomAroundFocalPoint({
+					canvasSize: canvasSz,
+					contentDimensions: dimensions,
+					previewSizeBefore: prevSize,
+					oldNumericSize: oldNumeric,
+					newNumericSize: base * e.scale,
+					clientX: e.clientX,
+					clientY: e.clientY,
+				});
+			});
+		};
+
+		const onGestureEnd = () => {
+			endWebKitPinch();
+		};
+
+		current.addEventListener('gesturestart', onGestureStart, {
+			passive: false,
+		});
+		current.addEventListener('gesturechange', onGestureChange, {
+			passive: false,
+		});
+		current.addEventListener('gestureend', onGestureEnd);
+		current.addEventListener('gesturecancel', onGestureEnd);
+
+		return () => {
+			current.removeEventListener('gesturestart', onGestureStart);
+			current.removeEventListener('gesturechange', onGestureChange);
+			current.removeEventListener('gestureend', onGestureEnd);
+			current.removeEventListener('gesturecancel', onGestureEnd);
+		};
+	}, [editorZoomGestures, setSize, supportsWebKitPinch]);
+
+	useEffect(() => {
+		const {current} = canvasRef;
+		if (!current || !editorZoomGestures) {
+			return;
+		}
+
+		const onTouchStart = (event: TouchEvent) => {
+			if (event.touches.length !== 2) {
+				touchPinchRef.current = null;
+				return;
+			}
+
+			const snap = previewSnapshotRef.current;
+			if (
+				!snap.canvasSize ||
+				!snap.contentDimensions ||
+				snap.contentDimensions === 'none'
+			) {
+				return;
+			}
+
+			const [t0, t1] = [event.touches[0], event.touches[1]];
+			const initialDistance = Math.hypot(
+				t1.clientX - t0.clientX,
+				t1.clientY - t0.clientY,
+			);
+			if (initialDistance < 1e-6) {
+				return;
+			}
+
+			const fitted = Internals.calculateScale({
+				canvasSize: snap.canvasSize,
+				compositionHeight: snap.contentDimensions.height,
+				compositionWidth: snap.contentDimensions.width,
+				previewSize: snap.previewSize.size,
+			});
+			const initialZoom =
+				snap.previewSize.size === 'auto' ? fitted : snap.previewSize.size;
+
+			touchPinchRef.current = {initialDistance, initialZoom};
+		};
+
+		const onTouchMove = (event: TouchEvent) => {
+			const pinch = touchPinchRef.current;
+			const snap = previewSnapshotRef.current;
+			if (
+				pinch === null ||
+				event.touches.length !== 2 ||
+				!snap.canvasSize ||
+				!snap.contentDimensions ||
+				snap.contentDimensions === 'none'
+			) {
+				return;
+			}
+
+			event.preventDefault();
+
+			const [t0, t1] = [event.touches[0], event.touches[1]];
+			const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+			const ratio = dist / pinch.initialDistance;
+			const clientX = (t0.clientX + t1.clientX) / 2;
+			const clientY = (t0.clientY + t1.clientY) / 2;
+
+			setSize((prevSize) => {
+				const canvasSz = snap.canvasSize!;
+				const cdim = snap.contentDimensions as {
+					width: number;
+					height: number;
+				};
+				const scale = Internals.calculateScale({
+					canvasSize: canvasSz,
+					compositionHeight: cdim.height,
+					compositionWidth: cdim.width,
+					previewSize: prevSize.size,
+				});
+				const oldNumeric = prevSize.size === 'auto' ? scale : prevSize.size;
+
+				return applyZoomAroundFocalPoint({
+					canvasSize: canvasSz,
+					contentDimensions: cdim,
+					previewSizeBefore: prevSize,
+					oldNumericSize: oldNumeric,
+					newNumericSize: pinch.initialZoom * ratio,
+					clientX,
+					clientY,
+				});
+			});
+		};
+
+		const onTouchEnd = (event: TouchEvent) => {
+			if (event.touches.length < 2) {
+				touchPinchRef.current = null;
+			}
+		};
+
+		current.addEventListener('touchstart', onTouchStart, {passive: true});
+		current.addEventListener('touchmove', onTouchMove, {passive: false});
+		current.addEventListener('touchend', onTouchEnd);
+		current.addEventListener('touchcancel', onTouchEnd);
+
+		return () => {
+			current.removeEventListener('touchstart', onTouchStart);
+			current.removeEventListener('touchmove', onTouchMove);
+			current.removeEventListener('touchend', onTouchEnd);
+			current.removeEventListener('touchcancel', onTouchEnd);
+		};
+	}, [editorZoomGestures, setSize]);
 
 	const onReset = useCallback(() => {
 		setSize(() => {
@@ -333,7 +536,7 @@ export const Canvas: React.FC<{
 
 	return (
 		<>
-			<div ref={canvasRef} style={container}>
+			<div ref={canvasRef} style={getContainerStyle(editorZoomGestures)}>
 				{size ? (
 					<VideoPreview
 						canvasContent={canvasContent}

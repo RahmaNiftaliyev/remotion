@@ -1,5 +1,6 @@
 import type {Size} from '@remotion/player';
-import type {Translation} from 'remotion';
+import {Internals, type PreviewSize, type Translation} from 'remotion';
+import {MAX_ZOOM, MIN_ZOOM} from './smooth-zoom';
 
 const getEffectiveXTranslation = ({
 	canvasSize,
@@ -116,5 +117,72 @@ export const getCenterPointWhileScrolling = ({
 	return {
 		centerX: offsetFromVideoLeft,
 		centerY: offsetFromVideoTop,
+	};
+};
+
+export const applyZoomAroundFocalPoint = ({
+	canvasSize,
+	contentDimensions,
+	previewSizeBefore,
+	oldNumericSize,
+	newNumericSize,
+	clientX,
+	clientY,
+}: {
+	readonly canvasSize: Size;
+	readonly contentDimensions: {width: number; height: number};
+	readonly previewSizeBefore: PreviewSize;
+	readonly oldNumericSize: number;
+	readonly newNumericSize: number;
+	readonly clientX: number;
+	readonly clientY: number;
+}): PreviewSize => {
+	const scale = Internals.calculateScale({
+		canvasSize,
+		compositionHeight: contentDimensions.height,
+		compositionWidth: contentDimensions.width,
+		previewSize: previewSizeBefore.size,
+	});
+
+	const clampedNew = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, newNumericSize));
+
+	if (clampedNew === oldNumericSize) {
+		return previewSizeBefore;
+	}
+
+	const {centerX, centerY} = getCenterPointWhileScrolling({
+		size: canvasSize,
+		clientX,
+		clientY,
+		compositionWidth: contentDimensions.width,
+		compositionHeight: contentDimensions.height,
+		scale,
+		translation: previewSizeBefore.translation,
+	});
+
+	const zoomDifference = clampedNew - oldNumericSize;
+
+	const uvCoordinatesX = centerX / contentDimensions.width;
+	const uvCoordinatesY = centerY / contentDimensions.height;
+
+	const correctionLeft =
+		-uvCoordinatesX * (zoomDifference * contentDimensions.width) +
+		(1 - uvCoordinatesX) * zoomDifference * contentDimensions.width;
+	const correctionTop =
+		-uvCoordinatesY * (zoomDifference * contentDimensions.height) +
+		(1 - uvCoordinatesY) * zoomDifference * contentDimensions.height;
+
+	return {
+		size: clampedNew,
+		translation: getEffectiveTranslation({
+			translation: {
+				x: previewSizeBefore.translation.x - correctionLeft / 2,
+				y: previewSizeBefore.translation.y - correctionTop / 2,
+			},
+			canvasSize,
+			compositionHeight: contentDimensions.height,
+			compositionWidth: contentDimensions.width,
+			scale,
+		}),
 	};
 };

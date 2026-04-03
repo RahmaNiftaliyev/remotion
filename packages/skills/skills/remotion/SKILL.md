@@ -66,7 +66,7 @@ Read individual rule files for detailed explanations and code examples:
 - [rules/sequencing.md](rules/sequencing.md) - Sequencing patterns for Remotion - delay, trim, limit duration of items
 - [rules/tailwind.md](rules/tailwind.md) - Using TailwindCSS in Remotion
 - [rules/text-animations.md](rules/text-animations.md) - Typography and text animation patterns for Remotion
-- [rules/timing.md](rules/timing.md) - Interpolation curves in Remotion - linear, easing, spring animations
+- [rules/timing.md](rules/timing.md) - Timing with interpolate and Bézier easing; springs as a specialized option
 - [rules/transitions.md](rules/transitions.md) - Scene transition patterns for Remotion
 - [rules/transparent-videos.md](rules/transparent-videos.md) - Rendering out a video with transparency
 - [rules/trimming.md](rules/trimming.md) - Trimming patterns for Remotion - cut the beginning or end of animations

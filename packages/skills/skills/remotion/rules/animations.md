@@ -8,6 +8,8 @@ metadata:
 All animations MUST be driven by the `useCurrentFrame()` hook.  
 Write animations in seconds and multiply them by the `fps` value from `useVideoConfig()`.
 
+For eased motion, prefer `interpolate` with explicit frame ranges and an easing—especially `Easing.bezier`, which matches CSS `cubic-bezier` so timing can be shared with web specs and curve editors. See [timing](./timing.md).
+
 ```tsx
 import { useCurrentFrame } from "remotion";
 

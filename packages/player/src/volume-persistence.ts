@@ -1,6 +1,6 @@
 import {Internals, type LogLevel} from 'remotion';
 
-const DEFAULT_VOLUME_PERSISTANCE_KEY = 'remotion.volumePreference';
+const DEFAULT_VOLUME_PERSISTENCE_KEY = 'remotion.volumePreference';
 
 export const persistVolume = (
 	volume: number,
@@ -13,7 +13,7 @@ export const persistVolume = (
 
 	try {
 		window.localStorage.setItem(
-			volumePersistenceKey ?? DEFAULT_VOLUME_PERSISTANCE_KEY,
+			volumePersistenceKey ?? DEFAULT_VOLUME_PERSISTENCE_KEY,
 			String(volume),
 		);
 	} catch (e) {
@@ -33,7 +33,7 @@ export const getPreferredVolume = (
 
 	try {
 		const val = window.localStorage.getItem(
-			volumePersistenceKey ?? DEFAULT_VOLUME_PERSISTANCE_KEY,
+			volumePersistenceKey ?? DEFAULT_VOLUME_PERSISTENCE_KEY,
 		);
 		return val ? Number(val) : 1;
 	} catch {

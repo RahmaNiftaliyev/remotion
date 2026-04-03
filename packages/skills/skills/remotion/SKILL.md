@@ -9,6 +9,16 @@ metadata:
 
 Use this skills whenever you are dealing with Remotion code to obtain the domain-specific knowledge.
 
+## Optional: one-frame render check
+
+You can render a single frame with the CLI to sanity-check layout, colors, or timing when **you** judge that helpful—for example after larger visual edits or when you cannot rely on Remotion Studio. This is **not** a default or required step; skip it for trivial edits, pure refactors, or when you already have enough confidence from Studio or prior renders.
+
+```bash
+npx remotion still [composition-id] --scale=0.25 --frame=30
+```
+
+At 30 fps, `--frame=30` is the one-second mark (`--frame` is zero-based).
+
 ## Captions
 
 When dealing with captions or subtitles, load the [./rules/subtitles.md](./rules/subtitles.md) file for more information.

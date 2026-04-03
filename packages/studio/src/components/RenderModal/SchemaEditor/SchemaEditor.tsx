@@ -5,6 +5,7 @@ import {TopLevelZodValue} from './SchemaErrorMessages';
 import {defaultPropsEditorScrollableAreaRef} from './scroll-to-default-props-path';
 import type {AnyZodSchema} from './zod-schema-type';
 import {getZodSchemaType} from './zod-schema-type';
+import {ZodDiscriminatedUnionEditor} from './ZodDiscriminatedUnionEditor';
 import {ZodObjectEditor} from './ZodObjectEditor';
 import type {UpdaterFunction} from './ZodSwitch';
 
@@ -26,8 +27,27 @@ export const SchemaEditor: React.FC<{
 
 	const typeName = getZodSchemaType(schema);
 
-	if (typeName !== 'object') {
+	if (typeName !== 'object' && typeName !== 'discriminatedUnion') {
 		return <TopLevelZodValue typeReceived={typeName} />;
+	}
+
+	if (typeName === 'discriminatedUnion') {
+		return (
+			<div
+				ref={defaultPropsEditorScrollableAreaRef}
+				style={scrollable}
+				className={VERTICAL_SCROLLBAR_CLASSNAME}
+			>
+				<ZodDiscriminatedUnionEditor
+					schema={schema}
+					setValue={setValue}
+					value={value}
+					mayPad
+					jsonPath={[]}
+					onRemove={null}
+				/>
+			</div>
+		);
 	}
 
 	return (

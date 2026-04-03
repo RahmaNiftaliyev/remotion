@@ -286,11 +286,13 @@ export const zoomAndPreserveCursor = ({
 	newZoom,
 	currentFrame,
 	currentDurationInFrames,
+	anchorFrame,
 }: {
 	oldZoom: number;
 	newZoom: number;
 	currentFrame: number;
 	currentDurationInFrames: number;
+	anchorFrame?: number;
 }) => {
 	const ratio = newZoom / oldZoom;
 	if (ratio === 1) {
@@ -304,7 +306,8 @@ export const zoomAndPreserveCursor = ({
 	}
 
 	const frameIncrement = getFrameIncrement(currentDurationInFrames);
-	const prevCursorPosition = frameIncrement * currentFrame + TIMELINE_PADDING;
+	const frameForScroll = anchorFrame ?? currentFrame;
+	const prevCursorPosition = frameIncrement * frameForScroll + TIMELINE_PADDING;
 
 	const newCursorPosition =
 		ratio * (prevCursorPosition - TIMELINE_PADDING) + TIMELINE_PADDING;

@@ -16,25 +16,28 @@ export const useSelectAsset = () => {
 	const {setCanvasContent} = useContext(Internals.CompositionSetters);
 	const {setAssetFoldersExpanded} = useContext(FolderContext);
 
-	return (asset: string) => {
-		setCanvasContent({type: 'asset', asset});
-		explorerSidebarTabs.current?.selectAssetsPanel();
-		setAssetFoldersExpanded((ex) => {
-			const split = asset.split('/');
+	return useCallback(
+		(asset: string) => {
+			setCanvasContent({type: 'asset', asset});
+			explorerSidebarTabs.current?.selectAssetsPanel();
+			setAssetFoldersExpanded((ex) => {
+				const split = asset.split('/');
 
-			const keysToExpand = split.map((_, i) => {
-				return split.slice(0, i).join('/');
+				const keysToExpand = split.map((_, i) => {
+					return split.slice(0, i).join('/');
+				});
+				const newState: ExpandedFoldersState = {
+					...ex,
+				};
+				for (const key of keysToExpand) {
+					newState[key] = true;
+				}
+
+				return newState;
 			});
-			const newState: ExpandedFoldersState = {
-				...ex,
-			};
-			for (const key of keysToExpand) {
-				newState[key] = true;
-			}
-
-			return newState;
-		});
-	};
+		},
+		[setAssetFoldersExpanded, setCanvasContent],
+	);
 };
 
 export const useSelectComposition = () => {
@@ -165,7 +168,7 @@ export const InitialCompositionLoader: React.FC = () => {
 				});
 
 				if (exists) {
-					setCanvasContent(newCanvas);
+					selectAsset(newCanvas.asset);
 				}
 
 				return;
@@ -177,7 +180,13 @@ export const InitialCompositionLoader: React.FC = () => {
 		window.addEventListener('popstate', onchange);
 
 		return () => window.removeEventListener('popstate', onchange);
-	}, [compositions, selectComposition, setCanvasContent, staticFiles]);
+	}, [
+		compositions,
+		selectAsset,
+		selectComposition,
+		setCanvasContent,
+		staticFiles,
+	]);
 
 	return null;
 };

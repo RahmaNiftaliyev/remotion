@@ -134,13 +134,15 @@ export const TopLevelZodValue: React.FC<{
 	return (
 		<div style={explainer}>
 			<div style={errorExplanation}>
-				The top-level type of the schema must be a pure{' '}
-				<code style={codeSnippet}>z.object</code>. Instead got a schema of type{' '}
-				<code style={codeSnippet}>{typeReceived}</code>
+				The top-level type of the schema must be{' '}
+				<code style={codeSnippet}>z.object()</code> or{' '}
+				<code style={codeSnippet}>z.discriminatedUnion()</code>. Instead got a
+				schema of type <code style={codeSnippet}>{typeReceived}</code>
 			</div>
 			<Spacing y={1} />
 			<div style={errorExplanation}>
-				Fix the schema by changing the top-level Zod type to an object.
+				Fix the schema by changing the top-level Zod type to an object or
+				discriminated union.
 			</div>
 			<Spacing y={2} block />
 			<Button onClick={openDocs}>Learn more</Button>

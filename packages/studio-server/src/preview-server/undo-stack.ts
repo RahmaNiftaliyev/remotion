@@ -20,7 +20,8 @@ type UndoEntryType =
 	| 'visual-control'
 	| 'default-props'
 	| 'sequence-props'
-	| 'delete-jsx-node';
+	| 'delete-jsx-node'
+	| 'duplicate-jsx-node';
 
 type UndoEntry = {
 	filePath: string;
@@ -35,6 +36,7 @@ type UndoEntry = {
 	| {entryType: 'default-props'}
 	| {entryType: 'sequence-props'}
 	| {entryType: 'delete-jsx-node'}
+	| {entryType: 'duplicate-jsx-node'}
 );
 
 const MAX_ENTRIES = 100;

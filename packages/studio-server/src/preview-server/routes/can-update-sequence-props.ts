@@ -16,6 +16,7 @@ import type {
 } from '@remotion/studio-shared';
 import * as recast from 'recast';
 import type {CanUpdateSequencePropStatus} from 'remotion';
+import {isJsxUnderMapCallback} from '../../codemods/jsx-sequence-context';
 import {parseAst} from '../../codemods/parse-ast';
 
 type CanUpdatePropStatus = CanUpdateSequencePropStatus;
@@ -337,6 +338,7 @@ export const computeSequencePropsStatusFromContent = (
 		canUpdate: true as const,
 		props: filteredProps,
 		nodePath,
+		jsxInMapCallback: isJsxUnderMapCallback(ast, nodePath),
 	};
 };
 

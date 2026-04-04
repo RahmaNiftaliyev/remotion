@@ -18,7 +18,10 @@ export const useSequencePropsSubscription = (
 	sequence: TSequence,
 	originalLocation: OriginalPosition | null,
 	visualModeEnabled: boolean,
-): SequenceNodePath | null => {
+): {
+	nodePath: SequenceNodePath | null;
+	jsxInMapCallback: boolean;
+} => {
 	const {setCodeValues} = useContext(Internals.VisualModeOverridesContext);
 	const overrideId = sequence.controls?.overrideId ?? null;
 
@@ -77,6 +80,7 @@ export const useSequencePropsSubscription = (
 
 	const nodePathRef = useRef<SequenceNodePath | null>(null);
 	const [nodePath, setNodePath] = useState<SequenceNodePath | null>(null);
+	const [jsxInMapCallback, setJsxInMapCallback] = useState(false);
 	const isMountedRef = useRef(true);
 
 	const setNodePathBoth = useCallback((next: SequenceNodePath | null) => {
@@ -95,6 +99,7 @@ export const useSequencePropsSubscription = (
 		if (!visualModeEnabled) {
 			setPropStatusesForSequence(null);
 			setNodePathBoth(null);
+			setJsxInMapCallback(false);
 			return;
 		}
 
@@ -107,6 +112,7 @@ export const useSequencePropsSubscription = (
 		) {
 			setPropStatusesForSequence(null);
 			setNodePathBoth(null);
+			setJsxInMapCallback(false);
 			return;
 		}
 
@@ -131,13 +137,16 @@ export const useSequencePropsSubscription = (
 				if (result.canUpdate) {
 					setNodePathBoth(result.nodePath);
 					setPropStatusesForSequence(result.props);
+					setJsxInMapCallback(result.jsxInMapCallback);
 				} else {
 					setNodePathBoth(null);
 					setPropStatusesForSequence(null);
+					setJsxInMapCallback(false);
 				}
 			})
 			.catch((err) => {
 				setNodePathBoth(null);
+				setJsxInMapCallback(false);
 				Internals.Log.error(err);
 				setPropStatusesForSequence(null);
 			});
@@ -151,6 +160,7 @@ export const useSequencePropsSubscription = (
 			}
 
 			setNodePathBoth(null);
+			setJsxInMapCallback(false);
 			if (currentNodePath) {
 				callApi('/api/unsubscribe-from-sequence-props', {
 					fileName: locationSource,
@@ -196,9 +206,11 @@ export const useSequencePropsSubscription = (
 
 			if (event.result.canUpdate) {
 				setPropStatusesForSequence(event.result.props);
+				setJsxInMapCallback(event.result.jsxInMapCallback);
 			} else {
 				setPropStatusesForSequence(null);
 				setNodePathBoth(null);
+				setJsxInMapCallback(false);
 			}
 		};
 
@@ -216,5 +228,5 @@ export const useSequencePropsSubscription = (
 		setNodePathBoth,
 	]);
 
-	return nodePath;
+	return {nodePath, jsxInMapCallback};
 };

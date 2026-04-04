@@ -1,6 +1,6 @@
 import React from 'react';
 import type {SequenceControls, SequenceSchema} from 'remotion';
-import {Internals, useRemotionEnvironment} from 'remotion';
+import {Internals, Sequence, useRemotionEnvironment} from 'remotion';
 import {AudioForPreview} from './audio-for-preview';
 import {AudioForRendering} from './audio-for-rendering';
 import type {AudioProps} from './props';
@@ -33,7 +33,15 @@ const AudioInner: React.FC<
 > = (props) => {
 	// Should only destruct `trimBefore` and `trimAfter` from props,
 	// rest gets drilled down
-	const {name, stack, showInTimeline, controls, ...otherProps} = props;
+	const {
+		name,
+		stack,
+		showInTimeline,
+		controls,
+		from,
+		durationInFrames,
+		...otherProps
+	} = props;
 	const environment = useRemotionEnvironment();
 
 	if (typeof props.src !== 'string') {
@@ -49,17 +57,24 @@ const AudioInner: React.FC<
 		'Audio',
 	);
 
-	if (environment.isRendering) {
-		return <AudioForRendering {...otherProps} />;
-	}
-
 	return (
-		<AudioForPreview
-			name={name}
-			{...otherProps}
-			stack={stack ?? null}
-			controls={controls}
-		/>
+		<Sequence
+			layout="none"
+			from={from ?? 0}
+			durationInFrames={durationInFrames ?? Infinity}
+			showInTimeline={false}
+		>
+			{environment.isRendering ? (
+				<AudioForRendering {...otherProps} />
+			) : (
+				<AudioForPreview
+					name={name}
+					{...otherProps}
+					stack={stack ?? null}
+					controls={controls}
+				/>
+			)}
+		</Sequence>
 	);
 };
 

@@ -13,6 +13,7 @@ export const watchRootFile = async (
 
 	installFileWatcher({
 		file: rootFile.rootFile,
+		existenceOnly: false,
 		onChange: () => {
 			// Don't care if changed, added or deleted - should trigger a refetch in the frontend all the time
 			waitForLiveEventsListener().then((listener) => {

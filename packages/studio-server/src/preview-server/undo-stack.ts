@@ -167,6 +167,7 @@ function ensureWatching(filePath: string) {
 
 	const watcher = installFileWatcher({
 		file: filePath,
+		existenceOnly: false,
 		onChange: () => {
 			const count = suppressedWrites.get(filePath) ?? 0;
 			if (count > 0) {

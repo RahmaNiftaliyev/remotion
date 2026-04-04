@@ -30,6 +30,7 @@ const ensureGlobalWatcher = (rootFile: string) => {
 
 	const {unwatch} = installFileWatcher({
 		file: rootFile,
+		existenceOnly: false,
 		onChange: (event) => {
 			if (event.type === 'deleted') {
 				return;

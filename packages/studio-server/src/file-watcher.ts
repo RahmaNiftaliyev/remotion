@@ -25,8 +25,9 @@ export type FileWatcherRegistry = {
 		 * When true, only created/deleted events are emitted (no reads on change).
 		 * Use for binary or very large files (e.g. render output) where subscribers
 		 * only need to know whether the path exists.
+		 * Pass false when subscribers need content (including `changed` events).
 		 */
-		existenceOnly?: boolean;
+		existenceOnly: boolean;
 	}) => {
 		exists: boolean;
 		unwatch: () => void;
@@ -40,11 +41,11 @@ export const createFileWatcherRegistry = (): FileWatcherRegistry => {
 	const _installFileWatcher = ({
 		file,
 		onChange,
-		existenceOnly = false,
+		existenceOnly,
 	}: {
 		file: string;
 		onChange: OnChange;
-		existenceOnly?: boolean;
+		existenceOnly: boolean;
 	}): {exists: boolean; unwatch: () => void} => {
 		const registryKey = getRegistryKey(file, existenceOnly);
 		const existing = sharedWatchers.get(registryKey);

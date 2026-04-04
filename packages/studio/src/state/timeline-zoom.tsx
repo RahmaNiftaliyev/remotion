@@ -14,7 +14,7 @@ export const TimelineZoomCtx = createContext<{
 	setZoom: (
 		compositionId: string,
 		prev: (prevZoom: number) => number,
-		options?: {anchorFrame?: number},
+		options?: {anchorFrame?: number; anchorContentX?: number},
 	) => void;
 }>({
 	zoom: {},
@@ -34,7 +34,7 @@ export const TimelineZoomContext: React.FC<{
 		(
 			compositionId: string,
 			callback: (prevZoomLevel: number) => number,
-			options?: {anchorFrame?: number},
+			options?: {anchorFrame?: number; anchorContentX?: number},
 		) => {
 			setZoomState((prevZoomMap) => {
 				const newZoomWithFloatingPointErrors = Math.min(
@@ -52,6 +52,7 @@ export const TimelineZoomContext: React.FC<{
 					currentDurationInFrames: getCurrentDuration(),
 					currentFrame: getCurrentFrame(),
 					anchorFrame: options?.anchorFrame,
+					anchorContentX: options?.anchorContentX,
 				});
 				return {...prevZoomMap, [compositionId]: newZoom};
 			});

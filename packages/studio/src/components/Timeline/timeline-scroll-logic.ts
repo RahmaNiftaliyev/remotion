@@ -281,18 +281,39 @@ export const getFrameFromX = ({
 	return frame;
 };
 
+/**
+ * Horizontal position inside the scrollable timeline content (0 … scrollWidth)
+ * for a viewport `clientX`, so pinch-anchoring matches the pointer (not a
+ * rounded frame index).
+ */
+export const viewportClientXToScrollContentX = ({
+	clientX,
+	scrollEl,
+}: {
+	clientX: number;
+	scrollEl: HTMLDivElement;
+}) => {
+	const rect = scrollEl.getBoundingClientRect();
+	const clampedClientX = Math.min(Math.max(clientX, rect.left), rect.right);
+
+	return clampedClientX + scrollEl.scrollLeft - rect.left;
+};
+
 export const zoomAndPreserveCursor = ({
 	oldZoom,
 	newZoom,
 	currentFrame,
 	currentDurationInFrames,
 	anchorFrame,
+	anchorContentX,
 }: {
 	oldZoom: number;
 	newZoom: number;
 	currentFrame: number;
 	currentDurationInFrames: number;
 	anchorFrame?: number;
+	/** Prefer this over `anchorFrame` when set (subpixel-accurate anchor). */
+	anchorContentX?: number;
 }) => {
 	const ratio = newZoom / oldZoom;
 	if (ratio === 1) {
@@ -307,7 +328,10 @@ export const zoomAndPreserveCursor = ({
 
 	const frameIncrement = getFrameIncrement(currentDurationInFrames);
 	const frameForScroll = anchorFrame ?? currentFrame;
-	const prevCursorPosition = frameIncrement * frameForScroll + TIMELINE_PADDING;
+	const prevCursorPosition =
+		anchorContentX !== undefined
+			? Math.min(Math.max(anchorContentX, 0), current.scrollWidth)
+			: frameIncrement * frameForScroll + TIMELINE_PADDING;
 
 	const newCursorPosition =
 		ratio * (prevCursorPosition - TIMELINE_PADDING) + TIMELINE_PADDING;

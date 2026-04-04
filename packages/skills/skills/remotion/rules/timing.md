@@ -5,9 +5,7 @@ metadata:
   tags: easing, bezier, interpolation, spring, timing
 ---
 
-**Default approach:** drive motion with `interpolate()` over explicit frame ranges and pass an easing function—especially **`Easing.bezier`**. The four parameters are the same as CSS `cubic-bezier(x1, y1, x2, y2)`, so you can copy curves from browser devtools, motion libraries, or editors like [cubic-bezier.com](https://cubic-bezier.com). That makes duration predictable, keeps key moments aligned to audio or edits, and avoids guessing spring mass/damping/stiffness.
-
-`spring()` is still valid for bouncy, physics-like overshoot when you want that specific feel; it is just a weaker default for **timing design** because settle time is implicit and curves are harder to match to external specs or CSS.
+Drive motion with `interpolate()` over explicit frame range. To customize timing, use **`Easing.bezier`**. The four parameters are the same as CSS `cubic-bezier(x1, y1, x2, y2)`.
 
 A simple linear interpolation is done using the `interpolate` function.
 
@@ -27,7 +25,7 @@ const opacity = interpolate(frame, [0, 100], [0, 1], {
 });
 ```
 
-## Bézier easing (recommended)
+## Bézier easing
 
 Use `Easing.bezier(x1, y1, x2, y2)` inside the `interpolate` options object. The curve is identical in spirit to CSS animations and transitions, which helps when you are stealing timing from the web or from a designer’s spec.
 
@@ -136,110 +134,3 @@ const opacity = interpolate(progress, [0, 1], [0, 1]);
 ```
 
 The key idea: separate **timing** (when and how fast) from **mapping** (what values to animate between).
-
-## Spring animations (specialized)
-
-Spring animations model physical damping and stiffness; they read as organic and can overshoot without hand-tuning a Bézier past 1.
-
-```ts title="Spring animation from 0 to 1"
-import { spring, useCurrentFrame, useVideoConfig } from "remotion";
-
-const frame = useCurrentFrame();
-const { fps } = useVideoConfig();
-
-const scale = spring({
-  frame,
-  fps,
-});
-```
-
-### Physical properties
-
-The default configuration is: `mass: 1, damping: 10, stiffness: 100`.  
-This leads to the animation having a bit of bounce before it settles.
-
-The config can be overwritten like this:
-
-```ts
-const scale = spring({
-  frame,
-  fps,
-  config: { damping: 200 },
-});
-```
-
-The recommended configuration for a natural motion without a bounce is: `{ damping: 200 }`.
-
-Here are some common configurations:
-
-```tsx
-const smooth = { damping: 200 }; // Smooth, no bounce (subtle reveals)
-const snappy = { damping: 20, stiffness: 200 }; // Snappy, minimal bounce (UI elements)
-const bouncy = { damping: 8 }; // Bouncy entrance (playful animations)
-const heavy = { damping: 15, stiffness: 80, mass: 2 }; // Heavy, slow, small bounce
-```
-
-### Delay
-
-The animation starts immediately by default.  
-Use the `delay` parameter to delay the animation by a number of frames.
-
-```tsx
-const entrance = spring({
-  frame: frame - ENTRANCE_DELAY,
-  fps,
-  delay: 20,
-});
-```
-
-### Duration
-
-A `spring()` has a natural duration based on the physical properties.  
-To stretch the animation to a specific duration, use the `durationInFrames` parameter.
-
-```tsx
-const springValue = spring({
-  frame,
-  fps,
-  durationInFrames: 40,
-});
-```
-
-### Combining `spring()` with `interpolate()`
-
-Map spring output (0–1) to custom ranges:
-
-```tsx
-const springProgress = spring({
-  frame,
-  fps,
-});
-
-const rotation = interpolate(springProgress, [0, 1], [0, 360]);
-
-<div style={{ rotate: rotation + "deg" }} />;
-```
-
-### Adding springs
-
-Springs return just numbers, so math can be performed:
-
-```tsx
-const frame = useCurrentFrame();
-const { fps, durationInFrames } = useVideoConfig();
-
-const inAnimation = spring({
-  frame,
-  fps,
-});
-const outAnimation = spring({
-  frame,
-  fps,
-  durationInFrames: 1 * fps,
-  delay: durationInFrames - 1 * fps,
-});
-
-const scale = inAnimation - outAnimation;
-```
-
-Use springs when the brief calls for **physics-like** motion; use **`interpolate` + `Easing.bezier`** when the brief calls for **designed** timing that should stay easy to tweak, document, and match elsewhere.

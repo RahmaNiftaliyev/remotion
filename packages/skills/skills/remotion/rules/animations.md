@@ -11,7 +11,7 @@ Write animations in seconds and multiply them by the `fps` value from `useVideoC
 For eased motion, prefer `interpolate` with explicit frame ranges and an easing—especially `Easing.bezier`, which matches CSS `cubic-bezier` so timing can be shared with web specs and curve editors. See [timing](./timing.md).
 
 ```tsx
-import { useCurrentFrame } from "remotion";
+import { useCurrentFrame, Easing } from "remotion";
 
 export const FadeIn = () => {
   const frame = useCurrentFrame();
@@ -19,6 +19,8 @@ export const FadeIn = () => {
 
   const opacity = interpolate(frame, [0, 2 * fps], [0, 1], {
     extrapolateRight: "clamp",
+    extrapolateLeft: "clamp",
+    easing: Easing.bezier(0.16, 1, 0.3, 1),
   });
 
   return <div style={{ opacity }}>Hello World!</div>;

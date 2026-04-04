@@ -179,3 +179,89 @@ test('exists returns false for non-existent file', () => {
 
 	w.unwatch();
 });
+
+test('existenceOnly does not read the file when content changes', async () => {
+	const readSpy = spyOn(fs, 'readFileSync');
+
+	const cb = mock(() => {});
+
+	const w = registry.installFileWatcher({
+		file: tmpFile,
+		existenceOnly: true,
+		onChange: cb,
+	});
+
+	await new Promise((resolve) => setTimeout(resolve, 350));
+
+	writeFileSync(tmpFile, 'updated without reading');
+
+	await new Promise((resolve) => setTimeout(resolve, 350));
+
+	expect(readSpy).not.toHaveBeenCalled();
+
+	w.unwatch();
+	readSpy.mockRestore();
+});
+
+test('existenceOnly emits created with empty content when file appears', async () => {
+	const newFile = path.join(tmpDir, `existence-created-${Date.now()}.txt`);
+
+	const cb = mock(() => {});
+
+	const w = registry.installFileWatcher({
+		file: newFile,
+		existenceOnly: true,
+		onChange: cb,
+	});
+
+	expect(w.exists).toBe(false);
+
+	writeFileSync(newFile, 'hello');
+
+	await new Promise((resolve) => setTimeout(resolve, 350));
+
+	expect(cb).toHaveBeenCalledWith({type: 'created', content: ''});
+
+	w.unwatch();
+	unlinkSync(newFile);
+});
+
+test('existenceOnly emits deleted when file is removed', async () => {
+	const cb = mock(() => {});
+
+	const w = registry.installFileWatcher({
+		file: tmpFile,
+		existenceOnly: true,
+		onChange: cb,
+	});
+
+	expect(w.exists).toBe(true);
+
+	unlinkSync(tmpFile);
+
+	await new Promise((resolve) => setTimeout(resolve, 350));
+
+	expect(cb).toHaveBeenCalledWith({type: 'deleted'});
+
+	w.unwatch();
+});
+
+test('existenceOnly and content watchers on the same path use separate OS watchers', () => {
+	const watchFileSpy = spyOn(fs, 'watchFile');
+
+	const cb1 = mock(() => {});
+	const cb2 = mock(() => {});
+
+	const w1 = registry.installFileWatcher({
+		file: tmpFile,
+		existenceOnly: true,
+		onChange: cb1,
+	});
+	const w2 = registry.installFileWatcher({file: tmpFile, onChange: cb2});
+
+	expect(watchFileSpy).toHaveBeenCalledTimes(2);
+
+	w1.unwatch();
+	w2.unwatch();
+	watchFileSpy.mockRestore();
+});

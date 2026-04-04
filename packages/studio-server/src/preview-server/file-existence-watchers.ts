@@ -17,6 +17,7 @@ export const subscribeToFileExistenceWatchers = ({
 
 	const {unwatch, exists} = installFileWatcher({
 		file,
+		existenceOnly: true,
 		onChange: (event) => {
 			if (event.type === 'created') {
 				waitForLiveEventsListener().then((listener) => {

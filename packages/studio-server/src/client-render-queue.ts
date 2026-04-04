@@ -35,6 +35,7 @@ export const addCompletedClientRender = ({
 	const filePath = resolveOutputPath(remotionRoot, render.outName);
 	const {unwatch} = installFileWatcher({
 		file: filePath,
+		existenceOnly: true,
 		onChange: (event) => {
 			if (event.type === 'created' || event.type === 'deleted') {
 				updateCompletedClientRender(render.id, {

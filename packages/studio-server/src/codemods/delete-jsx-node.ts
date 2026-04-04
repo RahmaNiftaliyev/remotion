@@ -26,6 +26,7 @@ import type {
 } from '@babel/types';
 import type {SequenceNodePath} from '@remotion/studio-shared';
 import * as recast from 'recast';
+import {getAstNodePath} from '../helpers/get-ast-node-path';
 import {formatFileContent} from './format-file-content';
 import {parseAst, serializeAst} from './parse-ast';
 
@@ -70,12 +71,9 @@ export const findJsxElementPathForDeletion = (
 	ast: File,
 	nodePath: SequenceNodePath,
 ): recast.types.NodePath | null => {
-	let current = new recast.types.NodePath(ast);
-	for (const segment of nodePath) {
-		current = current.get(segment);
-		if (current.value === null || current.value === undefined) {
-			return null;
-		}
+	const current = getAstNodePath(ast, nodePath);
+	if (!current) {
+		return null;
 	}
 
 	if (namedTypes.JSXOpeningElement.check(current.value)) {

@@ -16,6 +16,7 @@ import type {
 } from '@remotion/studio-shared';
 import * as recast from 'recast';
 import type {CanUpdateSequencePropStatus} from 'remotion';
+import {getAstNodePath} from '../../helpers/get-ast-node-path';
 import {parseAst} from '../../codemods/parse-ast';
 
 type CanUpdatePropStatus = CanUpdateSequencePropStatus;
@@ -192,12 +193,9 @@ export const findJsxElementAtNodePath = (
 	ast: File,
 	nodePath: SequenceNodePath,
 ): JSXOpeningElement | null => {
-	let current = new recast.types.NodePath(ast);
-	for (const segment of nodePath) {
-		current = current.get(segment);
-		if (current.value === null || current.value === undefined) {
-			return null;
-		}
+	const current = getAstNodePath(ast, nodePath);
+	if (!current) {
+		return null;
 	}
 
 	if (recast.types.namedTypes.JSXOpeningElement.check(current.value)) {

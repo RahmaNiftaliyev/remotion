@@ -3,11 +3,12 @@ import React, {
 	useContext,
 	useEffect,
 	useImperativeHandle,
-	useMemo,
+	useLayoutEffect,
 	useRef,
 } from 'react';
 import {Internals, useVideoConfig} from 'remotion';
 import {getXPositionOfItemInTimelineImperatively} from '../../helpers/get-left-of-timeline-slider';
+import {TIMELINE_MIN_ZOOM, TimelineZoomCtx} from '../../state/timeline-zoom';
 import {getCurrentDuration} from './imperative-state';
 import {sliderAreaRef, timelineVerticalScroll} from './timeline-refs';
 import {TimelineSliderHandle} from './TimelineSliderHandle';
@@ -46,22 +47,36 @@ const Inner: React.FC = () => {
 	const timelinePosition = Internals.Timeline.useTimelinePosition();
 	const ref = useRef<HTMLDivElement>(null);
 	const timelineWidth = useContext(TimelineWidthContext);
+	const {zoom: zoomMap} = useContext(TimelineZoomCtx);
+	const {canvasContent} = useContext(Internals.CompositionManager);
 
 	if (timelineWidth === null) {
 		throw new Error('Unexpectedly did not have timeline width');
 	}
 
-	const style: React.CSSProperties = useMemo(() => {
-		const left = getXPositionOfItemInTimelineImperatively(
+	const zoomLevel =
+		canvasContent?.type === 'composition'
+			? (zoomMap[canvasContent.compositionId] ?? TIMELINE_MIN_ZOOM)
+			: TIMELINE_MIN_ZOOM;
+
+	useLayoutEffect(() => {
+		const el = ref.current;
+		const measuredWidth = sliderAreaRef.current?.clientWidth;
+		if (!el || measuredWidth === undefined || measuredWidth === 0) {
+			return;
+		}
+
+		el.style.transform = `translateX(${getXPositionOfItemInTimelineImperatively(
 			timelinePosition,
 			videoConfig.durationInFrames,
-			timelineWidth,
-		);
-		return {
-			...container,
-			transform: `translateX(${left}px)`,
-		};
-	}, [timelinePosition, videoConfig.durationInFrames, timelineWidth]);
+			measuredWidth,
+		)}px)`;
+	}, [
+		timelinePosition,
+		videoConfig.durationInFrames,
+		timelineWidth,
+		zoomLevel,
+	]);
 
 	useImperativeHandle(redrawTimelineSliderFast, () => {
 		return {
@@ -102,7 +117,7 @@ const Inner: React.FC = () => {
 	}, []);
 
 	return (
-		<div ref={ref} style={style}>
+		<div ref={ref} style={container}>
 			<div style={line} />
 			<TimelineSliderHandle />
 		</div>

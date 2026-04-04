@@ -23,6 +23,7 @@ import {timelineVerticalScroll} from './timeline-refs';
 import {TimelineDragHandler} from './TimelineDragHandler';
 import {TimelineInOutPointer} from './TimelineInOutPointer';
 import {TimelineList} from './TimelineList';
+import {TimelinePinchZoom} from './TimelinePinchZoom';
 import {TimelinePlayCursorSyncer} from './TimelinePlayCursorSyncer';
 import {TimelineScrollable} from './TimelineScrollable';
 import {TimelineSlider} from './TimelineSlider';
@@ -113,6 +114,7 @@ const TimelineInner: React.FC = () => {
 			className={'css-reset ' + VERTICAL_SCROLLBAR_CLASSNAME}
 		>
 			<TimelineWidthProvider>
+				<TimelinePinchZoom />
 				<div style={inner}>
 					<SplitterContainer
 						orientation="vertical"

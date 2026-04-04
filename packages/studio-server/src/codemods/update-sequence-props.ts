@@ -32,6 +32,7 @@ export const updateSequenceProps = async ({
 	output: string;
 	oldValueString: string;
 	formatted: boolean;
+	logLine: number;
 }> => {
 	const ast = parseAst(input);
 	let oldValueString = '';
@@ -51,6 +52,8 @@ export const updateSequenceProps = async ({
 			'Could not find a JSX element at the specified line to update',
 		);
 	}
+
+	const logLine = node.loc?.start.line ?? 1;
 
 	if (isNested) {
 		oldValueString = updateNestedProp({
@@ -135,6 +138,7 @@ export const updateSequenceProps = async ({
 			output: finalFile,
 			oldValueString,
 			formatted: false,
+			logLine,
 		};
 	}
 
@@ -151,6 +155,7 @@ export const updateSequenceProps = async ({
 				output: finalFile,
 				oldValueString,
 				formatted: false,
+				logLine,
 			};
 		}
 
@@ -162,6 +167,7 @@ export const updateSequenceProps = async ({
 			output: finalFile,
 			oldValueString,
 			formatted: false,
+			logLine,
 		};
 	}
 
@@ -176,5 +182,6 @@ export const updateSequenceProps = async ({
 		output: prettified,
 		oldValueString,
 		formatted: true,
+		logLine,
 	};
 };

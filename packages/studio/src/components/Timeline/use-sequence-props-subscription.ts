@@ -1,5 +1,12 @@
 import type {EventSourceEvent, SequenceNodePath} from '@remotion/studio-shared';
-import {useCallback, useContext, useEffect, useMemo, useRef} from 'react';
+import {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 import {Internals, type CanUpdateSequencePropStatus} from 'remotion';
 import type {TSequence} from 'remotion';
 import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
@@ -10,6 +17,7 @@ import {callApi} from '../call-api';
 export const useSequencePropsSubscription = (
 	sequence: TSequence,
 	originalLocation: OriginalPosition | null,
+	visualModeEnabled: boolean,
 ): SequenceNodePath | null => {
 	const {setCodeValues} = useContext(Internals.VisualModeOverridesContext);
 	const overrideId = sequence.controls?.overrideId ?? null;
@@ -68,7 +76,13 @@ export const useSequencePropsSubscription = (
 	currentLocationColumn.current = locationColumn;
 
 	const nodePathRef = useRef<SequenceNodePath | null>(null);
+	const [nodePath, setNodePath] = useState<SequenceNodePath | null>(null);
 	const isMountedRef = useRef(true);
+
+	const setNodePathBoth = useCallback((next: SequenceNodePath | null) => {
+		nodePathRef.current = next;
+		setNodePath(next);
+	}, []);
 
 	useEffect(() => {
 		isMountedRef.current = true;
@@ -78,6 +92,12 @@ export const useSequencePropsSubscription = (
 	}, []);
 
 	useEffect(() => {
+		if (!visualModeEnabled) {
+			setPropStatusesForSequence(null);
+			setNodePathBoth(null);
+			return;
+		}
+
 		if (
 			!clientId ||
 			!locationSource ||
@@ -86,6 +106,7 @@ export const useSequencePropsSubscription = (
 			!schemaKeysString
 		) {
 			setPropStatusesForSequence(null);
+			setNodePathBoth(null);
 			return;
 		}
 
@@ -108,15 +129,15 @@ export const useSequencePropsSubscription = (
 				}
 
 				if (result.canUpdate) {
-					nodePathRef.current = result.nodePath;
+					setNodePathBoth(result.nodePath);
 					setPropStatusesForSequence(result.props);
 				} else {
-					nodePathRef.current = null;
+					setNodePathBoth(null);
 					setPropStatusesForSequence(null);
 				}
 			})
 			.catch((err) => {
-				nodePathRef.current = null;
+				setNodePathBoth(null);
 				Internals.Log.error(err);
 				setPropStatusesForSequence(null);
 			});
@@ -129,7 +150,7 @@ export const useSequencePropsSubscription = (
 				setPropStatusesForSequence(null);
 			}
 
-			nodePathRef.current = null;
+			setNodePathBoth(null);
 			if (currentNodePath) {
 				callApi('/api/unsubscribe-from-sequence-props', {
 					fileName: locationSource,
@@ -141,15 +162,21 @@ export const useSequencePropsSubscription = (
 			}
 		};
 	}, [
+		visualModeEnabled,
 		clientId,
 		locationSource,
 		locationLine,
 		locationColumn,
 		schemaKeysString,
 		setPropStatusesForSequence,
+		setNodePathBoth,
 	]);
 
 	useEffect(() => {
+		if (!visualModeEnabled) {
+			return;
+		}
+
 		if (!locationSource || !locationLine || locationColumn === null) {
 			return;
 		}
@@ -171,6 +198,7 @@ export const useSequencePropsSubscription = (
 				setPropStatusesForSequence(event.result.props);
 			} else {
 				setPropStatusesForSequence(null);
+				setNodePathBoth(null);
 			}
 		};
 
@@ -179,12 +207,14 @@ export const useSequencePropsSubscription = (
 			unsub();
 		};
 	}, [
+		visualModeEnabled,
 		locationSource,
 		locationLine,
 		locationColumn,
 		subscribeToEvent,
 		setPropStatusesForSequence,
+		setNodePathBoth,
 	]);
 
-	return nodePathRef.current;
+	return nodePath;
 };

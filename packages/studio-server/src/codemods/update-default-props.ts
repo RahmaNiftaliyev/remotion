@@ -190,3 +190,74 @@ export const updateDefaultProps = async ({
 
 	return {output, formatted: didFormat};
 };
+
+/** Line of the matching `<Composition>` / `<Still>` opening tag (for log links). */
+export const getCompositionDefaultPropsLine = ({
+	input,
+	compositionId,
+}: {
+	input: string;
+	compositionId: string;
+}): number => {
+	const ast = parseAst(input);
+	let line = 1;
+	let found = false;
+
+	recast.types.visit(ast, {
+		visitJSXElement(path) {
+			if (found) {
+				this.traverse(path);
+				return;
+			}
+
+			const {openingElement} = path.node;
+			const openingName = openingElement.name;
+			if (
+				openingName.type !== 'JSXIdentifier' &&
+				openingName.type !== 'JSXNamespacedName'
+			) {
+				this.traverse(path);
+				return;
+			}
+
+			if (openingName.name !== 'Composition' && openingName.name !== 'Still') {
+				this.traverse(path);
+				return;
+			}
+
+			if (
+				!openingElement.attributes?.some((attr) => {
+					if (attr.type === 'JSXSpreadAttribute') {
+						return;
+					}
+
+					if (!attr.value) {
+						return;
+					}
+
+					if (attr.value.type === 'JSXElement') {
+						return;
+					}
+
+					if (attr.value.type === 'JSXExpressionContainer') {
+						return;
+					}
+
+					if (attr.value.type === 'JSXFragment') {
+						return;
+					}
+
+					return attr.name.name === 'id' && attr.value.value === compositionId;
+				})
+			) {
+				this.traverse(path);
+				return;
+			}
+
+			found = true;
+			line = openingElement.loc?.start.line ?? path.node.loc?.start.line ?? 1;
+		},
+	});
+
+	return line;
+};

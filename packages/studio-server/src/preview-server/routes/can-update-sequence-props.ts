@@ -16,9 +16,9 @@ import type {
 } from '@remotion/studio-shared';
 import * as recast from 'recast';
 import type {CanUpdateSequencePropStatus} from 'remotion';
-import {getAstNodePath} from '../../helpers/get-ast-node-path';
 import {isJsxUnderMapCallback} from '../../codemods/jsx-sequence-context';
 import {parseAst} from '../../codemods/parse-ast';
+import {getAstNodePath} from '../../helpers/get-ast-node-path';
 
 type CanUpdatePropStatus = CanUpdateSequencePropStatus;
 

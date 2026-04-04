@@ -97,13 +97,13 @@ export const TimelineListItem: React.FC<{
 			return;
 		}
 
-		if (
-			jsxInMapCallback &&
-			!window.confirm(
-				'This sequence is rendered inside a .map() callback. Duplicating inserts another copy in that callback (affecting each list item). Continue?',
-			)
-		) {
-			return;
+		if (jsxInMapCallback) {
+			const message =
+				'This sequence is rendered inside a .map() callback. Duplicating inserts another copy in that callback (affecting each list item). Continue?';
+			// eslint-disable-next-line no-alert -- native confirm before applying duplicate codemod in .map callbacks
+			if (!window.confirm(message)) {
+				return;
+			}
 		}
 
 		try {
@@ -159,7 +159,7 @@ export const TimelineListItem: React.FC<{
 						return;
 					}
 
-					void onDuplicateSequenceFromSource();
+					onDuplicateSequenceFromSource();
 				},
 				quickSwitcherLabel: null,
 				subMenu: null,

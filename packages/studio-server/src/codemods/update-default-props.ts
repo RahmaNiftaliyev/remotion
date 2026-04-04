@@ -256,6 +256,7 @@ export const getCompositionDefaultPropsLine = ({
 
 			found = true;
 			line = openingElement.loc?.start.line ?? path.node.loc?.start.line ?? 1;
+			this.traverse(path);
 		},
 	});
 

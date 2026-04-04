@@ -61,7 +61,7 @@ export const TimelineListItem: React.FC<{
 	const {expandedTracks, toggleTrack} = useContext(ExpandedTracksContext);
 
 	const originalLocation = useResolvedStack(sequence.stack ?? null);
-	const nodePath = useSequencePropsSubscription(
+	const {nodePath, jsxInMapCallback} = useSequencePropsSubscription(
 		sequence,
 		originalLocation,
 		visualModeActive,
@@ -89,6 +89,37 @@ export const TimelineListItem: React.FC<{
 		() => !previewConnected || !sequence.controls || !canDeleteFromSource,
 		[previewConnected, sequence.controls, canDeleteFromSource],
 	);
+
+	const duplicateDisabled = deleteDisabled;
+
+	const onDuplicateSequenceFromSource = useCallback(async () => {
+		if (!validatedLocation?.source || !nodePath) {
+			return;
+		}
+
+		if (jsxInMapCallback) {
+			const message =
+				'This sequence is rendered inside a .map() callback. Duplicating inserts another copy in that callback (affecting each list item). Continue?';
+			// eslint-disable-next-line no-alert -- native confirm before applying duplicate codemod in .map callbacks
+			if (!window.confirm(message)) {
+				return;
+			}
+		}
+
+		try {
+			const result = await callApi('/api/duplicate-jsx-node', {
+				fileName: validatedLocation.source,
+				nodePath,
+			});
+			if (result.success) {
+				showNotification('Duplicated sequence in source file', 2000);
+			} else {
+				showNotification(result.reason, 4000);
+			}
+		} catch (err) {
+			showNotification((err as Error).message, 4000);
+		}
+	}, [jsxInMapCallback, nodePath, validatedLocation?.source]);
 
 	const onDeleteSequenceFromSource = useCallback(async () => {
 		if (!validatedLocation?.source || !nodePath) {
@@ -118,6 +149,24 @@ export const TimelineListItem: React.FC<{
 		return [
 			{
 				type: 'item',
+				id: 'duplicate-sequence',
+				keyHint: null,
+				label: 'Duplicate',
+				leftItem: null,
+				disabled: duplicateDisabled,
+				onClick: () => {
+					if (duplicateDisabled) {
+						return;
+					}
+
+					onDuplicateSequenceFromSource();
+				},
+				quickSwitcherLabel: null,
+				subMenu: null,
+				value: 'duplicate-sequence',
+			},
+			{
+				type: 'item',
 				id: 'delete-sequence',
 				keyHint: null,
 				label: 'Delete',
@@ -135,7 +184,13 @@ export const TimelineListItem: React.FC<{
 				value: 'delete-sequence',
 			},
 		];
-	}, [deleteDisabled, onDeleteSequenceFromSource, visualModeEnvEnabled]);
+	}, [
+		deleteDisabled,
+		duplicateDisabled,
+		onDeleteSequenceFromSource,
+		onDuplicateSequenceFromSource,
+		visualModeEnvEnabled,
+	]);
 
 	const isExpanded = visualModeActive && (expandedTracks[sequence.id] ?? false);
 

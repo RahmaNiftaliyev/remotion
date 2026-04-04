@@ -17,6 +17,8 @@ export {
 	CopyStillToClipboardRequest,
 	DeleteJsxNodeRequest,
 	DeleteJsxNodeResponse,
+	DuplicateJsxNodeRequest,
+	DuplicateJsxNodeResponse,
 	DeleteStaticFileRequest,
 	DeleteStaticFileResponse,
 	InstallPackageRequest,

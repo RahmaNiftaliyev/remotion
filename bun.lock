@@ -1489,6 +1489,7 @@
       "version": "4.0.445",
       "dependencies": {
         "@babel/parser": "7.24.1",
+        "@babel/types": "7.24.0",
         "@remotion/bundler": "workspace:*",
         "@remotion/renderer": "workspace:*",
         "@remotion/studio-shared": "workspace:*",
@@ -1501,7 +1502,6 @@
         "source-map": "0.7.3",
       },
       "devDependencies": {
-        "@babel/types": "7.24.0",
         "@remotion/eslint-config-internal": "workspace:*",
         "@types/node": "catalog:",
         "@types/semver": "^7.3.4",

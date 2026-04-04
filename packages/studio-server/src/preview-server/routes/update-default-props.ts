@@ -1,14 +1,16 @@
 import {readFileSync} from 'node:fs';
-import path from 'node:path';
 import {RenderInternals} from '@remotion/renderer';
 import type {
 	UpdateDefaultPropsRequest,
 	UpdateDefaultPropsResponse,
 } from '@remotion/studio-shared';
-import {updateDefaultProps} from '../../codemods/update-default-props';
+import {
+	getCompositionDefaultPropsLine,
+	updateDefaultProps,
+} from '../../codemods/update-default-props';
 import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
-import {makeHyperlink} from '../../hyperlinks/make-link';
 import type {ApiHandler} from '../api-types';
+import {formatLogFileLocation} from '../format-log-file-location';
 import {getProjectInfo} from '../project-info';
 import {
 	printUndoHint,
@@ -41,6 +43,10 @@ export const updateDefaultPropsHandler: ApiHandler<
 		checkIfTypeScriptFile(projectInfo.rootFile);
 
 		const fileContents = readFileSync(projectInfo.rootFile, 'utf-8');
+		const logLine = getCompositionDefaultPropsLine({
+			input: fileContents,
+			compositionId,
+		});
 		const {output, formatted} = await updateDefaultProps({
 			compositionId,
 			input: fileContents,
@@ -53,6 +59,7 @@ export const updateDefaultPropsHandler: ApiHandler<
 			oldContents: fileContents,
 			logLevel,
 			remotionRoot,
+			logLine,
 			description: {
 				undoMessage: `Undid default props update for "${compositionId}"`,
 				redoMessage: `Redid default props update for "${compositionId}"`,
@@ -64,19 +71,14 @@ export const updateDefaultPropsHandler: ApiHandler<
 		suppressBundlerUpdateForFile(projectInfo.rootFile);
 		writeFileAndNotifyFileWatchers(projectInfo.rootFile, output);
 
-		const fileRelativeToRoot = path.relative(
+		const locationLabel = formatLogFileLocation({
 			remotionRoot,
-			projectInfo.rootFile,
-		);
-		const locationLabel = `${fileRelativeToRoot}`;
-		const fileLink = makeHyperlink({
-			url: `file://${projectInfo.rootFile}`,
-			text: locationLabel,
-			fallback: locationLabel,
+			absolutePath: projectInfo.rootFile,
+			line: logLine,
 		});
 		RenderInternals.Log.info(
 			{indent: false, logLevel},
-			`${RenderInternals.chalk.blueBright(`${fileLink}:`)} Updated default props for "${compositionId}"`,
+			`${RenderInternals.chalk.blueBright(`${locationLabel}:`)} Updated default props for "${compositionId}"`,
 		);
 		if (!formatted) {
 			warnAboutPrettierOnce(logLevel);

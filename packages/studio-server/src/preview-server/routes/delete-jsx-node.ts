@@ -7,8 +7,8 @@ import type {
 } from '@remotion/studio-shared';
 import {deleteJsxNode} from '../../codemods/delete-jsx-node';
 import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
-import {makeHyperlink} from '../../hyperlinks/make-link';
 import type {ApiHandler} from '../api-types';
+import {formatLogFileLocation} from '../format-log-file-location';
 import {
 	printUndoHint,
 	pushToUndoStack,
@@ -33,7 +33,7 @@ export const deleteJsxNodeHandler: ApiHandler<
 
 		const fileContents = readFileSync(absolutePath, 'utf-8');
 
-		const {output, formatted} = await deleteJsxNode({
+		const {output, formatted, nodeLabel, logLine} = await deleteJsxNode({
 			input: fileContents,
 			nodePath,
 		});
@@ -43,9 +43,10 @@ export const deleteJsxNodeHandler: ApiHandler<
 			oldContents: fileContents,
 			logLevel,
 			remotionRoot,
+			logLine,
 			description: {
-				undoMessage: 'Undid node deletion',
-				redoMessage: 'Redid node deletion',
+				undoMessage: `Undid deletion of ${nodeLabel}`,
+				redoMessage: `Redid deletion of ${nodeLabel}`,
 			},
 			entryType: 'delete-jsx-node',
 			suppressHmrOnFileRestore: false,
@@ -53,14 +54,14 @@ export const deleteJsxNodeHandler: ApiHandler<
 		suppressUndoStackInvalidation(absolutePath);
 		writeFileAndNotifyFileWatchers(absolutePath, output);
 
-		const fileLink = makeHyperlink({
-			url: `file://${absolutePath}`,
-			text: fileRelativeToRoot,
-			fallback: fileRelativeToRoot,
+		const locationLabel = formatLogFileLocation({
+			remotionRoot,
+			absolutePath,
+			line: logLine,
 		});
 		RenderInternals.Log.info(
 			{indent: false, logLevel},
-			`${RenderInternals.chalk.blueBright(`${fileLink}:`)} Deleted node`,
+			`${RenderInternals.chalk.blueBright(`${locationLabel}:`)} Deleted ${nodeLabel}`,
 		);
 		if (!formatted) {
 			warnAboutPrettierOnce(logLevel);

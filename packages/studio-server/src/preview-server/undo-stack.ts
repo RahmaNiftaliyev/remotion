@@ -1,5 +1,4 @@
 import {readFileSync} from 'node:fs';
-import path from 'node:path';
 import type {LogLevel} from '@remotion/renderer';
 import {RenderInternals} from '@remotion/renderer';
 import {parseAst} from '../codemods/parse-ast';
@@ -8,7 +7,7 @@ import {
 	installFileWatcher,
 	writeFileAndNotifyFileWatchers,
 } from '../file-watcher';
-import {makeHyperlink} from '../hyperlinks/make-link';
+import {formatLogFileLocation} from './format-log-file-location';
 import {waitForLiveEventsListener} from './live-events';
 import {suppressBundlerUpdateForFile} from './watch-ignore-next-change';
 
@@ -26,6 +25,8 @@ type UndoEntryType =
 type UndoEntry = {
 	filePath: string;
 	oldContents: string;
+	/** 1-based source line for terminal/IDE file links (e.g. path:line). */
+	logLine: number;
 	description: UndoEntryDescription;
 	/** When true, undo/redo file restores call `suppressBundlerUpdateForFile` (skip HMR refresh). */
 	suppressHmrOnFileRestore: boolean;
@@ -65,6 +66,7 @@ export function pushToUndoStack({
 	oldContents,
 	logLevel,
 	remotionRoot,
+	logLine,
 	description,
 	entryType,
 	suppressHmrOnFileRestore,
@@ -73,6 +75,7 @@ export function pushToUndoStack({
 	oldContents: string;
 	logLevel: LogLevel;
 	remotionRoot: string;
+	logLine: number;
 	description: UndoEntryDescription;
 	entryType: UndoEntryType;
 	suppressHmrOnFileRestore: boolean;
@@ -82,6 +85,7 @@ export function pushToUndoStack({
 	undoStack.push({
 		filePath,
 		oldContents,
+		logLine,
 		description,
 		entryType,
 		suppressHmrOnFileRestore,
@@ -117,12 +121,14 @@ export function printUndoHint(logLevel: LogLevel) {
 export function pushToRedoStack({
 	filePath,
 	oldContents,
+	logLine,
 	description,
 	entryType,
 	suppressHmrOnFileRestore,
 }: {
 	filePath: string;
 	oldContents: string;
+	logLine: number;
 	description: UndoEntryDescription;
 	entryType: UndoEntryType;
 	suppressHmrOnFileRestore: boolean;
@@ -130,6 +136,7 @@ export function pushToRedoStack({
 	redoStack.push({
 		filePath,
 		oldContents,
+		logLine,
 		description,
 		entryType,
 		suppressHmrOnFileRestore,
@@ -259,18 +266,18 @@ function emitVisualControlChanges(fileContents: string) {
 	}
 }
 
-function logFileAction(action: string, filePath: string) {
-	const locationLabel = storedRemotionRoot
-		? path.relative(storedRemotionRoot, filePath)
-		: filePath;
-	const fileLink = makeHyperlink({
-		url: `file://${filePath}`,
-		text: locationLabel,
-		fallback: locationLabel,
-	});
+function logFileAction(action: string, filePath: string, logLine: number) {
+	const locationLabel =
+		storedRemotionRoot !== null
+			? formatLogFileLocation({
+					remotionRoot: storedRemotionRoot,
+					absolutePath: filePath,
+					line: logLine,
+				})
+			: `${filePath}:${logLine}`;
 	RenderInternals.Log.info(
 		{indent: false, logLevel: storedLogLevel},
-		`${RenderInternals.chalk.blueBright(`${fileLink}:`)} ${action}`,
+		`${RenderInternals.chalk.blueBright(`${locationLabel}:`)} ${action}`,
 	);
 }
 
@@ -284,6 +291,7 @@ export function popUndo(): {success: true} | {success: false; reason: string} {
 	redoStack.push({
 		filePath: entry.filePath,
 		oldContents: currentContents,
+		logLine: entry.logLine,
 		description: entry.description,
 		entryType: entry.entryType,
 		suppressHmrOnFileRestore: entry.suppressHmrOnFileRestore,
@@ -302,7 +310,7 @@ export function popUndo(): {success: true} | {success: false; reason: string} {
 			`Undo: restored ${entry.filePath} (undo: ${undoStack.length}, redo: ${redoStack.length})`,
 		),
 	);
-	logFileAction(entry.description.undoMessage, entry.filePath);
+	logFileAction(entry.description.undoMessage, entry.filePath, entry.logLine);
 
 	if (entry.entryType === 'visual-control') {
 		emitVisualControlChanges(entry.oldContents);
@@ -323,6 +331,7 @@ export function popRedo(): {success: true} | {success: false; reason: string} {
 	undoStack.push({
 		filePath: entry.filePath,
 		oldContents: currentContents,
+		logLine: entry.logLine,
 		description: entry.description,
 		entryType: entry.entryType,
 		suppressHmrOnFileRestore: entry.suppressHmrOnFileRestore,
@@ -341,7 +350,7 @@ export function popRedo(): {success: true} | {success: false; reason: string} {
 			`Redo: restored ${entry.filePath} (undo: ${undoStack.length}, redo: ${redoStack.length})`,
 		),
 	);
-	logFileAction(entry.description.redoMessage, entry.filePath);
+	logFileAction(entry.description.redoMessage, entry.filePath, entry.logLine);
 
 	if (entry.entryType === 'visual-control') {
 		emitVisualControlChanges(entry.oldContents);

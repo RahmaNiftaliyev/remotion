@@ -11,6 +11,9 @@ import type {
 	JSXElement,
 	JSXExpressionContainer,
 	JSXFragment,
+	JSXIdentifier,
+	JSXMemberExpression,
+	JSXOpeningElement,
 	LogicalExpression,
 	NewExpression,
 	Node,
@@ -30,6 +33,37 @@ const {builders: b, namedTypes} = recast.types;
 /** Recast `builders.nullLiteral()` is typed against ast-types; normalize to Babel `Expression`. */
 const nullLiteralExpr = (): Expression =>
 	b.nullLiteral() as unknown as Expression;
+
+const jsxOpeningNameToString = (name: JSXOpeningElement['name']): string => {
+	if (name.type === 'JSXIdentifier') {
+		return name.name;
+	}
+
+	if (name.type === 'JSXNamespacedName') {
+		return `${name.namespace.name}:${name.name.name}`;
+	}
+
+	if (name.type === 'JSXMemberExpression') {
+		const memberToString = (
+			expr: JSXMemberExpression | JSXIdentifier,
+		): string => {
+			if (expr.type === 'JSXIdentifier') {
+				return expr.name;
+			}
+
+			return `${memberToString(expr.object)}.${expr.property.name}`;
+		};
+
+		return memberToString(name);
+	}
+
+	return 'Unknown';
+};
+
+/** e.g. `<Video>` or `<Remotion.Sequence>` for logs and undo copy. */
+export const getJsxElementTagLabel = (element: JSXElement): string => {
+	return `<${jsxOpeningNameToString(element.openingElement.name)}>`;
+};
 
 export const findJsxElementPathForDeletion = (
 	ast: File,
@@ -386,6 +420,8 @@ export const deleteJsxNode = async ({
 }): Promise<{
 	output: string;
 	formatted: boolean;
+	nodeLabel: string;
+	logLine: number;
 }> => {
 	const ast = parseAst(input);
 	const jsxPath = findJsxElementPathForDeletion(ast, nodePath);
@@ -394,6 +430,13 @@ export const deleteJsxNode = async ({
 			'Could not find a JSX element at the specified location to delete',
 		);
 	}
+
+	const jsxElement = jsxPath.node as JSXElement;
+	const nodeLabel = getJsxElementTagLabel(jsxElement);
+	const logLine =
+		jsxElement.openingElement.loc?.start.line ??
+		jsxElement.loc?.start.line ??
+		1;
 
 	deleteJsxElementAtPath(jsxPath);
 
@@ -409,6 +452,8 @@ export const deleteJsxNode = async ({
 		return {
 			output: finalFile,
 			formatted: false,
+			nodeLabel,
+			logLine,
 		};
 	}
 
@@ -424,6 +469,8 @@ export const deleteJsxNode = async ({
 			return {
 				output: finalFile,
 				formatted: false,
+				nodeLabel,
+				logLine,
 			};
 		}
 
@@ -434,6 +481,8 @@ export const deleteJsxNode = async ({
 		return {
 			output: finalFile,
 			formatted: false,
+			nodeLabel,
+			logLine,
 		};
 	}
 
@@ -447,5 +496,7 @@ export const deleteJsxNode = async ({
 	return {
 		output: prettified,
 		formatted: true,
+		nodeLabel,
+		logLine,
 	};
 };

@@ -28,6 +28,10 @@ export const FilePreview: React.FC<{
 		throw new Error('expected to have assetMetadata, got "not-found"');
 	}
 
+	if (assetMetadata.type === 'metadata-error') {
+		throw new Error('unexpected metadata-error in FilePreview');
+	}
+
 	if (fileType === 'audio') {
 		return <audio src={src} controls />;
 	}

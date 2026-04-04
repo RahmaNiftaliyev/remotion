@@ -20,7 +20,9 @@ export const useStudioCanvasDimensions = ({
 		if (
 			contentDimensions === 'none' ||
 			contentDimensions === null ||
-			(assetMetadata && assetMetadata.type === 'not-found') ||
+			(assetMetadata &&
+				(assetMetadata.type === 'not-found' ||
+					assetMetadata.type === 'metadata-error')) ||
 			!canvasSize
 		) {
 			return {

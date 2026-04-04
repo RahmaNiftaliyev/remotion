@@ -543,6 +543,7 @@ export const Canvas: React.FC<{
 						contentDimensions={contentDimensions}
 						canvasSize={size}
 						assetMetadata={assetResolution}
+						onRetryAssetMetadata={fetchMetadata}
 					/>
 				) : null}
 				{isFit ? null : (

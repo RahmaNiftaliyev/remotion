@@ -314,8 +314,7 @@ export const MyComp: React.FC = () => {
 };
 \`\`\`
 
-Remotion includes a "spring()" helper that can animate values over time.
-Below is the suggested default usage.
+Remotion includes a "spring()" helper for spring-based motion. By default it animates from 0 to 1; the duration is not fixed in advance.
 
 \`\`\`tsx
 import {spring} from 'remotion';

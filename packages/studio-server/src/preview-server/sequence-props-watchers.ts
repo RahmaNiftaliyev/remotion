@@ -95,6 +95,7 @@ export const subscribeToSequencePropsWatchers = ({
 
 	const {unwatch} = installFileWatcher({
 		file: absolutePath,
+		existenceOnly: false,
 		onChange: (event) => {
 			if (event.type === 'deleted') {
 				return;

@@ -256,6 +256,21 @@ export type SaveSequencePropsResponse =
 			stack: string;
 	  };
 
+export type DeleteJsxNodeRequest = {
+	fileName: string;
+	nodePath: SequenceNodePath;
+};
+
+export type DeleteJsxNodeResponse =
+	| {
+			success: true;
+	  }
+	| {
+			success: false;
+			reason: string;
+			stack: string;
+	  };
+
 export type UpdateAvailableRequest = {};
 export type UpdateAvailableResponse = {
 	currentVersion: string;
@@ -338,6 +353,10 @@ export type ApiRoutes = {
 	'/api/save-sequence-props': ReqAndRes<
 		SaveSequencePropsRequest,
 		SaveSequencePropsResponse
+	>;
+	'/api/delete-jsx-node': ReqAndRes<
+		DeleteJsxNodeRequest,
+		DeleteJsxNodeResponse
 	>;
 	'/api/update-available': ReqAndRes<
 		UpdateAvailableRequest,

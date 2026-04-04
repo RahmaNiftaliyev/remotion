@@ -15,6 +15,8 @@ export {
 	UnsubscribeFromSequencePropsRequest,
 	CancelRenderResponse,
 	CopyStillToClipboardRequest,
+	DeleteJsxNodeRequest,
+	DeleteJsxNodeResponse,
 	DeleteStaticFileRequest,
 	DeleteStaticFileResponse,
 	InstallPackageRequest,

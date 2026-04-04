@@ -17,7 +17,11 @@ export interface UndoEntryDescription {
 	redoMessage: string;
 }
 
-type UndoEntryType = 'visual-control' | 'default-props' | 'sequence-props';
+type UndoEntryType =
+	| 'visual-control'
+	| 'default-props'
+	| 'sequence-props'
+	| 'delete-jsx-node';
 
 type UndoEntry = {
 	filePath: string;
@@ -27,6 +31,7 @@ type UndoEntry = {
 	| {entryType: 'visual-control'}
 	| {entryType: 'default-props'}
 	| {entryType: 'sequence-props'}
+	| {entryType: 'delete-jsx-node'}
 );
 
 const MAX_ENTRIES = 100;

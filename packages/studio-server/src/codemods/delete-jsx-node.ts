@@ -1,9 +1,35 @@
-import type {File, JSXElement, Node} from '@babel/types';
+import type {
+	ArrayExpression,
+	ArrowFunctionExpression,
+	AssignmentExpression,
+	CallExpression,
+	ConditionalExpression,
+	ExportDefaultDeclaration,
+	Expression,
+	ExpressionStatement,
+	File,
+	JSXElement,
+	JSXExpressionContainer,
+	JSXFragment,
+	LogicalExpression,
+	NewExpression,
+	Node,
+	OptionalCallExpression,
+	ParenthesizedExpression,
+	ReturnStatement,
+	SequenceExpression,
+	TSAsExpression,
+	VariableDeclarator,
+} from '@babel/types';
 import type {SequenceNodePath} from '@remotion/studio-shared';
 import * as recast from 'recast';
 import {parseAst, serializeAst} from './parse-ast';
 
 const {builders: b, namedTypes} = recast.types;
+
+/** Recast `builders.nullLiteral()` is typed against ast-types; normalize to Babel `Expression`. */
+const nullLiteralExpr = (): Expression =>
+	b.nullLiteral() as unknown as Expression;
 
 export const findJsxElementPathForDeletion = (
 	ast: File,
@@ -33,147 +59,299 @@ export const findJsxElementPathForDeletion = (
 	return null;
 };
 
+const replaceInLogicalExpression = (
+	parent: LogicalExpression,
+	node: JSXElement,
+): boolean => {
+	const nl = nullLiteralExpr();
+	if (parent.left === node) {
+		parent.left = nl;
+		return true;
+	}
+
+	if (parent.right === node) {
+		parent.right = nl;
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInConditionalExpression = (
+	parent: ConditionalExpression,
+	node: JSXElement,
+): boolean => {
+	const nl = nullLiteralExpr();
+	if (parent.consequent === node) {
+		parent.consequent = nl;
+		return true;
+	}
+
+	if (parent.alternate === node) {
+		parent.alternate = nl;
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInArrowFunctionExpression = (
+	parent: ArrowFunctionExpression,
+	node: JSXElement,
+): boolean => {
+	if (parent.body === node) {
+		parent.body = nullLiteralExpr();
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInReturnStatement = (
+	parent: ReturnStatement,
+	node: JSXElement,
+): boolean => {
+	if (parent.argument === node) {
+		parent.argument = nullLiteralExpr();
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInCallExpression = (
+	parent: CallExpression,
+	node: JSXElement,
+): boolean => {
+	const idx = parent.arguments.indexOf(node);
+	if (idx !== -1) {
+		parent.arguments[idx] = nullLiteralExpr();
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInOptionalCallExpression = (
+	parent: OptionalCallExpression,
+	node: JSXElement,
+): boolean => {
+	const idx = parent.arguments.indexOf(node);
+	if (idx !== -1) {
+		parent.arguments[idx] = nullLiteralExpr();
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInArrayExpression = (
+	parent: ArrayExpression,
+	node: JSXElement,
+): boolean => {
+	const idx = parent.elements.indexOf(node);
+	if (idx !== -1) {
+		parent.elements[idx] = nullLiteralExpr();
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInAssignmentExpression = (
+	parent: AssignmentExpression,
+	node: JSXElement,
+): boolean => {
+	if (parent.right === node) {
+		parent.right = nullLiteralExpr();
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInVariableDeclarator = (
+	parent: VariableDeclarator,
+	node: JSXElement,
+): boolean => {
+	if (parent.init === node) {
+		parent.init = nullLiteralExpr();
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInExportDefaultDeclaration = (
+	parent: ExportDefaultDeclaration,
+	node: JSXElement,
+): boolean => {
+	if (parent.declaration === node) {
+		parent.declaration = nullLiteralExpr();
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInSequenceExpression = (
+	parent: SequenceExpression,
+	node: JSXElement,
+): boolean => {
+	const idx = parent.expressions.indexOf(node);
+	if (idx !== -1) {
+		parent.expressions[idx] = nullLiteralExpr();
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInNewExpression = (
+	parent: NewExpression,
+	node: JSXElement,
+): boolean => {
+	const idx = parent.arguments.indexOf(node);
+	if (idx !== -1) {
+		parent.arguments[idx] = nullLiteralExpr();
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInExpressionStatement = (
+	parent: ExpressionStatement,
+	node: JSXElement,
+): boolean => {
+	if (parent.expression === node) {
+		parent.expression = nullLiteralExpr();
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInParenthesizedExpression = (
+	parent: ParenthesizedExpression,
+	node: JSXElement,
+): boolean => {
+	if (parent.expression === node) {
+		parent.expression = nullLiteralExpr();
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInJSXExpressionContainer = (
+	parent: JSXExpressionContainer,
+	node: JSXElement,
+): boolean => {
+	if (parent.expression === node) {
+		parent.expression = nullLiteralExpr();
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInTSAsExpression = (
+	parent: TSAsExpression,
+	node: JSXElement,
+): boolean => {
+	if (parent.expression === node) {
+		parent.expression = nullLiteralExpr();
+		return true;
+	}
+
+	return false;
+};
+
+const replaceInJSXParentChildren = (
+	parent: JSXElement | JSXFragment,
+	node: JSXElement,
+): boolean => {
+	const idx = parent.children.indexOf(node);
+	if (idx !== -1) {
+		parent.children.splice(idx, 1);
+		return true;
+	}
+
+	return false;
+};
+
 const replaceNodeWithNull = (parentNode: Node, node: JSXElement): boolean => {
-	// Recast AST nodes use ast-types intersections; assignments need a loose handle.
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const p = parentNode as any;
-
 	if (namedTypes.LogicalExpression.check(parentNode)) {
-		if (p.left === node) {
-			p.left = b.nullLiteral();
-			return true;
-		}
-
-		if (p.right === node) {
-			p.right = b.nullLiteral();
-			return true;
-		}
+		return replaceInLogicalExpression(parentNode, node);
 	}
 
 	if (namedTypes.ConditionalExpression.check(parentNode)) {
-		if (p.consequent === node) {
-			p.consequent = b.nullLiteral();
-			return true;
-		}
-
-		if (p.alternate === node) {
-			p.alternate = b.nullLiteral();
-			return true;
-		}
+		return replaceInConditionalExpression(parentNode, node);
 	}
 
 	if (namedTypes.ArrowFunctionExpression.check(parentNode)) {
-		if (p.body === node) {
-			p.body = b.nullLiteral();
-			return true;
-		}
+		return replaceInArrowFunctionExpression(parentNode, node);
 	}
 
 	if (namedTypes.ReturnStatement.check(parentNode)) {
-		if (p.argument === node) {
-			p.argument = b.nullLiteral();
-			return true;
-		}
+		return replaceInReturnStatement(parentNode, node);
 	}
 
 	if (namedTypes.CallExpression.check(parentNode)) {
-		const idx = p.arguments.indexOf(node);
-		if (idx !== -1) {
-			p.arguments[idx] = b.nullLiteral();
-			return true;
-		}
+		return replaceInCallExpression(parentNode, node);
 	}
 
 	if (parentNode.type === 'OptionalCallExpression') {
-		const idx = p.arguments.indexOf(node);
-		if (idx !== -1) {
-			p.arguments[idx] = b.nullLiteral();
-			return true;
-		}
+		return replaceInOptionalCallExpression(parentNode, node);
 	}
 
 	if (namedTypes.ArrayExpression.check(parentNode)) {
-		const idx = p.elements.indexOf(node);
-		if (idx !== -1) {
-			p.elements[idx] = b.nullLiteral();
-			return true;
-		}
+		return replaceInArrayExpression(parentNode, node);
 	}
 
 	if (namedTypes.AssignmentExpression.check(parentNode)) {
-		if (p.right === node) {
-			p.right = b.nullLiteral();
-			return true;
-		}
+		return replaceInAssignmentExpression(parentNode, node);
 	}
 
 	if (namedTypes.VariableDeclarator.check(parentNode)) {
-		if (p.init === node) {
-			p.init = b.nullLiteral();
-			return true;
-		}
+		return replaceInVariableDeclarator(parentNode, node);
 	}
 
 	if (namedTypes.ExportDefaultDeclaration.check(parentNode)) {
-		if (p.declaration === node) {
-			p.declaration = b.nullLiteral();
-			return true;
-		}
+		return replaceInExportDefaultDeclaration(parentNode, node);
 	}
 
 	if (namedTypes.SequenceExpression.check(parentNode)) {
-		const idx = p.expressions.indexOf(node);
-		if (idx !== -1) {
-			p.expressions[idx] = b.nullLiteral();
-			return true;
-		}
+		return replaceInSequenceExpression(parentNode, node);
 	}
 
 	if (namedTypes.NewExpression.check(parentNode)) {
-		const idx = p.arguments.indexOf(node);
-		if (idx !== -1) {
-			p.arguments[idx] = b.nullLiteral();
-			return true;
-		}
+		return replaceInNewExpression(parentNode, node);
 	}
 
 	if (namedTypes.ExpressionStatement.check(parentNode)) {
-		if (p.expression === node) {
-			p.expression = b.nullLiteral();
-			return true;
-		}
+		return replaceInExpressionStatement(parentNode, node);
 	}
 
 	if (namedTypes.ParenthesizedExpression.check(parentNode)) {
-		if (p.expression === node) {
-			p.expression = b.nullLiteral();
-			return true;
-		}
+		return replaceInParenthesizedExpression(parentNode, node);
 	}
 
 	if (namedTypes.JSXExpressionContainer.check(parentNode)) {
-		if (p.expression === node) {
-			p.expression = b.nullLiteral();
-			return true;
-		}
+		return replaceInJSXExpressionContainer(parentNode, node);
 	}
 
 	if (namedTypes.TSAsExpression.check(parentNode)) {
-		if (p.expression === node) {
-			p.expression = b.nullLiteral();
-			return true;
-		}
+		return replaceInTSAsExpression(parentNode, node);
 	}
 
-	if (
-		namedTypes.JSXElement.check(parentNode) ||
-		namedTypes.JSXFragment.check(parentNode)
-	) {
-		const idx = p.children.indexOf(node);
-		if (idx !== -1) {
-			p.children.splice(idx, 1);
-			return true;
-		}
+	if (namedTypes.JSXElement.check(parentNode)) {
+		return replaceInJSXParentChildren(parentNode, node);
+	}
+
+	if (namedTypes.JSXFragment.check(parentNode)) {
+		return replaceInJSXParentChildren(parentNode, node);
 	}
 
 	return false;

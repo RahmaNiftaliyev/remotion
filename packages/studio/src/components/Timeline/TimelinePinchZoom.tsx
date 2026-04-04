@@ -83,7 +83,7 @@ export const TimelinePinchZoom: FC = () => {
 			setZoom(
 				canvasContent.compositionId,
 				(z) => z - scaledDeltaY * ZOOM_WHEEL_DELTA,
-				{anchorContentX},
+				{anchorFrame: null, anchorContentX},
 			);
 		},
 		[
@@ -176,6 +176,7 @@ export const TimelinePinchZoom: FC = () => {
 			});
 
 			setZoom(canvasContent.compositionId, () => base * e.scale, {
+				anchorFrame: null,
 				anchorContentX,
 			});
 		};
@@ -277,6 +278,7 @@ export const TimelinePinchZoom: FC = () => {
 			});
 
 			setZoom(canvasContent.compositionId, () => pinch.initialZoom * ratio, {
+				anchorFrame: null,
 				anchorContentX,
 			});
 		};

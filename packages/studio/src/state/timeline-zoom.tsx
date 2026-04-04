@@ -9,12 +9,17 @@ import {getZoomFromLocalStorage} from '../components/ZoomPersistor';
 export const TIMELINE_MIN_ZOOM = 1;
 export const TIMELINE_MAX_ZOOM = 5;
 
+export type TimelineSetZoomOptions = {
+	anchorFrame: number | null;
+	anchorContentX: number | null;
+};
+
 export const TimelineZoomCtx = createContext<{
 	zoom: Record<string, number>;
 	setZoom: (
 		compositionId: string,
 		prev: (prevZoom: number) => number,
-		options?: {anchorFrame?: number; anchorContentX?: number},
+		options?: TimelineSetZoomOptions,
 	) => void;
 }>({
 	zoom: {},
@@ -34,7 +39,7 @@ export const TimelineZoomContext: React.FC<{
 		(
 			compositionId: string,
 			callback: (prevZoomLevel: number) => number,
-			options?: {anchorFrame?: number; anchorContentX?: number},
+			options?: TimelineSetZoomOptions,
 		) => {
 			setZoomState((prevZoomMap) => {
 				const newZoomWithFloatingPointErrors = Math.min(
@@ -46,13 +51,16 @@ export const TimelineZoomContext: React.FC<{
 				);
 				const newZoom = Math.round(newZoomWithFloatingPointErrors * 10) / 10;
 
+				const anchorFrame = options?.anchorFrame ?? null;
+				const anchorContentX = options?.anchorContentX ?? null;
+
 				zoomAndPreserveCursor({
 					oldZoom: prevZoomMap[compositionId] ?? TIMELINE_MIN_ZOOM,
 					newZoom,
 					currentDurationInFrames: getCurrentDuration(),
 					currentFrame: getCurrentFrame(),
-					anchorFrame: options?.anchorFrame,
-					anchorContentX: options?.anchorContentX,
+					anchorFrame,
+					anchorContentX,
 				});
 				return {...prevZoomMap, [compositionId]: newZoom};
 			});

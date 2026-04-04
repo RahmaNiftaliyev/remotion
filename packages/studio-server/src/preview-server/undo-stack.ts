@@ -27,6 +27,8 @@ type UndoEntry = {
 	filePath: string;
 	oldContents: string;
 	description: UndoEntryDescription;
+	/** When true, undo/redo file restores call `suppressBundlerUpdateForFile` (skip HMR refresh). */
+	suppressHmrOnFileRestore: boolean;
 } & (
 	| {entryType: 'visual-control'}
 	| {entryType: 'default-props'}
@@ -65,6 +67,7 @@ export function pushToUndoStack({
 	remotionRoot,
 	description,
 	entryType,
+	suppressHmrOnFileRestore,
 }: {
 	filePath: string;
 	oldContents: string;
@@ -72,10 +75,17 @@ export function pushToUndoStack({
 	remotionRoot: string;
 	description: UndoEntryDescription;
 	entryType: UndoEntryType;
+	suppressHmrOnFileRestore: boolean;
 }) {
 	storedLogLevel = logLevel;
 	storedRemotionRoot = remotionRoot;
-	undoStack.push({filePath, oldContents, description, entryType});
+	undoStack.push({
+		filePath,
+		oldContents,
+		description,
+		entryType,
+		suppressHmrOnFileRestore,
+	});
 	if (undoStack.length > MAX_ENTRIES) {
 		undoStack.shift();
 	}
@@ -104,13 +114,26 @@ export function printUndoHint(logLevel: LogLevel) {
 	}
 }
 
-export function pushToRedoStack(
-	filePath: string,
-	oldContents: string,
-	description: UndoEntryDescription,
-	entryType: UndoEntryType,
-) {
-	redoStack.push({filePath, oldContents, description, entryType});
+export function pushToRedoStack({
+	filePath,
+	oldContents,
+	description,
+	entryType,
+	suppressHmrOnFileRestore,
+}: {
+	filePath: string;
+	oldContents: string;
+	description: UndoEntryDescription;
+	entryType: UndoEntryType;
+	suppressHmrOnFileRestore: boolean;
+}) {
+	redoStack.push({
+		filePath,
+		oldContents,
+		description,
+		entryType,
+		suppressHmrOnFileRestore,
+	});
 	if (redoStack.length > MAX_ENTRIES) {
 		redoStack.shift();
 	}
@@ -263,10 +286,14 @@ export function popUndo(): {success: true} | {success: false; reason: string} {
 		oldContents: currentContents,
 		description: entry.description,
 		entryType: entry.entryType,
+		suppressHmrOnFileRestore: entry.suppressHmrOnFileRestore,
 	});
 
 	suppressUndoStackInvalidation(entry.filePath);
-	suppressBundlerUpdateForFile(entry.filePath);
+	if (entry.suppressHmrOnFileRestore) {
+		suppressBundlerUpdateForFile(entry.filePath);
+	}
+
 	writeFileAndNotifyFileWatchers(entry.filePath, entry.oldContents);
 
 	RenderInternals.Log.verbose(
@@ -298,10 +325,13 @@ export function popRedo(): {success: true} | {success: false; reason: string} {
 		oldContents: currentContents,
 		description: entry.description,
 		entryType: entry.entryType,
+		suppressHmrOnFileRestore: entry.suppressHmrOnFileRestore,
 	});
 
 	suppressUndoStackInvalidation(entry.filePath);
-	suppressBundlerUpdateForFile(entry.filePath);
+	if (entry.suppressHmrOnFileRestore) {
+		suppressBundlerUpdateForFile(entry.filePath);
+	}
 
 	writeFileAndNotifyFileWatchers(entry.filePath, entry.oldContents);
 

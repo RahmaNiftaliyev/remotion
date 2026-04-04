@@ -7,7 +7,11 @@ import {
 	getTimelineLayerHeight,
 	TIMELINE_ITEM_BORDER_BOTTOM,
 } from '../../helpers/timeline-layout';
+import {callApi} from '../call-api';
+import {ContextMenu} from '../ContextMenu';
 import {ExpandedTracksContext} from '../ExpandedTracksProvider';
+import type {ComboboxValue} from '../NewComposition/ComboBox';
+import {showNotification} from '../Notifications/NotificationCenter';
 import {TimelineExpandedSection} from './TimelineExpandedSection';
 import {TimelineLayerEye} from './TimelineLayerEye';
 import {TimelineStack} from './TimelineStack';
@@ -55,7 +59,82 @@ export const TimelineListItem: React.FC<{
 	const {expandedTracks, toggleTrack} = useContext(ExpandedTracksContext);
 
 	const originalLocation = useResolvedStack(sequence.stack ?? null);
-	const nodePath = useSequencePropsSubscription(sequence, originalLocation);
+	const nodePath = useSequencePropsSubscription(
+		sequence,
+		originalLocation,
+		visualModeEnabled,
+	);
+
+	const validatedLocation = useMemo(() => {
+		if (
+			!originalLocation ||
+			!originalLocation.source ||
+			!originalLocation.line
+		) {
+			return null;
+		}
+
+		return {
+			source: originalLocation.source,
+			line: originalLocation.line,
+			column: originalLocation.column ?? 0,
+		};
+	}, [originalLocation]);
+
+	const hasSequencePropsStatus = Boolean(nodePath);
+
+	const onDeleteSequenceFromSource = useCallback(async () => {
+		if (!validatedLocation?.source || !nodePath) {
+			return;
+		}
+
+		try {
+			const result = await callApi('/api/delete-jsx-node', {
+				fileName: validatedLocation.source,
+				nodePath,
+			});
+			if (result.success) {
+				showNotification('Removed sequence from source file', 2000);
+			} else {
+				showNotification(result.reason, 4000);
+			}
+		} catch (err) {
+			showNotification((err as Error).message, 4000);
+		}
+	}, [nodePath, validatedLocation?.source]);
+
+	const contextMenuValues = useMemo((): ComboboxValue[] => {
+		if (
+			!visualModeEnabled ||
+			!sequence.controls ||
+			!hasSequencePropsStatus ||
+			!validatedLocation?.source
+		) {
+			return [];
+		}
+
+		return [
+			{
+				type: 'item',
+				id: 'delete-sequence',
+				keyHint: null,
+				label: 'Delete',
+				leftItem: null,
+				onClick: () => {
+					onDeleteSequenceFromSource();
+				},
+				quickSwitcherLabel: null,
+				subMenu: null,
+				value: 'delete-sequence',
+			},
+		];
+	}, [
+		hasSequencePropsStatus,
+		onDeleteSequenceFromSource,
+		sequence.controls,
+		validatedLocation?.source,
+		visualModeEnabled,
+	]);
 
 	const isExpanded =
 		visualModeEnabled && (expandedTracks[sequence.id] ?? false);
@@ -110,44 +189,52 @@ export const TimelineListItem: React.FC<{
 		};
 	}, [isExpanded]);
 
+	const trackRow = (
+		<div style={outer}>
+			<TimelineLayerEye
+				type={sequence.type === 'audio' ? 'speaker' : 'eye'}
+				hidden={isItemHidden}
+				onInvoked={onToggleVisibility}
+			/>
+			<div style={padder} />
+			{sequence.parent && nestedDepth > 0 ? <div style={space} /> : null}
+			{visualModeEnabled ? (
+				sequence.controls ? (
+					<button
+						type="button"
+						style={arrowStyle}
+						onClick={onToggleExpand}
+						aria-expanded={isExpanded}
+						aria-label={`${isExpanded ? 'Collapse' : 'Expand'} track`}
+					>
+						<svg
+							width="12"
+							height="12"
+							viewBox="0 0 8 8"
+							style={{display: 'block'}}
+						>
+							<path d="M2 1L6 4L2 7Z" fill="white" />
+						</svg>
+					</button>
+				) : (
+					<div style={arrowButton} />
+				)
+			) : null}
+			<TimelineStack
+				sequence={sequence}
+				isCompact={isCompact}
+				originalLocation={originalLocation}
+			/>
+		</div>
+	);
+
 	return (
 		<>
-			<div style={outer}>
-				<TimelineLayerEye
-					type={sequence.type === 'audio' ? 'speaker' : 'eye'}
-					hidden={isItemHidden}
-					onInvoked={onToggleVisibility}
-				/>
-				<div style={padder} />
-				{sequence.parent && nestedDepth > 0 ? <div style={space} /> : null}
-				{visualModeEnabled ? (
-					sequence.controls ? (
-						<button
-							type="button"
-							style={arrowStyle}
-							onClick={onToggleExpand}
-							aria-expanded={isExpanded}
-							aria-label={`${isExpanded ? 'Collapse' : 'Expand'} track`}
-						>
-							<svg
-								width="12"
-								height="12"
-								viewBox="0 0 8 8"
-								style={{display: 'block'}}
-							>
-								<path d="M2 1L6 4L2 7Z" fill="white" />
-							</svg>
-						</button>
-					) : (
-						<div style={arrowButton} />
-					)
-				) : null}
-				<TimelineStack
-					sequence={sequence}
-					isCompact={isCompact}
-					originalLocation={originalLocation}
-				/>
-			</div>
+			{contextMenuValues.length > 0 ? (
+				<ContextMenu values={contextMenuValues}>{trackRow}</ContextMenu>
+			) : (
+				trackRow
+			)}
 			{visualModeEnabled && isExpanded && sequence.controls ? (
 				<TimelineExpandedSection
 					sequence={sequence}

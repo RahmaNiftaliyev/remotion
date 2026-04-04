@@ -80,6 +80,7 @@ export const saveSequencePropsHandler: ApiHandler<
 				redoMessage: `Redid ${redoPropChange}`,
 			},
 			entryType: 'sequence-props',
+			suppressHmrOnFileRestore: true,
 		});
 		suppressUndoStackInvalidation(absolutePath);
 		suppressBundlerUpdateForFile(absolutePath);

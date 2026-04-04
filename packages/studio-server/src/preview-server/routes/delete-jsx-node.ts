@@ -7,13 +7,14 @@ import type {
 } from '@remotion/studio-shared';
 import {deleteJsxNode} from '../../codemods/delete-jsx-node';
 import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
+import {makeHyperlink} from '../../hyperlinks/make-link';
 import type {ApiHandler} from '../api-types';
 import {
 	printUndoHint,
 	pushToUndoStack,
 	suppressUndoStackInvalidation,
 } from '../undo-stack';
-import {suppressBundlerUpdateForFile} from '../watch-ignore-next-change';
+import {warnAboutPrettierOnce} from './log-update';
 
 export const deleteJsxNodeHandler: ApiHandler<
 	DeleteJsxNodeRequest,
@@ -43,14 +44,27 @@ export const deleteJsxNodeHandler: ApiHandler<
 			logLevel,
 			remotionRoot,
 			description: {
-				undoMessage: 'Undid JSX node deletion',
-				redoMessage: 'Redid JSX node deletion',
+				undoMessage: 'Undid node deletion',
+				redoMessage: 'Redid node deletion',
 			},
 			entryType: 'delete-jsx-node',
+			suppressHmrOnFileRestore: false,
 		});
 		suppressUndoStackInvalidation(absolutePath);
-		suppressBundlerUpdateForFile(absolutePath);
 		writeFileAndNotifyFileWatchers(absolutePath, output);
+
+		const fileLink = makeHyperlink({
+			url: `file://${absolutePath}`,
+			text: fileRelativeToRoot,
+			fallback: fileRelativeToRoot,
+		});
+		RenderInternals.Log.info(
+			{indent: false, logLevel},
+			`${RenderInternals.chalk.blueBright(`${fileLink}:`)} Deleted node`,
+		);
+		if (!formatted) {
+			warnAboutPrettierOnce(logLevel);
+		}
 
 		RenderInternals.Log.verbose(
 			{indent: false, logLevel},

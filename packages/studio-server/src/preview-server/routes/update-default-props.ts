@@ -58,6 +58,7 @@ export const updateDefaultPropsHandler: ApiHandler<
 				redoMessage: `Redid default props update for "${compositionId}"`,
 			},
 			entryType: 'default-props',
+			suppressHmrOnFileRestore: true,
 		});
 		suppressUndoStackInvalidation(projectInfo.rootFile);
 		suppressBundlerUpdateForFile(projectInfo.rootFile);

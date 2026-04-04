@@ -85,6 +85,7 @@ export const applyVisualControlHandler: ApiHandler<
 			redoMessage: 'Redid visual control change',
 		},
 		entryType: 'visual-control',
+		suppressHmrOnFileRestore: true,
 	});
 	suppressUndoStackInvalidation(absolutePath);
 	suppressBundlerUpdateForFile(absolutePath);

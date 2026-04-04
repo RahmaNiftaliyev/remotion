@@ -11,6 +11,7 @@ export const estimatePriceFromMetadata = <Provider extends CloudProvider>({
 	timings,
 	region,
 	providerSpecifics,
+	fatalErrorTimestamp,
 }: {
 	renderMetadata: RenderMetadata<Provider> | null;
 	memorySizeInMb: number;
@@ -19,15 +20,14 @@ export const estimatePriceFromMetadata = <Provider extends CloudProvider>({
 	timings: ParsedTiming[];
 	region: Provider['region'];
 	providerSpecifics: ProviderSpecifics<Provider>;
+	fatalErrorTimestamp: number | null;
 }) => {
 	if (!renderMetadata) {
 		return null;
 	}
 
-	const elapsedTime = Math.max(
-		0,
-		Date.now() - (renderMetadata?.startedDate ?? 0),
-	);
+	const now = fatalErrorTimestamp ?? Date.now();
+	const elapsedTime = Math.max(0, now - (renderMetadata?.startedDate ?? 0));
 	const unfinished = Math.max(
 		0,
 		(renderMetadata?.totalChunks ?? 0) - timings.length,

@@ -24,6 +24,10 @@ import CorruptVideo from './CorruptVideo';
 import {CssLoaderTest} from './CssLoaderTest';
 import {DarkModeTest} from './DarkModeTest';
 import {DecoderDemo} from './DecoderDemo';
+import {
+	DiscriminatedUnionSchemaTest,
+	discriminatedUnionRootSchema,
+} from './DiscriminatedUnionSchemaTest';
 import {DynamicDuration, dynamicDurationSchema} from './DynamicDuration';
 import {EmojiTestbed} from './Emoji';
 import {ErrorOnFrame10} from './ErrorOnFrame10';
@@ -130,6 +134,7 @@ import {LightLeakAnimatedSize} from './LightLeak/AnimatedSize';
 import {LoopDisplayTestComp} from './LoopDisplayTest';
 import {NewAudioExample} from './NewAudio/NewAudio';
 import {NewVideoComp} from './NewVideo';
+import {ObjectFitTestComp} from './ObjectFitTest';
 import {ChangingTrimBeforeValue} from './OffthreadRemoteVideo/ChangingTrimBefore';
 import {LoopedNewVideo} from './OffthreadRemoteVideo/LoopedNewVideo';
 import {LoopedOffthreadRemoteVideo} from './OffthreadRemoteVideo/LoopedOffthreadRemoteVideo';
@@ -807,6 +812,7 @@ export const Index: React.FC = () => {
 				/>
 				<OffthreadRemoteVideo />
 				<NewVideoComp />
+				<ObjectFitTestComp />
 				<NewVideoBufferStateComp />
 				<LoopDisplayTestComp />
 				<OffthreadRemoteSeries />
@@ -1535,6 +1541,21 @@ export const Index: React.FC = () => {
 						items: [{label: 'alpha!', value: 1}],
 						mode: 'light' as const,
 						nested: {a: 'asdfadsf', b: 99},
+					}}
+				/>
+
+				<Composition
+					id="discriminated-union-root"
+					component={DiscriminatedUnionSchemaTest}
+					width={1920}
+					height={1080}
+					fps={30}
+					durationInFrames={150}
+					schema={discriminatedUnionRootSchema}
+					defaultProps={{
+						preset: 'Simple' as const,
+						track: 'Main audio',
+						fontSize: 48,
 					}}
 				/>
 			</Folder>

@@ -1710,6 +1710,24 @@ export const articles = [
 		slug: 'electron',
 	},
 	{
+		id: 'elevenlabs/elevenlabs-transcript-to-captions',
+		title: 'elevenLabsTranscriptToCaptions()',
+		relativePath: 'docs/elevenlabs/elevenlabs-transcript-to-captions.mdx',
+		compId: 'articles-docs-elevenlabs-elevenlabs-transcript-to-captions',
+		crumb: '@remotion/elevenlabs',
+		noAi: false,
+		slug: 'elevenlabs/elevenlabs-transcript-to-captions',
+	},
+	{
+		id: 'elevenlabs/index',
+		title: '@remotion/elevenlabs',
+		relativePath: 'docs/elevenlabs/index.mdx',
+		compId: 'articles-docs-elevenlabs-index',
+		crumb: 'Subtitle videos',
+		noAi: false,
+		slug: 'elevenlabs/index',
+	},
+	{
 		id: 'enable-scss/enable-scss',
 		title: 'enableScss()',
 		relativePath: 'docs/enable-scss/enable-scss.mdx',
@@ -6476,6 +6494,15 @@ export const articles = [
 		slug: 'troubleshooting/could-not-find-executable-to-run',
 	},
 	{
+		id: 'troubleshooting/css-animations',
+		title: "Don't use CSS animations in Remotion",
+		relativePath: 'docs/troubleshooting/css-animations.mdx',
+		compId: 'articles-docs-troubleshooting-css-animations',
+		crumb: 'Common mistakes',
+		noAi: false,
+		slug: 'troubleshooting/css-animations',
+	},
+	{
 		id: 'troubleshooting/debug-failed-render',
 		title: 'Debugging render failures',
 		relativePath: 'docs/troubleshooting/debug-failed-render.mdx',
@@ -7377,7 +7404,7 @@ export const articles = [
 	},
 	{
 		id: 'prompts-gallery',
-		title: 'Prompt Gallery',
+		title: 'Prompt Showcase',
 		relativePath: 'src/pages/prompts/index.tsx',
 		compId: 'articles-prompts-gallery',
 		crumb: null,
@@ -7386,7 +7413,7 @@ export const articles = [
 	},
 	{
 		id: 'prompts-submit',
-		title: 'Submit a Prompt',
+		title: 'Share your video',
 		relativePath: 'src/pages/prompts/submit.tsx',
 		compId: 'articles-prompts-submit',
 		crumb: 'Prompts',

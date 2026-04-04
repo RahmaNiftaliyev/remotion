@@ -62,6 +62,7 @@ export const makeInitialOverallRenderProgress = <
 		timings: [],
 		renderMetadata: null,
 		errors: [],
+		fatalErrorTimestamp: null,
 		timeToRenderFrames: null,
 		timeoutTimestamp,
 		functionLaunched: Date.now(),
@@ -267,6 +268,9 @@ export const makeOverallRenderProgress = <Provider extends CloudProvider>({
 		},
 		addErrorWithoutUpload: (errorInfo) => {
 			renderProgress.errors.push(errorInfo);
+			if (errorInfo.isFatal && renderProgress.fatalErrorTimestamp === null) {
+				renderProgress.fatalErrorTimestamp = Date.now();
+			}
 		},
 		setExpectedChunks: (expectedChunks) => {
 			framesRendered = new Array(expectedChunks).fill(0);

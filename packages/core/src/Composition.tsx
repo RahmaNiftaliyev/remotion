@@ -1,5 +1,5 @@
 import type {ComponentType} from 'react';
-import React, {Suspense, useContext, useEffect} from 'react';
+import React, {Suspense, useCallback, useContext, useEffect} from 'react';
 import {createPortal} from 'react-dom';
 import type {z} from 'zod';
 import type {AnyZodObject} from './any-zod-type.js';
@@ -8,6 +8,8 @@ import {
 	CanUseRemotionHooksProvider,
 } from './CanUseRemotionHooks.js';
 import type {Codec} from './codec.js';
+import {CompositionRenderErrorContext} from './composition-render-error-context.js';
+import {CompositionErrorBoundary} from './CompositionErrorBoundary.js';
 import type {TComposition} from './CompositionManager.js';
 import {CompositionSetters} from './CompositionManagerContext.js';
 import {FolderContext} from './Folder.js';
@@ -136,7 +138,7 @@ const InnerComposition = <
 	defaultProps,
 	schema,
 	...compProps
-}: CompositionProps<Schema, Props>) => {
+}: CompositionProps<Schema, Props> & {readonly stack?: string}) => {
 	const compManager = useContext(CompositionSetters);
 
 	const {registerComposition, unregisterComposition} = compManager;
@@ -176,6 +178,7 @@ const InnerComposition = <
 	}
 
 	const {folderName, parentName} = useContext(FolderContext);
+	const stack = (compProps as {stack?: string}).stack ?? null;
 
 	useEffect(() => {
 		// Ensure it's a URL safe id
@@ -200,6 +203,7 @@ const InnerComposition = <
 			parentFolderName: parentName,
 			schema: schema ?? null,
 			calculateMetadata: compProps.calculateMetadata ?? null,
+			stack,
 		} as TComposition<Schema, Props>);
 
 		return () => {
@@ -218,11 +222,25 @@ const InnerComposition = <
 		parentName,
 		schema,
 		compProps.calculateMetadata,
+		stack,
 		registerComposition,
 		unregisterComposition,
 	]);
 
 	const resolved = useResolvedVideoConfig(id);
+
+	const {setError, clearError} = useContext(CompositionRenderErrorContext);
+
+	const onError = useCallback(
+		(error: Error) => {
+			setError(error);
+		},
+		[setError],
+	);
+
+	const onClear = useCallback(() => {
+		clearError();
+	}, [clearError]);
 
 	if (
 		environment.isStudio &&
@@ -241,14 +259,16 @@ const InnerComposition = <
 
 		return createPortal(
 			<CanUseRemotionHooksProvider>
-				<Suspense fallback={<Loading />}>
-					<Comp
-						{
-							// eslint-disable-next-line @typescript-eslint/no-explicit-any
-							...((resolved.result.props ?? {}) as any)
-						}
-					/>
-				</Suspense>
+				<CompositionErrorBoundary onError={onError} onClear={onClear}>
+					<Suspense fallback={<Loading />}>
+						<Comp
+							{
+								// eslint-disable-next-line @typescript-eslint/no-explicit-any
+								...((resolved.result.props ?? {}) as any)
+							}
+						/>
+					</Suspense>
+				</CompositionErrorBoundary>
 			</CanUseRemotionHooksProvider>,
 			portalNode(),
 		);

@@ -1,8 +1,8 @@
 import {useContext, useEffect, useMemo, useState} from 'react';
 import {useMediaStartsAt} from './audio/use-audio-frame.js';
-import {calculateMediaDuration} from './calculate-media-duration.js';
-import type {LoopDisplay} from './CompositionManager.js';
+import type {LoopDisplay, SequenceControls} from './CompositionManager.js';
 import {getAssetDisplayName} from './get-asset-file-name.js';
+import {getTimelineDuration} from './get-timeline-duration.js';
 import {useNonce} from './nonce.js';
 import {SequenceContext} from './SequenceContext.js';
 import {SequenceManager} from './SequenceManager.js';
@@ -52,16 +52,13 @@ export const useBasicMediaInTimeline = ({
 
 	const [initialVolume] = useState<VolumeProp | undefined>(() => volume);
 
-	const mediaDuration = calculateMediaDuration({
-		mediaDurationInFrames: videoConfig.durationInFrames + (trimBefore ?? 0),
+	const duration = getTimelineDuration({
+		compositionDurationInFrames: videoConfig.durationInFrames,
 		playbackRate,
 		trimBefore,
 		trimAfter,
+		parentSequenceDurationInFrames: parentSequence?.durationInFrames ?? null,
 	});
-
-	const duration = parentSequence
-		? Math.min(parentSequence.durationInFrames, mediaDuration)
-		: mediaDuration;
 
 	const volumes: string | number = useMemo(() => {
 		if (typeof volume === 'number') {
@@ -114,6 +111,7 @@ export const useImageInTimeline = ({
 	premountDisplay,
 	postmountDisplay,
 	loopDisplay,
+	controls,
 }: {
 	src: string | undefined;
 	displayName: string | null;
@@ -123,6 +121,7 @@ export const useImageInTimeline = ({
 	premountDisplay: number | null;
 	postmountDisplay: number | null;
 	loopDisplay: LoopDisplay | undefined;
+	controls: SequenceControls | null;
 }) => {
 	const parentSequence = useContext(SequenceContext);
 	const {registerSequence, unregisterSequence} = useContext(SequenceManager);
@@ -167,7 +166,7 @@ export const useImageInTimeline = ({
 			stack,
 			premountDisplay,
 			postmountDisplay,
-			controls: null,
+			controls,
 		});
 
 		return () => {
@@ -189,6 +188,7 @@ export const useImageInTimeline = ({
 		loopDisplay,
 		rootId,
 		finalDisplayName,
+		controls,
 	]);
 };
 

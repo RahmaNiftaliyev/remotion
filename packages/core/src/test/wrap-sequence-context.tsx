@@ -26,6 +26,7 @@ const mockCompositionContext: CompositionManagerContext = {
 			nonce: [[0, 0]],
 			calculateMetadata: null,
 			schema: null,
+			stack: null,
 		},
 	],
 	folders: [],

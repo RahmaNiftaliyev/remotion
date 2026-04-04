@@ -7,7 +7,7 @@
 	},
 	"name": "@remotion/skills",
 	"private": true,
-	"version": "4.0.441",
+	"version": "4.0.443",
 	"devDependencies": {
 		"@remotion/eslint-config-internal": "workspace:*",
 		"eslint": "catalog:",

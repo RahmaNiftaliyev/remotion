@@ -5,13 +5,16 @@ import type {
 } from '@remotion/studio-shared';
 import {installFileWatcher} from '../file-watcher';
 import {waitForLiveEventsListener} from './live-events';
+import {getCachedNodePath, setCachedNodePath} from './node-path-cache';
 import {
 	computeSequencePropsStatusFromContent,
 	computeSequencePropsStatusByLine,
+	computeSequencePropsStatus,
 } from './routes/can-update-sequence-props';
 
 type WatcherInfo = {
 	unwatch: () => void;
+	refCount: number;
 };
 
 const sequencePropsWatchers: Record<string, Record<string, WatcherInfo>> = {};
@@ -29,36 +32,65 @@ const makeWatcherKey = ({
 export const subscribeToSequencePropsWatchers = ({
 	fileName,
 	line,
+	column,
 	keys,
 	remotionRoot,
 	clientId,
 }: {
 	fileName: string;
 	line: number;
+	column: number;
 	keys: string[];
 	remotionRoot: string;
 	clientId: string;
 }): CanUpdateSequencePropsResponse => {
 	const absolutePath = path.resolve(remotionRoot, fileName);
 
-	// Initial lookup by line+column to resolve the nodePath
-	const initialResult = computeSequencePropsStatusByLine({
-		fileName,
-		line,
-		keys,
-		remotionRoot,
-	});
+	// Try cached nodePath first (handles stale source maps after suppressed rebuilds)
+	const cachedNodePath = getCachedNodePath(fileName, line, column);
+	let initialResult: CanUpdateSequencePropsResponse;
+
+	if (cachedNodePath) {
+		const cachedResult = computeSequencePropsStatus({
+			fileName,
+			nodePath: cachedNodePath,
+			keys,
+			remotionRoot,
+		});
+		if (cachedResult.canUpdate) {
+			initialResult = cachedResult;
+		} else {
+			// Cached nodePath no longer valid, fall back to line-based lookup
+			initialResult = computeSequencePropsStatusByLine({
+				fileName,
+				line,
+				keys,
+				remotionRoot,
+			});
+		}
+	} else {
+		initialResult = computeSequencePropsStatusByLine({
+			fileName,
+			line,
+			keys,
+			remotionRoot,
+		});
+	}
 
 	if (!initialResult.canUpdate) {
 		return initialResult;
 	}
 
+	// Cache the resolved nodePath for future lookups with stale source maps
+	setCachedNodePath(fileName, line, column, initialResult.nodePath);
+
 	const {nodePath} = initialResult;
 	const watcherKey = makeWatcherKey({absolutePath, nodePath});
 
-	// Unwatch any existing watcher for the same key
+	// If a watcher already exists for this key, just bump the ref count
 	if (sequencePropsWatchers[clientId]?.[watcherKey]) {
-		sequencePropsWatchers[clientId][watcherKey].unwatch();
+		sequencePropsWatchers[clientId][watcherKey].refCount++;
+		return initialResult;
 	}
 
 	const {unwatch} = installFileWatcher({
@@ -68,11 +100,16 @@ export const subscribeToSequencePropsWatchers = ({
 				return;
 			}
 
-			const result = computeSequencePropsStatusFromContent(
-				event.content,
-				nodePath,
-				keys,
-			);
+			let result: CanUpdateSequencePropsResponse;
+			try {
+				result = computeSequencePropsStatusFromContent(
+					event.content,
+					nodePath,
+					keys,
+				);
+			} catch {
+				return;
+			}
 
 			waitForLiveEventsListener().then((listener) => {
 				listener.sendEventToClientId(clientId, {
@@ -89,7 +126,7 @@ export const subscribeToSequencePropsWatchers = ({
 		sequencePropsWatchers[clientId] = {};
 	}
 
-	sequencePropsWatchers[clientId][watcherKey] = {unwatch};
+	sequencePropsWatchers[clientId][watcherKey] = {unwatch, refCount: 1};
 
 	return initialResult;
 };
@@ -112,15 +149,14 @@ export const unsubscribeFromSequencePropsWatchers = ({
 		!sequencePropsWatchers[clientId] ||
 		!sequencePropsWatchers[clientId][watcherKey]
 	) {
-		// eslint-disable-next-line no-console
-		console.warn(
-			`Unexpected: unsubscribe for sequence props watcher that does not exist (clientId=${clientId}, key=${watcherKey})`,
-		);
 		return;
 	}
 
-	sequencePropsWatchers[clientId][watcherKey].unwatch();
-	delete sequencePropsWatchers[clientId][watcherKey];
+	sequencePropsWatchers[clientId][watcherKey].refCount--;
+	if (sequencePropsWatchers[clientId][watcherKey].refCount <= 0) {
+		sequencePropsWatchers[clientId][watcherKey].unwatch();
+		delete sequencePropsWatchers[clientId][watcherKey];
+	}
 };
 
 export const unsubscribeClientSequencePropsWatchers = (clientId: string) => {

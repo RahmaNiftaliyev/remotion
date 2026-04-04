@@ -12,7 +12,7 @@ import type {
 	TimelineContextValue,
 } from 'remotion';
 import {Internals} from 'remotion';
-import {getPreferredVolume, persistVolume} from './volume-persistance.js';
+import {getPreferredVolume, persistVolume} from './volume-persistence.js';
 
 export const PLAYER_COMP_ID = 'player-comp';
 
@@ -64,6 +64,7 @@ export const SharedPlayerContexts: React.FC<{
 					parentFolderName: null,
 					schema: null,
 					calculateMetadata: null,
+					stack: null,
 				},
 			],
 			folders: [],

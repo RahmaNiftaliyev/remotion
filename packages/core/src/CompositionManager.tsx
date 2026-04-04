@@ -24,6 +24,7 @@ export type TComposition<
 	calculateMetadata: CalculateMetadataFunction<
 		InferProps<Schema, Props>
 	> | null;
+	stack: string | null;
 } & PropsIfHasProps<Schema, Props>;
 
 export type AnyComposition = TComposition<

@@ -5,6 +5,7 @@ import {TableOfContents as BundlerTableOfContents} from '../../docs/bundler/tabl
 import {TableOfContents as CaptionsTableOfContents} from '../../docs/captions/TableOfContents';
 import {TableOfContents as CloudrunTableOfContents} from '../../docs/cloudrun/table-of-contents';
 import {TableOfContents as EnableScssTableOfContents} from '../../docs/enable-scss/TableOfContents';
+import {TableOfContents as ElevenLabsTableOfContents} from '../../docs/elevenlabs/TableOfContents';
 import {TableOfContents as FontsTableOfContents} from '../../docs/fonts-api/TableOfContents';
 import {TableOfContents as GifTableOfContents} from '../../docs/gif/table-of-contents';
 import {TableOfContents as GoogleFontsTableOfContents} from '../../docs/google-fonts/TableOfContents';
@@ -142,6 +143,9 @@ export const TableOfContents: React.FC = () => {
 			<h2>@remotion/openai-whisper</h2>
 			<p>Work with transcriptions from OpenAI Whisper</p>
 			<OpenAiWhisperTableOfContents />
+			<h2>@remotion/elevenlabs</h2>
+			<p>Work with transcriptions from ElevenLabs</p>
+			<ElevenLabsTableOfContents />
 			<h2>@remotion/animated-emoji</h2>
 			<p>Google Fonts Animated Emojis as Remotion Components</p>
 			<AnimatedEmojiTableOfContents />

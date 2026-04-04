@@ -1,5 +1,5 @@
 import {PlayerInternals} from '@remotion/player';
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import type {CurrentScaleContextType} from 'remotion';
 import {Internals} from 'remotion';
 import {BACKGROUND} from '../helpers/colors';
@@ -8,9 +8,11 @@ import {drawRef} from '../state/canvas-ref';
 import {TimelineZoomContext} from '../state/timeline-zoom';
 import {HigherZIndex} from '../state/z-index';
 import {EditorContent} from './EditorContent';
+import {ForceSpecificCursor} from './ForceSpecificCursor';
 import {GlobalKeybindings} from './GlobalKeybindings';
 import {Modals} from './Modals';
 import {NotificationCenter} from './Notifications/NotificationCenter';
+import {RenderErrorContext} from './RenderErrorContext';
 import {TopPanel} from './TopPanel';
 
 const background: React.CSSProperties = {
@@ -60,23 +62,46 @@ export const Editor: React.FC<{
 		return React.memo(Root);
 	}, [Root]);
 
+	const [renderError, setRenderError] = useState<Error | null>(null);
+
+	const clearError = useCallback(() => {
+		setRenderError(null);
+	}, []);
+
+	const compositionRenderErrorContextValue = useMemo(
+		() => ({setError: setRenderError, clearError}),
+		[clearError],
+	);
+
+	const renderErrorContextValue = useMemo(
+		() => ({error: renderError}),
+		[renderError],
+	);
+
 	return (
 		<HigherZIndex onEscape={noop} onOutsideClick={noop}>
 			<TimelineZoomContext>
 				<Internals.CurrentScaleContext.Provider value={value}>
+					<ForceSpecificCursor />
 					<div style={background}>
-						{canvasMounted ? <MemoRoot /> : null}
+						<Internals.CompositionRenderErrorContext.Provider
+							value={compositionRenderErrorContextValue}
+						>
+							{canvasMounted ? <MemoRoot /> : null}
+						</Internals.CompositionRenderErrorContext.Provider>
 						<Internals.CanUseRemotionHooksProvider>
-							<EditorContent readOnlyStudio={readOnlyStudio}>
-								<TopPanel
-									drawRef={drawRef}
-									bufferStateDelayInMilliseconds={
-										BUFFER_STATE_DELAY_IN_MILLISECONDS
-									}
-									onMounted={onMounted}
-									readOnlyStudio={readOnlyStudio}
-								/>
-							</EditorContent>
+							<RenderErrorContext.Provider value={renderErrorContextValue}>
+								<EditorContent readOnlyStudio={readOnlyStudio}>
+									<TopPanel
+										drawRef={drawRef}
+										bufferStateDelayInMilliseconds={
+											BUFFER_STATE_DELAY_IN_MILLISECONDS
+										}
+										onMounted={onMounted}
+										readOnlyStudio={readOnlyStudio}
+									/>
+								</EditorContent>
+							</RenderErrorContext.Provider>
 							<GlobalKeybindings />
 						</Internals.CanUseRemotionHooksProvider>
 					</div>

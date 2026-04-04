@@ -8,7 +8,6 @@ import {Series} from '../series/index.js';
 import type {TimelineContextValue} from '../TimelineContext.js';
 import {AbsoluteTimeContext, TimelineContext} from '../TimelineContext.js';
 import {useCurrentFrame} from '../use-current-frame.js';
-import {ENABLE_V5_BREAKING_CHANGES} from '../v5-flag.js';
 import {WrapSequenceContext} from './wrap-sequence-context.js';
 
 const ABS_FILL =
@@ -79,11 +78,7 @@ test('Basic series test', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML).toBe(
-		ENABLE_V5_BREAKING_CHANGES
-			? `${ABS_FILL}${ABS_FILL}<div>third 0</div></div></div>`
-			: `${ABS_FILL}<div>third 0</div></div>`,
-	);
+	expect(outerHTML).toBe(`${ABS_FILL}<div>third 0</div></div>`);
 });
 
 test('Should support fragments', () => {
@@ -111,11 +106,7 @@ test('Should support fragments', () => {
 		</WrapSequenceContext>,
 	);
 
-	expect(outerHtml).not.toBe(
-		ENABLE_V5_BREAKING_CHANGES
-			? `${ABS_FILL}${ABS_FILL}<div>second 1</div></div></div>`
-			: `${ABS_FILL}<div>second 1</div></div>`,
-	);
+	expect(outerHtml).not.toBe(`${ABS_FILL}<div>second 1</div></div>`);
 });
 test('Should not allow foreign elements', () => {
 	expect(() => {
@@ -140,11 +131,7 @@ test('Should allow layout prop', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML).toBe(
-		ENABLE_V5_BREAKING_CHANGES
-			? `${ABS_FILL}${ABS_FILL}<div>first 0</div></div></div>`
-			: `${ABS_FILL}<div>first 0</div></div>`,
-	);
+	expect(outerHTML).toBe(`${ABS_FILL}<div>first 0</div></div>`);
 
 	const outerHTML2 = renderForFrame(
 		0,
@@ -156,11 +143,7 @@ test('Should allow layout prop', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML2).toBe(
-		ENABLE_V5_BREAKING_CHANGES
-			? `${ABS_FILL}<div>first 0</div></div>`
-			: '<div>first 0</div>',
-	);
+	expect(outerHTML2).toBe('<div>first 0</div>');
 });
 test('Should render nothing after the end', () => {
 	const outerHTML = renderForFrame(
@@ -173,7 +156,7 @@ test('Should render nothing after the end', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML).toBe(ENABLE_V5_BREAKING_CHANGES ? `${ABS_FILL}</div>` : '');
+	expect(outerHTML).toBe('');
 });
 test('Should throw if invalid or no duration provided', () => {
 	expect(() => {
@@ -218,11 +201,7 @@ test('Should allow whitespace', () => {
 		</WrapSequenceContext>,
 	);
 
-	expect(outerHtml).toBe(
-		ENABLE_V5_BREAKING_CHANGES
-			? `${ABS_FILL}${ABS_FILL}<div>second 1</div></div></div>`
-			: `${ABS_FILL}<div>second 1</div></div>`,
-	);
+	expect(outerHtml).toBe(`${ABS_FILL}<div>second 1</div></div>`);
 });
 test('Handle empty Series.Sequence', () => {
 	expect(() =>
@@ -254,11 +233,7 @@ test('Should allow negative overlap prop', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML).toBe(
-		ENABLE_V5_BREAKING_CHANGES
-			? `${ABS_FILL}<div>first 4</div><div>second 0</div></div>`
-			: '<div>first 4</div><div>second 0</div>',
-	);
+	expect(outerHTML).toBe('<div>first 4</div><div>second 0</div>');
 });
 
 test('Should allow positive overlap prop', () => {
@@ -275,7 +250,7 @@ test('Should allow positive overlap prop', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML).toBe(ENABLE_V5_BREAKING_CHANGES ? `${ABS_FILL}</div>` : '');
+	expect(outerHTML).toBe('');
 });
 
 test('Should disallow NaN as offset prop', () => {
@@ -340,11 +315,7 @@ test('Should cascade negative offset props', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML).toBe(
-		ENABLE_V5_BREAKING_CHANGES
-			? `${ABS_FILL}<div>third 0</div></div>`
-			: '<div>third 0</div>',
-	);
+	expect(outerHTML).toBe('<div>third 0</div>');
 });
 
 test('Should cascade positive offset props', () => {
@@ -364,11 +335,7 @@ test('Should cascade positive offset props', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML).toBe(
-		ENABLE_V5_BREAKING_CHANGES
-			? `${ABS_FILL}<div>third 0</div></div>`
-			: '<div>third 0</div>',
-	);
+	expect(outerHTML).toBe('<div>third 0</div>');
 });
 
 test('Allow durationInFrames as Infinity for last Series.Sequence', () => {
@@ -388,11 +355,7 @@ test('Allow durationInFrames as Infinity for last Series.Sequence', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML).toBe(
-		ENABLE_V5_BREAKING_CHANGES
-			? `${ABS_FILL}${ABS_FILL}<div>third 0</div></div></div>`
-			: `${ABS_FILL}<div>third 0</div></div>`,
-	);
+	expect(outerHTML).toBe(`${ABS_FILL}<div>third 0</div></div>`);
 });
 
 test('Disallow durationInFrames as Infinity for first n-1 Series.Sequence', () => {

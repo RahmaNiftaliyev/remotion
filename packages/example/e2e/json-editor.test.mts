@@ -15,6 +15,7 @@ async function openJsonEditor(page: import('@playwright/test').Page) {
 
 	const textarea = page.locator('textarea');
 	await expect(textarea).toBeVisible({timeout: 10_000});
+	await expect(textarea).not.toHaveValue('', {timeout: 10_000});
 	return textarea;
 }
 
@@ -71,8 +72,11 @@ test.describe('visual mode', () => {
 
 		await textarea.blur();
 
-		await page.waitForTimeout(500);
-		expect(fs.readFileSync(rootFile, 'utf-8')).toBe(contentBefore);
+		await expect
+			.poll(() => fs.readFileSync(rootFile, 'utf-8') === contentBefore, {
+				timeout: 2_000,
+			})
+			.toBe(true);
 
 		// Update the root file on disk — the textarea should auto-update and the error should clear
 		const updatedTitle = 'disk-update-clears-error';
@@ -114,7 +118,10 @@ test.describe('visual mode', () => {
 
 		await textarea.blur();
 
-		await page.waitForTimeout(500);
-		expect(fs.readFileSync(rootFile, 'utf-8')).toBe(contentBefore);
+		await expect
+			.poll(() => fs.readFileSync(rootFile, 'utf-8') === contentBefore, {
+				timeout: 2_000,
+			})
+			.toBe(true);
 	});
 });

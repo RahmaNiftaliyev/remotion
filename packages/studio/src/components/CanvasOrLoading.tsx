@@ -8,6 +8,7 @@ import {Canvas} from './Canvas';
 import {FramePersistor} from './FramePersistor';
 import {VERTICAL_SCROLLBAR_CLASSNAME} from './Menu/is-menu-item';
 import {RefreshCompositionOverlay} from './RefreshCompositionOverlay';
+import {RenderErrorContext} from './RenderErrorContext';
 import {
 	RunningCalculateMetadata,
 	loaderLabel,
@@ -32,6 +33,7 @@ export const CanvasOrLoading: React.FC<{
 	const resolved = Internals.useResolvedVideoConfig(null);
 	const {setZoom} = useContext(TimelineZoomCtx);
 	const {canvasContent} = useContext(Internals.CompositionManager);
+	const {error: renderError} = useContext(RenderErrorContext);
 
 	useEffect(() => {
 		if (
@@ -51,6 +53,10 @@ export const CanvasOrLoading: React.FC<{
 			});
 		});
 	}, [resolved, setZoom]);
+
+	if (renderError) {
+		return <ErrorLoading error={renderError} />;
+	}
 
 	if (!canvasContent) {
 		const compname = window.location.pathname.replace('/', '');

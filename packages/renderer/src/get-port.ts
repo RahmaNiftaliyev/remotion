@@ -11,29 +11,16 @@ const isPortAvailableOnHost = ({
 	host: string;
 }): Promise<PortStatus> => {
 	return new Promise<PortStatus>((resolve) => {
-		let status: PortStatus = 'unavailable';
-
-		const socket = new net.Socket();
-
-		socket.on('connect', () => {
-			status = 'unavailable';
-			socket.destroy();
+		const server = net.createServer();
+		server.unref();
+		server.on('error', () => {
+			resolve('unavailable');
 		});
-
-		socket.setTimeout(3000);
-		socket.on('timeout', () => {
-			status = 'unavailable';
-			socket.destroy();
-			resolve(status);
+		server.listen({port: portToTry, host}, () => {
+			server.close(() => {
+				resolve('available');
+			});
 		});
-
-		socket.on('error', () => {
-			status = 'available';
-		});
-
-		socket.on('close', () => resolve(status));
-
-		socket.connect(portToTry, host);
 	});
 };
 
@@ -44,13 +31,14 @@ export const testPortAvailableOnMultipleHosts = async ({
 	port: number;
 	hosts: string[];
 }): Promise<PortStatus> => {
-	const results = await Promise.all(
-		hosts.map((host) => {
-			return isPortAvailableOnHost({portToTry: port, host});
-		}),
-	);
+	for (const host of hosts) {
+		const result = await isPortAvailableOnHost({portToTry: port, host});
+		if (result === 'unavailable') {
+			return 'unavailable';
+		}
+	}
 
-	return results.every((r) => r === 'available') ? 'available' : 'unavailable';
+	return 'available';
 };
 
 const getPort = async ({

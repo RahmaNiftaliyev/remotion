@@ -1,6 +1,5 @@
 import {RenderInternals} from '@remotion/renderer';
 import type {LogLevel} from '@remotion/renderer';
-import {makeHyperlink} from '../../hyperlinks/make-link';
 
 let warnedAboutPrettier = false;
 
@@ -133,8 +132,8 @@ export const formatPropChange = ({
 };
 
 export const logUpdate = ({
-	absolutePath,
 	fileRelativeToRoot,
+	line,
 	key,
 	oldValueString,
 	newValueString,
@@ -142,8 +141,8 @@ export const logUpdate = ({
 	formatted,
 	logLevel,
 }: {
-	absolutePath: string;
 	fileRelativeToRoot: string;
+	line: number;
 	key: string;
 	oldValueString: string;
 	newValueString: string;
@@ -151,12 +150,7 @@ export const logUpdate = ({
 	formatted: boolean;
 	logLevel: LogLevel;
 }) => {
-	const locationLabel = `${fileRelativeToRoot}`;
-	const fileLink = makeHyperlink({
-		url: `file://${absolutePath}`,
-		text: locationLabel,
-		fallback: locationLabel,
-	});
+	const locationLabel = `${fileRelativeToRoot}:${line}`;
 	const propChange = formatPropChange({
 		key,
 		oldValueString: normalizeQuotes(oldValueString),
@@ -166,7 +160,7 @@ export const logUpdate = ({
 	});
 	RenderInternals.Log.info(
 		{indent: false, logLevel},
-		`${RenderInternals.chalk.blueBright(`${fileLink}:`)} ${propChange}`,
+		`${RenderInternals.chalk.blueBright(`${locationLabel}:`)} ${propChange}`,
 	);
 	if (!formatted) {
 		warnAboutPrettierOnce(logLevel);

@@ -46,9 +46,18 @@ export const Example: React.FC = () => {
 
 <SeriesExample type="base" />
 
-## API
+## `<Series>` props
 
-The `<Series />` component takes no props. It may only contain a list of `<Series.Sequence />` instances.  
+Since <AvailableFrom v="4.0.443" inline />, `<Series>` is a [`<Sequence>`](/docs/sequence) under the hood and accepts all of its props, with `layout` defaulting to `"none"`.
+
+Apart from the props listed below, all props from [`<Sequence>`](/docs/sequence) are accepted.
+
+### `layout?`
+
+Either `"absolute-fill"` or `"none"` _(default)_. If set to `"absolute-fill"`, the series is wrapped in an [`<AbsoluteFill>`](/docs/absolute-fill) container.
+
+## `<Series.Sequence>` props
+
 A `<Series.Sequence />` component accepts the following props:
 
 ### `durationInFrames?`

@@ -206,6 +206,24 @@ const internalRenderMediaOnWeb = async <
 		);
 	}
 
+	if (transparent) {
+		if (container !== 'webm' && container !== 'mkv') {
+			return Promise.reject(
+				new Error(
+					`Transparent videos are only supported with the "webm" and "mkv" containers, but you specified "${container}". Change the \`container\` option to "webm" or "mkv".`,
+				),
+			);
+		}
+
+		if (codec && codec !== 'vp8' && codec !== 'vp9') {
+			return Promise.reject(
+				new Error(
+					`Transparent videos are only supported with the "vp8" and "vp9" codecs, but you specified "${codec}". Change the \`videoCodec\` option to "vp8" or "vp9", or remove it to use the default.`,
+				),
+			);
+		}
+	}
+
 	const resolvedAudioBitrate =
 		typeof audioBitrate === 'number'
 			? audioBitrate

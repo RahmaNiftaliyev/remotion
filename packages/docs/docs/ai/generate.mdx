@@ -26,14 +26,14 @@ Generate a single React component that uses Remotion.
 Rules:
 - Export the component as a named export called "MyComposition"
 - Use useCurrentFrame() and useVideoConfig() from "remotion"
-- Use spring() for animations
+- Animate values with interpolate() or spring() as appropriate
 - Only output the code, no markdown or explanations
 `.trim();
 
 const {text: code, usage} = await generateText({
   model: openai('gpt-5.2'),
   system: systemPrompt,
-  prompt: 'Create a countdown from 5 to 1 with spring animations',
+  prompt: 'Create a countdown from 5 to 1 with smooth motion',
 });
 
 console.log(code); // "import {useCurrentFrame, ...} export const MyComposition ..."
@@ -44,7 +44,7 @@ The result includes usage metadata for tracking token consumption.
 The `text` property contains the generated code as a string. With formatting it looks like this:
 
 ```tsx
-import {useCurrentFrame, useVideoConfig, spring, AbsoluteFill} from 'remotion';
+import {useCurrentFrame, useVideoConfig, interpolate, AbsoluteFill} from 'remotion';
 
 export const MyComposition: React.FC = () => {
   const frame = useCurrentFrame();
@@ -76,7 +76,7 @@ Generate a React component that uses Remotion. For the code property, ALWAYS dir
 Rules:
 - The component should be a named export called "MyComposition"
 - Use useCurrentFrame() and useVideoConfig() from "remotion"
-- Use spring() for smooth animations
+- Animate with interpolate() (and Easing from "remotion" when needed) or spring() as appropriate
 - Keep it self-contained with no external dependencies
 `.trim();
 

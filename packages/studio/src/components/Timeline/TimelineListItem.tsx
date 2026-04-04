@@ -50,9 +50,11 @@ export const TimelineListItem: React.FC<{
 	readonly isCompact: boolean;
 }> = ({nestedDepth, sequence, isCompact}) => {
 	const {previewServerState} = useContext(StudioServerConnectionCtx);
-	const visualModeEnabled =
-		Boolean(process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED) &&
-		previewServerState.type === 'connected';
+	const visualModeEnvEnabled = Boolean(
+		process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED,
+	);
+	const previewConnected = previewServerState.type === 'connected';
+	const visualModeActive = visualModeEnvEnabled && previewConnected;
 	const {hidden, setHidden} = useContext(
 		Internals.SequenceVisibilityToggleContext,
 	);
@@ -62,7 +64,7 @@ export const TimelineListItem: React.FC<{
 	const nodePath = useSequencePropsSubscription(
 		sequence,
 		originalLocation,
-		visualModeEnabled,
+		visualModeActive,
 	);
 
 	const validatedLocation = useMemo(() => {
@@ -81,7 +83,12 @@ export const TimelineListItem: React.FC<{
 		};
 	}, [originalLocation]);
 
-	const hasSequencePropsStatus = Boolean(nodePath);
+	const canDeleteFromSource = Boolean(nodePath && validatedLocation?.source);
+
+	const deleteDisabled = useMemo(
+		() => !previewConnected || !sequence.controls || !canDeleteFromSource,
+		[previewConnected, sequence.controls, canDeleteFromSource],
+	);
 
 	const onDeleteSequenceFromSource = useCallback(async () => {
 		if (!validatedLocation?.source || !nodePath) {
@@ -104,12 +111,7 @@ export const TimelineListItem: React.FC<{
 	}, [nodePath, validatedLocation?.source]);
 
 	const contextMenuValues = useMemo((): ComboboxValue[] => {
-		if (
-			!visualModeEnabled ||
-			!sequence.controls ||
-			!hasSequencePropsStatus ||
-			!validatedLocation?.source
-		) {
+		if (!visualModeEnvEnabled) {
 			return [];
 		}
 
@@ -120,7 +122,12 @@ export const TimelineListItem: React.FC<{
 				keyHint: null,
 				label: 'Delete',
 				leftItem: null,
+				disabled: deleteDisabled,
 				onClick: () => {
+					if (deleteDisabled) {
+						return;
+					}
+
 					onDeleteSequenceFromSource();
 				},
 				quickSwitcherLabel: null,
@@ -128,16 +135,9 @@ export const TimelineListItem: React.FC<{
 				value: 'delete-sequence',
 			},
 		];
-	}, [
-		hasSequencePropsStatus,
-		onDeleteSequenceFromSource,
-		sequence.controls,
-		validatedLocation?.source,
-		visualModeEnabled,
-	]);
+	}, [deleteDisabled, onDeleteSequenceFromSource, visualModeEnvEnabled]);
 
-	const isExpanded =
-		visualModeEnabled && (expandedTracks[sequence.id] ?? false);
+	const isExpanded = visualModeActive && (expandedTracks[sequence.id] ?? false);
 
 	const onToggleExpand = useCallback(() => {
 		toggleTrack(sequence.id);
@@ -198,7 +198,7 @@ export const TimelineListItem: React.FC<{
 			/>
 			<div style={padder} />
 			{sequence.parent && nestedDepth > 0 ? <div style={space} /> : null}
-			{visualModeEnabled ? (
+			{visualModeActive ? (
 				sequence.controls ? (
 					<button
 						type="button"
@@ -230,12 +230,12 @@ export const TimelineListItem: React.FC<{
 
 	return (
 		<>
-			{contextMenuValues.length > 0 ? (
+			{visualModeEnvEnabled ? (
 				<ContextMenu values={contextMenuValues}>{trackRow}</ContextMenu>
 			) : (
 				trackRow
 			)}
-			{visualModeEnabled && isExpanded && sequence.controls ? (
+			{visualModeActive && isExpanded && sequence.controls ? (
 				<TimelineExpandedSection
 					sequence={sequence}
 					originalLocation={originalLocation}

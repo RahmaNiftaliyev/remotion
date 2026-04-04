@@ -1,5 +1,12 @@
 import type {KeyboardEvent, MouseEvent} from 'react';
-import React, {useCallback, useContext, useMemo, useState} from 'react';
+import React, {
+	useCallback,
+	useContext,
+	useLayoutEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 import {type _InternalTypes} from 'remotion';
 import {
 	BACKGROUND,
@@ -7,6 +14,10 @@ import {
 	getBackgroundFromHoverState,
 } from '../helpers/colors';
 import {isCompositionStill} from '../helpers/is-composition-still';
+import {
+	markCompositionSidebarScrollFromRowClick,
+	maybeScrollCompositionSidebarRowIntoView,
+} from '../helpers/sidebar-scroll-into-view';
 import {CollapsedFolderIcon, ExpandedFolderIcon} from '../icons/folder';
 import {StillIcon} from '../icons/still';
 import {FilmIcon} from '../icons/video';
@@ -107,6 +118,21 @@ export const CompositionSelectorItem: React.FC<{
 		setHovered(false);
 	}, []);
 
+	const compositionRowRef = useRef<HTMLAnchorElement>(null);
+	const compositionId =
+		item.type === 'composition' ? item.composition.id : null;
+	useLayoutEffect(() => {
+		if (compositionId === null) {
+			return;
+		}
+
+		maybeScrollCompositionSidebarRowIntoView({
+			element: compositionRowRef.current,
+			compositionId,
+			selected,
+		});
+	}, [compositionId, selected]);
+
 	const style: React.CSSProperties = useMemo(() => {
 		return {
 			...itemStyle,
@@ -126,6 +152,7 @@ export const CompositionSelectorItem: React.FC<{
 		(evt: MouseEvent | KeyboardEvent<HTMLAnchorElement>) => {
 			evt.preventDefault();
 			if (item.type === 'composition') {
+				markCompositionSidebarScrollFromRowClick(item.composition.id);
 				selectComposition(item.composition, true);
 			} else {
 				toggleFolder(item.folderName, item.parentName);
@@ -282,6 +309,7 @@ export const CompositionSelectorItem: React.FC<{
 		<ContextMenu values={contextMenu}>
 			<Row align="center">
 				<a
+					ref={compositionRowRef}
 					style={style}
 					onPointerEnter={onPointerEnter}
 					onPointerLeave={onPointerLeave}

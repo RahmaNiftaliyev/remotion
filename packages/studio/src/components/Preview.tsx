@@ -3,6 +3,7 @@ import {PlayerInternals} from '@remotion/player';
 import React, {useContext, useEffect, useMemo, useRef} from 'react';
 import type {CanvasContent} from 'remotion';
 import {Internals} from 'remotion';
+import {ErrorLoader} from '../error-overlay/remotion-overlay/ErrorLoader';
 import {
 	checkerboardBackgroundColor,
 	checkerboardBackgroundImage,
@@ -13,6 +14,7 @@ import {LIGHT_TEXT} from '../helpers/colors';
 import type {AssetMetadata} from '../helpers/get-asset-metadata';
 import type {Dimensions} from '../helpers/is-current-selected-still';
 import {CheckerboardContext} from '../state/checkerboard';
+import {VERTICAL_SCROLLBAR_CLASSNAME} from './Menu/is-menu-item';
 import {RenderPreview} from './RenderPreview';
 import {Spinner} from './Spinner';
 import {StaticFilePreview} from './StaticFilePreview';
@@ -28,6 +30,15 @@ const label: React.CSSProperties = {
 	fontFamily: 'sans-serif',
 	fontSize: 14,
 	color: LIGHT_TEXT,
+};
+
+const assetMetadataErrorContainer: React.CSSProperties = {
+	marginLeft: 'auto',
+	marginRight: 'auto',
+	width: '100%',
+	position: 'absolute',
+	height: '100%',
+	overflowY: 'auto',
 };
 
 export type AssetFileType =
@@ -108,11 +119,36 @@ export const VideoPreview: React.FC<{
 	readonly contentDimensions: Dimensions | 'none' | null;
 	readonly canvasContent: CanvasContent;
 	readonly assetMetadata: AssetMetadata | null;
-}> = ({canvasSize, contentDimensions, canvasContent, assetMetadata}) => {
+	readonly onRetryAssetMetadata?: () => void;
+}> = ({
+	canvasSize,
+	contentDimensions,
+	canvasContent,
+	assetMetadata,
+	onRetryAssetMetadata,
+}) => {
 	if (assetMetadata && assetMetadata.type === 'not-found') {
 		return (
 			<div style={centeredContainer}>
 				<div style={label}>File does not exist</div>
+			</div>
+		);
+	}
+
+	if (assetMetadata && assetMetadata.type === 'metadata-error') {
+		return (
+			<div
+				style={assetMetadataErrorContainer}
+				className={VERTICAL_SCROLLBAR_CLASSNAME}
+			>
+				<ErrorLoader
+					key={assetMetadata.error.stack}
+					canHaveDismissButton={false}
+					keyboardShortcuts={false}
+					error={assetMetadata.error}
+					onRetry={onRetryAssetMetadata ?? null}
+					calculateMetadata={false}
+				/>
 			</div>
 		);
 	}

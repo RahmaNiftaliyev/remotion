@@ -27,6 +27,7 @@ import {
 	findJsxElementPathForDeletion,
 	getJsxElementTagLabel,
 } from './delete-jsx-node';
+import {formatFileContent} from './format-file-content';
 import {parseAst, serializeAst} from './parse-ast';
 
 const {namedTypes} = recast.types;
@@ -447,61 +448,14 @@ export const duplicateJsxNode = async ({
 	duplicateJsxElementAtPath(jsxPath);
 
 	const finalFile = serializeAst(ast);
-
-	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-	type PrettierType = typeof import('prettier');
-	let prettier: PrettierType | null = null;
-
-	try {
-		prettier = await import('prettier');
-	} catch {
-		return {
-			output: finalFile,
-			formatted: false,
-			nodeLabel,
-			logLine,
-		};
-	}
-
-	const {format, resolveConfig, resolveConfigFile} = prettier as PrettierType;
-
-	let prettierConfig: Record<string, unknown> | null;
-
-	if (prettierConfigOverride !== undefined) {
-		prettierConfig = prettierConfigOverride;
-	} else {
-		const configFilePath = await resolveConfigFile();
-		if (!configFilePath) {
-			return {
-				output: finalFile,
-				formatted: false,
-				nodeLabel,
-				logLine,
-			};
-		}
-
-		prettierConfig = await resolveConfig(configFilePath);
-	}
-
-	if (!prettierConfig) {
-		return {
-			output: finalFile,
-			formatted: false,
-			nodeLabel,
-			logLine,
-		};
-	}
-
-	const prettified = await format(finalFile, {
-		...prettierConfig,
-		filepath: 'test.tsx',
-		plugins: [],
-		endOfLine: 'lf',
+	const {output, formatted} = await formatFileContent({
+		input: finalFile,
+		prettierConfigOverride,
 	});
 
 	return {
-		output: prettified,
-		formatted: true,
+		output,
+		formatted,
 		nodeLabel,
 		logLine,
 	};

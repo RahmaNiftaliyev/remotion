@@ -106,12 +106,12 @@ const handleFallback = async ({
 	enableCrossSiteIsolation: boolean;
 }) => {
 	const requestUrl = new URL(request.url as string, 'http://localhost');
+	const {pathname} = requestUrl;
 	const staticFileHint = getStaticFileFallbackHint({
 		method: request.method,
-		pathname: requestUrl.pathname,
+		pathname,
 		publicDir,
 	});
-	const pathname = requestUrl.pathname;
 	if (
 		staticFileHint &&
 		pathname.includes('.') &&

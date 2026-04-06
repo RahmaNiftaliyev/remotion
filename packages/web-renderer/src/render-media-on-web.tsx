@@ -12,6 +12,7 @@ import {canUseWebFsWriter} from './can-use-webfs-target';
 import {createAudioSampleSource} from './create-audio-sample-source';
 import {checkForError, createScaffold} from './create-scaffold';
 import {getRealFrameRange, type FrameRange} from './frame-range';
+import {supportsNativeHtmlInCanvas} from './html-in-canvas';
 import type {InternalState} from './internal-state';
 import {makeInternalState} from './internal-state';
 import {
@@ -318,10 +319,38 @@ const internalRenderMediaOnWeb = async <
 		initialFrame: 0,
 		defaultCodec: resolved.defaultCodec,
 		defaultOutName: resolved.defaultOutName,
+		enableHtmlInCanvas,
 	});
 
-	const {delayRenderScope, div, timeUpdater, collectAssets, errorHolder} =
-		scaffold;
+	const {
+		delayRenderScope,
+		div,
+		timeUpdater,
+		collectAssets,
+		errorHolder,
+		htmlInCanvasContext,
+	} = scaffold;
+
+	if (enableHtmlInCanvas && !htmlInCanvasContext) {
+		if (!supportsNativeHtmlInCanvas()) {
+			onHtmlInCanvasLayerOutcome({
+				native: false,
+				reason:
+					'This browser does not expose CanvasRenderingContext2D.prototype.drawElementImage. In Chromium, enable chrome://flags/#canvas-draw-element and use a version that ships the API.',
+			});
+		} else {
+			onHtmlInCanvasLayerOutcome({
+				native: false,
+				reason:
+					'Failed to set up html-in-canvas context (getContext returned null or drawElementImage missing).',
+			});
+		}
+	} else if (!enableHtmlInCanvas) {
+		onHtmlInCanvasLayerOutcome({
+			native: false,
+			reason: 'enableHtmlInCanvas is false; using the built-in DOM composer.',
+		});
+	}
 
 	using internalState = makeInternalState();
 
@@ -487,8 +516,10 @@ const internalRenderMediaOnWeb = async <
 					internalState,
 					onlyBackgroundClipText: false,
 					cutout: new DOMRect(0, 0, resolved.width, resolved.height),
-					enableHtmlInCanvas,
-					onHtmlInCanvasLayerOutcome,
+					htmlInCanvasContext,
+					onHtmlInCanvasLayerOutcome: htmlInCanvasContext
+						? onHtmlInCanvasLayerOutcome
+						: undefined,
 				});
 				internalState.addCreateFrameTime(performance.now() - createFrameStart);
 				layerCanvas = layer.canvas;

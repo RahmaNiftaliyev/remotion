@@ -7,6 +7,7 @@ import type {$ZodObject} from 'zod/v4/core';
 import type {WebRendererOnArtifact} from './artifact';
 import {handleArtifacts} from './artifact';
 import {checkForError, createScaffold} from './create-scaffold';
+import {supportsNativeHtmlInCanvas} from './html-in-canvas';
 import type {InternalState} from './internal-state';
 import {makeInternalState} from './internal-state';
 import type {CompositionCalculateMetadataOrExplicit} from './props-if-has-props';
@@ -129,9 +130,37 @@ async function internalRenderStillOnWeb<
 		initialFrame: frame,
 		defaultCodec: resolved.defaultCodec,
 		defaultOutName: resolved.defaultOutName,
+		enableHtmlInCanvas,
 	});
 
-	const {delayRenderScope, div, collectAssets, errorHolder} = scaffold;
+	const {
+		delayRenderScope,
+		div,
+		collectAssets,
+		errorHolder,
+		htmlInCanvasContext,
+	} = scaffold;
+
+	if (enableHtmlInCanvas && !htmlInCanvasContext) {
+		if (!supportsNativeHtmlInCanvas()) {
+			onHtmlInCanvasLayerOutcome({
+				native: false,
+				reason:
+					'This browser does not expose CanvasRenderingContext2D.prototype.drawElementImage. In Chromium, enable chrome://flags/#canvas-draw-element and use a version that ships the API.',
+			});
+		} else {
+			onHtmlInCanvasLayerOutcome({
+				native: false,
+				reason:
+					'Failed to set up html-in-canvas context (getContext returned null or drawElementImage missing).',
+			});
+		}
+	} else if (!enableHtmlInCanvas) {
+		onHtmlInCanvasLayerOutcome({
+			native: false,
+			reason: 'enableHtmlInCanvas is false; using the built-in DOM composer.',
+		});
+	}
 
 	const artifactsHandler = handleArtifacts();
 
@@ -161,8 +190,10 @@ async function internalRenderStillOnWeb<
 			internalState,
 			onlyBackgroundClipText: false,
 			cutout: new DOMRect(0, 0, resolved.width, resolved.height),
-			enableHtmlInCanvas,
-			onHtmlInCanvasLayerOutcome,
+			htmlInCanvasContext,
+			onHtmlInCanvasLayerOutcome: htmlInCanvasContext
+				? onHtmlInCanvasLayerOutcome
+				: undefined,
 		});
 
 		const imageData = await capturedFrame.canvas.convertToBlob({

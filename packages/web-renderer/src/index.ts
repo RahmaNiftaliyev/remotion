@@ -42,4 +42,5 @@ export type {
 	RenderStillOnWebImageFormat,
 	RenderStillOnWebOptions,
 } from './render-still-on-web';
+export type {HtmlInCanvasLayerOutcome} from './take-screenshot';
 export type {OnFrameCallback} from './validate-video-frame';

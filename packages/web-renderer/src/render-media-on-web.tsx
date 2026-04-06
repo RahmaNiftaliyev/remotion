@@ -38,7 +38,7 @@ import type {CompositionCalculateMetadataOrExplicit} from './props-if-has-props'
 import {onlyOneRenderAtATimeQueue} from './render-operations-queue';
 import {resolveAudioCodec} from './resolve-audio-codec';
 import {sendUsageEvent} from './send-telemetry-event';
-import {createLayer} from './take-screenshot';
+import {createLayer, type HtmlInCanvasLayerOutcome} from './take-screenshot';
 import {createThrottledProgressCallback} from './throttle-progress';
 import {validateScale} from './validate-scale';
 import {validateVideoFrame, type OnFrameCallback} from './validate-video-frame';
@@ -185,20 +185,26 @@ const internalRenderMediaOnWeb = async <
 >): Promise<RenderMediaOnWebResult> => {
 	validateScale(scale);
 
-	let htmlInCanvasUsageWarned = false;
-	const onHtmlInCanvasCapture = enableHtmlInCanvas
-		? () => {
-				if (htmlInCanvasUsageWarned) {
-					return;
-				}
+	let htmlInCanvasLayerOutcomeReported = false;
+	const onHtmlInCanvasLayerOutcome = (outcome: HtmlInCanvasLayerOutcome) => {
+		if (htmlInCanvasLayerOutcomeReported) {
+			return;
+		}
 
-				htmlInCanvasUsageWarned = true;
-				Internals.Log.warn(
-					{logLevel, tag: '@remotion/web-renderer'},
-					'Using Chromium experimental HTML-in-Canvas (drawElementImage) for video frames. Pixels may differ from the built-in DOM composer. Set enableHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas',
-				);
-			}
-		: undefined;
+		htmlInCanvasLayerOutcomeReported = true;
+		if (outcome.native) {
+			Internals.Log.warn(
+				{logLevel, tag: '@remotion/web-renderer'},
+				'Using Chromium experimental HTML-in-Canvas (drawElementImage) for video frames. Pixels may differ from the built-in DOM composer. Set enableHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas',
+			);
+		} else {
+			Internals.Log.warn(
+				{logLevel, tag: '@remotion/web-renderer'},
+				`Not using html-in-canvas: ${outcome.reason}`,
+			);
+		}
+	};
+
 	const outputTarget =
 		userDesiredOutputTarget === null
 			? (await canUseWebFsWriter())
@@ -482,7 +488,7 @@ const internalRenderMediaOnWeb = async <
 					onlyBackgroundClipText: false,
 					cutout: new DOMRect(0, 0, resolved.width, resolved.height),
 					enableHtmlInCanvas,
-					onHtmlInCanvasCapture,
+					onHtmlInCanvasLayerOutcome,
 				});
 				internalState.addCreateFrameTime(performance.now() - createFrameStart);
 				layerCanvas = layer.canvas;

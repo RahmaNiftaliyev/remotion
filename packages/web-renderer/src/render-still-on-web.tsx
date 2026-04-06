@@ -13,7 +13,7 @@ import type {CompositionCalculateMetadataOrExplicit} from './props-if-has-props'
 import type {InputPropsIfHasProps} from './render-media-on-web';
 import {onlyOneRenderAtATimeQueue} from './render-operations-queue';
 import {sendUsageEvent} from './send-telemetry-event';
-import {createLayer} from './take-screenshot';
+import {createLayer, type HtmlInCanvasLayerOutcome} from './take-screenshot';
 import {validateScale} from './validate-scale';
 import {waitForReady} from './wait-for-ready';
 
@@ -77,20 +77,19 @@ async function internalRenderStillOnWeb<
 }: InternalRenderStillOnWebOptions<Schema, Props>) {
 	validateScale(scale);
 
-	let htmlInCanvasUsageWarned = false;
-	const onHtmlInCanvasCapture = enableHtmlInCanvas
-		? () => {
-				if (htmlInCanvasUsageWarned) {
-					return;
-				}
-
-				htmlInCanvasUsageWarned = true;
-				Internals.Log.warn(
-					{logLevel, tag: '@remotion/web-renderer'},
-					'Using Chromium experimental HTML-in-Canvas (drawElementImage) for this frame. Pixels may differ from the built-in DOM composer. Set enableHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas',
-				);
-			}
-		: undefined;
+	const onHtmlInCanvasLayerOutcome = (outcome: HtmlInCanvasLayerOutcome) => {
+		if (outcome.native) {
+			Internals.Log.warn(
+				{logLevel, tag: '@remotion/web-renderer'},
+				'Using Chromium experimental HTML-in-Canvas (drawElementImage) for this frame. Pixels may differ from the built-in DOM composer. Set enableHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas',
+			);
+		} else {
+			Internals.Log.warn(
+				{logLevel, tag: '@remotion/web-renderer'},
+				`Not using html-in-canvas: ${outcome.reason}`,
+			);
+		}
+	};
 
 	const resolved = await Internals.resolveVideoConfig({
 		calculateMetadata:
@@ -163,7 +162,7 @@ async function internalRenderStillOnWeb<
 			onlyBackgroundClipText: false,
 			cutout: new DOMRect(0, 0, resolved.width, resolved.height),
 			enableHtmlInCanvas,
-			onHtmlInCanvasCapture,
+			onHtmlInCanvasLayerOutcome,
 		});
 
 		const imageData = await capturedFrame.canvas.convertToBlob({

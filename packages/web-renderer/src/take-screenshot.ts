@@ -8,6 +8,10 @@ import {
 } from './html-in-canvas';
 import type {InternalState} from './internal-state';
 
+export type HtmlInCanvasLayerOutcome =
+	| {native: true}
+	| {native: false; reason: string};
+
 export const createLayer = async ({
 	element,
 	scale,
@@ -16,7 +20,7 @@ export const createLayer = async ({
 	onlyBackgroundClipText,
 	cutout,
 	enableHtmlInCanvas = true,
-	onHtmlInCanvasCapture,
+	onHtmlInCanvasLayerOutcome,
 }: {
 	element: HTMLElement | SVGElement;
 	scale: number;
@@ -25,29 +29,53 @@ export const createLayer = async ({
 	onlyBackgroundClipText: boolean;
 	cutout: DOMRect;
 	enableHtmlInCanvas?: boolean;
-	onHtmlInCanvasCapture?: () => void;
+	onHtmlInCanvasLayerOutcome?: (outcome: HtmlInCanvasLayerOutcome) => void;
 }) => {
-	if (
-		enableHtmlInCanvas &&
-		!onlyBackgroundClipText &&
-		element instanceof HTMLElement &&
-		supportsNativeHtmlInCanvas() &&
-		isRootLayerCutout(element, cutout)
-	) {
-		try {
-			const layerContext = await createLayerWithDrawElementImage({
-				element,
-				scale,
-				cutout,
+	if (!onlyBackgroundClipText && onHtmlInCanvasLayerOutcome) {
+		if (!(element instanceof HTMLElement)) {
+			onHtmlInCanvasLayerOutcome({
+				native: false,
+				reason:
+					'Root capture element is not an HTMLElement; html-in-canvas requires the scaffold div.',
 			});
-			onHtmlInCanvasCapture?.();
-			return layerContext;
-		} catch (err) {
-			Internals.Log.verbose(
-				{logLevel, tag: '@remotion/web-renderer'},
-				'html-in-canvas capture failed, falling back to software compose',
-				err,
-			);
+		} else if (!isRootLayerCutout(element, cutout)) {
+			onHtmlInCanvasLayerOutcome({
+				native: false,
+				reason: `Full-frame cutout required for html-in-canvas: cutout is ${cutout.width}x${cutout.height} at (${cutout.x}, ${cutout.y}) but element is ${element.offsetWidth}x${element.offsetHeight}px (origin must be 0,0 and sizes must match).`,
+			});
+		} else if (!enableHtmlInCanvas) {
+			onHtmlInCanvasLayerOutcome({
+				native: false,
+				reason:
+					'enableHtmlInCanvas is false; using the built-in DOM composer instead.',
+			});
+		} else if (!supportsNativeHtmlInCanvas()) {
+			onHtmlInCanvasLayerOutcome({
+				native: false,
+				reason:
+					'This browser context does not expose CanvasRenderingContext2D.prototype.drawElementImage. In Chromium, enable chrome://flags/#canvas-draw-element (HTML-in-Canvas) and use a version that ships the API.',
+			});
+		} else {
+			try {
+				const layerContext = await createLayerWithDrawElementImage({
+					element,
+					scale,
+					cutout,
+				});
+				onHtmlInCanvasLayerOutcome({native: true});
+				return layerContext;
+			} catch (err) {
+				const detail = err instanceof Error ? err.message : JSON.stringify(err);
+				onHtmlInCanvasLayerOutcome({
+					native: false,
+					reason: `drawElementImage failed (${detail}); falling back to the built-in DOM composer.`,
+				});
+				Internals.Log.verbose(
+					{logLevel, tag: '@remotion/web-renderer'},
+					'html-in-canvas capture failed, falling back to software compose',
+					err,
+				);
+			}
 		}
 	}
 

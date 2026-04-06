@@ -7,7 +7,7 @@ import type {InternalState} from './internal-state';
 
 export type HtmlInCanvasLayerOutcome =
 	| {native: true}
-	| {native: false; reason: string};
+	| {native: false; reason: string; shouldWarn: boolean};
 
 export const createLayer = async ({
 	element,
@@ -51,6 +51,7 @@ export const createLayer = async ({
 			onHtmlInCanvasLayerOutcome({
 				native: false,
 				reason: `drawElementImage failed (${detail}); falling back to the built-in DOM composer.`,
+				shouldWarn: true,
 			});
 			Internals.Log.verbose(
 				{logLevel, tag: '@remotion/web-renderer'},

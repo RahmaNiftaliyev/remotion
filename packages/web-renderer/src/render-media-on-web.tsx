@@ -198,7 +198,7 @@ const internalRenderMediaOnWeb = async <
 				{logLevel, tag: '@remotion/web-renderer'},
 				'Using Chromium experimental HTML-in-Canvas (drawElementImage) for video frames. Pixels may differ from the built-in DOM composer. Set allowHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas',
 			);
-		} else {
+		} else if (outcome.shouldWarn) {
 			Internals.Log.warn(
 				{logLevel, tag: '@remotion/web-renderer'},
 				`Not using html-in-canvas: ${outcome.reason}`,
@@ -337,18 +337,21 @@ const internalRenderMediaOnWeb = async <
 				native: false,
 				reason:
 					'This browser does not expose CanvasRenderingContext2D.prototype.drawElementImage. In Chromium, enable chrome://flags/#canvas-draw-element and use a version that ships the API.',
+				shouldWarn: false,
 			});
 		} else {
 			onHtmlInCanvasLayerOutcome({
 				native: false,
 				reason:
 					'drawElementImage is available but canvas.requestPaint() is missing. Use a Chromium version that ships requestPaint.',
+				shouldWarn: true,
 			});
 		}
 	} else if (!allowHtmlInCanvas) {
 		onHtmlInCanvasLayerOutcome({
 			native: false,
 			reason: 'allowHtmlInCanvas is false; using the built-in DOM composer.',
+			shouldWarn: false,
 		});
 	}
 

@@ -819,6 +819,15 @@ export const articles = [
 		slug: 'client-side-rendering/how-it-works',
 	},
 	{
+		id: 'client-side-rendering/html-in-canvas',
+		title: 'HTML-in-canvas',
+		relativePath: 'docs/client-side-rendering/html-in-canvas.mdx',
+		compId: 'articles-docs-client-side-rendering-html-in-canvas',
+		crumb: 'Client-side rendering',
+		noAi: false,
+		slug: 'client-side-rendering/html-in-canvas',
+	},
+	{
 		id: 'client-side-rendering/index',
 		title: 'Client-side rendering',
 		relativePath: 'docs/client-side-rendering/index.mdx',
@@ -853,15 +862,6 @@ export const articles = [
 		crumb: 'Client-side rendering',
 		noAi: false,
 		slug: 'client-side-rendering/telemetry',
-	},
-	{
-		id: 'client-side-rendering/html-in-canvas',
-		title: 'HTML in Canvas<AvailableFrom v="4.0.447" />',
-		relativePath: 'docs/client-side-rendering/html-in-canvas.mdx',
-		compId: 'articles-docs-client-side-rendering-html-in-canvas',
-		crumb: 'Client-side rendering',
-		noAi: false,
-		slug: 'client-side-rendering/html-in-canvas',
 	},
 	{
 		id: 'clipper',

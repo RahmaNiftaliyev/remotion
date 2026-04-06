@@ -5,21 +5,21 @@ let allowHtmlInCanvasEnabled = false;
 const cliFlag = 'allow-html-in-canvas' as const;
 
 export const allowHtmlInCanvasOption = {
-	name: 'Allow HTML-in-Canvas for client-side rendering',
+	name: 'Allow HTML-in-canvas for client-side rendering',
 	cliFlag,
 	description: () => (
 		<>
 			When client-side rendering is enabled in the Studio, allow the
-			experimental Chromium HTML-in-Canvas API to be used for capturing frames.
+			experimental Chromium HTML-in-canvas API to be used for capturing frames.
 			See{' '}
-			<a href="https://www.remotion.dev/docs/client-side-rendering/html-in-canvas">
-				HTML in Canvas docs
+			<a href="/docs/client-side-rendering/html-in-canvas">
+				HTML-in-canvas docs
 			</a>
 			.
 		</>
 	),
 	ssrName: null,
-	docLink: 'https://www.remotion.dev/docs/config#setallowhtmlincanvasenabled',
+	docLink: 'https://www.remotion.dev/docs/client-side-rendering/html-in-canvas',
 	type: false as boolean,
 	getValue: ({commandLine}) => {
 		if (commandLine[cliFlag] !== null) {

@@ -187,7 +187,7 @@ declare global {
 			enabled: boolean,
 		) => void;
 		/**
-		 * Allow the experimental HTML-in-Canvas capture path in Studio client-side renders.
+		 * Allow the experimental HTML-in-canvas capture path in Studio client-side renders.
 		 * @default false
 		 */
 		readonly setAllowHtmlInCanvasEnabled: (enabled: boolean) => void;

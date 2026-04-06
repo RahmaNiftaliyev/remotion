@@ -55,7 +55,7 @@ export const createLayer = async ({
 			});
 			Internals.Log.verbose(
 				{logLevel, tag: '@remotion/web-renderer'},
-				'html-in-canvas capture failed, falling back to software compose',
+				'HTML-in-canvas capture failed, falling back to software compose',
 				err,
 			);
 		}

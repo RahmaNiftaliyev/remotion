@@ -1,7 +1,8 @@
 ---
 image: /generated/articles-docs-client-side-rendering-html-in-canvas.png
+title: 'HTML-in-canvas'
 crumb: 'Client-side rendering'
-sidebar_label: HTML in Canvas
+sidebar_label: HTML-in-canvas
 ---
 
 :::warning
@@ -9,11 +10,11 @@ Experimental feature - expect bugs and breaking changes at any time.
 [Track progress on GitHub](https://github.com/remotion-dev/remotion/issues/5913) and discuss in the [`#web-renderer`](https://remotion.dev/discord) channel on Discord.
 :::
 
-# HTML in Canvas<AvailableFrom v="4.0.447" />
+# HTML-in-canvas<AvailableFrom v="4.0.447" />
 
-On supported Chromium-based browsers, [`@remotion/web-renderer`](/docs/web-renderer) can optionally capture full frames using the experimental [HTML-in-Canvas](https://github.com/WICG/html-in-canvas) APIs.
+On supported Chromium-based browsers, [`@remotion/web-renderer`](/docs/web-renderer) can optionally capture full frames using the experimental [HTML-in-canvas](https://github.com/WICG/html-in-canvas) APIs.
 
-Enabling the option does not guarantee that this path runs. If the browser does not have HTML in Canvas enabled, it falls back to the [default frame capturing mechanism](/docs/client-side-rendering/how-it-works).
+Enabling the option does not guarantee that this path runs. If the browser does not have HTML-in-canvas enabled, it falls back to the [default frame capturing mechanism](/docs/client-side-rendering/how-it-works).
 
 ## Enabling
 
@@ -38,7 +39,7 @@ await renderStillOnWeb({
 
 ### In the Studio
 
-With [client-side rendering enabled](/docs/client-side-rendering), open the render modal, go to the `Other` tab, and turn on `Allow HTML-in-Canvas`. The initial value comes from your config and CLI defaults (below).
+With [client-side rendering enabled](/docs/client-side-rendering), open the render modal, go to the `Other` tab, and turn on `Allow HTML-in-canvas`. The initial value comes from your config and CLI defaults (below).
 
 ### As the Studio default
 
@@ -60,23 +61,23 @@ See [`setAllowHtmlInCanvasEnabled()`](/docs/config#setallowhtmlincanvasenabled) 
 
 <Options id="allow-html-in-canvas" />
 
-## Check if HTML in Canvas was used
+## Check if HTML-in-canvas was used
 
-If HTML in Canvas was used, you will see a warning in the browser console:
-
-```
-Using Chromium experimental HTML-in-Canvas (drawElementImage) for this frame. Pixels may differ from the built-in DOM composer. Set allowHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas
-```
-
-If HTML-in-Canvas is available, and allowed, but not used, a warning will be printed:
+If HTML-in-canvas was used, you will see a warning in the browser console:
 
 ```
-Not using html-in-canvas: drawElementImage is available but canvas.requestPaint() is missing. Use a Chromium version that ships requestPaint.
+Using Chromium experimental HTML-in-canvas (drawElementImage) for this frame. Pixels may differ from the built-in DOM composer. Set allowHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas
+```
+
+If HTML-in-canvas is available, and allowed, but not used, a warning will be printed:
+
+```
+Not using HTML-in-canvas: drawElementImage is available but canvas.requestPaint() is missing. Use a Chromium version that ships requestPaint.
 ```
 
 This can happen for example if enabling the feature in Chrome rather than Chrome Canary (as of time of writing in April 2026).
 
-If HTML-in-Canvas is not available, or not allowed, no warning will be printed.
+If HTML-in-canvas is not available, or not allowed, no warning will be printed.
 
 ## Compatibility
 
@@ -94,7 +95,7 @@ If HTML-in-Canvas is not available, or not allowed, no warning will be printed.
   hideServers
 />
 
-HTML-in-Canvas depends on Chromium flag `chrome://flags/#canvas-draw-element` which needs to be explicitly enabled as of time of writing in April 2026.
+HTML-in-canvas depends on Chromium flag `chrome://flags/#canvas-draw-element` which needs to be explicitly enabled as of time of writing in April 2026.
 
 ## See also
 

@@ -82,12 +82,12 @@ async function internalRenderStillOnWeb<
 		if (outcome.native) {
 			Internals.Log.warn(
 				{logLevel, tag: '@remotion/web-renderer'},
-				'Using Chromium experimental HTML-in-Canvas (drawElementImage) for this frame. Pixels may differ from the built-in DOM composer. Set allowHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas',
+				'Using Chromium experimental HTML-in-canvas (drawElementImage) for this frame. Pixels may differ from the built-in DOM composer. Set allowHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas',
 			);
 		} else if (outcome.shouldWarn) {
 			Internals.Log.warn(
 				{logLevel, tag: '@remotion/web-renderer'},
-				`Not using html-in-canvas: ${outcome.reason}`,
+				`Not using HTML-in-canvas: ${outcome.reason}`,
 			);
 		}
 	};

@@ -27,5 +27,3 @@ export const Options: React.FC<{
 
 	return option.description(cli ? 'cli' : 'ssr') as JSX.Element;
 };
-
-export const Option = Options;

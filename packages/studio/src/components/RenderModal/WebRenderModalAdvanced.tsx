@@ -171,7 +171,7 @@ export const WebRenderModalAdvanced: React.FC<WebRenderModalAdvancedProps> = ({
 
 			<div style={optionRow}>
 				<div style={label}>
-					Allow HTML-in-Canvas <Spacing x={0.5} />
+					Allow HTML-in-canvas <Spacing x={0.5} />
 					<OptionExplainerBubble id="allowHtmlInCanvasOption" />
 				</div>
 				<div style={rightRow}>

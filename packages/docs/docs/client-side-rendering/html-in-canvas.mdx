@@ -1,0 +1,90 @@
+---
+image: /generated/articles-docs-client-side-rendering-html-in-canvas.png
+crumb: 'Client-side rendering'
+sidebar_label: HTML in Canvas
+title: HTML in Canvas<AvailableFrom v="4.0.446" />
+---
+
+:::warning
+Experimental feature - expect bugs and breaking changes at any time.  
+[Track progress on GitHub](https://github.com/remotion-dev/remotion/issues/5913) and discuss in the [`#web-renderer`](https://remotion.dev/discord) channel on Discord.
+:::
+
+On supported Chromium-based browsers, [`@remotion/web-renderer`](/docs/web-renderer) can optionally capture full frames using the experimental [HTML-in-Canvas](https://github.com/WICG/html-in-canvas) APIs (`CanvasRenderingContext2D.drawElementImage`, `HTMLCanvasElement.requestPaint`, and a `layoutSubtree` canvas) instead of Remotion’s built-in DOM composer. This path is often faster, but **pixels may not match** the software composer.
+
+Enabling the option does **not** guarantee that this path runs. Remotion only uses it when the browser exposes the required APIs, setup succeeds, and capture succeeds for a given frame. Otherwise it falls back to the built-in composer without blocking the render.
+
+## Enabling
+
+### In code
+
+Pass `allowHtmlInCanvas: true` to [`renderMediaOnWeb()`](/docs/web-renderer/render-media-on-web) or [`renderStillOnWeb()`](/docs/web-renderer/render-still-on-web). The default is `false` when you omit the field.
+
+```tsx twoslash title="Example"
+import {renderStillOnWeb} from '@remotion/web-renderer';
+
+declare const composition: Parameters<typeof renderStillOnWeb>[0]['composition'];
+
+// ---cut---
+await renderStillOnWeb({
+  composition,
+  frame: 0,
+  imageFormat: 'png',
+  inputProps: {},
+  allowHtmlInCanvas: true,
+});
+```
+
+### In the Studio
+
+With [client-side rendering enabled](/docs/client-side-rendering), open the render modal, go to the **Other** tab, and turn on **Allow HTML-in-Canvas**. The initial value comes from your config and CLI defaults (below).
+
+### As the Studio default
+
+In `remotion.config.ts`:
+
+```ts twoslash title="remotion.config.ts"
+import {Config} from '@remotion/cli/config';
+// ---cut---
+Config.setAllowHtmlInCanvasEnabled(true);
+```
+
+Or start Studio with the CLI flag (it overrides the config file for this value):
+
+```bash
+npx remotion studio --allow-html-in-canvas
+```
+
+See [`setAllowHtmlInCanvasEnabled()`](/docs/config#setallowhtmlincanvasenabled) and [`npx remotion studio`](/docs/cli/studio#--allow-html-in-canvas) for details. The flag description is also available as:
+
+<Options id="allow-html-in-canvas" />
+
+## Console messages
+
+If the native HTML-in-Canvas path is used, Remotion logs a **warning** to the browser console (tag `@remotion/web-renderer`) so you know captures may differ from the software path. If `drawElementImage` is available but capture fails for another reason, a warning explains the fallback. If the browser does not expose `drawElementImage`, Remotion stays quiet and uses the built-in composer.
+
+Use `logLevel: 'warn'` or a more verbose level if you do not see these messages.
+
+## Compatibility
+
+<CompatibilityTable
+  chrome
+  firefox={false}
+  safari={false}
+  nodejs={''}
+  bun={''}
+  serverlessFunctions=""
+  clientSideRendering
+  serverSideRendering={false}
+  player={false}
+  studio
+  hideServers
+/>
+
+HTML-in-Canvas depends on Chromium shipping the experimental APIs (for example after enabling `chrome://flags/#canvas-draw-element` where applicable). Other browsers continue to use the built-in DOM composer.
+
+## See also
+
+- [How client-side rendering works](/docs/client-side-rendering/how-it-works)
+- [`renderMediaOnWeb()`](/docs/web-renderer/render-media-on-web)
+- [`renderStillOnWeb()`](/docs/web-renderer/render-still-on-web)

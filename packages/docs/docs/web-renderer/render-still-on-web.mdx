@@ -83,7 +83,7 @@ You cannot use [`getInputProps()`](/docs/get-input-props) to read input props in
 
 _number_
 
-<Options id="scale" />
+<Option id="scale" />
 
 ### `allowHtmlInCanvas?`
 
@@ -91,7 +91,7 @@ _boolean_
 
 Default `false`. In the Remotion Studio, the checkbox under **Other** is initialized from [`Config.setAllowHtmlInCanvasEnabled()`](/docs/config#setallowhtmlincanvasenabled) and the [`--allow-html-in-canvas`](/docs/cli/studio#--allow-html-in-canvas) CLI flag:
 
-<Options id="allow-html-in-canvas" />
+<Option id="allow-html-in-canvas" />
 
 When `true`, Chromium-based browsers that expose the experimental [HTML-in-Canvas](https://github.com/WICG/html-in-canvas) API (`drawElementImage`, enabled e.g. via `chrome://flags/#canvas-draw-element`) may rasterize the full composition frame with the browser engine instead of Remotion’s built-in DOM composer. This is usually faster but **pixels may not match** the software path.
 
@@ -153,7 +153,7 @@ See [Cancelling renders](/docs/client-side-rendering/cancellation) for more deta
 
 _number | null_
 
-<Options id="media-cache-size-in-bytes" />
+<Option id="media-cache-size-in-bytes" />
 
 ### `onArtifact?`
 
@@ -179,7 +179,7 @@ See [Telemetry in client-side rendering](/docs/client-side-rendering/telemetry) 
 
 _default `true`_
 
-<Options id="is-production" />
+<Option id="is-production" />
 
 ## Return value
 

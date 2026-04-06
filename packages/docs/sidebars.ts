@@ -1066,6 +1066,7 @@ const sidebars: SidebarsConfig = {
 					label: 'API Reference',
 				},
 				'client-side-rendering/how-it-works',
+				'client-side-rendering/html-in-canvas',
 				'client-side-rendering/limitations',
 				'client-side-rendering/migration',
 				'client-side-rendering/cancellation',

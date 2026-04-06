@@ -13,7 +13,7 @@ import {
 } from '../components/AvailableFrom';
 import {CompatibilityTable} from '../components/CompatibilityTable';
 import {Credits} from '../components/Credits';
-import {Options} from '../components/Options';
+import {Option, Options} from '../components/Options';
 import {SuggestedPrompts} from '../components/SuggestedPrompts';
 import {TsType} from '../components/TsType';
 import RawMarkdownCarrier from './RawMarkdownCarrier/index';
@@ -29,6 +29,7 @@ export default {
 	MinNodeVersion,
 	MinBunVersion,
 	Options,
+	Option,
 	Credits,
 	YouTube,
 	Installation,

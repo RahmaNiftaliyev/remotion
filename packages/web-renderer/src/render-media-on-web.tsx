@@ -196,7 +196,7 @@ const internalRenderMediaOnWeb = async <
 		if (outcome.native) {
 			Internals.Log.warn(
 				{logLevel, tag: '@remotion/web-renderer'},
-				'Using Chromium experimental HTML-in-Canvas (drawElementImage) for video frames. Pixels may differ from the built-in DOM composer. Set allowHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas',
+				'Using Chromium experimental HTML-in-Canvas (drawElementImage) for video frames. See https://github.com/WICG/html-in-canvas',
 			);
 		} else if (outcome.shouldWarn) {
 			Internals.Log.warn(

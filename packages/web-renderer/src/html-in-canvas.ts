@@ -98,10 +98,14 @@ export const createLayerWithDrawElementImage = async ({
 	};
 
 	try {
-		const ctx = layoutCanvas.getContext('2d') as Canvas2DWithDrawElement | null;
-		if (!ctx || typeof ctx.drawElementImage !== 'function') {
+		const maybeCtx = layoutCanvas.getContext(
+			'2d',
+		) as Canvas2DWithDrawElement | null;
+		if (!maybeCtx || typeof maybeCtx.drawElementImage !== 'function') {
 			throw new Error('html-in-canvas: drawElementImage not available');
 		}
+
+		const context = maybeCtx;
 
 		const {requestPaint} = layoutCanvas;
 		if (typeof requestPaint !== 'function') {
@@ -119,8 +123,8 @@ export const createLayerWithDrawElementImage = async ({
 
 				window.clearTimeout(timeoutId);
 				try {
-					ctx.reset();
-					ctx.drawElementImage(element, 0, 0, scaledWidth, scaledHeight);
+					context.reset();
+					context.drawElementImage(element, 0, 0, scaledWidth, scaledHeight);
 					settled = true;
 					resolve();
 				} catch (err) {

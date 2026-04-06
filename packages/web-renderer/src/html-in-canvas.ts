@@ -1,6 +1,3 @@
-import type {LogLevel} from 'remotion';
-import {Internals} from 'remotion';
-
 type Canvas2DWithDrawElement = CanvasRenderingContext2D & {
 	drawElementImage: (
 		element: Element,
@@ -47,12 +44,10 @@ export const isRootLayerCutout = (
 export const createLayerWithDrawElementImage = async ({
 	element,
 	scale,
-	logLevel,
 	cutout,
 }: {
 	element: HTMLElement;
 	scale: number;
-	logLevel: LogLevel;
 	cutout: DOMRect;
 }): Promise<OffscreenCanvasRenderingContext2D> => {
 	const scaledWidth = Math.ceil(cutout.width * scale);
@@ -154,11 +149,6 @@ export const createLayerWithDrawElementImage = async ({
 		}
 
 		offCtx.drawImage(layoutCanvas, 0, 0);
-
-		Internals.Log.trace(
-			{logLevel, tag: '@remotion/web-renderer'},
-			`Captured frame via html-in-canvas drawElementImage at ${scaledWidth}x${scaledHeight}`,
-		);
 
 		return offCtx;
 	} finally {

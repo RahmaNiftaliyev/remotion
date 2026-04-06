@@ -15,6 +15,8 @@ export const createLayer = async ({
 	internalState,
 	onlyBackgroundClipText,
 	cutout,
+	enableHtmlInCanvas = true,
+	onHtmlInCanvasCapture,
 }: {
 	element: HTMLElement | SVGElement;
 	scale: number;
@@ -22,20 +24,24 @@ export const createLayer = async ({
 	internalState: InternalState;
 	onlyBackgroundClipText: boolean;
 	cutout: DOMRect;
+	enableHtmlInCanvas?: boolean;
+	onHtmlInCanvasCapture?: () => void;
 }) => {
 	if (
+		enableHtmlInCanvas &&
 		!onlyBackgroundClipText &&
 		element instanceof HTMLElement &&
 		supportsNativeHtmlInCanvas() &&
 		isRootLayerCutout(element, cutout)
 	) {
 		try {
-			return await createLayerWithDrawElementImage({
+			const layerContext = await createLayerWithDrawElementImage({
 				element,
 				scale,
-				logLevel,
 				cutout,
 			});
+			onHtmlInCanvasCapture?.();
+			return layerContext;
 		} catch (err) {
 			Internals.Log.verbose(
 				{logLevel, tag: '@remotion/web-renderer'},

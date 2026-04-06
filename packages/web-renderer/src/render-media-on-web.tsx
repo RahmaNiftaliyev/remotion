@@ -130,6 +130,7 @@ type OptionalRenderMediaOnWebOptions<Schema extends $ZodObject> = {
 	isProduction: boolean;
 	muted: boolean;
 	scale: number;
+	enableHtmlInCanvas: boolean;
 };
 
 export type RenderMediaOnWebOptions<
@@ -177,11 +178,27 @@ const internalRenderMediaOnWeb = async <
 	muted,
 	scale,
 	isProduction,
+	enableHtmlInCanvas,
 }: InternalRenderMediaOnWebOptions<
 	Schema,
 	Props
 >): Promise<RenderMediaOnWebResult> => {
 	validateScale(scale);
+
+	let htmlInCanvasUsageWarned = false;
+	const onHtmlInCanvasCapture = enableHtmlInCanvas
+		? () => {
+				if (htmlInCanvasUsageWarned) {
+					return;
+				}
+
+				htmlInCanvasUsageWarned = true;
+				Internals.Log.warn(
+					{logLevel, tag: '@remotion/web-renderer'},
+					'Using Chromium experimental HTML-in-Canvas (drawElementImage) for video frames. Pixels may differ from the built-in DOM composer. Set enableHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas',
+				);
+			}
+		: undefined;
 	const outputTarget =
 		userDesiredOutputTarget === null
 			? (await canUseWebFsWriter())
@@ -464,6 +481,8 @@ const internalRenderMediaOnWeb = async <
 					internalState,
 					onlyBackgroundClipText: false,
 					cutout: new DOMRect(0, 0, resolved.width, resolved.height),
+					enableHtmlInCanvas,
+					onHtmlInCanvasCapture,
 				});
 				internalState.addCreateFrameTime(performance.now() - createFrameStart);
 				layerCanvas = layer.canvas;
@@ -679,6 +698,7 @@ export const renderMediaOnWeb = <
 				muted: options.muted ?? false,
 				scale: options.scale ?? 1,
 				isProduction: options.isProduction ?? true,
+				enableHtmlInCanvas: options.enableHtmlInCanvas ?? true,
 			}),
 		);
 

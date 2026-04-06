@@ -95,6 +95,16 @@ _number_
 
 <Options id="scale" />
 
+### `enableHtmlInCanvas?`
+
+_boolean_
+
+When `true` (default), Chromium-based browsers that expose the experimental [HTML-in-Canvas](https://github.com/WICG/html-in-canvas) API (`drawElementImage`, enabled e.g. via `chrome://flags/#canvas-draw-element`) may rasterize each video frame with the browser engine instead of Remotion’s built-in DOM composer. This is usually faster but **pixels may not match** the software path.
+
+A **warning** is logged the first time this path is used during a given `renderMediaOnWeb()` call.
+
+Set to `false` to always use the built-in composer (for consistent pixels or when debugging differences).
+
 ### `onProgress?`
 
 _function_ <TsType type="RenderMediaOnWebProgressCallback" source="@remotion/web-renderer" href="/docs/web-renderer/types#rendermediaonwebprogresscallback" />

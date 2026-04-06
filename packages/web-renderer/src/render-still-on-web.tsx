@@ -39,6 +39,7 @@ type OptionalRenderStillOnWebOptions<Schema extends $ZodObject> = {
 	licenseKey: string | null;
 	scale: number;
 	isProduction: boolean;
+	enableHtmlInCanvas: boolean;
 };
 
 type InternalRenderStillOnWebOptions<
@@ -72,8 +73,24 @@ async function internalRenderStillOnWeb<
 	licenseKey,
 	scale,
 	isProduction,
+	enableHtmlInCanvas,
 }: InternalRenderStillOnWebOptions<Schema, Props>) {
 	validateScale(scale);
+
+	let htmlInCanvasUsageWarned = false;
+	const onHtmlInCanvasCapture = enableHtmlInCanvas
+		? () => {
+				if (htmlInCanvasUsageWarned) {
+					return;
+				}
+
+				htmlInCanvasUsageWarned = true;
+				Internals.Log.warn(
+					{logLevel, tag: '@remotion/web-renderer'},
+					'Using Chromium experimental HTML-in-Canvas (drawElementImage) for this frame. Pixels may differ from the built-in DOM composer. Set enableHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas',
+				);
+			}
+		: undefined;
 
 	const resolved = await Internals.resolveVideoConfig({
 		calculateMetadata:
@@ -145,6 +162,8 @@ async function internalRenderStillOnWeb<
 			internalState,
 			onlyBackgroundClipText: false,
 			cutout: new DOMRect(0, 0, resolved.width, resolved.height),
+			enableHtmlInCanvas,
+			onHtmlInCanvasCapture,
 		});
 
 		const imageData = await capturedFrame.canvas.convertToBlob({
@@ -208,6 +227,7 @@ export const renderStillOnWeb = <
 				licenseKey: options.licenseKey ?? null,
 				scale: options.scale ?? 1,
 				isProduction: options.isProduction ?? true,
+				enableHtmlInCanvas: options.enableHtmlInCanvas ?? true,
 			}),
 		);
 

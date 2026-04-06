@@ -152,7 +152,7 @@ async function internalRenderStillOnWeb<
 			cutout: new DOMRect(0, 0, resolved.width, resolved.height),
 		});
 
-		const canvas = capturedFrame.canvas;
+		const {canvas} = capturedFrame;
 
 		const assets = collectAssets.current!.collectAssets();
 		if (onArtifact) {

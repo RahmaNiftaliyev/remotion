@@ -38,7 +38,7 @@ export const createLayer = async ({
 		onHtmlInCanvasLayerOutcome
 	) {
 		try {
-			const offCtx = drawWithHtmlInCanvas({
+			const offCtx = await drawWithHtmlInCanvas({
 				htmlInCanvasContext,
 				element,
 				scaledWidth,

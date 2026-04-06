@@ -27,20 +27,6 @@ export const supportsNativeHtmlInCanvas = (): boolean => {
 export type HtmlInCanvasContext = {
 	layoutCanvas: HTMLCanvasWithLayoutSubtree;
 	ctx: Canvas2DWithDrawElement;
-	warmedUp: boolean;
-};
-
-const isNoCachedPaintRecordError = (err: unknown): boolean => {
-	const msg = err instanceof Error ? err.message : String(err);
-	return msg.includes('cached paint record') || msg.includes('No cached paint');
-};
-
-const waitOneAnimationFrame = (): Promise<void> => {
-	return new Promise((resolve) => {
-		requestAnimationFrame(() => {
-			resolve();
-		});
-	});
 };
 
 /**
@@ -89,23 +75,32 @@ export const setupHtmlInCanvas = ({
 		return null;
 	}
 
+	if (typeof layoutCanvas.requestPaint !== 'function') {
+		return null;
+	}
+
 	wrapper.removeChild(div);
 	layoutCanvas.appendChild(div);
 	wrapper.appendChild(layoutCanvas);
 
-	return {layoutCanvas, ctx: maybeCtx, warmedUp: false};
+	return {layoutCanvas, ctx: maybeCtx};
 };
 
-const MAX_WARMUP_ATTEMPTS = 10;
+const waitForPaint = (
+	layoutCanvas: HTMLCanvasWithLayoutSubtree,
+): Promise<void> => {
+	return new Promise((resolve) => {
+		layoutCanvas.addEventListener('paint', () => resolve(), {once: true});
+		layoutCanvas.requestPaint!();
+	});
+};
 
 /**
- * Draws the scaffold div into an OffscreenCanvas using the persistent
- * html-in-canvas context. Called per-frame; no reparenting needed because
- * the div is already a child of the layoutsubtree canvas.
+ * Triggers a fresh paint record via requestPaint(), waits for the paint event,
+ * then captures the element into an OffscreenCanvas using drawElementImage.
  *
- * On the first call the browser may not have a paint record yet. In that case
- * we wait for animation frames and retry up to MAX_WARMUP_ATTEMPTS times before
- * giving up. After the first success, subsequent calls are synchronous.
+ * The caller is responsible for ensuring the frame content is ready (via
+ * waitForReady) before calling this function.
  */
 export const drawWithHtmlInCanvas = async ({
 	htmlInCanvasContext,
@@ -120,44 +115,22 @@ export const drawWithHtmlInCanvas = async ({
 }): Promise<OffscreenCanvasRenderingContext2D> => {
 	const {ctx, layoutCanvas} = htmlInCanvasContext;
 
-	const draw = (): OffscreenCanvasRenderingContext2D => {
-		layoutCanvas.width = scaledWidth;
-		layoutCanvas.height = scaledHeight;
+	await waitForPaint(layoutCanvas);
 
-		ctx.reset();
-		ctx.drawElementImage(element, 0, 0, scaledWidth, scaledHeight);
+	layoutCanvas.width = scaledWidth;
+	layoutCanvas.height = scaledHeight;
 
-		const offscreen = new OffscreenCanvas(scaledWidth, scaledHeight);
-		const offCtx = offscreen.getContext('2d');
-		if (!offCtx) {
-			throw new Error('Could not get offscreen context');
-		}
+	ctx.reset();
+	ctx.drawElementImage(element, 0, 0, scaledWidth, scaledHeight);
 
-		offCtx.drawImage(layoutCanvas, 0, 0);
-		return offCtx;
-	};
-
-	if (htmlInCanvasContext.warmedUp) {
-		return draw();
+	const offscreen = new OffscreenCanvas(scaledWidth, scaledHeight);
+	const offCtx = offscreen.getContext('2d');
+	if (!offCtx) {
+		throw new Error('Could not get offscreen context');
 	}
 
-	let lastError: unknown;
-	for (let attempt = 0; attempt < MAX_WARMUP_ATTEMPTS; attempt++) {
-		try {
-			const result = draw();
-			htmlInCanvasContext.warmedUp = true;
-			return result;
-		} catch (err) {
-			if (!isNoCachedPaintRecordError(err)) {
-				throw err;
-			}
-
-			lastError = err;
-			await waitOneAnimationFrame();
-		}
-	}
-
-	throw lastError;
+	offCtx.drawImage(layoutCanvas, 0, 0);
+	return offCtx;
 };
 
 export const teardownHtmlInCanvas = ({

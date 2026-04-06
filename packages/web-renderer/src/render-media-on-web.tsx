@@ -342,7 +342,7 @@ const internalRenderMediaOnWeb = async <
 			onHtmlInCanvasLayerOutcome({
 				native: false,
 				reason:
-					'Failed to set up html-in-canvas context (getContext returned null or drawElementImage missing).',
+					'drawElementImage is available but canvas.requestPaint() is missing. Use a Chromium version that ships requestPaint.',
 			});
 		}
 	} else if (!allowHtmlInCanvas) {

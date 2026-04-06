@@ -3,7 +3,7 @@
 		"url": "https://github.com/remotion-dev/remotion/tree/main/packages/google-fonts"
 	},
 	"name": "@remotion/google-fonts",
-	"version": "4.0.443",
+	"version": "4.0.445",
 	"description": "Use Google Fonts in Remotion",
 	"main": "dist/cjs/index.js",
 	"module": "dist/esm/index.mjs",
@@ -475,6 +475,9 @@
 			],
 			"BIZUDPMincho": [
 				"dist/cjs/BIZUDPMincho.d.ts"
+			],
+			"BJCree": [
+				"dist/cjs/BJCree.d.ts"
 			],
 			"Babylonica": [
 				"dist/cjs/Babylonica.d.ts"
@@ -2870,6 +2873,9 @@
 			"Miniver": [
 				"dist/cjs/Miniver.d.ts"
 			],
+			"MirandaSans": [
+				"dist/cjs/MirandaSans.d.ts"
+			],
 			"MiriamLibre": [
 				"dist/cjs/MiriamLibre.d.ts"
 			],
@@ -4534,6 +4540,9 @@
 			],
 			"SairaSemiCondensed": [
 				"dist/cjs/SairaSemiCondensed.d.ts"
+			],
+			"SairaStencil": [
+				"dist/cjs/SairaStencil.d.ts"
 			],
 			"SairaStencilOne": [
 				"dist/cjs/SairaStencilOne.d.ts"

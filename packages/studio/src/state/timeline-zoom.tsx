@@ -1,4 +1,4 @@
-import React, {createContext, useMemo, useState} from 'react';
+import React, {createContext, useCallback, useMemo, useState} from 'react';
 import {
 	getCurrentDuration,
 	getCurrentFrame,
@@ -9,9 +9,18 @@ import {getZoomFromLocalStorage} from '../components/ZoomPersistor';
 export const TIMELINE_MIN_ZOOM = 1;
 export const TIMELINE_MAX_ZOOM = 5;
 
+export type TimelineSetZoomOptions = {
+	anchorFrame: number | null;
+	anchorContentX: number | null;
+};
+
 export const TimelineZoomCtx = createContext<{
 	zoom: Record<string, number>;
-	setZoom: (compositionId: string, prev: (prevZoom: number) => number) => void;
+	setZoom: (
+		compositionId: string,
+		prev: (prevZoom: number) => number,
+		options?: TimelineSetZoomOptions,
+	) => void;
 }>({
 	zoom: {},
 	setZoom: () => {
@@ -22,38 +31,49 @@ export const TimelineZoomCtx = createContext<{
 export const TimelineZoomContext: React.FC<{
 	readonly children: React.ReactNode;
 }> = ({children}) => {
-	const [zoom, setZoom] = useState<Record<string, number>>(() =>
+	const [zoom, setZoomState] = useState<Record<string, number>>(() =>
 		getZoomFromLocalStorage(),
+	);
+
+	const setZoom = useCallback(
+		(
+			compositionId: string,
+			callback: (prevZoomLevel: number) => number,
+			options?: TimelineSetZoomOptions,
+		) => {
+			setZoomState((prevZoomMap) => {
+				const newZoomWithFloatingPointErrors = Math.min(
+					TIMELINE_MAX_ZOOM,
+					Math.max(
+						TIMELINE_MIN_ZOOM,
+						callback(prevZoomMap[compositionId] ?? TIMELINE_MIN_ZOOM),
+					),
+				);
+				const newZoom = Math.round(newZoomWithFloatingPointErrors * 10) / 10;
+
+				const anchorFrame = options?.anchorFrame ?? null;
+				const anchorContentX = options?.anchorContentX ?? null;
+
+				zoomAndPreserveCursor({
+					oldZoom: prevZoomMap[compositionId] ?? TIMELINE_MIN_ZOOM,
+					newZoom,
+					currentDurationInFrames: getCurrentDuration(),
+					currentFrame: getCurrentFrame(),
+					anchorFrame,
+					anchorContentX,
+				});
+				return {...prevZoomMap, [compositionId]: newZoom};
+			});
+		},
+		[],
 	);
 
 	const value = useMemo(() => {
 		return {
 			zoom,
-			setZoom: (
-				compositionId: string,
-				callback: (prevZoomLevel: number) => number,
-			) => {
-				setZoom((prevZoomMap) => {
-					const newZoomWithFloatingPointErrors = Math.min(
-						TIMELINE_MAX_ZOOM,
-						Math.max(
-							TIMELINE_MIN_ZOOM,
-							callback(prevZoomMap[compositionId] ?? TIMELINE_MIN_ZOOM),
-						),
-					);
-					const newZoom = Math.round(newZoomWithFloatingPointErrors * 10) / 10;
-
-					zoomAndPreserveCursor({
-						oldZoom: prevZoomMap[compositionId] ?? TIMELINE_MIN_ZOOM,
-						newZoom,
-						currentDurationInFrames: getCurrentDuration(),
-						currentFrame: getCurrentFrame(),
-					});
-					return {...prevZoomMap, [compositionId]: newZoom};
-				});
-			},
+			setZoom,
 		};
-	}, [zoom]);
+	}, [zoom, setZoom]);
 
 	return (
 		<TimelineZoomCtx.Provider value={value}>

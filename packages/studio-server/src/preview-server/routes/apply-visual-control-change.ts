@@ -1,15 +1,17 @@
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
+import type {File} from '@babel/types';
 import {RenderInternals} from '@remotion/renderer';
 import type {
 	ApplyVisualControlRequest,
 	ApplyVisualControlResponse,
 } from '@remotion/studio-shared';
+import * as recast from 'recast';
 import {parseAst, serializeAst} from '../../codemods/parse-ast';
 import {applyCodemod} from '../../codemods/recast-mods';
 import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
-import {makeHyperlink} from '../../hyperlinks/make-link';
 import type {ApiHandler} from '../api-types';
+import {formatLogFileLocation} from '../format-log-file-location';
 import {waitForLiveEventsListener} from '../live-events';
 import {
 	printUndoHint,
@@ -18,6 +20,29 @@ import {
 } from '../undo-stack';
 import {suppressBundlerUpdateForFile} from '../watch-ignore-next-change';
 import {warnAboutPrettierOnce} from './log-update';
+
+const getVisualControlChangeLine = (file: File, changeId: string): number => {
+	let line = 1;
+	recast.types.visit(file.program, {
+		visitCallExpression(callPath) {
+			const {node} = callPath;
+			if (
+				node.callee.type === 'Identifier' &&
+				node.callee.name === 'visualControl'
+			) {
+				const firstArg = node.arguments[0];
+				if (firstArg?.type === 'StringLiteral' && firstArg.value === changeId) {
+					line = node.loc?.start.line ?? 1;
+					return false;
+				}
+			}
+
+			this.traverse(callPath);
+		},
+	});
+
+	return line;
+};
 
 export const applyVisualControlHandler: ApiHandler<
 	ApplyVisualControlRequest,
@@ -37,6 +62,8 @@ export const applyVisualControlHandler: ApiHandler<
 
 	const fileContents = readFileSync(absolutePath, 'utf-8');
 	const ast = parseAst(fileContents);
+	const logLine =
+		changes.length > 0 ? getVisualControlChangeLine(ast, changes[0].id) : 1;
 
 	const {newAst, changesMade} = applyCodemod({
 		file: ast,
@@ -80,11 +107,13 @@ export const applyVisualControlHandler: ApiHandler<
 		oldContents: fileContents,
 		logLevel,
 		remotionRoot,
+		logLine,
 		description: {
 			undoMessage: 'Undid visual control change',
 			redoMessage: 'Redid visual control change',
 		},
 		entryType: 'visual-control',
+		suppressHmrOnFileRestore: true,
 	});
 	suppressUndoStackInvalidation(absolutePath);
 	suppressBundlerUpdateForFile(absolutePath);
@@ -103,15 +132,14 @@ export const applyVisualControlHandler: ApiHandler<
 		});
 	});
 
-	const locationLabel = `${fileRelativeToRoot}`;
-	const fileLink = makeHyperlink({
-		url: `file://${absolutePath}`,
-		text: locationLabel,
-		fallback: locationLabel,
+	const locationLabel = formatLogFileLocation({
+		remotionRoot,
+		absolutePath,
+		line: logLine,
 	});
 	RenderInternals.Log.info(
 		{indent: false, logLevel},
-		`${RenderInternals.chalk.blueBright(`${fileLink}:`)} Applied visual control changes`,
+		`${RenderInternals.chalk.blueBright(`${locationLabel}:`)} Applied visual control changes`,
 	);
 	if (!formatted) {
 		warnAboutPrettierOnce(logLevel);

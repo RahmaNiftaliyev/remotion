@@ -3,11 +3,10 @@ import React, {useMemo} from 'react';
 import {MediaPlaybackError} from 'remotion';
 import {Spacing} from '../../components/layout';
 import {HORIZONTAL_SCROLLBAR_CLASSNAME} from '../../components/Menu/is-menu-item';
-import {getRoute} from '../../helpers/url-state';
 import type {ErrorRecord} from '../react-overlay/listen-to-runtime-errors';
 import {AskOnDiscord} from './AskOnDiscord';
 import {CalculateMetadataErrorExplainer} from './CalculateMetadataErrorExplainer';
-import {CompositionIdsDropdown} from './CompositionIdsDropdown';
+import {CopyStackTrace} from './CopyStackTrace';
 import {ErrorTitle} from './ErrorTitle';
 import {getHelpLink} from './get-help-link';
 import {HelpLink} from './HelpLink';
@@ -43,7 +42,6 @@ export const ErrorDisplay: React.FC<{
 	canHaveDismissButton,
 	calculateMetadata,
 }) => {
-	const compositionIds = window?.remotion_seenCompositionIds ?? [];
 	const highestLineNumber = Math.max(
 		...display.stackFrames
 			.map((s) => s.originalScriptCode)
@@ -68,11 +66,21 @@ export const ErrorDisplay: React.FC<{
 
 	const helpLink = getHelpLink(message);
 
-	const getCurrentCompositionId = () => {
-		const route = getRoute();
-		const id = route.startsWith('/') ? route.slice(1) : route;
-		return compositionIds.includes(id) ? id : (compositionIds[0] ?? null);
-	};
+	const errorTextForCopy = useMemo(() => {
+		const header = `${display.error.name}: ${message}`;
+
+		if (display.stackFrames.length > 0) {
+			const stackLines = display.stackFrames
+				.map(
+					(frame) =>
+						`at ${frame.originalFunctionName || '<anonymous>'} (${frame.originalFileName || 'unknown'}:${frame.originalLineNumber || '?'}:${frame.originalColumnNumber || '?'})`,
+				)
+				.join('\n');
+			return `${header}\n${stackLines}`;
+		}
+
+		return display.error.stack || header;
+	}, [display.stackFrames, display.error, message]);
 
 	return (
 		<div>
@@ -101,15 +109,11 @@ export const ErrorDisplay: React.FC<{
 					<div style={spacer} />
 				</>
 			) : null}
-			{compositionIds.length > 0 ? (
-				<>
-					<CompositionIdsDropdown
-						compositionIds={compositionIds}
-						currentId={getCurrentCompositionId()}
-					/>
-					<div style={spacer} />
-				</>
-			) : null}
+			<CopyStackTrace
+				canHaveKeyboardShortcuts={keyboardShortcuts}
+				errorText={errorTextForCopy}
+			/>
+			<div style={spacer} />
 			<SearchGithubIssues
 				canHaveKeyboardShortcuts={keyboardShortcuts}
 				message={display.error.message}
@@ -119,7 +123,10 @@ export const ErrorDisplay: React.FC<{
 			{onRetry ? (
 				<>
 					<div style={spacer} />
-					<RetryButton onClick={onRetry} />
+					<RetryButton
+						onClick={onRetry}
+						label={calculateMetadata ? 'Retry calculateMetadata()' : 'Retry'}
+					/>
 				</>
 			) : null}
 			{calculateMetadata ? (

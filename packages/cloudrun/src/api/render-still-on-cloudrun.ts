@@ -1,3 +1,4 @@
+import type {Readable} from 'stream';
 import type {
 	ChromiumOptions,
 	StillImageFormat,
@@ -159,7 +160,7 @@ const internalRenderStillOnCloudRun = async ({
 
 	const client = await getAuthClientForUrl(cloudRunEndpoint);
 
-	const postResponse = await client.request({
+	const postResponse = await client.request<Readable>({
 		url: cloudRunEndpoint,
 		method: 'POST',
 		data,
@@ -177,7 +178,7 @@ const internalRenderStillOnCloudRun = async ({
 		const startTime = Date.now();
 		const formattedStartTime = new Date().toISOString();
 
-		const stream: any = postResponse.data;
+		const stream: Readable = postResponse.data;
 
 		let accumulatedChunks = ''; // A buffer to accumulate chunks.
 

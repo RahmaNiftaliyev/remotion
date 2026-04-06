@@ -4,7 +4,9 @@ import {handleAddRender} from './routes/add-render';
 import {applyCodemodHandler} from './routes/apply-codemod';
 import {applyVisualControlHandler} from './routes/apply-visual-control-change';
 import {handleCancelRender} from './routes/cancel-render';
+import {deleteJsxNodeHandler} from './routes/delete-jsx-node';
 import {deleteStaticFileHandler} from './routes/delete-static-file';
+import {duplicateJsxNodeHandler} from './routes/duplicate-jsx-node';
 import {handleInstallPackage} from './routes/install-dependency';
 import {handleOpenInFileExplorer} from './routes/open-in-file-explorer';
 import {projectInfoHandler} from './routes/project-info';
@@ -42,6 +44,8 @@ export const allApiRoutes: {
 	'/api/subscribe-to-sequence-props': subscribeToSequenceProps,
 	'/api/unsubscribe-from-sequence-props': unsubscribeFromSequenceProps,
 	'/api/save-sequence-props': saveSequencePropsHandler,
+	'/api/delete-jsx-node': deleteJsxNodeHandler,
+	'/api/duplicate-jsx-node': duplicateJsxNodeHandler,
 	'/api/update-available': handleUpdate,
 	'/api/project-info': projectInfoHandler,
 	'/api/delete-static-file': deleteStaticFileHandler,

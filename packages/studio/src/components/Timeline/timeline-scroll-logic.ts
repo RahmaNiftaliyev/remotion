@@ -281,16 +281,39 @@ export const getFrameFromX = ({
 	return frame;
 };
 
+/**
+ * Horizontal position inside the scrollable timeline content (0 … scrollWidth)
+ * for a viewport `clientX`, so pinch-anchoring matches the pointer (not a
+ * rounded frame index).
+ */
+export const viewportClientXToScrollContentX = ({
+	clientX,
+	scrollEl,
+}: {
+	clientX: number;
+	scrollEl: HTMLDivElement;
+}) => {
+	const rect = scrollEl.getBoundingClientRect();
+	const clampedClientX = Math.min(Math.max(clientX, rect.left), rect.right);
+
+	return clampedClientX + scrollEl.scrollLeft - rect.left;
+};
+
 export const zoomAndPreserveCursor = ({
 	oldZoom,
 	newZoom,
 	currentFrame,
 	currentDurationInFrames,
+	anchorFrame,
+	anchorContentX,
 }: {
 	oldZoom: number;
 	newZoom: number;
 	currentFrame: number;
 	currentDurationInFrames: number;
+	anchorFrame: number | null;
+	/** Prefer this over `anchorFrame` when not null (subpixel-accurate anchor). */
+	anchorContentX: number | null;
 }) => {
 	const ratio = newZoom / oldZoom;
 	if (ratio === 1) {
@@ -304,14 +327,17 @@ export const zoomAndPreserveCursor = ({
 	}
 
 	const frameIncrement = getFrameIncrement(currentDurationInFrames);
-	const prevCursorPosition = frameIncrement * currentFrame + TIMELINE_PADDING;
+	const frameForScroll = anchorFrame ?? currentFrame;
+	const prevCursorPosition =
+		anchorContentX !== null
+			? Math.min(Math.max(anchorContentX, 0), current.scrollWidth)
+			: frameIncrement * frameForScroll + TIMELINE_PADDING;
 
 	const newCursorPosition =
 		ratio * (prevCursorPosition - TIMELINE_PADDING) + TIMELINE_PADDING;
 
 	current.scrollLeft += newCursorPosition - prevCursorPosition;
-	redrawTimelineSliderFast.current?.draw(
-		currentFrame,
-		(scrollableRef.current?.clientWidth ?? 0) * ratio,
-	);
+	// Playhead position is synced in `TimelineSlider` `useLayoutEffect` using
+	// measured `sliderAreaRef.clientWidth` so it matches layout after zoom
+	// (avoids fighting React `style` with stale `timelineWidth` during pinch).
 };

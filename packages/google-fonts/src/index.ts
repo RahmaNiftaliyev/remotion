@@ -792,6 +792,11 @@ export const getAvailableFonts = () => [
 		load: () => import('./BIZUDPMincho') as Promise<GoogleFont>,
 	},
 	{
+		fontFamily: 'BJ Cree',
+		importName: 'BJCree',
+		load: () => import('./BJCree') as Promise<GoogleFont>,
+	},
+	{
 		fontFamily: 'Babylonica',
 		importName: 'Babylonica',
 		load: () => import('./Babylonica') as Promise<GoogleFont>,
@@ -4782,6 +4787,11 @@ export const getAvailableFonts = () => [
 		load: () => import('./Miniver') as Promise<GoogleFont>,
 	},
 	{
+		fontFamily: 'Miranda Sans',
+		importName: 'MirandaSans',
+		load: () => import('./MirandaSans') as Promise<GoogleFont>,
+	},
+	{
 		fontFamily: 'Miriam Libre',
 		importName: 'MiriamLibre',
 		load: () => import('./MiriamLibre') as Promise<GoogleFont>,
@@ -7556,6 +7566,11 @@ export const getAvailableFonts = () => [
 		fontFamily: 'Saira Semi Condensed',
 		importName: 'SairaSemiCondensed',
 		load: () => import('./SairaSemiCondensed') as Promise<GoogleFont>,
+	},
+	{
+		fontFamily: 'Saira Stencil',
+		importName: 'SairaStencil',
+		load: () => import('./SairaStencil') as Promise<GoogleFont>,
 	},
 	{
 		fontFamily: 'Saira Stencil One',

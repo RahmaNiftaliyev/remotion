@@ -1,4 +1,11 @@
-import React, {useCallback, useContext, useMemo, useRef, useState} from 'react';
+import React, {
+	useCallback,
+	useContext,
+	useLayoutEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 import {Internals, type StaticFile} from 'remotion';
 import {NoReactInternals} from 'remotion/no-react';
 import {
@@ -10,6 +17,10 @@ import {
 import {copyText} from '../helpers/copy-text';
 import type {AssetFolder, AssetStructure} from '../helpers/create-folder-tree';
 import {useMobileLayout} from '../helpers/mobile-layout';
+import {
+	markAssetSidebarScrollFromRowClick,
+	maybeScrollAssetSidebarRowIntoView,
+} from '../helpers/sidebar-scroll-into-view';
 import {pushUrl} from '../helpers/url-state';
 import useAssetDragEvents from '../helpers/use-asset-drag-events';
 import {ClipboardIcon} from '../icons/clipboard';
@@ -272,7 +283,17 @@ const AssetSelectorItem: React.FC<{
 		setHovered(false);
 	}, []);
 
+	const rowRef = useRef<HTMLDivElement>(null);
+	useLayoutEffect(() => {
+		maybeScrollAssetSidebarRowIntoView({
+			element: rowRef.current,
+			assetPath: relativePath,
+			selected,
+		});
+	}, [relativePath, selected]);
+
 	const onClick = useCallback(() => {
+		markAssetSidebarScrollFromRowClick(relativePath);
 		setCanvasContent({type: 'asset', asset: relativePath});
 		pushUrl(`/assets/${relativePath}`);
 		if (isMobileLayout) {
@@ -352,6 +373,7 @@ const AssetSelectorItem: React.FC<{
 	return (
 		<Row align="center">
 			<div
+				ref={rowRef}
 				style={style}
 				onPointerEnter={onPointerEnter}
 				onPointerLeave={onPointerLeave}

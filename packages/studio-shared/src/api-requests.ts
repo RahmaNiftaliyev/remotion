@@ -230,6 +230,8 @@ export type CanUpdateSequencePropsResponse =
 			canUpdate: true;
 			props: Record<string, CanUpdateSequencePropStatus>;
 			nodePath: SequenceNodePath;
+			/** True when the JSX is inside a `.map()` callback (list iteration). */
+			jsxInMapCallback: boolean;
 	  }
 	| {
 			canUpdate: false;
@@ -249,6 +251,36 @@ export type SaveSequencePropsResponse =
 	| {
 			success: true;
 			newStatus: CanUpdateSequencePropsResponse;
+	  }
+	| {
+			success: false;
+			reason: string;
+			stack: string;
+	  };
+
+export type DeleteJsxNodeRequest = {
+	fileName: string;
+	nodePath: SequenceNodePath;
+};
+
+export type DeleteJsxNodeResponse =
+	| {
+			success: true;
+	  }
+	| {
+			success: false;
+			reason: string;
+			stack: string;
+	  };
+
+export type DuplicateJsxNodeRequest = {
+	fileName: string;
+	nodePath: SequenceNodePath;
+};
+
+export type DuplicateJsxNodeResponse =
+	| {
+			success: true;
 	  }
 	| {
 			success: false;
@@ -338,6 +370,14 @@ export type ApiRoutes = {
 	'/api/save-sequence-props': ReqAndRes<
 		SaveSequencePropsRequest,
 		SaveSequencePropsResponse
+	>;
+	'/api/delete-jsx-node': ReqAndRes<
+		DeleteJsxNodeRequest,
+		DeleteJsxNodeResponse
+	>;
+	'/api/duplicate-jsx-node': ReqAndRes<
+		DuplicateJsxNodeRequest,
+		DuplicateJsxNodeResponse
 	>;
 	'/api/update-available': ReqAndRes<
 		UpdateAvailableRequest,

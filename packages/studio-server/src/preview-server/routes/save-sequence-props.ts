@@ -38,13 +38,14 @@ export const saveSequencePropsHandler: ApiHandler<
 
 		const fileContents = readFileSync(absolutePath, 'utf-8');
 
-		const {output, oldValueString, formatted} = await updateSequenceProps({
-			input: fileContents,
-			nodePath,
-			key,
-			value: JSON.parse(value),
-			defaultValue: defaultValue !== null ? JSON.parse(defaultValue) : null,
-		});
+		const {output, oldValueString, formatted, logLine} =
+			await updateSequenceProps({
+				input: fileContents,
+				nodePath,
+				key,
+				value: JSON.parse(value),
+				defaultValue: defaultValue !== null ? JSON.parse(defaultValue) : null,
+			});
 
 		const newValueString = JSON.stringify(JSON.parse(value));
 		const parsedDefault =
@@ -75,19 +76,21 @@ export const saveSequencePropsHandler: ApiHandler<
 			oldContents: fileContents,
 			logLevel,
 			remotionRoot,
+			logLine,
 			description: {
 				undoMessage: `Undid ${undoPropChange}`,
 				redoMessage: `Redid ${redoPropChange}`,
 			},
 			entryType: 'sequence-props',
+			suppressHmrOnFileRestore: true,
 		});
 		suppressUndoStackInvalidation(absolutePath);
 		suppressBundlerUpdateForFile(absolutePath);
 		writeFileAndNotifyFileWatchers(absolutePath, output);
 
 		logUpdate({
-			absolutePath,
 			fileRelativeToRoot,
+			line: logLine,
 			key,
 			oldValueString,
 			newValueString,

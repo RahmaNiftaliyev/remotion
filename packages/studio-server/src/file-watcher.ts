@@ -14,8 +14,21 @@ type SharedWatcher = {
 	unwatch: () => void;
 };
 
+const getRegistryKey = (file: string, existenceOnly: boolean): string =>
+	existenceOnly ? `${file}\0existence-only` : file;
+
 export type FileWatcherRegistry = {
-	installFileWatcher: (options: {file: string; onChange: OnChange}) => {
+	installFileWatcher: (options: {
+		file: string;
+		onChange: OnChange;
+		/**
+		 * When true, only created/deleted events are emitted (no reads on change).
+		 * Use for binary or very large files (e.g. render output) where subscribers
+		 * only need to know whether the path exists.
+		 * Pass false when subscribers need content (including `changed` events).
+		 */
+		existenceOnly: boolean;
+	}) => {
 		exists: boolean;
 		unwatch: () => void;
 	};
@@ -28,11 +41,14 @@ export const createFileWatcherRegistry = (): FileWatcherRegistry => {
 	const _installFileWatcher = ({
 		file,
 		onChange,
+		existenceOnly,
 	}: {
 		file: string;
 		onChange: OnChange;
+		existenceOnly: boolean;
 	}): {exists: boolean; unwatch: () => void} => {
-		const existing = sharedWatchers.get(file);
+		const registryKey = getRegistryKey(file, existenceOnly);
+		const existing = sharedWatchers.get(registryKey);
 
 		if (existing) {
 			existing.subscribers.add(onChange);
@@ -43,7 +59,7 @@ export const createFileWatcherRegistry = (): FileWatcherRegistry => {
 					existing.subscribers.delete(onChange);
 					if (existing.subscribers.size === 0) {
 						existing.unwatch();
-						sharedWatchers.delete(file);
+						sharedWatchers.delete(registryKey);
 					}
 				},
 			};
@@ -65,7 +81,15 @@ export const createFileWatcherRegistry = (): FileWatcherRegistry => {
 
 			let event: FileChangeEvent | null = null;
 
-			if (!shared.existedBefore && existsNow) {
+			if (existenceOnly) {
+				if (!shared.existedBefore && existsNow) {
+					shared.existedBefore = true;
+					event = {type: 'created', content: ''};
+				} else if (shared.existedBefore && !existsNow) {
+					shared.existedBefore = false;
+					event = {type: 'deleted'};
+				}
+			} else if (!shared.existedBefore && existsNow) {
 				const content = readFileSync(file, 'utf-8');
 				shared.existedBefore = true;
 				shared.lastKnownContent = content;
@@ -102,7 +126,7 @@ export const createFileWatcherRegistry = (): FileWatcherRegistry => {
 		};
 
 		fs.watchFile(file, {interval: 100}, listener);
-		sharedWatchers.set(file, shared);
+		sharedWatchers.set(registryKey, shared);
 
 		return {
 			exists: existedAtBeginning,
@@ -110,7 +134,7 @@ export const createFileWatcherRegistry = (): FileWatcherRegistry => {
 				shared.subscribers.delete(onChange);
 				if (shared.subscribers.size === 0) {
 					shared.unwatch();
-					sharedWatchers.delete(file);
+					sharedWatchers.delete(registryKey);
 				}
 			},
 		};
@@ -119,7 +143,7 @@ export const createFileWatcherRegistry = (): FileWatcherRegistry => {
 	const _writeFileAndNotifyFileWatchers = (file: string, content: string) => {
 		writeFileSync(file, content);
 
-		const shared = sharedWatchers.get(file);
+		const shared = sharedWatchers.get(getRegistryKey(file, false));
 		if (!shared) {
 			return;
 		}

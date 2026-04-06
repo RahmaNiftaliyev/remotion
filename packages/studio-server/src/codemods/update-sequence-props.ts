@@ -9,6 +9,7 @@ import type {
 import type {SequenceNodePath} from '@remotion/studio-shared';
 import * as recast from 'recast';
 import {findJsxElementAtNodePath} from '../preview-server/routes/can-update-sequence-props';
+import {formatFileContent} from './format-file-content';
 import {parseAst, serializeAst} from './parse-ast';
 import {parseValueExpression, updateNestedProp} from './update-nested-prop';
 
@@ -32,6 +33,7 @@ export const updateSequenceProps = async ({
 	output: string;
 	oldValueString: string;
 	formatted: boolean;
+	logLine: number;
 }> => {
 	const ast = parseAst(input);
 	let oldValueString = '';
@@ -51,6 +53,8 @@ export const updateSequenceProps = async ({
 			'Could not find a JSX element at the specified line to update',
 		);
 	}
+
+	const logLine = node.loc?.start.line ?? 1;
 
 	if (isNested) {
 		oldValueString = updateNestedProp({
@@ -123,58 +127,15 @@ export const updateSequenceProps = async ({
 	}
 
 	const finalFile = serializeAst(ast);
-
-	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-	type PrettierType = typeof import('prettier');
-	let prettier: PrettierType | null = null;
-
-	try {
-		prettier = await import('prettier');
-	} catch {
-		return {
-			output: finalFile,
-			oldValueString,
-			formatted: false,
-		};
-	}
-
-	const {format, resolveConfig, resolveConfigFile} = prettier as PrettierType;
-
-	let prettierConfig: Record<string, unknown> | null;
-
-	if (prettierConfigOverride !== undefined) {
-		prettierConfig = prettierConfigOverride;
-	} else {
-		const configFilePath = await resolveConfigFile();
-		if (!configFilePath) {
-			return {
-				output: finalFile,
-				oldValueString,
-				formatted: false,
-			};
-		}
-
-		prettierConfig = await resolveConfig(configFilePath);
-	}
-
-	if (!prettierConfig) {
-		return {
-			output: finalFile,
-			oldValueString,
-			formatted: false,
-		};
-	}
-
-	const prettified = await format(finalFile, {
-		...prettierConfig,
-		filepath: 'test.tsx',
-		plugins: [],
-		endOfLine: 'lf',
+	const {output, formatted} = await formatFileContent({
+		input: finalFile,
+		prettierConfigOverride,
 	});
 
 	return {
-		output: prettified,
+		output,
 		oldValueString,
-		formatted: true,
+		formatted,
+		logLine,
 	};
 };

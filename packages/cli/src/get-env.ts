@@ -39,6 +39,7 @@ const watchEnvFile = ({
 }): (() => void) => {
 	const {unwatch} = StudioServerInternals.installFileWatcher({
 		file: envFile,
+		existenceOnly: false,
 		onChange: async (event) => {
 			try {
 				if (event.type === 'deleted') {

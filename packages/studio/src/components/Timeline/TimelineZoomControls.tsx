@@ -38,8 +38,10 @@ export const TimelineZoomControls: React.FC = () => {
 			return;
 		}
 
-		setZoom(canvasContent.compositionId, (z) =>
-			Math.max(TIMELINE_MIN_ZOOM, z - 0.2),
+		setZoom(
+			canvasContent.compositionId,
+			(z) => Math.max(TIMELINE_MIN_ZOOM, z - 0.2),
+			{anchorFrame: null, anchorContentX: null},
 		);
 	}, [canvasContent, setZoom]);
 
@@ -48,8 +50,10 @@ export const TimelineZoomControls: React.FC = () => {
 			return;
 		}
 
-		setZoom(canvasContent.compositionId, (z) =>
-			Math.min(TIMELINE_MAX_ZOOM, z + 0.2),
+		setZoom(
+			canvasContent.compositionId,
+			(z) => Math.min(TIMELINE_MAX_ZOOM, z + 0.2),
+			{anchorFrame: null, anchorContentX: null},
 		);
 	}, [canvasContent, setZoom]);
 
@@ -59,7 +63,10 @@ export const TimelineZoomControls: React.FC = () => {
 				return;
 			}
 
-			setZoom(canvasContent.compositionId, () => Number(e.target.value));
+			setZoom(canvasContent.compositionId, () => Number(e.target.value), {
+				anchorFrame: null,
+				anchorContentX: null,
+			});
 		},
 		[canvasContent, setZoom],
 	);

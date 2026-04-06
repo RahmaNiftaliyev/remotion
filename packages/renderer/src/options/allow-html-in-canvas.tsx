@@ -10,10 +10,10 @@ export const allowHtmlInCanvasOption = {
 	description: () => (
 		<>
 			When client-side rendering is enabled in the Studio, allow the
-			experimental Chromium HTML-in-Canvas path (<code>drawElementImage</code>)
-			for capturing frames instead of the built-in DOM composer. See{' '}
-			<a href="https://www.remotion.dev/docs/web-renderer/render-media-on-web">
-				Web Renderer docs
+			experimental Chromium HTML-in-Canvas API to be used for capturing frames.
+			See{' '}
+			<a href="https://www.remotion.dev/docs/client-side-rendering/html-in-canvas">
+				HTML in Canvas docs
 			</a>
 			.
 		</>

@@ -13,21 +13,22 @@ test('should render still on web', async () => {
 		);
 	};
 
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: {
-			component: Component,
-			id: 'render-still-test',
-			width: 100,
-			height: 100,
-			fps: 30,
-			durationInFrames: 30,
-			calculateMetadata: () => Promise.resolve({}),
-		},
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: {
+				component: Component,
+				id: 'render-still-test',
+				width: 100,
+				height: 100,
+				fps: 30,
+				durationInFrames: 30,
+				calculateMetadata: () => Promise.resolve({}),
+			},
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({blob, testId: 'test-img'});
 });
@@ -44,20 +45,21 @@ test('should be able to read frame number', async () => {
 		);
 	};
 
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: {
-			component: Component,
-			id: 'frame-number-test',
-			width: 100,
-			height: 100,
-			fps: 30,
-			durationInFrames: 30,
-		},
-		frame: 20,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: {
+				component: Component,
+				id: 'frame-number-test',
+				width: 100,
+				height: 100,
+				fps: 30,
+				durationInFrames: 30,
+			},
+			frame: 20,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({blob, testId: 'frame-number'});
 });

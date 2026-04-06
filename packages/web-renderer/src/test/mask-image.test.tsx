@@ -7,27 +7,29 @@ import {testImage} from './utils';
 
 test('should render mask-image', async () => {
 	await page.viewport(700, 300);
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: maskImage,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: maskImage,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({blob, testId: 'mask-image', threshold: 0.02});
 });
 
 test('should render mask-image (scaled)', async () => {
 	await page.viewport(1400, 600);
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: maskImage,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-		scale: 2,
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: maskImage,
+			frame: 0,
+			inputProps: {},
+			scale: 2,
+		})
+	).blob({format: 'png'});
 
 	await testImage({blob, testId: 'mask-image-scaled', threshold: 0.02});
 });

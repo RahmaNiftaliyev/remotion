@@ -5,13 +5,14 @@ import {threeDTransformOutOfBounds} from './fixtures/three-d-transform-out-of-bo
 import {testImage} from './utils';
 
 test('Should not render items that are out of bounds', async () => {
-	const {blob, internalState} = await renderStillOnWeb({
+	const still = await renderStillOnWeb({
 		licenseKey: 'free-license',
 		composition: threeDTransformOutOfBounds,
 		frame: 0,
 		inputProps: {},
-		imageFormat: 'png',
 	});
+	const blob = await still.blob({format: 'png'});
+	const {internalState} = still;
 
 	await testImage({
 		blob,

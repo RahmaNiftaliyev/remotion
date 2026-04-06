@@ -20,22 +20,23 @@ test('can extract a video frame', async (t) => {
 		);
 	};
 
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: {
-			component: Component,
-			id: 'video-test',
-			width: 1920 / 3,
-			height: 1080 / 3,
-			fps: 25,
-			durationInFrames: 100,
-			calculateMetadata: () => Promise.resolve({}),
-		},
-		frame: 20,
-		inputProps: {},
-		imageFormat: 'png',
-		delayRenderTimeoutInMilliseconds: 5000,
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: {
+				component: Component,
+				id: 'video-test',
+				width: 1920 / 3,
+				height: 1080 / 3,
+				fps: 25,
+				durationInFrames: 100,
+				calculateMetadata: () => Promise.resolve({}),
+			},
+			frame: 20,
+			inputProps: {},
+			delayRenderTimeoutInMilliseconds: 5000,
+		})
+	).blob({format: 'png'});
 
 	await testImage({
 		blob,
@@ -74,7 +75,6 @@ test('cannot render inside an svg tag', async () => {
 			},
 			frame: 20,
 			inputProps: {},
-			imageFormat: 'png',
 			delayRenderTimeoutInMilliseconds: 5000,
 		});
 		throw new Error('Expected an error');

@@ -4,6 +4,7 @@ import type {IncomingMessage, ServerResponse} from 'node:http';
 import path, {join} from 'node:path';
 import {URLSearchParams} from 'node:url';
 import {BundlerInternals} from '@remotion/bundler';
+import {RenderInternals} from '@remotion/renderer';
 import type {LogLevel} from '@remotion/renderer';
 import type {
 	ApiRoutes,
@@ -30,6 +31,7 @@ import {resolveOutputPath} from './helpers/resolve-output-path';
 import {allApiRoutes} from './preview-server/api-routes';
 import type {ApiHandler, QueueMethods} from './preview-server/api-types';
 import {getPackageManager} from './preview-server/get-package-manager';
+import {getStaticFileFallbackHint} from './preview-server/get-static-file-fallback-hint';
 import {handleRequest} from './preview-server/handler';
 import type {LiveEventsServer} from './preview-server/live-events';
 import {parseRequestBody} from './preview-server/parse-body';
@@ -38,6 +40,7 @@ import {serveStatic} from './preview-server/serve-static';
 import type {RemotionConfigResponse} from './remotion-config-response';
 
 const editorGuess = guessEditor();
+const loggedStaticFileHints = new Set<string>();
 
 const static404 = (response: ServerResponse): Promise<void> => {
 	response.writeHead(404);
@@ -75,6 +78,7 @@ const handleFallback = async ({
 	remotionRoot,
 	hash,
 	response,
+	request,
 	getCurrentInputProps,
 	getEnvVariables,
 	publicDir,
@@ -89,6 +93,7 @@ const handleFallback = async ({
 	remotionRoot: string;
 	hash: string;
 	response: ServerResponse;
+	request: IncomingMessage;
 	publicDir: string;
 	getCurrentInputProps: () => object;
 	getEnvVariables: () => Record<string, string>;
@@ -100,6 +105,29 @@ const handleFallback = async ({
 	logLevel: LogLevel;
 	enableCrossSiteIsolation: boolean;
 }) => {
+	const requestUrl = new URL(request.url as string, 'http://localhost');
+	const {pathname} = requestUrl;
+	const staticFileHint = getStaticFileFallbackHint({
+		method: request.method,
+		pathname,
+		publicDir,
+	});
+	if (
+		staticFileHint &&
+		pathname.includes('.') &&
+		!loggedStaticFileHints.has(staticFileHint)
+	) {
+		loggedStaticFileHints.add(staticFileHint);
+		RenderInternals.Log.error(
+			{indent: false, logLevel},
+			[
+				`"${pathname}" was requested but not found.`,
+				'To import assets from the public/ folder, you must wrap them in staticFile(): https://www.remotion.dev/docs/assets',
+				`Change \`"${pathname}"\` to \`staticFile("${pathname}")\` to fix the error.`,
+			].join('\n'),
+		);
+	}
+
 	const [edit] = await editorGuess;
 	const displayName = getDisplayNameForEditor(edit ? edit.command : null);
 
@@ -618,6 +646,7 @@ export const handleRoutes = ({
 		remotionRoot,
 		hash: staticHash,
 		response,
+		request,
 		getCurrentInputProps,
 		getEnvVariables,
 		publicDir,

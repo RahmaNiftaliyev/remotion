@@ -8,24 +8,30 @@ import type {WebRendererOnArtifact} from './artifact';
 import {handleArtifacts} from './artifact';
 import {checkForError, createScaffold} from './create-scaffold';
 import {supportsNativeHtmlInCanvas} from './html-in-canvas';
-import type {InternalState} from './internal-state';
 import {makeInternalState} from './internal-state';
 import type {CompositionCalculateMetadataOrExplicit} from './props-if-has-props';
 import type {InputPropsIfHasProps} from './render-media-on-web';
 import {onlyOneRenderAtATimeQueue} from './render-operations-queue';
+import {
+	createRenderStillOnWebResult,
+	type RenderStillOnWebResult,
+} from './render-still-screenshot-task';
 import {sendUsageEvent} from './send-telemetry-event';
 import {createLayer, type HtmlInCanvasLayerOutcome} from './take-screenshot';
 import {validateScale} from './validate-scale';
 import {waitForReady} from './wait-for-ready';
 
-export type RenderStillOnWebImageFormat = 'png' | 'jpeg' | 'webp';
+export type {
+	RenderStillOnWebEncodeOptions,
+	RenderStillOnWebImageFormat,
+	RenderStillOnWebResult,
+} from './render-still-screenshot-task';
 
 type MandatoryRenderStillOnWebOptions<
 	Schema extends $ZodObject,
 	Props extends Record<string, unknown>,
 > = {
 	frame: number;
-	imageFormat: RenderStillOnWebImageFormat;
 } & {
 	composition: CompositionCalculateMetadataOrExplicit<Schema, Props>;
 };
@@ -66,7 +72,6 @@ async function internalRenderStillOnWeb<
 	logLevel,
 	inputProps,
 	schema,
-	imageFormat,
 	mediaCacheSizeInBytes,
 	composition,
 	signal,
@@ -199,13 +204,16 @@ async function internalRenderStillOnWeb<
 				: undefined,
 		});
 
-		const imageData = await capturedFrame.canvas.convertToBlob({
-			type: `image/${imageFormat}`,
-		});
+		const {canvas} = capturedFrame;
 
 		const assets = collectAssets.current!.collectAssets();
 		if (onArtifact) {
-			await artifactsHandler.handle({imageData, frame, assets, onArtifact});
+			await artifactsHandler.handle({
+				imageData: canvas,
+				frame,
+				assets,
+				onArtifact,
+			});
 		}
 
 		sendUsageEvent({
@@ -216,7 +224,7 @@ async function internalRenderStillOnWeb<
 			isProduction,
 		});
 
-		return {blob: imageData, internalState};
+		return createRenderStillOnWebResult({canvas, internalState});
 	} catch (err) {
 		if (!signal?.aborted) {
 			sendUsageEvent({
@@ -243,7 +251,7 @@ export const renderStillOnWeb = <
 	Props extends Record<string, unknown>,
 >(
 	options: RenderStillOnWebOptions<Schema, Props>,
-): Promise<{blob: Blob; internalState: InternalState}> => {
+): Promise<RenderStillOnWebResult> => {
 	onlyOneRenderAtATimeQueue.ref = onlyOneRenderAtATimeQueue.ref
 		.catch(() => Promise.resolve())
 		.then(() =>
@@ -264,8 +272,5 @@ export const renderStillOnWeb = <
 			}),
 		);
 
-	return onlyOneRenderAtATimeQueue.ref as Promise<{
-		blob: Blob;
-		internalState: InternalState;
-	}>;
+	return onlyOneRenderAtATimeQueue.ref as Promise<RenderStillOnWebResult>;
 };

@@ -6,14 +6,15 @@ import {testImage} from './utils';
 
 test('scale rendering with 3D transform precompose', async () => {
 	// Render with large scale value
-	const {blob: blob10x} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: scalePrecomposeFixture,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-		scale: 10,
-	});
+	const blob10x = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: scalePrecomposeFixture,
+			frame: 0,
+			inputProps: {},
+			scale: 10,
+		})
+	).blob({format: 'png'});
 
 	// Visual regression test
 	await testImage({blob: blob10x, testId: 'scale-precompose-10x'});

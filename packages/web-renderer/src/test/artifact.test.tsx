@@ -24,7 +24,6 @@ test('should be able to render an artifact for still', async () => {
 			calculateMetadata: null,
 		},
 		frame: 0,
-		imageFormat: 'png',
 		onArtifact: (artifact) => {
 			artifacts.push(artifact);
 		},
@@ -88,7 +87,6 @@ test('should be able to emit a thumbnail', async () => {
 			calculateMetadata: null,
 		},
 		frame: 0,
-		imageFormat: 'png',
 		onArtifact: (artifact) => {
 			artifacts.push(artifact);
 		},

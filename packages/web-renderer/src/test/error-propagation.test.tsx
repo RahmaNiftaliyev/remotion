@@ -31,7 +31,6 @@ test('should propagate errors thrown in useEffect', async () => {
 		},
 		frame: 0,
 		inputProps: {},
-		imageFormat: 'png',
 	});
 
 	await expect(promise).rejects.toThrow(UseEffectError);
@@ -74,7 +73,6 @@ test('should propagate useful errors for non-Error throw values', async () => {
 		},
 		frame: 0,
 		inputProps: {},
-		imageFormat: 'png',
 	});
 
 	await expect(promise).rejects.toMatchObject({
@@ -112,7 +110,6 @@ test('should unwrap generic React wrapper errors and keep useful stack', async (
 		},
 		frame: 0,
 		inputProps: {},
-		imageFormat: 'png',
 	});
 
 	await expect(promise).rejects.toThrow(RootCauseError);
@@ -195,7 +192,6 @@ test('should propagate errors thrown during initial render', async () => {
 			},
 			frame: 0,
 			inputProps: {},
-			imageFormat: 'png',
 		}),
 	).rejects.toThrow(InitialRenderError);
 });

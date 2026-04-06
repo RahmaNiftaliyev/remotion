@@ -24,7 +24,6 @@ test('should render still on web', async () => {
 		},
 		frame: 0,
 		inputProps: {},
-		imageFormat: 'png',
 	});
 
 	// It worked!
@@ -57,7 +56,6 @@ test('should propagate errors thrown in useEffect (React 18)', async () => {
 			},
 			frame: 0,
 			inputProps: {},
-			imageFormat: 'png',
 		}),
 	).rejects.toThrow(UseEffectError);
 });

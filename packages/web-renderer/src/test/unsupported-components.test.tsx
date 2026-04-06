@@ -26,7 +26,6 @@ test('<Html5Video> throws in web-renderer', async () => {
 			},
 			frame: 0,
 			inputProps: {},
-			imageFormat: 'png',
 			delayRenderTimeoutInMilliseconds: 5000,
 		}),
 	).rejects.toThrow(
@@ -57,7 +56,6 @@ test('<Html5Audio> throws in web-renderer', async () => {
 			},
 			frame: 0,
 			inputProps: {},
-			imageFormat: 'png',
 			delayRenderTimeoutInMilliseconds: 5000,
 		}),
 	).rejects.toThrow(
@@ -88,7 +86,6 @@ test('<OffthreadVideo> throws in web-renderer', async () => {
 			},
 			frame: 0,
 			inputProps: {},
-			imageFormat: 'png',
 			delayRenderTimeoutInMilliseconds: 5000,
 		}),
 	).rejects.toThrow(

@@ -7,13 +7,14 @@ import {testImage} from './utils';
 
 test('should render backface-visibility with mask-image', async () => {
 	await page.viewport(500, 200);
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: backfaceVisibilityMask,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: backfaceVisibilityMask,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({
 		blob,

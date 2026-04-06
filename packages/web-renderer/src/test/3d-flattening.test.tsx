@@ -7,13 +7,14 @@ import {testImage} from './utils';
 
 test('should not clip this example', async () => {
 	await page.viewport(1080, 1080);
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: threeDFlattening,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: threeDFlattening,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({blob, testId: '3d-flattening'});
 });

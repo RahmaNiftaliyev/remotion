@@ -36,7 +36,6 @@ test('should be able to cancel render', async () => {
 			},
 			frame: 20,
 			inputProps: {},
-			imageFormat: 'png',
 		}),
 	).rejects.toThrow(/This should be the error message/);
 });

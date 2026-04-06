@@ -7,13 +7,14 @@ import {testImage} from './utils';
 
 test('the container should be the same as in rendering', async () => {
 	page.viewport(400, 400);
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: flexContainer,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: flexContainer,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({blob, testId: 'flex-container'});
 });

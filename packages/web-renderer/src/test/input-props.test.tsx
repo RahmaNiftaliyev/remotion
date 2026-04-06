@@ -2,6 +2,7 @@ import {getInputProps, useVideoConfig} from 'remotion';
 import {expect, test} from 'vitest';
 import {makeInternalState} from '../internal-state';
 import {renderStillOnWeb} from '../render-still-on-web';
+import type {RenderStillOnWebResult} from '../render-still-screenshot-task';
 import '../symbol-dispose';
 
 const MustAcceptInputProps: React.FC<{
@@ -51,7 +52,6 @@ test('cannot call getInputProps() while rendering client-side', async () => {
 		},
 		frame: 20,
 		inputProps: {abc: 'abc'},
-		imageFormat: 'png',
 	});
 });
 
@@ -69,7 +69,6 @@ test('cannot call getInputProps() while rendering client-side', async () => {
 			},
 			frame: 20,
 			inputProps: {abc: 'abc'},
-			imageFormat: 'png',
 		});
 	}).rejects.toThrow(
 		'Cannot call `getInputProps()` - window.remotion_inputProps is not set. This API is only available if you are in the Studio, or while you are rendering server-side.',
@@ -77,8 +76,17 @@ test('cannot call getInputProps() while rendering client-side', async () => {
 });
 
 type MockSignature = typeof renderStillOnWeb;
-const mockFn: MockSignature = () =>
-	Promise.resolve({blob: new Blob(), internalState: makeInternalState()});
+const mockFn: MockSignature = () => {
+	const canvas = new OffscreenCanvas(1, 1);
+	const internalState = makeInternalState();
+	const stub: RenderStillOnWebResult = {
+		internalState,
+		canvas: async () => canvas,
+		blob: async () => new Blob(),
+		url: async () => 'blob:http://local/mock',
+	};
+	return Promise.resolve(stub);
+};
 
 test('Should be able to omit input props when component accepts no props', () => {
 	mockFn({
@@ -92,7 +100,6 @@ test('Should be able to omit input props when component accepts no props', () =>
 			id: 'input-props-test',
 		},
 		frame: 20,
-		imageFormat: 'png',
 	});
 });
 
@@ -109,7 +116,6 @@ test('Should not be able to omit input props when component accepts props', () =
 			defaultProps: {abc: 'def'},
 		},
 		frame: 20,
-		imageFormat: 'png',
 	});
 
 	mockFn({
@@ -127,7 +133,6 @@ test('Should not be able to omit input props when component accepts props', () =
 			// @ts-expect-error - must match signature
 			abc: 'efg',
 		},
-		imageFormat: 'png',
 	});
 
 	// No error, how it should be :)
@@ -145,6 +150,5 @@ test('Should not be able to omit input props when component accepts props', () =
 		inputProps: {
 			abc: 'def',
 		},
-		imageFormat: 'png',
 	});
 });

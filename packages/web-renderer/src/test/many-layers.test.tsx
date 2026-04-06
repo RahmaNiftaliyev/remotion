@@ -7,13 +7,14 @@ import {testImage} from './utils';
 
 test('should render many layers efficiently', async () => {
 	page.viewport(1080, 1080);
-	const {blob, internalState} = await renderStillOnWeb({
+	const still = await renderStillOnWeb({
 		licenseKey: 'free-license',
 		composition: manyLayers,
 		frame: 0,
 		inputProps: {},
-		imageFormat: 'png',
 	});
+	const blob = await still.blob({format: 'png'});
+	const {internalState} = still;
 
 	await testImage({blob, testId: 'many layers'});
 	expect(internalState.getDrawn3dPixels()).toBeGreaterThanOrEqual(1338680);

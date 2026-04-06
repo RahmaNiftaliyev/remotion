@@ -6,31 +6,34 @@ import {testImage} from './utils';
 
 test('scale rendering behavior', async () => {
 	// Render once for each scale value
-	const {blob: blobDefault} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: scaleFixture,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blobDefault = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: scaleFixture,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
-	const {blob: blob1x} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: scaleFixture,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-		scale: 1,
-	});
+	const blob1x = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: scaleFixture,
+			frame: 0,
+			inputProps: {},
+			scale: 1,
+		})
+	).blob({format: 'png'});
 
-	const {blob: blob2x} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: scaleFixture,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-		scale: 2,
-	});
+	const blob2x = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: scaleFixture,
+			frame: 0,
+			inputProps: {},
+			scale: 2,
+		})
+	).blob({format: 'png'});
 
 	// Visual regression tests
 	await testImage({blob: blob1x, testId: 'scale-1x'});

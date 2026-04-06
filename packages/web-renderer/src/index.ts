@@ -39,7 +39,9 @@ export type {
 } from './render-media-on-web';
 export {renderStillOnWeb} from './render-still-on-web';
 export type {
+	RenderStillOnWebEncodeOptions,
 	RenderStillOnWebImageFormat,
 	RenderStillOnWebOptions,
+	RenderStillOnWebResult,
 } from './render-still-on-web';
 export type {OnFrameCallback} from './validate-video-frame';

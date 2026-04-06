@@ -5,13 +5,14 @@ import {filterImage} from './fixtures/filter-image';
 import {testImage} from './utils';
 
 test('should render filter on image', async () => {
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: filterImage,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: filterImage,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({blob, testId: 'filter-image'});
 });

@@ -28,20 +28,21 @@ test('should be able to use delayRender()', async () => {
 		);
 	};
 
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: {
-			component: Component,
-			id: 'delay-render-test',
-			width: 100,
-			height: 100,
-			fps: 30,
-			durationInFrames: 100,
-		},
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: {
+				component: Component,
+				id: 'delay-render-test',
+				width: 100,
+				height: 100,
+				fps: 30,
+				durationInFrames: 100,
+			},
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({blob, testId: 'delay-render'});
 });

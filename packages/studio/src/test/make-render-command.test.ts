@@ -49,6 +49,7 @@ const getDefaults = (): RenderDefaults => {
 		chromeMode: 'headless-shell',
 		publicLicenseKey: null,
 		outputLocation: null,
+		allowHtmlInCanvas: false,
 	};
 };
 

@@ -12,6 +12,7 @@ import {canUseWebFsWriter} from './can-use-webfs-target';
 import {createAudioSampleSource} from './create-audio-sample-source';
 import {checkForError, createScaffold} from './create-scaffold';
 import {getRealFrameRange, type FrameRange} from './frame-range';
+import {supportsNativeHtmlInCanvas} from './html-in-canvas';
 import type {InternalState} from './internal-state';
 import {makeInternalState} from './internal-state';
 import {
@@ -38,7 +39,7 @@ import type {CompositionCalculateMetadataOrExplicit} from './props-if-has-props'
 import {onlyOneRenderAtATimeQueue} from './render-operations-queue';
 import {resolveAudioCodec} from './resolve-audio-codec';
 import {sendUsageEvent} from './send-telemetry-event';
-import {createLayer} from './take-screenshot';
+import {createLayer, type HtmlInCanvasLayerOutcome} from './take-screenshot';
 import {createThrottledProgressCallback} from './throttle-progress';
 import {validateScale} from './validate-scale';
 import {validateVideoFrame, type OnFrameCallback} from './validate-video-frame';
@@ -130,6 +131,7 @@ type OptionalRenderMediaOnWebOptions<Schema extends $ZodObject> = {
 	isProduction: boolean;
 	muted: boolean;
 	scale: number;
+	allowHtmlInCanvas: boolean;
 };
 
 export type RenderMediaOnWebOptions<
@@ -177,11 +179,33 @@ const internalRenderMediaOnWeb = async <
 	muted,
 	scale,
 	isProduction,
+	allowHtmlInCanvas,
 }: InternalRenderMediaOnWebOptions<
 	Schema,
 	Props
 >): Promise<RenderMediaOnWebResult> => {
 	validateScale(scale);
+
+	let htmlInCanvasLayerOutcomeReported = false;
+	const onHtmlInCanvasLayerOutcome = (outcome: HtmlInCanvasLayerOutcome) => {
+		if (htmlInCanvasLayerOutcomeReported) {
+			return;
+		}
+
+		htmlInCanvasLayerOutcomeReported = true;
+		if (outcome.native) {
+			Internals.Log.warn(
+				{logLevel, tag: '@remotion/web-renderer'},
+				'Using Chromium experimental HTML-in-canvas (drawElementImage) for video frames. See https://github.com/WICG/html-in-canvas',
+			);
+		} else if (outcome.shouldWarn) {
+			Internals.Log.warn(
+				{logLevel, tag: '@remotion/web-renderer'},
+				`Not using HTML-in-canvas: ${outcome.reason}`,
+			);
+		}
+	};
+
 	const outputTarget =
 		userDesiredOutputTarget === null
 			? (await canUseWebFsWriter())
@@ -295,10 +319,41 @@ const internalRenderMediaOnWeb = async <
 		initialFrame: 0,
 		defaultCodec: resolved.defaultCodec,
 		defaultOutName: resolved.defaultOutName,
+		allowHtmlInCanvas,
 	});
 
-	const {delayRenderScope, div, timeUpdater, collectAssets, errorHolder} =
-		scaffold;
+	const {
+		delayRenderScope,
+		div,
+		timeUpdater,
+		collectAssets,
+		errorHolder,
+		htmlInCanvasContext,
+	} = scaffold;
+
+	if (allowHtmlInCanvas && !htmlInCanvasContext) {
+		if (!supportsNativeHtmlInCanvas()) {
+			onHtmlInCanvasLayerOutcome({
+				native: false,
+				reason:
+					'This browser does not expose CanvasRenderingContext2D.prototype.drawElementImage. In Chromium, enable chrome://flags/#canvas-draw-element and use a version that ships the API.',
+				shouldWarn: false,
+			});
+		} else {
+			onHtmlInCanvasLayerOutcome({
+				native: false,
+				reason:
+					'drawElementImage is available but canvas.requestPaint() is missing. Use a Chromium version that ships requestPaint.',
+				shouldWarn: true,
+			});
+		}
+	} else if (!allowHtmlInCanvas) {
+		onHtmlInCanvasLayerOutcome({
+			native: false,
+			reason: 'allowHtmlInCanvas is false; using the built-in DOM composer.',
+			shouldWarn: false,
+		});
+	}
 
 	using internalState = makeInternalState();
 
@@ -464,6 +519,10 @@ const internalRenderMediaOnWeb = async <
 					internalState,
 					onlyBackgroundClipText: false,
 					cutout: new DOMRect(0, 0, resolved.width, resolved.height),
+					htmlInCanvasContext,
+					onHtmlInCanvasLayerOutcome: htmlInCanvasContext
+						? onHtmlInCanvasLayerOutcome
+						: undefined,
 				});
 				internalState.addCreateFrameTime(performance.now() - createFrameStart);
 				layerCanvas = layer.canvas;
@@ -679,6 +738,7 @@ export const renderMediaOnWeb = <
 				muted: options.muted ?? false,
 				scale: options.scale ?? 1,
 				isProduction: options.isProduction ?? true,
+				allowHtmlInCanvas: options.allowHtmlInCanvas ?? false,
 			}),
 		);
 

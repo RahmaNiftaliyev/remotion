@@ -21,8 +21,10 @@ const title: React.CSSProperties = {
 	fontSize: 14,
 };
 
+const DESCRIPTION_FONT_SIZE_PX = 14;
+
 const description: React.CSSProperties = {
-	fontSize: 14,
+	fontSize: DESCRIPTION_FONT_SIZE_PX,
 	maxWidth: 400,
 };
 
@@ -75,7 +77,19 @@ export const OptionExplainer: React.FC<{
 						</>
 					) : null}
 				</div>
-				<div style={description}>{option.description('ssr')}</div>
+				<div style={description}>
+					<style>
+						{`
+							.__remotion-option-explainer-description a,
+							.__remotion-option-explainer-description code {
+								font-size: ${DESCRIPTION_FONT_SIZE_PX}px;
+							}
+						`}
+					</style>
+					<div className="__remotion-option-explainer-description">
+						{option.description('ssr')}
+					</div>
+				</div>
 			</div>
 			<Spacing y={0.5} block />
 			<MenuDivider />

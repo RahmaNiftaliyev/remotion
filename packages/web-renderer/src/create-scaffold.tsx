@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom/client';
 import type {Codec, DelayRenderScope, LogLevel, TRenderAsset} from 'remotion';
 import {Internals} from 'remotion';
 import type {$ZodObject} from 'zod/v4/core';
+import type {HtmlInCanvasContext} from './html-in-canvas';
+import {setupHtmlInCanvas, teardownHtmlInCanvas} from './html-in-canvas';
 import type {TimeUpdaterRef} from './update-time';
 import {UpdateTime} from './update-time';
 
@@ -133,6 +135,7 @@ export function createScaffold<Props extends Record<string, unknown>>({
 	videoEnabled,
 	defaultCodec,
 	defaultOutName,
+	allowHtmlInCanvas,
 }: {
 	width: number;
 	height: number;
@@ -150,6 +153,7 @@ export function createScaffold<Props extends Record<string, unknown>>({
 	videoEnabled: boolean;
 	defaultCodec: Codec | null;
 	defaultOutName: string | null;
+	allowHtmlInCanvas: boolean;
 }): {
 	delayRenderScope: DelayRenderScope;
 	div: HTMLDivElement;
@@ -158,6 +162,7 @@ export function createScaffold<Props extends Record<string, unknown>>({
 		collectAssets: () => TRenderAsset[];
 	} | null>;
 	errorHolder: ErrorHolder;
+	htmlInCanvasContext: HtmlInCanvasContext | null;
 	[Symbol.dispose]: () => void;
 } {
 	if (!ReactDOM.createRoot) {
@@ -192,6 +197,10 @@ export function createScaffold<Props extends Record<string, unknown>>({
 
 	wrapper.appendChild(div);
 	document.body.appendChild(wrapper);
+
+	const htmlInCanvasContext = allowHtmlInCanvas
+		? setupHtmlInCanvas({wrapper, div, width, height})
+		: null;
 
 	const errorHolder: ErrorHolder = {error: null};
 
@@ -300,8 +309,13 @@ export function createScaffold<Props extends Record<string, unknown>>({
 		delayRenderScope,
 		div,
 		errorHolder,
+		htmlInCanvasContext,
 		[Symbol.dispose]: () => {
 			root.unmount();
+			if (htmlInCanvasContext) {
+				teardownHtmlInCanvas({htmlInCanvasContext, wrapper, div});
+			}
+
 			div.remove();
 			wrapper.remove();
 			cleanupCSS();

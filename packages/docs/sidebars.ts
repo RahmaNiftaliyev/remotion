@@ -1070,6 +1070,7 @@ const sidebars: SidebarsConfig = {
 				'client-side-rendering/migration',
 				'client-side-rendering/cancellation',
 				'client-side-rendering/telemetry',
+				'client-side-rendering/html-in-canvas',
 			],
 		},
 		{

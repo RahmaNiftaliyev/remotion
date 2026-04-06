@@ -225,5 +225,6 @@ export const makeClientRetryPayload = (
 			job.type === 'client-video' ? job.keyframeIntervalInSeconds : null,
 		initialMuted: job.type === 'client-video' ? job.muted : null,
 		initialTransparent: job.type === 'client-video' ? job.transparent : null,
+		initialAllowHtmlInCanvas: job.allowHtmlInCanvas,
 	};
 };

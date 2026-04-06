@@ -131,7 +131,7 @@ type OptionalRenderMediaOnWebOptions<Schema extends $ZodObject> = {
 	isProduction: boolean;
 	muted: boolean;
 	scale: number;
-	enableHtmlInCanvas: boolean;
+	allowHtmlInCanvas: boolean;
 };
 
 export type RenderMediaOnWebOptions<
@@ -179,7 +179,7 @@ const internalRenderMediaOnWeb = async <
 	muted,
 	scale,
 	isProduction,
-	enableHtmlInCanvas,
+	allowHtmlInCanvas,
 }: InternalRenderMediaOnWebOptions<
 	Schema,
 	Props
@@ -196,7 +196,7 @@ const internalRenderMediaOnWeb = async <
 		if (outcome.native) {
 			Internals.Log.warn(
 				{logLevel, tag: '@remotion/web-renderer'},
-				'Using Chromium experimental HTML-in-Canvas (drawElementImage) for video frames. Pixels may differ from the built-in DOM composer. Set enableHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas',
+				'Using Chromium experimental HTML-in-Canvas (drawElementImage) for video frames. Pixels may differ from the built-in DOM composer. Set allowHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas',
 			);
 		} else {
 			Internals.Log.warn(
@@ -319,7 +319,7 @@ const internalRenderMediaOnWeb = async <
 		initialFrame: 0,
 		defaultCodec: resolved.defaultCodec,
 		defaultOutName: resolved.defaultOutName,
-		enableHtmlInCanvas,
+		allowHtmlInCanvas,
 	});
 
 	const {
@@ -331,7 +331,7 @@ const internalRenderMediaOnWeb = async <
 		htmlInCanvasContext,
 	} = scaffold;
 
-	if (enableHtmlInCanvas && !htmlInCanvasContext) {
+	if (allowHtmlInCanvas && !htmlInCanvasContext) {
 		if (!supportsNativeHtmlInCanvas()) {
 			onHtmlInCanvasLayerOutcome({
 				native: false,
@@ -345,10 +345,10 @@ const internalRenderMediaOnWeb = async <
 					'Failed to set up html-in-canvas context (getContext returned null or drawElementImage missing).',
 			});
 		}
-	} else if (!enableHtmlInCanvas) {
+	} else if (!allowHtmlInCanvas) {
 		onHtmlInCanvasLayerOutcome({
 			native: false,
-			reason: 'enableHtmlInCanvas is false; using the built-in DOM composer.',
+			reason: 'allowHtmlInCanvas is false; using the built-in DOM composer.',
 		});
 	}
 
@@ -735,7 +735,7 @@ export const renderMediaOnWeb = <
 				muted: options.muted ?? false,
 				scale: options.scale ?? 1,
 				isProduction: options.isProduction ?? true,
-				enableHtmlInCanvas: options.enableHtmlInCanvas ?? true,
+				allowHtmlInCanvas: options.allowHtmlInCanvas ?? true,
 			}),
 		);
 

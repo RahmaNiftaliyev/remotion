@@ -135,7 +135,7 @@ export function createScaffold<Props extends Record<string, unknown>>({
 	videoEnabled,
 	defaultCodec,
 	defaultOutName,
-	enableHtmlInCanvas,
+	allowHtmlInCanvas,
 }: {
 	width: number;
 	height: number;
@@ -153,7 +153,7 @@ export function createScaffold<Props extends Record<string, unknown>>({
 	videoEnabled: boolean;
 	defaultCodec: Codec | null;
 	defaultOutName: string | null;
-	enableHtmlInCanvas: boolean;
+	allowHtmlInCanvas: boolean;
 }): {
 	delayRenderScope: DelayRenderScope;
 	div: HTMLDivElement;
@@ -198,7 +198,7 @@ export function createScaffold<Props extends Record<string, unknown>>({
 	wrapper.appendChild(div);
 	document.body.appendChild(wrapper);
 
-	const htmlInCanvasContext = enableHtmlInCanvas
+	const htmlInCanvasContext = allowHtmlInCanvas
 		? setupHtmlInCanvas({wrapper, div, width, height})
 		: null;
 

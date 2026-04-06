@@ -87,6 +87,7 @@ type WebRenderModalProps = {
 	readonly initialTransparent: boolean | null;
 	readonly initialMuted: boolean | null;
 	readonly initialMediaCacheSizeInBytes: number | null;
+	readonly initialAllowHtmlInCanvas: boolean | null;
 };
 
 export type RenderType = 'still' | 'video' | 'audio';
@@ -190,6 +191,7 @@ const WebRenderModal: React.FC<WebRenderModalProps> = ({
 	initialKeyframeIntervalInSeconds,
 	initialTransparent,
 	initialMuted,
+	initialAllowHtmlInCanvas,
 }) => {
 	const context = useContext(ResolvedCompositionContext);
 	const {setSelectedModal} = useContext(ModalsContext);
@@ -274,6 +276,10 @@ const WebRenderModal: React.FC<WebRenderModalProps> = ({
 	const [scale, setScale] = useState(initialScale ?? 1);
 
 	const [licenseKey, setLicenseKey] = useState(initialLicenseKey);
+
+	const [allowHtmlInCanvas, setAllowHtmlInCanvas] = useState(
+		initialAllowHtmlInCanvas ?? true,
+	);
 
 	const encodableAudioCodecs = useEncodableAudioCodecs(container);
 	const encodableVideoCodecs = useEncodableVideoCodecs(container);
@@ -544,6 +550,7 @@ const WebRenderModal: React.FC<WebRenderModalProps> = ({
 					logLevel,
 					licenseKey,
 					scale,
+					allowHtmlInCanvas,
 				},
 				compositionRef,
 			);
@@ -572,6 +579,7 @@ const WebRenderModal: React.FC<WebRenderModalProps> = ({
 					logLevel,
 					licenseKey,
 					scale,
+					allowHtmlInCanvas,
 				},
 				compositionRef,
 			);
@@ -615,6 +623,7 @@ const WebRenderModal: React.FC<WebRenderModalProps> = ({
 		addClientStillJob,
 		addClientVideoJob,
 		scale,
+		allowHtmlInCanvas,
 	]);
 
 	return (
@@ -778,6 +787,8 @@ const WebRenderModal: React.FC<WebRenderModalProps> = ({
 							setMediaCacheSizeInBytes={setMediaCacheSizeInBytes}
 							hardwareAcceleration={hardwareAcceleration}
 							setHardwareAcceleration={setHardwareAcceleration}
+							allowHtmlInCanvas={allowHtmlInCanvas}
+							setAllowHtmlInCanvas={setAllowHtmlInCanvas}
 						/>
 					) : (
 						<WebRenderModalLicense

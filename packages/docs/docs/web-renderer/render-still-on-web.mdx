@@ -14,7 +14,8 @@ Experimental feature - expect bugs and breaking changes at any time.
 
 _Part of the `@remotion/web-renderer` package._
 
-Renders a single frame to an image in the browser.  
+Renders a single frame in the browser. When the promise resolves, the frame is captured to an [`OffscreenCanvas`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas). You then choose how to read or encode it: as a canvas, [`Blob`](https://developer.mozilla.org/en-US/docs/Web/API/Blob), or object URL (similar to [Renoun’s `screenshot()` API](https://github.com/souporserious/renoun/tree/main/packages/screenshot)).
+
 If you want to render a video instead, use [`renderMediaOnWeb()`](/docs/web-renderer/render-media-on-web).
 
 ```tsx twoslash title="Example usage"
@@ -25,7 +26,7 @@ const Component: React.FC = () => {
   return <Video src="https://remotion.media/video.mp4" />;
 };
 
-const {blob} = await renderStillOnWeb({
+const still = await renderStillOnWeb({
   composition: {
     component: Component,
     durationInFrames: 100,
@@ -35,8 +36,9 @@ const {blob} = await renderStillOnWeb({
     id: 'my-composition',
   },
   frame: 0,
-  imageFormat: 'png',
 });
+
+const pngBlob = await still.blob({format: 'png'});
 ```
 
 ## Arguments
@@ -61,12 +63,6 @@ An object describing a composition. The object should have the following propert
 _number_
 
 Which frame of the composition should be rendered. Frames are zero-indexed.
-
-### `imageFormat`
-
-_string_ <TsType type="RenderStillOnWebImageFormat" source="@remotion/web-renderer" href="/docs/web-renderer/types#renderstillonwebimageformat" />
-
-The format of the output image.
 
 ### `inputProps?`
 
@@ -125,10 +121,9 @@ const controller = new AbortController();
 // Cancel after 5 seconds
 setTimeout(() => controller.abort(), 5000);
 
-const {blob} = await renderStillOnWeb({
+await renderStillOnWeb({
   composition,
   frame: 0,
-  imageFormat: 'png',
   signal: controller.signal,
 });
 ```
@@ -169,13 +164,25 @@ _default `true`_
 
 ## Return value
 
-Returns a promise resolving to an object with the following properties:
+Returns a promise that resolves to a <TsType type="RenderStillOnWebResult" source="@remotion/web-renderer" href="/docs/web-renderer/types#renderstillonwebresult" /> once the frame has been painted to an internal canvas.
 
-### `blob`
+### `internalState`
 
-A `Blob` containing the rendered image.
+Internal bookkeeping used by the web renderer (e.g. for tests and diagnostics).
 
-```tsx twoslash title="Display the image"
+### `canvas()`
+
+Returns a promise for the [`OffscreenCanvas`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) holding the rendered pixels. You can draw from it or pass it to other APIs.
+
+### `blob(options?)`
+
+Encodes the canvas to a [`Blob`](https://developer.mozilla.org/en-US/docs/Web/API/Blob). Pass <TsType type="RenderStillOnWebEncodeOptions" source="@remotion/web-renderer" href="/docs/web-renderer/types#renderstillonwebencodeoptions" /> (`format`, optional `quality` for JPEG/WebP).
+
+### `url(options?)`
+
+Same as `blob()`, then [`URL.createObjectURL()`](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL). Revoke with [`URL.revokeObjectURL()`](https://developer.mozilla.org/en-US/docs/Web/API/URL/revokeObjectURL) when finished.
+
+```tsx twoslash title="Blob, canvas, and object URL"
 const Component: React.FC = () => null;
 const composition = {
   component: Component,
@@ -189,16 +196,17 @@ const composition = {
 // ---cut---
 import {renderStillOnWeb} from '@remotion/web-renderer';
 
-const {blob} = await renderStillOnWeb({
+const still = await renderStillOnWeb({
   composition,
   frame: 0,
-  imageFormat: 'png',
 });
 
-// Display the image
-const url = URL.createObjectURL(blob);
+const canvas = await still.canvas();
+const jpegBlob = await still.blob({format: 'jpeg', quality: 0.85});
+const objectUrl = await still.url({format: 'png'});
+
 const img = document.createElement('img');
-img.src = url;
+img.src = objectUrl;
 document.body.appendChild(img);
 ```
 

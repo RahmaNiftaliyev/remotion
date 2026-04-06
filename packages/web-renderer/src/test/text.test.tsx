@@ -10,13 +10,14 @@ import {textTransform} from './fixtures/text/text-transform';
 import {testImage} from './utils';
 
 test('should render text', async (t) => {
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: textFixture,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: textFixture,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({
 		blob,
@@ -32,25 +33,27 @@ test('should render text', async (t) => {
 });
 
 test('should render paragraphs', async () => {
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: paragraphs,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: paragraphs,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({blob, testId: 'paragraphs', threshold: 0.03});
 });
 
 test('should render text with letter spacing', async () => {
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: letterSpacing,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: letterSpacing,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({
 		blob,
@@ -61,13 +64,14 @@ test('should render text with letter spacing', async () => {
 });
 
 test('should render text with text transform', async () => {
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: textTransform,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: textTransform,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({
 		blob,
@@ -78,13 +82,14 @@ test('should render text with text transform', async () => {
 });
 
 test('should render text with font style', async () => {
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: fontStyle,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: fontStyle,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({
 		blob,
@@ -95,13 +100,14 @@ test('should render text with font style', async () => {
 });
 
 test('should render text with font variant caps', async () => {
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: fontVariantCaps,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: fontVariantCaps,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({
 		blob,

@@ -50,7 +50,6 @@ test('should be able to cancel renderStillOnWeb()', async () => {
 	const prom = renderStillOnWeb({
 		licenseKey: 'free-license',
 		frame: 0,
-		imageFormat: 'png',
 		composition: {
 			component: Component,
 			id: 'abort-render-test',
@@ -122,7 +121,6 @@ test('should not send failed telemetry when renderStillOnWeb() is aborted', asyn
 	const prom = renderStillOnWeb({
 		licenseKey: 'free-license',
 		frame: 0,
-		imageFormat: 'png',
 		composition: {
 			component: Component,
 			id: 'abort-telemetry-test',

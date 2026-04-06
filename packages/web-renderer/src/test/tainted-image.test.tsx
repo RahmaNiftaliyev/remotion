@@ -32,7 +32,6 @@ test('should throw readable error when image fails to load or is blocked by CORS
 			},
 			frame: 0,
 			inputProps: {},
-			imageFormat: 'png',
 		});
 		// WebKit may not throw - that's okay for this test
 		if (t.task.file.projectName === 'webkit') {

@@ -5,13 +5,14 @@ import {threeDoverflow} from './fixtures/three-d-overflow';
 import {testImage} from './utils';
 
 test('Should render borders correctly with 3D transforms without overflow', async () => {
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: threeDoverflow,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: threeDoverflow,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({
 		blob,

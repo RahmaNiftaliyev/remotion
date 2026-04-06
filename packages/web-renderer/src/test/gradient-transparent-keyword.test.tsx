@@ -7,13 +7,14 @@ import {testImage} from './utils';
 
 test('should render gradient with transparent keyword correctly', async () => {
 	await page.viewport(500, 250);
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: gradientTransparentKeyword,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: gradientTransparentKeyword,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({
 		blob,

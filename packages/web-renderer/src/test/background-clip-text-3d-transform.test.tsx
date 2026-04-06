@@ -5,13 +5,14 @@ import {backgroundClipText3dTransform} from './fixtures/text/background-clip-tex
 import {testImage} from './utils';
 
 test('should render background-clip: text with 3D transforms', async () => {
-	const {blob} = await renderStillOnWeb({
-		licenseKey: 'free-license',
-		composition: backgroundClipText3dTransform,
-		frame: 0,
-		inputProps: {},
-		imageFormat: 'png',
-	});
+	const blob = await (
+		await renderStillOnWeb({
+			licenseKey: 'free-license',
+			composition: backgroundClipText3dTransform,
+			frame: 0,
+			inputProps: {},
+		})
+	).blob({format: 'png'});
 
 	await testImage({
 		blob,

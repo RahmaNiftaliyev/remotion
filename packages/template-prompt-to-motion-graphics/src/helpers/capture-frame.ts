@@ -16,20 +16,21 @@ export async function captureFrame(
   frame: number,
   config: CaptureConfig,
 ): Promise<string> {
-  const { blob } = await renderStillOnWeb({
-    composition: {
-      component: Component,
-      id: "frame-capture",
-      width: config.width,
-      height: config.height,
-      fps: config.fps,
-      durationInFrames: config.durationInFrames,
-    },
-    frame,
-    imageFormat: "jpeg",
-    scale: 0.5, // 960x540 - good enough for AI context
-    inputProps: {},
-  });
+  const blob = await (
+    await renderStillOnWeb({
+      composition: {
+        component: Component,
+        id: "frame-capture",
+        width: config.width,
+        height: config.height,
+        fps: config.fps,
+        durationInFrames: config.durationInFrames,
+      },
+      frame,
+      scale: 0.5, // 960x540 - good enough for AI context
+      inputProps: {},
+    })
+  ).blob({ format: "jpeg" });
 
   // Convert blob to base64 data URL
   const buffer = await blob.arrayBuffer();

@@ -2,7 +2,6 @@
 image: /generated/articles-docs-client-side-rendering-html-in-canvas.png
 crumb: 'Client-side rendering'
 sidebar_label: HTML in Canvas
-title: HTML in Canvas<AvailableFrom v="4.0.446" />
 ---
 
 :::warning
@@ -10,9 +9,11 @@ Experimental feature - expect bugs and breaking changes at any time.
 [Track progress on GitHub](https://github.com/remotion-dev/remotion/issues/5913) and discuss in the [`#web-renderer`](https://remotion.dev/discord) channel on Discord.
 :::
 
-On supported Chromium-based browsers, [`@remotion/web-renderer`](/docs/web-renderer) can optionally capture full frames using the experimental [HTML-in-Canvas](https://github.com/WICG/html-in-canvas) APIs (`CanvasRenderingContext2D.drawElementImage`, `HTMLCanvasElement.requestPaint`, and a `layoutSubtree` canvas) instead of Remotion’s built-in DOM composer. This path is often faster, but **pixels may not match** the software composer.
+# HTML in Canvas<AvailableFrom v="4.0.447" />
 
-Enabling the option does **not** guarantee that this path runs. Remotion only uses it when the browser exposes the required APIs, setup succeeds, and capture succeeds for a given frame. Otherwise it falls back to the built-in composer without blocking the render.
+On supported Chromium-based browsers, [`@remotion/web-renderer`](/docs/web-renderer) can optionally capture full frames using the experimental [HTML-in-Canvas](https://github.com/WICG/html-in-canvas) APIs.
+
+Enabling the option does not guarantee that this path runs. If the browser does not have HTML in Canvas enabled, it falls back to the [default frame capturing mechanism](/docs/client-side-rendering/how-it-works).
 
 ## Enabling
 
@@ -37,7 +38,7 @@ await renderStillOnWeb({
 
 ### In the Studio
 
-With [client-side rendering enabled](/docs/client-side-rendering), open the render modal, go to the **Other** tab, and turn on **Allow HTML-in-Canvas**. The initial value comes from your config and CLI defaults (below).
+With [client-side rendering enabled](/docs/client-side-rendering), open the render modal, go to the `Other` tab, and turn on `Allow HTML-in-Canvas`. The initial value comes from your config and CLI defaults (below).
 
 ### As the Studio default
 
@@ -59,11 +60,43 @@ See [`setAllowHtmlInCanvasEnabled()`](/docs/config#setallowhtmlincanvasenabled) 
 
 <Options id="allow-html-in-canvas" />
 
-## Console messages
+## Check if HTML in Canvas was used
 
-If the native HTML-in-Canvas path is used, Remotion logs a **warning** to the browser console (tag `@remotion/web-renderer`) so you know captures may differ from the software path. If `drawElementImage` is available but capture fails for another reason, a warning explains the fallback. If the browser does not expose `drawElementImage`, Remotion stays quiet and uses the built-in composer.
+Messages use Remotion’s logger with tag `@remotion/web-renderer`. Use [`logLevel`](/docs/web-renderer/render-still-on-web#loglevel) `'warn'` or lower (e.g. `'info'`, `'verbose'`) or you may not see them.
 
-Use `logLevel: 'warn'` or a more verbose level if you do not see these messages.
+### Native path was used
+
+[`renderStillOnWeb()`](/docs/web-renderer/render-still-on-web) prints a **warning** like:
+
+```
+Using Chromium experimental HTML-in-Canvas (drawElementImage) for this frame. Pixels may differ from the built-in DOM composer. Set allowHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas
+```
+
+[`renderMediaOnWeb()`](/docs/web-renderer/render-media-on-web) prints a **warning** once per render (first successful native layer), for example:
+
+```
+Using Chromium experimental HTML-in-Canvas (drawElementImage) for video frames. See https://github.com/WICG/html-in-canvas
+```
+
+### Native path was not used (warning)
+
+When `drawElementImage` exists but HTML-in-Canvas still cannot be used, Remotion logs a **warning** whose text starts with `Not using html-in-canvas:` and then a reason, for example:
+
+```
+Not using html-in-canvas: drawElementImage is available but canvas.requestPaint() is missing. Use a Chromium version that ships requestPaint.
+```
+
+If capture throws during `drawElementImage`, the reason includes the error message, for example:
+
+```
+Not using html-in-canvas: drawElementImage failed (Failed to execute 'drawElementImage' on 'CanvasRenderingContext2D': …); falling back to the built-in DOM composer.
+```
+
+At **`verbose`** log level, a failed capture also emits a separate **verbose** line: `html-in-canvas capture failed, falling back to software compose` (with the error attached).
+
+### No message
+
+If the browser does not expose `drawElementImage`, or you set `allowHtmlInCanvas: false`, Remotion does **not** print a warning for choosing the built-in composer. In those cases infer behavior from the absence of the “Using Chromium experimental HTML-in-Canvas” message above.
 
 ## Compatibility
 

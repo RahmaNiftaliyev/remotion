@@ -738,7 +738,7 @@ export const renderMediaOnWeb = <
 				muted: options.muted ?? false,
 				scale: options.scale ?? 1,
 				isProduction: options.isProduction ?? true,
-				allowHtmlInCanvas: options.allowHtmlInCanvas ?? true,
+				allowHtmlInCanvas: options.allowHtmlInCanvas ?? false,
 			}),
 		);
 

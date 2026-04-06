@@ -332,7 +332,7 @@ export const RenderButton: React.FC<{readonly readOnlyStudio: boolean}> = ({
 			initialTransparent: null,
 			initialMuted: null,
 			initialMediaCacheSizeInBytes: defaults.mediaCacheSizeInBytes,
-			initialAllowHtmlInCanvas: null,
+			initialAllowHtmlInCanvas: defaults.allowHtmlInCanvas,
 		});
 	}, [video, setSelectedModal, getCurrentFrame, props, inFrame, outFrame]);
 

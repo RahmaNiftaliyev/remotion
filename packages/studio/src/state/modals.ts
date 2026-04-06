@@ -51,7 +51,7 @@ export type WebRenderModalState = {
 	initialMuted: boolean | null;
 	initialLicenseKey: string | null;
 	initialMediaCacheSizeInBytes: number | null;
-	initialAllowHtmlInCanvas: boolean | null;
+	initialAllowHtmlInCanvas: boolean;
 };
 
 export type RenderModalState = {

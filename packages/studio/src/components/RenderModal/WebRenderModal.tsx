@@ -87,7 +87,7 @@ type WebRenderModalProps = {
 	readonly initialTransparent: boolean | null;
 	readonly initialMuted: boolean | null;
 	readonly initialMediaCacheSizeInBytes: number | null;
-	readonly initialAllowHtmlInCanvas: boolean | null;
+	readonly initialAllowHtmlInCanvas: boolean;
 };
 
 export type RenderType = 'still' | 'video' | 'audio';
@@ -278,7 +278,7 @@ const WebRenderModal: React.FC<WebRenderModalProps> = ({
 	const [licenseKey, setLicenseKey] = useState(initialLicenseKey);
 
 	const [allowHtmlInCanvas, setAllowHtmlInCanvas] = useState(
-		initialAllowHtmlInCanvas ?? true,
+		initialAllowHtmlInCanvas ?? false,
 	);
 
 	const encodableAudioCodecs = useEncodableAudioCodecs(container);

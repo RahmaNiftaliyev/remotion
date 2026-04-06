@@ -89,9 +89,13 @@ _number_
 
 _boolean_
 
-When `true` (default), Chromium-based browsers that expose the experimental [HTML-in-Canvas](https://github.com/WICG/html-in-canvas) API (`drawElementImage`, enabled e.g. via `chrome://flags/#canvas-draw-element`) may rasterize the full composition frame with the browser engine instead of Remotion’s built-in DOM composer. This is usually faster but **pixels may not match** the software path.
+Default `false`. In the Remotion Studio, the checkbox under **Other** is initialized from [`Config.setAllowHtmlInCanvasEnabled()`](/docs/config#setallowhtmlincanvasenabled) and the [`--allow-html-in-canvas`](/docs/cli/studio#--allow-html-in-canvas) CLI flag:
 
-A **warning** is logged for each `renderStillOnWeb()` call: either that the native path is in use, or **`Not using html-in-canvas: …`** with a concrete reason (missing API, flag, cutout mismatch, option disabled, or `drawElementImage` error). Use `logLevel: 'warn'` or lower if you do not see these messages.
+<Options id="allow-html-in-canvas" />
+
+When `true`, Chromium-based browsers that expose the experimental [HTML-in-Canvas](https://github.com/WICG/html-in-canvas) API (`drawElementImage`, enabled e.g. via `chrome://flags/#canvas-draw-element`) may rasterize the full composition frame with the browser engine instead of Remotion’s built-in DOM composer. This is usually faster but **pixels may not match** the software path.
+
+A **warning** is logged when the native path is used, or when `drawElementImage` is available but capture fails for another reason. Use `logLevel: 'warn'` or lower if you do not see these messages.
 
 Set to `false` to always use the built-in composer (for consistent pixels or when debugging differences).
 

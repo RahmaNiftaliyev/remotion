@@ -260,7 +260,7 @@ export const renderStillOnWeb = <
 				licenseKey: options.licenseKey ?? null,
 				scale: options.scale ?? 1,
 				isProduction: options.isProduction ?? true,
-				allowHtmlInCanvas: options.allowHtmlInCanvas ?? true,
+				allowHtmlInCanvas: options.allowHtmlInCanvas ?? false,
 			}),
 		);
 

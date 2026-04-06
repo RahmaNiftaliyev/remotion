@@ -111,11 +111,20 @@ const handleFallback = async ({
 		pathname: requestUrl.pathname,
 		publicDir,
 	});
-	if (staticFileHint && !loggedStaticFileHints.has(staticFileHint)) {
+	const pathname = requestUrl.pathname;
+	if (
+		staticFileHint &&
+		pathname.includes('.') &&
+		!loggedStaticFileHints.has(staticFileHint)
+	) {
 		loggedStaticFileHints.add(staticFileHint);
-		RenderInternals.Log.warn(
+		RenderInternals.Log.error(
 			{indent: false, logLevel},
-			`"${requestUrl.pathname}" does not resolve from the root URL, but "public/${staticFileHint}" exists. Use staticFile("${staticFileHint}") instead.`,
+			[
+				`"${pathname}" was requested but not found.`,
+				'To import assets from the public/ folder, you must wrap them in staticFile(): https://www.remotion.dev/docs/assets',
+				`Change \`"${pathname}"\` to \`staticFile("${pathname}")\` to fix the error.`,
+			].join('\n'),
 		);
 	}
 

@@ -62,41 +62,21 @@ See [`setAllowHtmlInCanvasEnabled()`](/docs/config#setallowhtmlincanvasenabled) 
 
 ## Check if HTML in Canvas was used
 
-Messages use Remotion’s logger with tag `@remotion/web-renderer`. Use [`logLevel`](/docs/web-renderer/render-still-on-web#loglevel) `'warn'` or lower (e.g. `'info'`, `'verbose'`) or you may not see them.
-
-### Native path was used
-
-[`renderStillOnWeb()`](/docs/web-renderer/render-still-on-web) prints a **warning** like:
+If HTML in Canvas was used, you will see a warning in the browser console:
 
 ```
 Using Chromium experimental HTML-in-Canvas (drawElementImage) for this frame. Pixels may differ from the built-in DOM composer. Set allowHtmlInCanvas: false to force software rasterization. See https://github.com/WICG/html-in-canvas
 ```
 
-[`renderMediaOnWeb()`](/docs/web-renderer/render-media-on-web) prints a **warning** once per render (first successful native layer), for example:
-
-```
-Using Chromium experimental HTML-in-Canvas (drawElementImage) for video frames. See https://github.com/WICG/html-in-canvas
-```
-
-### Native path was not used (warning)
-
-When `drawElementImage` exists but HTML-in-Canvas still cannot be used, Remotion logs a **warning** whose text starts with `Not using html-in-canvas:` and then a reason, for example:
+If HTML-in-Canvas is available, and allowed, but not used, a warning will be printed:
 
 ```
 Not using html-in-canvas: drawElementImage is available but canvas.requestPaint() is missing. Use a Chromium version that ships requestPaint.
 ```
 
-If capture throws during `drawElementImage`, the reason includes the error message, for example:
+This can happen for example if enabling the feature in Chrome rather than Chrome Canary (as of time of writing in April 2026).
 
-```
-Not using html-in-canvas: drawElementImage failed (Failed to execute 'drawElementImage' on 'CanvasRenderingContext2D': …); falling back to the built-in DOM composer.
-```
-
-At **`verbose`** log level, a failed capture also emits a separate **verbose** line: `html-in-canvas capture failed, falling back to software compose` (with the error attached).
-
-### No message
-
-If the browser does not expose `drawElementImage`, or you set `allowHtmlInCanvas: false`, Remotion does **not** print a warning for choosing the built-in composer. In those cases infer behavior from the absence of the “Using Chromium experimental HTML-in-Canvas” message above.
+If HTML-in-Canvas is not available, or not allowed, no warning will be printed.
 
 ## Compatibility
 
@@ -114,7 +94,7 @@ If the browser does not expose `drawElementImage`, or you set `allowHtmlInCanvas
   hideServers
 />
 
-HTML-in-Canvas depends on Chromium shipping the experimental APIs (for example after enabling `chrome://flags/#canvas-draw-element` where applicable). Other browsers continue to use the built-in DOM composer.
+HTML-in-Canvas depends on Chromium flag `chrome://flags/#canvas-draw-element` which needs to be explicitly enabled as of time of writing in April 2026.
 
 ## See also
 

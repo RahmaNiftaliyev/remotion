@@ -9,9 +9,9 @@ export const publicLicenseKeyOption = {
 	cliFlag,
 	description: () => (
 		<>
-			The public license key for your company license, obtained from the "Usage"
-			tab on <a href="https://remotion.pro/dashboard">remotion.pro</a>. If you
-			are eligible for the free license, pass "free-license".
+			The public license key for your company license, obtained from the License
+			keys page on <a href="https://remotion.pro/dashboard">remotion.pro</a>. If
+			you are eligible for the free license, pass "free-license".
 		</>
 	),
 	ssrName: 'publicLicenseKey' as const,

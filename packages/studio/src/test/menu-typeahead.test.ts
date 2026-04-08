@@ -3,10 +3,7 @@ import type {ComboboxValue} from '../components/NewComposition/ComboBox';
 import {findTypeaheadMenuItem} from '../components/NewComposition/menu-typeahead';
 
 const values: ComboboxValue[] = [
-	{
-		type: 'divider',
-		id: 'divider-1',
-	},
+	{type: 'divider', id: 'divider-1'},
 	{
 		type: 'item',
 		id: 'apple',
@@ -54,29 +51,23 @@ const values: ComboboxValue[] = [
 	},
 ];
 
-test('finds item by label prefix', () => {
+test('matches string label prefix (case-insensitive)', () => {
 	expect(findTypeaheadMenuItem({query: 'ap', values})).toBe('apple');
-});
-
-test('matches case-insensitive', () => {
 	expect(findTypeaheadMenuItem({query: 'AP', values})).toBe('apple');
 });
 
-test('ignores divider and disabled items', () => {
+test('skips dividers and disabled items', () => {
 	expect(findTypeaheadMenuItem({query: 'ban', values})).toBe(null);
 });
 
-test('matches visible label when quickSwitcherLabel differs', () => {
+test('matches only the visible string label (not value or quickSwitcherLabel)', () => {
 	expect(findTypeaheadMenuItem({query: 'custom', values})).toBe(null);
 	expect(findTypeaheadMenuItem({query: 'not', values})).toBe('custom');
-});
-
-test('does not match on value when label is a different string', () => {
 	expect(findTypeaheadMenuItem({query: 'diff', values})).toBe(null);
 	expect(findTypeaheadMenuItem({query: 'vis', values})).toBe('label-vs-value');
 });
 
-test('returns null for empty or unmatched query', () => {
+test('returns null when the query is empty after trim or nothing matches', () => {
 	expect(findTypeaheadMenuItem({query: ' ', values})).toBe(null);
 	expect(findTypeaheadMenuItem({query: 'zzz', values})).toBe(null);
 });

@@ -39,8 +39,13 @@ export const videoIteratorManager = ({
 	let currentDelayHandle: {unblock: () => void} | null = null;
 
 	if (canvas) {
-		canvas.width = videoTrack.displayWidth;
-		canvas.height = videoTrack.displayHeight;
+		if (
+			canvas.width !== videoTrack.displayWidth ||
+			canvas.height !== videoTrack.displayHeight
+		) {
+			canvas.width = videoTrack.displayWidth;
+			canvas.height = videoTrack.displayHeight;
+		}
 	}
 
 	const canvasSink = new CanvasSink(videoTrack, {

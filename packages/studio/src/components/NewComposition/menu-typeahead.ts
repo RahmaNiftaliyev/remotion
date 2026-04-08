@@ -9,10 +9,6 @@ const getLabelToMatch = (value: ComboboxValue): string | null => {
 		return value.label;
 	}
 
-	if (typeof value.value === 'string') {
-		return value.value;
-	}
-
 	return null;
 };
 

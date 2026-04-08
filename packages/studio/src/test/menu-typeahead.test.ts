@@ -41,6 +41,17 @@ const values: ComboboxValue[] = [
 		subMenu: null,
 		quickSwitcherLabel: 'Custom Label',
 	},
+	{
+		type: 'item',
+		id: 'label-vs-value',
+		label: 'VisibleText',
+		value: 'DifferentValue',
+		onClick: () => undefined,
+		keyHint: null,
+		leftItem: null,
+		subMenu: null,
+		quickSwitcherLabel: null,
+	},
 ];
 
 test('finds item by label prefix', () => {
@@ -58,6 +69,11 @@ test('ignores divider and disabled items', () => {
 test('matches visible label when quickSwitcherLabel differs', () => {
 	expect(findTypeaheadMenuItem({query: 'custom', values})).toBe(null);
 	expect(findTypeaheadMenuItem({query: 'not', values})).toBe('custom');
+});
+
+test('does not match on value when label is a different string', () => {
+	expect(findTypeaheadMenuItem({query: 'diff', values})).toBe(null);
+	expect(findTypeaheadMenuItem({query: 'vis', values})).toBe('label-vs-value');
 });
 
 test('returns null for empty or unmatched query', () => {

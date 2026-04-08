@@ -209,6 +209,8 @@ const VideoForPreviewAssertedShowing: React.FC<
 	const initialDurationInFrames = useRef(videoConfig.durationInFrames);
 	const initialSequenceOffset = useRef(sequenceOffset);
 	const hasDrawnRealFrameRef = useRef(false);
+	const isPremountingRef = useRef(isPremounting);
+	isPremountingRef.current = isPremounting;
 
 	useLayoutEffect(() => {
 		if (!seamlessTransition) {
@@ -246,7 +248,11 @@ const VideoForPreviewAssertedShowing: React.FC<
 		const canvas = canvasRef.current;
 
 		return () => {
-			if (!canvas || !hasDrawnRealFrameRef.current) {
+			if (
+				!canvas ||
+				!hasDrawnRealFrameRef.current ||
+				isPremountingRef.current
+			) {
 				return;
 			}
 

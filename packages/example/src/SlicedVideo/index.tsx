@@ -21,7 +21,12 @@ export const SlicedVideo: React.FC = () => {
 						durationInFrames={SLICE_DURATION_FRAMES}
 						premountFor={PREMOUNT_SEC * fps}
 					>
-						<Video src={src} trimBefore={from} debugAudioScheduling />
+						<Video
+							src={src}
+							trimBefore={from}
+							debugAudioScheduling
+							_experimentalInitiallyDrawCachedFrame
+						/>
 					</Sequence>
 				);
 			})}

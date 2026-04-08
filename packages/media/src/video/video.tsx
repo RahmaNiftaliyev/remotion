@@ -88,6 +88,7 @@ const InnerVideo: React.FC<
 	credentials,
 	controls,
 	objectFit,
+	_experimentalInitiallyDrawCachedFrame,
 }) => {
 	const environment = useRemotionEnvironment();
 
@@ -177,6 +178,9 @@ const InnerVideo: React.FC<
 			credentials={credentials}
 			controls={controls}
 			objectFit={objectFit}
+			_experimentalInitiallyDrawCachedFrame={
+				_experimentalInitiallyDrawCachedFrame
+			}
 		/>
 	);
 };
@@ -214,6 +218,7 @@ const VideoInner: React.FC<
 	credentials,
 	controls,
 	objectFit,
+	_experimentalInitiallyDrawCachedFrame,
 	from,
 	durationInFrames,
 }) => {
@@ -258,6 +263,9 @@ const VideoInner: React.FC<
 				credentials={credentials}
 				controls={controls}
 				objectFit={objectFit ?? 'contain'}
+				_experimentalInitiallyDrawCachedFrame={
+					_experimentalInitiallyDrawCachedFrame ?? false
+				}
 			/>
 		</Sequence>
 	);

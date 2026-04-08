@@ -5,10 +5,6 @@ const getLabelToMatch = (value: ComboboxValue): string | null => {
 		return null;
 	}
 
-	if (value.quickSwitcherLabel) {
-		return value.quickSwitcherLabel;
-	}
-
 	if (typeof value.label === 'string') {
 		return value.label;
 	}

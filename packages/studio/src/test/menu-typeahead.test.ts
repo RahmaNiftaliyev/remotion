@@ -55,8 +55,9 @@ test('ignores divider and disabled items', () => {
 	expect(findTypeaheadMenuItem({query: 'ban', values})).toBe(null);
 });
 
-test('prefers quickSwitcherLabel if available', () => {
-	expect(findTypeaheadMenuItem({query: 'custom', values})).toBe('custom');
+test('matches visible label when quickSwitcherLabel differs', () => {
+	expect(findTypeaheadMenuItem({query: 'custom', values})).toBe(null);
+	expect(findTypeaheadMenuItem({query: 'not', values})).toBe('custom');
 });
 
 test('returns null for empty or unmatched query', () => {

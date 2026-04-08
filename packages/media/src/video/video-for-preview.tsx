@@ -68,7 +68,7 @@ type VideoForPreviewProps = {
 	readonly onError: MediaOnError | undefined;
 	readonly credentials: RequestCredentials | undefined;
 	readonly objectFit: VideoObjectFit;
-	readonly seamlessTransition: boolean;
+	readonly _experimentalInitiallyDrawCachedFrame: boolean;
 };
 
 type VideoForPreviewAssertedShowingProps = VideoForPreviewProps & {
@@ -103,7 +103,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 	credentials,
 	controls,
 	objectFit: objectFitProp,
-	seamlessTransition,
+	_experimentalInitiallyDrawCachedFrame,
 }) => {
 	const src = usePreload(unpreloadedSrc);
 
@@ -213,7 +213,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 	isPremountingRef.current = isPremounting;
 
 	useLayoutEffect(() => {
-		if (!seamlessTransition) {
+		if (!_experimentalInitiallyDrawCachedFrame) {
 			return;
 		}
 
@@ -238,10 +238,10 @@ const VideoForPreviewAssertedShowing: React.FC<
 		}
 
 		ctx.drawImage(cached, 0, 0);
-	}, [seamlessTransition, src]);
+	}, [_experimentalInitiallyDrawCachedFrame, src]);
 
 	useLayoutEffect(() => {
-		if (!seamlessTransition) {
+		if (!_experimentalInitiallyDrawCachedFrame) {
 			return;
 		}
 
@@ -258,7 +258,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 
 			cacheVideoFrame(src, canvas);
 		};
-	}, [seamlessTransition, src]);
+	}, [_experimentalInitiallyDrawCachedFrame, src]);
 
 	useEffect(() => {
 		if (!sharedAudioContext) return;

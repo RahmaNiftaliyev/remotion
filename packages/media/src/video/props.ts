@@ -67,7 +67,7 @@ type OptionalVideoProps = {
 	onError: MediaOnError | undefined;
 	credentials: RequestCredentials | undefined;
 	objectFit: VideoObjectFit;
-	seamlessTransition: boolean;
+	_experimentalInitiallyDrawCachedFrame: boolean;
 };
 
 export type InnerVideoProps = MandatoryVideoProps &

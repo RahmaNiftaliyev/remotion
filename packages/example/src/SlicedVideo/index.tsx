@@ -25,7 +25,7 @@ export const SlicedVideo: React.FC = () => {
 							src={src}
 							trimBefore={from}
 							debugAudioScheduling
-							seamlessTransition
+							_experimentalInitiallyDrawCachedFrame
 						/>
 					</Sequence>
 				);

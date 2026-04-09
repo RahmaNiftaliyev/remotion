@@ -141,6 +141,12 @@ import {LoopedOffthreadRemoteVideo} from './OffthreadRemoteVideo/LoopedOffthread
 import {MultiChannelAudio} from './OffthreadRemoteVideo/MultiChannelAudio';
 import {OffthreadRemoteSeries} from './OffthreadRemoteVideo/OffthreadRemoteSeries';
 import {ParseAndDownloadMedia} from './ParseAndDownloadMedia';
+import {
+	PLAY_RANGES_MEDIA_DEFAULT,
+	PLAY_RANGES_MEDIA_VIDEO_URL_DEFAULT,
+	PlayRangesMediaVideo,
+	calculateMetadataPlayRangesMedia,
+} from './PlayRangesMediaVideo';
 import {PremountOnTransitionSeries} from './PremountOnTransitionSeries';
 import {PrintProps} from './PrintProps';
 import {SfxExample} from './Sfx';
@@ -868,6 +874,17 @@ export const Index: React.FC = () => {
 					calculateMetadata={calculateMetadataJumpCuts}
 					defaultProps={{
 						sections: SAMPLE_SECTIONS,
+					}}
+				/>
+				<Composition
+					id="play-ranges-media-video"
+					component={PlayRangesMediaVideo}
+					width={480}
+					height={270}
+					calculateMetadata={calculateMetadataPlayRangesMedia}
+					defaultProps={{
+						url: PLAY_RANGES_MEDIA_VIDEO_URL_DEFAULT,
+						playRanges: PLAY_RANGES_MEDIA_DEFAULT,
 					}}
 				/>
 				<Composition

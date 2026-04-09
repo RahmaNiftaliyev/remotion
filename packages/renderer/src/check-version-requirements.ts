@@ -101,7 +101,7 @@ const checkBunVersion = () => {
 const MIN_DARWIN_VERSION = 22;
 const MIN_MACOS_DISPLAY_VERSION = '13 (Ventura)';
 
-const checkMacOSVersion = () => {
+const checkMacOSVersion = (logLevel: LogLevel, indent: boolean) => {
 	if (process.platform !== 'darwin') {
 		return;
 	}
@@ -113,8 +113,9 @@ const checkMacOSVersion = () => {
 	}
 
 	if (majorVersion < MIN_DARWIN_VERSION) {
-		throw new Error(
-			`Remotion requires at least macOS ${MIN_MACOS_DISPLAY_VERSION}. Your macOS version is too old (Darwin kernel ${darwinRelease}). Please upgrade your operating system.`,
+		Log.warn(
+			{logLevel, indent},
+			`Your macOS version is older than macOS ${MIN_MACOS_DISPLAY_VERSION}. Some features such as rendering may not work.`,
 		);
 	}
 };
@@ -126,6 +127,6 @@ export const checkRuntimeVersion = (logLevel: LogLevel, indent: boolean) => {
 		checkBunVersion();
 	}
 
-	checkMacOSVersion();
+	checkMacOSVersion(logLevel, indent);
 	checkLibCRequirement(logLevel, indent);
 };

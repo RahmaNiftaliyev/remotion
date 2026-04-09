@@ -1,3 +1,4 @@
+import os from 'node:os';
 import {NoReactInternals} from 'remotion/no-react';
 import {isMusl} from './compositor/get-executable-path';
 import type {LogLevel} from './log-level';
@@ -96,6 +97,28 @@ const checkBunVersion = () => {
 	}
 };
 
+// Darwin kernel major version 22 = macOS 13 (Ventura)
+const MIN_DARWIN_VERSION = 22;
+const MIN_MACOS_DISPLAY_VERSION = '13 (Ventura)';
+
+const checkMacOSVersion = () => {
+	if (process.platform !== 'darwin') {
+		return;
+	}
+
+	const darwinRelease = os.release();
+	const majorVersion = Number(darwinRelease.split('.')[0]);
+	if (Number.isNaN(majorVersion)) {
+		return;
+	}
+
+	if (majorVersion < MIN_DARWIN_VERSION) {
+		throw new Error(
+			`Remotion requires at least macOS ${MIN_MACOS_DISPLAY_VERSION}. Your macOS version is too old (Darwin kernel ${darwinRelease}). Please upgrade your operating system.`,
+		);
+	}
+};
+
 export const checkRuntimeVersion = (logLevel: LogLevel, indent: boolean) => {
 	if (typeof Bun === 'undefined') {
 		checkNodeVersion();
@@ -103,5 +126,6 @@ export const checkRuntimeVersion = (logLevel: LogLevel, indent: boolean) => {
 		checkBunVersion();
 	}
 
+	checkMacOSVersion();
 	checkLibCRequirement(logLevel, indent);
 };

@@ -167,6 +167,17 @@ export const printUsefulErrorMessage = (
 		);
 	}
 
+	if (err.message.includes('AVCaptureDeviceTypeContinuityCamera')) {
+		Log.info(
+			{indent, logLevel},
+			'💡 Remotion requires macOS 13 (Ventura) or later.',
+		);
+		Log.info(
+			{indent, logLevel},
+			'💡 Get help for this issue: https://github.com/remotion-dev/remotion/issues/7027',
+		);
+	}
+
 	if (err.message.includes('EBADF')) {
 		Log.info(
 			{indent, logLevel},

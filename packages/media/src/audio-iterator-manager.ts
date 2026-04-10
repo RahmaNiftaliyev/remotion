@@ -12,7 +12,7 @@ import {makePrewarmedAudioIteratorCache} from './prewarm-iterator-for-looping';
 import {ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT} from './set-global-time-anchor';
 import type {SharedAudioContextForMediaPlayer} from './shared-audio-context-for-media-player';
 
-const MAX_BUFFER_AHEAD_SECONDS = 8;
+const MAX_BUFFER_AHEAD_SECONDS = 2;
 
 type ScheduleAudioNode = (
 	node: AudioBufferSourceNode,

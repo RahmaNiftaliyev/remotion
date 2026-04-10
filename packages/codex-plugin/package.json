@@ -1,7 +1,6 @@
 {
 	"name": "@remotion/codex-plugin",
-	"version": "4.0.447",
-	"description": "OpenAI Codex plugin that packages Remotion skills",
+	"version": "4.0.448",
 	"private": true,
 	"type": "module",
 	"repository": {

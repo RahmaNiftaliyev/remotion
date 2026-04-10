@@ -811,6 +811,6 @@ export const renderFrames = (
 		imageSequencePattern: imageSequencePattern ?? null,
 		mediaCacheSizeInBytes: mediaCacheSizeInBytes ?? null,
 		onLog: defaultOnLog,
-		sampleRate: sampleRate ?? 48000,
+		sampleRate: sampleRate ?? composition.defaultSampleRate ?? 48000,
 	});
 };

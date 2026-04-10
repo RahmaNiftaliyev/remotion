@@ -137,6 +137,7 @@ const innerGetCompositions = async ({
 			defaultVideoImageFormat,
 			defaultPixelFormat,
 			defaultProResProfile,
+			defaultSampleRate,
 		} = r;
 
 		return {
@@ -156,6 +157,7 @@ const innerGetCompositions = async ({
 			defaultVideoImageFormat,
 			defaultPixelFormat,
 			defaultProResProfile,
+			defaultSampleRate,
 		};
 	});
 };

@@ -111,6 +111,7 @@ export type BundleCompositionState = {
 	compositionDefaultVideoImageFormat: VideoImageFormat | null;
 	compositionDefaultPixelFormat: PixelFormat | null;
 	compositionDefaultProResProfile: ProResProfile | null;
+	compositionDefaultSampleRate: number | null;
 };
 
 export type BundleIndexState = {

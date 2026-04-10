@@ -1106,6 +1106,6 @@ export const renderMedia = ({
 		licenseKey: licenseKey ?? apiKey ?? null,
 		onLog: defaultOnLog,
 		isProduction: isProduction ?? null,
-		sampleRate: sampleRate ?? 48000,
+		sampleRate: sampleRate ?? composition.defaultSampleRate ?? 48000,
 	});
 };

@@ -276,6 +276,7 @@ export function createScaffold<Props extends Record<string, unknown>>({
 									defaultVideoImageFormat: null,
 									defaultPixelFormat: null,
 									defaultProResProfile: null,
+									defaultSampleRate: null,
 								},
 								folders: [],
 							}}

@@ -73,6 +73,7 @@ export const SharedPlayerContexts: React.FC<{
 				defaultOutName: null,
 				defaultPixelFormat: null,
 				defaultProResProfile: null,
+				defaultSampleRate: null,
 				defaultVideoImageFormat: null,
 				durationInFrames,
 				fps,

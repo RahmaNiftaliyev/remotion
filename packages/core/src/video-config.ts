@@ -15,4 +15,5 @@ export type VideoConfig = {
 	defaultVideoImageFormat: VideoImageFormat | null;
 	defaultPixelFormat: PixelFormat | null;
 	defaultProResProfile: ProResProfile | null;
+	defaultSampleRate: number | null;
 };

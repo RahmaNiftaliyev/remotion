@@ -447,6 +447,11 @@ export const renderVideoFlow = async ({
 			},
 		);
 
+	const resolvedSampleRate = BrowserSafeApis.options.sampleRateOption.getValue(
+		{commandLine: parsedCli},
+		config.defaultSampleRate,
+	).value;
+
 	RenderInternals.validateEvenDimensionsWithCodec({
 		width: config.width,
 		height: config.height,
@@ -614,7 +619,7 @@ export const renderVideoFlow = async ({
 			server,
 			indent,
 			muted,
-			sampleRate,
+			sampleRate: resolvedSampleRate,
 			onBrowserLog: null,
 			onFrameBuffer: null,
 			logLevel,
@@ -745,7 +750,7 @@ export const renderVideoFlow = async ({
 		onLog,
 		licenseKey: null,
 		isProduction: null,
-		sampleRate,
+		sampleRate: resolvedSampleRate,
 	});
 	if (!updatesDontOverwrite) {
 		updateRenderProgress({newline: true, printToConsole: true});

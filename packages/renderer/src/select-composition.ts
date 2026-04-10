@@ -168,6 +168,7 @@ const innerSelectComposition = async ({
 		defaultVideoImageFormat,
 		defaultPixelFormat,
 		defaultProResProfile,
+		defaultSampleRate,
 	} = res;
 	return {
 		metadata: {
@@ -187,6 +188,7 @@ const innerSelectComposition = async ({
 			defaultVideoImageFormat,
 			defaultPixelFormat,
 			defaultProResProfile,
+			defaultSampleRate,
 		},
 		propsSize: size,
 	};

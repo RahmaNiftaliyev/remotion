@@ -17,13 +17,23 @@ export const sampleRateOption = {
 	ssrName: 'sampleRate' as const,
 	docLink: 'https://www.remotion.dev/docs/config#setsamplerate',
 	type: 48000 as number,
-	getValue: ({commandLine}: {commandLine: Record<string, unknown>}) => {
+	getValue: (
+		{commandLine}: {commandLine: Record<string, unknown>},
+		compositionSampleRate?: number | null,
+	) => {
 		if (commandLine[cliFlag] !== undefined) {
 			return {value: commandLine[cliFlag] as number, source: 'cli'};
 		}
 
 		if (currentSampleRate !== 48000) {
 			return {value: currentSampleRate, source: 'config file'};
+		}
+
+		if (compositionSampleRate) {
+			return {
+				value: compositionSampleRate,
+				source: 'via calculateMetadata',
+			};
 		}
 
 		return {value: 48000, source: 'default'};

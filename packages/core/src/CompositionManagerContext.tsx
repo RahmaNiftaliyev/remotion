@@ -18,6 +18,7 @@ export type BaseMetadata = Pick<
 	| 'defaultVideoImageFormat'
 	| 'defaultPixelFormat'
 	| 'defaultProResProfile'
+	| 'defaultSampleRate'
 >;
 
 export type CanvasContent =

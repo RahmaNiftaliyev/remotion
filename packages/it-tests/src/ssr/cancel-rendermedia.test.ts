@@ -23,6 +23,7 @@ test('Should be able to cancel render', async () => {
 				defaultVideoImageFormat: null,
 				defaultPixelFormat: null,
 				defaultProResProfile: null,
+				defaultSampleRate: null,
 			},
 			outputLocation: 'out/render.mp4',
 			cancelSignal,

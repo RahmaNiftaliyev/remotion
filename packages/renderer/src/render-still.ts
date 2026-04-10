@@ -302,6 +302,7 @@ const innerRenderStill = async ({
 			defaultVideoImageFormat: VideoImageFormat | null,
 			defaultPixelFormat: PixelFormat | null,
 			defaultProResProfile: _InternalTypes['ProResProfile'] | null,
+			defaultSampleRate: number | null,
 		) => {
 			window.remotion_setBundleMode({
 				type: 'composition',
@@ -316,6 +317,7 @@ const innerRenderStill = async ({
 				compositionDefaultVideoImageFormat: defaultVideoImageFormat,
 				compositionDefaultPixelFormat: defaultPixelFormat,
 				compositionDefaultProResProfile: defaultProResProfile,
+				compositionDefaultSampleRate: defaultSampleRate,
 			});
 		},
 		args: [
@@ -330,6 +332,7 @@ const innerRenderStill = async ({
 			composition.defaultVideoImageFormat,
 			composition.defaultPixelFormat,
 			composition.defaultProResProfile,
+			composition.defaultSampleRate,
 		],
 		frame: null,
 		page,

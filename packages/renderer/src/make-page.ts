@@ -106,6 +106,7 @@ export const makePage = async ({
 			defaultVideoImageFormat: VideoImageFormat | null,
 			defaultPixelFormat: PixelFormat | null,
 			defaultProResProfile: _InternalTypes['ProResProfile'] | null,
+			defaultSampleRate: number | null,
 		) => {
 			window.remotion_setBundleMode({
 				type: 'composition',
@@ -120,6 +121,7 @@ export const makePage = async ({
 				compositionDefaultVideoImageFormat: defaultVideoImageFormat,
 				compositionDefaultPixelFormat: defaultPixelFormat,
 				compositionDefaultProResProfile: defaultProResProfile,
+				compositionDefaultSampleRate: defaultSampleRate,
 			});
 		},
 		args: [
@@ -134,6 +136,7 @@ export const makePage = async ({
 			composition.defaultVideoImageFormat,
 			composition.defaultPixelFormat,
 			composition.defaultProResProfile,
+			composition.defaultSampleRate,
 		],
 		frame: null,
 		page,

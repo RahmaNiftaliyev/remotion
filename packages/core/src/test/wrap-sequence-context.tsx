@@ -36,6 +36,7 @@ const mockCompositionContext: CompositionManagerContext = {
 		defaultOutName: null,
 		defaultPixelFormat: null,
 		defaultProResProfile: null,
+		defaultSampleRate: null,
 		defaultVideoImageFormat: null,
 		durationInFrames: 1000000,
 		fps: 30,

@@ -15,7 +15,7 @@ export const sampleRateOption = {
 		</>
 	),
 	ssrName: 'sampleRate' as const,
-	docLink: 'https://www.remotion.dev/docs/config#setsamplerate',
+	docLink: 'https://www.remotion.dev/docs/sample-rate',
 	type: 48000 as number,
 	getValue: (
 		{commandLine}: {commandLine: Record<string, unknown>},

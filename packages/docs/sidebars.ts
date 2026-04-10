@@ -1015,6 +1015,7 @@ const sidebars: SidebarsConfig = {
 			},
 			items: [
 				'encoding',
+				'sample-rate',
 				'stills',
 				'scaling',
 				'transparent-videos',

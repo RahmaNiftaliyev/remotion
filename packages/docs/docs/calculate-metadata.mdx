@@ -25,7 +25,10 @@ Use it if you:
 <Step>4</Step> want to add per-composition default video image format, pixel format, or ProRes profile
 </div>
 <div>
-<Step>5</Step> want to run code once, before the actual render starts.
+<Step>5</Step> want to add a per-composition default <a href="/docs/sample-rate">audio sample rate</a>
+</div>
+<div>
+<Step>6</Step> want to run code once, before the actual render starts.
 </div>
 
 The `calculateMetadata()` function is called a single time, independently from the concurrency of the render.  
@@ -67,6 +70,8 @@ const calculateMetadata: CalculateMetadataFunction<MyComponentProps> = ({props, 
     defaultPixelFormat: 'yuv420p',
     // or add per-composition default ProRes profile
     defaultProResProfile: 'hq',
+    // or add per-composition default audio sample rate
+    defaultSampleRate: 44100,
   };
 };
 
@@ -109,6 +114,7 @@ The function must return an pure JSON-serializable object, which can contain the
 - `defaultVideoImageFormat`: The default video image format (`'png'`, `'jpeg'`, or `'none'`). Optional. <AvailableFrom v="4.0.316" />
 - `defaultPixelFormat`: The default pixel format (`'yuv420p'`, `'yuva420p'`, `'yuv422p'`, `'yuv444p'`, `'yuv420p10le'`, `'yuv422p10le'`, `'yuv444p10le'`, or `'yuva444p10le'`). Optional. <AvailableFrom v="4.0.316" />
 - `defaultProResProfile`: The default ProRes profile (`'4444-xq'`, `'4444'`, `'hq'`, `'standard'`, `'light'`, or `'proxy'`). Optional. <AvailableFrom v="4.0.367" />
+- `defaultSampleRate`: The default [audio sample rate](/docs/sample-rate) in Hz. Optional. <AvailableFrom v="4.0.448" />
 
 If you return a field, it will take precendence over the props directly passed to the composition. The defaultCodec returned will have a higher priority than the config file, but less priority than explicitly passing the option to renderMedia() i.e. the composition will be rendered with this codec if nothing with higher priority was specified.
 

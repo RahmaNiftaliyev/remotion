@@ -131,27 +131,20 @@ export const init = async () => {
 	const isInsideGitRepo = result.type === 'is-git-repo';
 
 	if (isInsideGitRepo) {
-		if (isYesFlagSelected()) {
-			Log.error(
-				`You are already inside a Git repo (${path.resolve(
+		if (!isYesFlagSelected()) {
+			const {shouldContinue} = await prompts({
+				type: 'toggle',
+				name: 'shouldContinue',
+				message: `You are already inside a Git repo (${path.resolve(
 					result.location,
-				)}). Cannot use --yes inside an existing Git repository.`,
-			);
-			process.exit(1);
-		}
-
-		const {shouldContinue} = await prompts({
-			type: 'toggle',
-			name: 'shouldContinue',
-			message: `You are already inside a Git repo (${path.resolve(
-				result.location,
-			)}).\nA new project will be created without initializing a new Git repository. Do you want to continue?`,
-			initial: false,
-			active: 'Yes',
-			inactive: 'No',
-		});
-		if (!shouldContinue) {
-			process.exit(1);
+				)}).\nA new project will be created without initializing a new Git repository. Do you want to continue?`,
+				initial: false,
+				active: 'Yes',
+				inactive: 'No',
+			});
+			if (!shouldContinue) {
+				process.exit(1);
+			}
 		}
 	}
 

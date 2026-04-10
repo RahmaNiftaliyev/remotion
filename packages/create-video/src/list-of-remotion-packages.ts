@@ -10,6 +10,7 @@ export const listOfRemotionPackages = [
 	'@remotion/bundler',
 	'@remotion/cli',
 	'@remotion/cloudrun',
+	'@remotion/codex-plugin',
 	'@remotion/compositor-darwin-arm64',
 	'@remotion/compositor-darwin-x64',
 	'@remotion/compositor-linux-arm64-gnu',

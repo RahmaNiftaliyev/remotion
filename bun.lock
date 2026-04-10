@@ -230,6 +230,15 @@
         "eslint": "catalog:",
       },
     },
+    "packages/codex-plugin": {
+      "name": "@remotion/codex-plugin",
+      "version": "4.0.447",
+      "devDependencies": {
+        "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
+        "eslint": "catalog:",
+      },
+    },
     "packages/compositor": {
       "name": "@remotion/compositor",
       "version": "4.0.447",
@@ -3746,6 +3755,8 @@
     "@remotion/cli": ["@remotion/cli@workspace:packages/cli"],
 
     "@remotion/cloudrun": ["@remotion/cloudrun@workspace:packages/cloudrun"],
+
+    "@remotion/codex-plugin": ["@remotion/codex-plugin@workspace:packages/codex-plugin"],
 
     "@remotion/compositor": ["@remotion/compositor@workspace:packages/compositor"],
 

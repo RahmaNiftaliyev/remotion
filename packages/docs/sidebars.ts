@@ -1390,6 +1390,7 @@ const sidebars: SidebarsConfig = {
 			label: 'Troubleshooting',
 			items: [
 				'troubleshooting/debug-failed-render',
+				'troubleshooting/video-has-no-sound',
 				'timeout',
 				'target-closed',
 				'media-playback-error',

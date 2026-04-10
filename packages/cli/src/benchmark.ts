@@ -74,6 +74,7 @@ const {
 	overrideDurationOption,
 	bundleCacheOption,
 	runsOption,
+	sampleRateOption,
 } = BrowserSafeApis.options;
 
 const {benchmarkConcurrenciesOption} = BrowserSafeApis.options;
@@ -483,6 +484,7 @@ export const benchmarkCommand = async (
 		true,
 	).value;
 	const metadata = metadataOption.getValue({commandLine: parsedCli}).value;
+	const sampleRate = sampleRateOption.getValue({commandLine: parsedCli}).value;
 
 	for (const composition of compositions) {
 		const {value: videoCodec, source: codecReason} = videoCodecOption.getValue(
@@ -547,7 +549,7 @@ export const benchmarkCommand = async (
 					everyNthFrame,
 					logLevel,
 					muted,
-					sampleRate: 48000,
+					sampleRate,
 					enforceAudioTrack,
 					browserExecutable,
 					ffmpegOverride,

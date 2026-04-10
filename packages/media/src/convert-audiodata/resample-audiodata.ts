@@ -1,11 +1,12 @@
 // Remotion exports all videos with 2 channels.
 export const TARGET_NUMBER_OF_CHANNELS = 2;
 
-let targetSampleRate = 48000;
+export const getTargetSampleRate = () => {
+	if (typeof window !== 'undefined' && window.remotion_sampleRate) {
+		return window.remotion_sampleRate;
+	}
 
-export const getTargetSampleRate = () => targetSampleRate;
-export const setTargetSampleRate = (rate: number) => {
-	targetSampleRate = rate;
+	return 48000;
 };
 
 const fixFloatingPoint = (value: number) => {

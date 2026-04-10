@@ -89,6 +89,7 @@ const innerGetCompositions = async ({
 		mediaCacheSizeInBytes,
 		initialMemoryAvailable: getAvailableMemory(logLevel),
 		darkMode,
+		sampleRate: 48000,
 	});
 
 	await puppeteerEvaluateWithCatch({

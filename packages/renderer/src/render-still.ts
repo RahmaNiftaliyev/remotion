@@ -285,6 +285,7 @@ const innerRenderStill = async ({
 		mediaCacheSizeInBytes,
 		initialMemoryAvailable: getAvailableMemory(logLevel),
 		darkMode: chromiumOptions.darkMode ?? false,
+		sampleRate: 48000,
 	});
 
 	await puppeteerEvaluateWithCatch({

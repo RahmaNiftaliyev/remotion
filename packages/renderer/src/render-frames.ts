@@ -309,6 +309,7 @@ const innerRenderFrames = async ({
 			mediaCacheSizeInBytes,
 			onLog,
 			darkMode,
+			sampleRate,
 		});
 	};
 

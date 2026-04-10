@@ -149,10 +149,6 @@ import {
 } from './PlayRangesMediaVideo';
 import {PremountOnTransitionSeries} from './PremountOnTransitionSeries';
 import {PrintProps} from './PrintProps';
-import {
-	RemoteAudioTestbed,
-	calculateMetadataRemoteAudio,
-} from './RemoteAudioTestbed';
 import {SfxExample} from './Sfx';
 import {SmoothTextTransition} from './SmoothTextTransition';
 import {SpringSeason} from './SpringSeason';
@@ -1055,15 +1051,6 @@ export const Index: React.FC = () => {
 				/>
 			</Folder>
 			<Folder name="audio-tests">
-				<Composition
-					id="remote-audio-testbed"
-					component={RemoteAudioTestbed}
-					width={800}
-					height={800}
-					fps={30}
-					durationInFrames={300}
-					calculateMetadata={calculateMetadataRemoteAudio}
-				/>
 				<Composition
 					id="complex-sounds"
 					component={ComplexSounds}

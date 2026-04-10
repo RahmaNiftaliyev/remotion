@@ -24,8 +24,8 @@
 	"skills": "./skills/",
 	"interface": {
 		"displayName": "Remotion",
-		"shortDescription": "Video creation best practices for Remotion",
-		"longDescription": "Domain-specific knowledge for building programmatic videos with Remotion and React. Covers animations, timing, audio, captions, 3D, transitions, charts, text effects, and more.",
+		"shortDescription": "Create motion graphics from prompts",
+		"longDescription": "Build videos programmatically with Remotion and React. Covers animations, timing, audio, captions, 3D, transitions, charts, text effects, and more.",
 		"developerName": "Remotion",
 		"category": "Design",
 		"capabilities": ["Read", "Write"],
@@ -33,7 +33,7 @@
 		"privacyPolicyURL": "https://remotion.pro/privacy",
 		"termsOfServiceURL": "https://remotion.pro/terms",
 		"defaultPrompt": [
-			"Create an animated chart with 5 bars with ascending height",
+			"Create an animated chart with 5 bars",
 			"Make an animated call-to-action subscribe button for our YouTube channel",
 			"Use Remotion to add captions and audio to a video composition."
 		],

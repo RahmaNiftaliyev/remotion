@@ -45,21 +45,22 @@ await renderMedia({
 
 ### Via `renderMediaOnWeb()`
 
-```ts twoslash title="web-render.ts"
+```tsx twoslash title="web-render.ts"
 // @module: es2022
 // @target: es2017
 import {renderMediaOnWeb} from '@remotion/web-renderer';
-const composition = {
-  id: 'MyComp',
-  durationInFrames: 100,
-  fps: 30,
-  width: 1920,
-  height: 1080,
-  defaultProps: {},
-};
-// ---cut---
-await renderMediaOnWeb({
-  composition,
+
+const MyComp: React.FC = () => null;
+
+const {getBlob} = await renderMediaOnWeb({
+  composition: {
+    component: MyComp,
+    durationInFrames: 100,
+    fps: 30,
+    width: 1920,
+    height: 1080,
+    id: 'MyComp',
+  },
   sampleRate: 44100,
 });
 ```

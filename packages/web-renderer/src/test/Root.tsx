@@ -54,6 +54,7 @@ import {simpleRotatedSvg} from './fixtures/simple-rotated-svg';
 import {svgExplicitDimensions} from './fixtures/svg-explicit-dimensions';
 import {backgroundClipText} from './fixtures/text/background-clip-text';
 import {backgroundClipText3dTransform} from './fixtures/text/background-clip-text-3d-transform';
+import {filterDropShadowBackgroundClipText} from './fixtures/text/filter-drop-shadow-background-clip-text';
 import {filterText} from './fixtures/text/filter-text';
 import {fontStyle} from './fixtures/text/font-style';
 import {fontVariantCaps} from './fixtures/text/font-variant-caps';
@@ -155,6 +156,7 @@ export const Root: React.FC = () => {
 				<Composition {...whiteSpaceCollapsing} />
 				<Composition {...whiteSpaceCollapsing2} />
 				<Composition {...filterText} />
+				<Composition {...filterDropShadowBackgroundClipText} />
 			</Folder>
 			<Folder name="Projects">
 				<Composition {...unwrapped} />

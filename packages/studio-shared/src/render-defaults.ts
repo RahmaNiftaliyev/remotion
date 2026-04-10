@@ -58,6 +58,7 @@ export type RenderDefaults = {
 	publicLicenseKey: string | null;
 	outputLocation: string | null;
 	allowHtmlInCanvas: boolean;
+	sampleRate: number;
 };
 
 declare global {

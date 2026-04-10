@@ -252,6 +252,7 @@ const renderHandler = async <Provider extends CloudProvider>({
 				defaultPixelFormat: null,
 				defaultProResProfile: null,
 				defaultVideoImageFormat: null,
+				defaultSampleRate: null,
 			},
 			imageFormat: params.imageFormat,
 			serializedInputPropsWithCustomSchema,

@@ -63,6 +63,31 @@ await renderMedia({
 });
 ```
 
+### Via `renderMediaOnWeb()`
+
+```ts twoslash title="web-render.ts"
+// @module: es2022
+// @target: es2017
+import {renderMediaOnWeb} from '@remotion/web-renderer';
+const composition = {
+  id: 'MyComp',
+  durationInFrames: 100,
+  fps: 30,
+  width: 1920,
+  height: 1080,
+  defaultProps: {},
+};
+// ---cut---
+await renderMediaOnWeb({
+  composition,
+  sampleRate: 44100,
+});
+```
+
+### Via the Studio render dialog
+
+In the [Remotion Studio](/docs/studio) render dialog, you can select the sample rate from a dropdown in the **Audio** tab.
+
 ## Per-composition sample rate
 
 You can set the sample rate per composition using [`calculateMetadata()`](/docs/calculate-metadata). This is useful when your composition is driven by a media file with a known sample rate.
@@ -194,4 +219,5 @@ This means previewed audio may sound slightly different from the final render if
 - [`calculateMetadata()`](/docs/calculate-metadata)
 - [`Config.setSampleRate()`](/docs/config#setsamplerate)
 - [`renderMedia()`](/docs/renderer/render-media#samplerate)
+- [`renderMediaOnWeb()`](/docs/web-renderer/render-media-on-web#samplerate)
 - [Getting metadata from a video](/docs/mediabunny/metadata)

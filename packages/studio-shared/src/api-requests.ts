@@ -87,6 +87,7 @@ type AddRenderRequestDynamicFields =
 			separateAudioTo: string | null;
 			hardwareAcceleration: HardwareAccelerationOption;
 			chromeMode: ChromeMode;
+			sampleRate: number;
 	  };
 
 export type CancelRenderRequest = {

@@ -210,6 +210,7 @@ export const addVideoRenderJob = ({
 	hardwareAcceleration,
 	chromeMode,
 	mediaCacheSizeInBytes,
+	sampleRate,
 }: {
 	compositionId: string;
 	outName: string;
@@ -251,6 +252,7 @@ export const addVideoRenderJob = ({
 	hardwareAcceleration: HardwareAccelerationOption;
 	chromeMode: ChromeMode;
 	mediaCacheSizeInBytes: number | null;
+	sampleRate: number;
 }) => {
 	return callApi('/api/render', {
 		compositionId,
@@ -299,6 +301,7 @@ export const addVideoRenderJob = ({
 		hardwareAcceleration,
 		chromeMode,
 		mediaCacheSizeInBytes,
+		sampleRate,
 	});
 };
 

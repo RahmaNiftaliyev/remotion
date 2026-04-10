@@ -58,7 +58,10 @@ export const processVideoJob = async ({
 		commandLine: parsedCli,
 	}).value;
 	const rspack = rspackOption.getValue({commandLine: parsedCli}).value;
-	const sampleRate = sampleRateOption.getValue({commandLine: parsedCli}).value;
+	const sampleRate =
+		job.type === 'video'
+			? job.sampleRate
+			: sampleRateOption.getValue({commandLine: parsedCli}).value;
 	const fullEntryPoint = convertEntryPointToServeUrl(entryPoint);
 
 	await renderVideoFlow({

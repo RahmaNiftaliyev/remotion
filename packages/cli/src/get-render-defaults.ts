@@ -42,6 +42,7 @@ const {
 	publicLicenseKeyOption,
 	stillImageFormatOption,
 	videoImageFormatOption,
+	sampleRateOption,
 } = BrowserSafeApis.options;
 
 export const getRenderDefaults = (): RenderDefaults => {
@@ -208,5 +209,6 @@ export const getRenderDefaults = (): RenderDefaults => {
 		publicLicenseKey,
 		outputLocation,
 		allowHtmlInCanvas,
+		sampleRate: sampleRateOption.getValue({commandLine: parsedCli}).value,
 	};
 };

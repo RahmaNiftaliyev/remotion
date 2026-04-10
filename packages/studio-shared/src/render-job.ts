@@ -162,6 +162,7 @@ type RenderJobDynamicFields =
 			forSeamlessAacConcatenation: boolean;
 			separateAudioTo: string | null;
 			hardwareAcceleration: HardwareAccelerationOption;
+			sampleRate: number;
 	  } & RenderJobDynamicStatus);
 
 import type {ChromiumOptions, OpenGlRenderer} from '@remotion/renderer';

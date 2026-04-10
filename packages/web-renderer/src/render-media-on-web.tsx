@@ -132,6 +132,7 @@ type OptionalRenderMediaOnWebOptions<Schema extends $ZodObject> = {
 	muted: boolean;
 	scale: number;
 	allowHtmlInCanvas: boolean;
+	sampleRate: number;
 };
 
 export type RenderMediaOnWebOptions<
@@ -180,6 +181,7 @@ const internalRenderMediaOnWeb = async <
 	scale,
 	isProduction,
 	allowHtmlInCanvas,
+	sampleRate,
 }: InternalRenderMediaOnWebOptions<
 	Schema,
 	Props
@@ -589,7 +591,7 @@ const internalRenderMediaOnWeb = async <
 
 			const audio = muted
 				? null
-				: onlyInlineAudio({assets, fps: resolved.fps, timestamp});
+				: onlyInlineAudio({assets, fps: resolved.fps, timestamp, sampleRate});
 			internalState.addAudioMixingTime(performance.now() - audioCombineStart);
 
 			const addSampleStart = performance.now();
@@ -739,6 +741,7 @@ export const renderMediaOnWeb = <
 				scale: options.scale ?? 1,
 				isProduction: options.isProduction ?? true,
 				allowHtmlInCanvas: options.allowHtmlInCanvas ?? false,
+				sampleRate: options.sampleRate ?? 48000,
 			}),
 		);
 

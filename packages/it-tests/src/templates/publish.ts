@@ -83,6 +83,47 @@ const publish = async (template: MinimalTemplate) => {
 	await $`git push origin ${defaultBranch.trim()}`.cwd(workingDir);
 };
 
+const publishCodexPlugin = async () => {
+	const codexPluginDir = path.join(__dirname, '..', '..', '..', 'codex-plugin');
+
+	// Run the build step to assemble skills
+	await $`bun build.mts`.cwd(codexPluginDir);
+
+	const tmpDir = tmpdir();
+	const workingDir = path.join(tmpDir, `codex-plugin-${Math.random()}`);
+
+	await $`git clone git@github.com:remotion-dev/codex-plugin.git ${workingDir} --depth 1`;
+
+	const defaultBranch = await $`git branch --show-current`
+		.cwd(workingDir)
+		.text();
+	const existingFilesInRepo = await $`git ls-files`.cwd(workingDir).quiet();
+	for (const file of existingFilesInRepo.stdout
+		.toString('utf-8')
+		.trim()
+		.split('\n')) {
+		if (file === '') continue;
+		await $`rm ${file}`.cwd(workingDir).quiet();
+	}
+
+	const filesToCopy = ['assets', 'skills', 'marketplace.json', 'README.md'];
+	for (const entry of filesToCopy) {
+		const src = path.join(codexPluginDir, entry);
+		const dst = path.join(workingDir, entry);
+		cpSync(src, dst, {recursive: true});
+	}
+
+	await $`git add .`.cwd(workingDir).nothrow();
+	const hasChanges = await $`git status --porcelain`.cwd(workingDir).text();
+	if (!hasChanges) {
+		console.log('No changes in codex-plugin');
+		return;
+	}
+
+	await $`git commit -m "Update codex plugin"`.cwd(workingDir);
+	await $`git push origin ${defaultBranch.trim()}`.cwd(workingDir);
+};
+
 const CONCURRENCY = 1;
 
 const results: PromiseSettledResult<void>[] = [];
@@ -94,6 +135,8 @@ for (let i = 0; i < templates.length; i += CONCURRENCY) {
 	);
 	results.push(...batchResults);
 }
+
+results.push(...(await Promise.allSettled([publishCodexPlugin()])));
 
 const failures = results.filter(
 	(r): r is PromiseRejectedResult => r.status === 'rejected',

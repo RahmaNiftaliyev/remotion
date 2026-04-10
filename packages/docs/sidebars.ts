@@ -1015,7 +1015,6 @@ const sidebars: SidebarsConfig = {
 			},
 			items: [
 				'encoding',
-				'sample-rate',
 				'stills',
 				'scaling',
 				'transparent-videos',
@@ -1029,6 +1028,7 @@ const sidebars: SidebarsConfig = {
 				'metadata',
 				'hardware-acceleration',
 				'hdr',
+				'sample-rate',
 			],
 		},
 		{

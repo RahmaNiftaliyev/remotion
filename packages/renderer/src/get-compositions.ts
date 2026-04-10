@@ -224,6 +224,7 @@ const internalGetCompositionsRaw = async ({
 				offthreadVideoCacheSizeInBytes,
 				binariesDirectory,
 				forceIPv4: false,
+				sampleRate: 48000,
 			},
 			{
 				onDownload: () => undefined,

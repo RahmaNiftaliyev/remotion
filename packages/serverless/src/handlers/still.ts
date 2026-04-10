@@ -150,6 +150,7 @@ const innerStillHandler = async <Provider extends CloudProvider>(
 			offthreadVideoCacheSizeInBytes: params.offthreadVideoCacheSizeInBytes,
 			binariesDirectory: null,
 			forceIPv4: false,
+			sampleRate: 48000,
 		},
 		{
 			onDownload: () => undefined,

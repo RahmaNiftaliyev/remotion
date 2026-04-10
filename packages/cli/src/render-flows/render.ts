@@ -386,6 +386,7 @@ export const renderVideoFlow = async ({
 		offthreadVideoCacheSizeInBytes,
 		binariesDirectory,
 		forceIPv4: false,
+		sampleRate,
 	});
 
 	addCleanupCallback(`Close server`, () => server.closeServer(false));

@@ -413,6 +413,7 @@ const internalRenderStillRaw = (
 				offthreadVideoCacheSizeInBytes: options.offthreadVideoCacheSizeInBytes,
 				binariesDirectory: options.binariesDirectory,
 				forceIPv4: false,
+				sampleRate: 48000,
 			},
 			{
 				onDownload: options.onDownload,

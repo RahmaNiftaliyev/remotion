@@ -39,7 +39,7 @@ type PrepareServerOptions = {
 	offthreadVideoCacheSizeInBytes: number | null;
 	binariesDirectory: string | null;
 	forceIPv4: boolean;
-	sampleRate?: number;
+	sampleRate: number;
 };
 
 export const prepareServer = async ({
@@ -54,7 +54,7 @@ export const prepareServer = async ({
 	forceIPv4,
 	sampleRate,
 }: PrepareServerOptions): Promise<RemotionServer> => {
-	const downloadMap = makeDownloadMap(sampleRate ?? 48000);
+	const downloadMap = makeDownloadMap(sampleRate);
 	Log.verbose(
 		{indent, logLevel},
 		'Created directory for temporary files',

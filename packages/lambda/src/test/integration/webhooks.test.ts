@@ -25,7 +25,7 @@ test(
 		const {port, close} = await RenderInternals.serveStatic(exampleBuild, {
 			binariesDirectory: null,
 			offthreadVideoThreads: 1,
-			downloadMap: RenderInternals.makeDownloadMap(),
+			downloadMap: RenderInternals.makeDownloadMap(48000),
 			indent: false,
 			logLevel: 'error',
 			offthreadVideoCacheSizeInBytes: null,
@@ -100,6 +100,7 @@ test(
 				storageClass: null,
 				mediaCacheSizeInBytes: null,
 				isProduction: null,
+				sampleRate: 48000,
 			},
 			functionName: 'remotion-dev-lambda',
 			region: 'us-east-1',
@@ -147,7 +148,7 @@ test(
 		const {port, close} = await RenderInternals.serveStatic(exampleBuild, {
 			binariesDirectory: null,
 			offthreadVideoThreads: 1,
-			downloadMap: RenderInternals.makeDownloadMap(),
+			downloadMap: RenderInternals.makeDownloadMap(48000),
 			indent: false,
 			logLevel: 'error',
 			offthreadVideoCacheSizeInBytes: null,
@@ -224,6 +225,7 @@ test(
 				licenseKey: null,
 				storageClass: null,
 				isProduction: true,
+				sampleRate: 48000,
 			},
 			timeoutInTest: 1000,
 			requestHandler: null,

@@ -133,6 +133,7 @@ class Semantic
 				requestHandler: null,
 				mediaCacheSizeInBytes: null,
 				isProduction: null,
+				sampleRate: 48000,
 			});
 		const jsonOutput = toParse.substring(0, toParse.lastIndexOf('}') + 1);
 		const parsedJson = JSON.parse(jsonOutput);

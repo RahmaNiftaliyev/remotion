@@ -121,6 +121,7 @@ const {
 	envFileOption,
 	runsOption,
 	noOpenOption,
+	sampleRateOption,
 } = BrowserSafeApis.options;
 
 declare global {
@@ -627,6 +628,11 @@ type FlatConfig = RemotionConfigObject &
 		 */
 		setBenchmarkConcurrencies: (concurrencies: string | null) => void;
 		/**
+		 * Set the audio sample rate for rendered output.
+		 * Default: 48000
+		 */
+		setSampleRate: (sampleRate: number) => void;
+		/**
 		 * @deprecated 'The config format has changed. Change `Config.Bundling.*()` calls to `Config.*()` in your config file.'
 		 */
 		Bundling: void;
@@ -778,6 +784,7 @@ export const Config: FlatConfig = {
 	setBundleOutDir: outDirOption.setConfig,
 	setBenchmarkRuns: runsOption.setConfig,
 	setBenchmarkConcurrencies: benchmarkConcurrenciesOption.setConfig,
+	setSampleRate: sampleRateOption.setConfig,
 };
 
 export const ConfigInternals = {

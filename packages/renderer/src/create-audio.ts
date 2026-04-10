@@ -41,6 +41,7 @@ export const createAudio = async ({
 	trimLeftOffset,
 	trimRightOffset,
 	forSeamlessAacConcatenation,
+	sampleRate,
 }: {
 	assets: FrameAndAssets[];
 	onDownload: RenderMediaOnDownload | undefined;
@@ -58,6 +59,7 @@ export const createAudio = async ({
 	trimLeftOffset: number;
 	trimRightOffset: number;
 	forSeamlessAacConcatenation: boolean;
+	sampleRate: number;
 }): Promise<string> => {
 	const fileUrlAssets = await convertAssetsToFileUrls({
 		assets,
@@ -116,6 +118,7 @@ export const createAudio = async ({
 				trimRightOffset,
 				forSeamlessAacConcatenation,
 				audioStreamIndex: asset.audioStreamIndex,
+				sampleRate,
 			});
 			preprocessProgress[index] = 1;
 			updateProgress();
@@ -128,6 +131,7 @@ export const createAudio = async ({
 		logLevel,
 		binariesDirectory,
 		cancelSignal,
+		sampleRate,
 	});
 
 	const inlinedAudio = downloadMap.inlineAudioMixing.getListOfAssets();
@@ -165,6 +169,7 @@ export const createAudio = async ({
 			updateProgress();
 		},
 		chunkLengthInSeconds,
+		sampleRate,
 	});
 
 	await compressAudio({

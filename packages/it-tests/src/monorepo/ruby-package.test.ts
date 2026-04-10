@@ -142,6 +142,7 @@ test('Render Media payload', async () => {
 			requestHandler: null,
 			mediaCacheSizeInBytes: null,
 			isProduction: null,
+			sampleRate: 48000,
 		});
 
 	expect(JSON.parse(output)).toEqual(nativeVersion);

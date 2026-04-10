@@ -215,6 +215,7 @@ export const renderMediaOnLambdaOptionalToRequired = (
 		requestHandler: options.requestHandler ?? null,
 		mediaCacheSizeInBytes: options.mediaCacheSizeInBytes ?? null,
 		isProduction: options.isProduction ?? null,
+		sampleRate: options.sampleRate ?? 48000,
 	};
 };
 

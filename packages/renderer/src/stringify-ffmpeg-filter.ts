@@ -3,7 +3,6 @@ import {ffmpegVolumeExpression} from './assets/ffmpeg-volume-expression';
 import type {AssetVolume, MediaAsset} from './assets/types';
 import type {LogLevel} from './log-level';
 import {Log} from './logger';
-import {DEFAULT_SAMPLE_RATE} from './sample-rate';
 import {getActualTrimLeft} from './seamless-aac-trim';
 import {truthy} from './truthy';
 
@@ -120,6 +119,7 @@ export const stringifyFfmpegFilter = ({
 	indent,
 	logLevel,
 	presentationTimeOffsetInSeconds,
+	sampleRate,
 }: {
 	channels: number;
 	volume: AssetVolume;
@@ -133,6 +133,7 @@ export const stringifyFfmpegFilter = ({
 	indent: boolean;
 	logLevel: LogLevel;
 	presentationTimeOffsetInSeconds: number;
+	sampleRate: number;
 }): FilterWithoutPaddingApplied | null => {
 	if (channels === 0) {
 		return null;
@@ -193,7 +194,7 @@ export const stringifyFfmpegFilter = ({
 		filter:
 			'[0:a]' +
 			[
-				`aformat=sample_fmts=s16:sample_rates=${DEFAULT_SAMPLE_RATE}`,
+				`aformat=sample_fmts=s16:sample_rates=${sampleRate}`,
 				// The order matters here! For speed and correctness, we first trim the audio
 				...trimAndTempoFilter,
 				// The timings for volume must include whatever is in atrim, unless the volume
@@ -202,7 +203,7 @@ export const stringifyFfmpegFilter = ({
 					? null
 					: `volume=${volumeFilter.value}:eval=${volumeFilter.eval}`,
 				toneFrequency && toneFrequency !== 1
-					? `asetrate=${DEFAULT_SAMPLE_RATE}*${toneFrequency},aresample=${DEFAULT_SAMPLE_RATE},atempo=1/${toneFrequency}`
+					? `asetrate=${sampleRate}*${toneFrequency},aresample=${sampleRate},atempo=1/${toneFrequency}`
 					: null,
 			]
 				.filter(truthy)
@@ -210,7 +211,7 @@ export const stringifyFfmpegFilter = ({
 			`[a0]`,
 		pad_end:
 			padAtEnd > 0.0000001
-				? 'apad=pad_len=' + Math.round(padAtEnd * DEFAULT_SAMPLE_RATE)
+				? 'apad=pad_len=' + Math.round(padAtEnd * sampleRate)
 				: null,
 		pad_start:
 			// For n channels, we delay n + 1 channels.

@@ -2,7 +2,6 @@ import {callFf} from '../call-ffmpeg';
 import type {LogLevel} from '../log-level';
 import {Log} from '../logger';
 import type {CancelSignal} from '../make-cancel-signal';
-import {DEFAULT_SAMPLE_RATE} from '../sample-rate';
 
 export const applyToneFrequencyUsingFfmpeg = async ({
 	input,
@@ -12,6 +11,7 @@ export const applyToneFrequencyUsingFfmpeg = async ({
 	logLevel,
 	binariesDirectory,
 	cancelSignal,
+	sampleRate,
 }: {
 	input: string;
 	output: string;
@@ -20,8 +20,9 @@ export const applyToneFrequencyUsingFfmpeg = async ({
 	logLevel: LogLevel;
 	binariesDirectory: string | null;
 	cancelSignal: CancelSignal | undefined;
+	sampleRate: number;
 }) => {
-	const filter = `asetrate=${DEFAULT_SAMPLE_RATE}*${toneFrequency},aresample=${DEFAULT_SAMPLE_RATE},atempo=1/${toneFrequency}`;
+	const filter = `asetrate=${sampleRate}*${toneFrequency},aresample=${sampleRate},atempo=1/${toneFrequency}`;
 
 	const args = [
 		'-hide_banner',
@@ -31,7 +32,7 @@ export const applyToneFrequencyUsingFfmpeg = async ({
 		'-filter:a',
 		filter,
 		['-c:a', 'pcm_s16le'],
-		['-ar', String(DEFAULT_SAMPLE_RATE)],
+		['-ar', String(sampleRate)],
 		'-y',
 		output,
 	].flat(2);

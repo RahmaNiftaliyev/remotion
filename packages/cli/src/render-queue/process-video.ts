@@ -61,6 +61,7 @@ export const processVideoJob = async ({
 
 	await renderVideoFlow({
 		remotionRoot,
+		sampleRate: 48000,
 		browser: 'chrome',
 		browserExecutable,
 		chromiumOptions: job.chromiumOptions,

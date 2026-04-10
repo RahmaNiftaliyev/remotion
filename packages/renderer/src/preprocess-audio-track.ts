@@ -10,7 +10,6 @@ import type {CancelSignal} from './make-cancel-signal';
 import {pLimit} from './p-limit';
 import {parseFfmpegProgress} from './parse-ffmpeg-progress';
 import {resolveAssetSrc} from './resolve-asset-src';
-import {DEFAULT_SAMPLE_RATE} from './sample-rate';
 import type {ProcessedTrack} from './stringify-ffmpeg-filter';
 import {stringifyFfmpegFilter} from './stringify-ffmpeg-filter';
 import {truthy} from './truthy';
@@ -30,6 +29,7 @@ type Options = {
 	forSeamlessAacConcatenation: boolean;
 	onProgress: (progress: number) => void;
 	audioStreamIndex: number;
+	sampleRate: number;
 };
 
 export type PreprocessedAudioTrack = {
@@ -52,6 +52,7 @@ const preprocessAudioTrackUnlimited = async ({
 	trimRightOffset,
 	forSeamlessAacConcatenation,
 	audioStreamIndex,
+	sampleRate,
 }: Options): Promise<PreprocessedAudioTrack | null> => {
 	const {channels, duration, startTime} = await getAudioChannelsAndDuration({
 		downloadMap,
@@ -76,6 +77,7 @@ const preprocessAudioTrackUnlimited = async ({
 		indent,
 		logLevel,
 		presentationTimeOffsetInSeconds: startTime ?? 0,
+		sampleRate,
 	});
 
 	if (filter === null) {
@@ -91,7 +93,7 @@ const preprocessAudioTrackUnlimited = async ({
 		['-ac', '2'],
 		file ? ['-filter_script:a', file] : null,
 		['-c:a', 'pcm_s16le'],
-		['-ar', String(DEFAULT_SAMPLE_RATE)],
+		['-ar', String(sampleRate)],
 		['-y', outName],
 	]
 		.flat(2)

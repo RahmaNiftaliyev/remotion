@@ -49,7 +49,7 @@ test(
 			{
 				port: null,
 				offthreadVideoThreads: 1,
-				downloadMap: RenderInternals.makeDownloadMap(),
+				downloadMap: RenderInternals.makeDownloadMap(48000),
 				indent: false,
 				logLevel: 'info',
 				offthreadVideoCacheSizeInBytes: null,

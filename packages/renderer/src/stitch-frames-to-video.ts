@@ -71,6 +71,7 @@ type InternalStitchFramesToVideoOptions = {
 	colorSpace: ColorSpace | null;
 	binariesDirectory: string | null;
 	metadata: Record<string, string> | null;
+	sampleRate: number;
 } & ToOptions<typeof optionsMap.stitchFramesToVideo>;
 
 export type StitchFramesToVideoOptions = {
@@ -101,6 +102,7 @@ export type StitchFramesToVideoOptions = {
 	colorSpace?: ColorSpace;
 	binariesDirectory?: string | null;
 	metadata?: Record<string, string> | null;
+	sampleRate?: number;
 } & Partial<ToOptions<typeof optionsMap.stitchFramesToVideo>>;
 
 type ReturnType = Promise<Buffer | null>;
@@ -139,6 +141,7 @@ const innerStitchFramesToVideo = async (
 		separateAudioTo,
 		metadata,
 		hardwareAcceleration,
+		sampleRate,
 	}: InternalStitchFramesToVideoOptions,
 	remotionRoot: string,
 ): Promise<ReturnType> => {
@@ -294,6 +297,7 @@ const innerStitchFramesToVideo = async (
 					trimLeftOffset: assetsInfo.trimLeftOffset,
 					trimRightOffset: assetsInfo.trimRightOffset,
 					forSeamlessAacConcatenation: assetsInfo.forSeamlessAacConcatenation,
+					sampleRate,
 				})
 			: null;
 
@@ -532,6 +536,7 @@ export const stitchFramesToVideo = ({
 	separateAudioTo,
 	metadata,
 	hardwareAcceleration,
+	sampleRate,
 }: StitchFramesToVideoOptions): Promise<Buffer | null> => {
 	return internalStitchFramesToVideo({
 		assetsInfo,
@@ -566,5 +571,6 @@ export const stitchFramesToVideo = ({
 		metadata: metadata ?? null,
 		separateAudioTo: separateAudioTo ?? null,
 		hardwareAcceleration: hardwareAcceleration ?? 'disable',
+		sampleRate: sampleRate ?? 48000,
 	});
 };

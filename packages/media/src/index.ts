@@ -18,4 +18,8 @@ export {
 	VideoObjectFit,
 	VideoProps,
 } from './video/props';
+export {
+	getTargetSampleRate,
+	setTargetSampleRate,
+} from './convert-audiodata/resample-audiodata';
 export {Audio, Video};

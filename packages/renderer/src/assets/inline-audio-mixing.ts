@@ -4,7 +4,6 @@ import type {InlineAudioAsset} from 'remotion/no-react';
 import {deleteDirectory} from '../delete-directory';
 import type {LogLevel} from '../log-level';
 import type {CancelSignal} from '../make-cancel-signal';
-import {DEFAULT_SAMPLE_RATE} from '../sample-rate';
 import {applyToneFrequencyUsingFfmpeg} from './apply-tone-frequency';
 import {makeAndReturn} from './download-map';
 
@@ -40,7 +39,7 @@ const BIT_DEPTH = 16;
 const BYTES_PER_SAMPLE = BIT_DEPTH / 8;
 const NUMBER_OF_CHANNELS = 2;
 
-export const makeInlineAudioMixing = (dir: string) => {
+export const makeInlineAudioMixing = (dir: string, sampleRate: number) => {
 	const folderToAdd = makeAndReturn(dir, 'remotion-inline-audio-mixing');
 	// asset id -> file descriptor
 	const openFiles: Record<string, number> = {};
@@ -92,7 +91,7 @@ export const makeInlineAudioMixing = (dir: string) => {
 		const expectedDataSize = Math.round(
 			(totalNumberOfFrames / fps - trimLeftOffset + trimRightOffset) *
 				NUMBER_OF_CHANNELS *
-				DEFAULT_SAMPLE_RATE *
+				sampleRate *
 				BYTES_PER_SAMPLE,
 		);
 
@@ -114,7 +113,7 @@ export const makeInlineAudioMixing = (dir: string) => {
 		writeSync(fd, new Uint8Array([NUMBER_OF_CHANNELS, 0x00]), 0, 2, 22); // Number of channels
 		writeSync(
 			fd,
-			new Uint8Array(numberTo32BiIntLittleEndian(DEFAULT_SAMPLE_RATE)),
+			new Uint8Array(numberTo32BiIntLittleEndian(sampleRate)),
 			0,
 			4,
 			24,
@@ -123,7 +122,7 @@ export const makeInlineAudioMixing = (dir: string) => {
 			fd,
 			new Uint8Array(
 				numberTo32BiIntLittleEndian(
-					DEFAULT_SAMPLE_RATE * NUMBER_OF_CHANNELS * BYTES_PER_SAMPLE,
+					sampleRate * NUMBER_OF_CHANNELS * BYTES_PER_SAMPLE,
 				),
 			),
 			0,
@@ -155,11 +154,13 @@ export const makeInlineAudioMixing = (dir: string) => {
 		indent,
 		logLevel,
 		cancelSignal,
+		sampleRate: finishSampleRate,
 	}: {
 		indent: boolean;
 		logLevel: LogLevel;
 		binariesDirectory: string | null;
 		cancelSignal: CancelSignal | undefined;
+		sampleRate: number;
 	}) => {
 		for (const fd of Object.keys(openFiles)) {
 			const frequency = toneFrequencies[fd];
@@ -173,6 +174,7 @@ export const makeInlineAudioMixing = (dir: string) => {
 					logLevel,
 					binariesDirectory,
 					cancelSignal,
+					sampleRate: finishSampleRate,
 				});
 				fs.renameSync(tmpFile, fd);
 			}
@@ -219,8 +221,8 @@ export const makeInlineAudioMixing = (dir: string) => {
 		let arr = new Int16Array(asset.audio);
 		const isFirst = asset.frame === firstFrame;
 		const isLast = asset.frame === totalNumberOfFrames + firstFrame - 1;
-		const samplesToShaveFromStart = trimLeftOffset * DEFAULT_SAMPLE_RATE;
-		const samplesToShaveFromEnd = trimRightOffset * DEFAULT_SAMPLE_RATE;
+		const samplesToShaveFromStart = trimLeftOffset * sampleRate;
+		const samplesToShaveFromEnd = trimRightOffset * sampleRate;
 
 		// Higher tolerance is needed for floating point videos
 		// Rendering https://github.com/remotion-dev/remotion/pull/5920 in native frame rate
@@ -250,9 +252,7 @@ export const makeInlineAudioMixing = (dir: string) => {
 		// This might lead to overlapping, hopefully aligning perfectly!
 		// Test case: https://github.com/remotion-dev/remotion/issues/5758
 		const position =
-			Math.floor(
-				correctFloatingPointError(positionInSeconds * DEFAULT_SAMPLE_RATE),
-			) *
+			Math.floor(correctFloatingPointError(positionInSeconds * sampleRate)) *
 			NUMBER_OF_CHANNELS *
 			BYTES_PER_SAMPLE;
 

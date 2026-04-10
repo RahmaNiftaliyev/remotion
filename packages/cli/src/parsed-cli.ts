@@ -77,6 +77,7 @@ const {
 	propsOption,
 	configOption,
 	browserOption,
+	sampleRateOption,
 } = BrowserSafeApis.options;
 
 export type CommandLineOptions = {
@@ -186,6 +187,7 @@ export type CommandLineOptions = {
 	'license-key': string;
 	[publicLicenseKeyOption.cliFlag]: string;
 	[forceNewStudioOption.cliFlag]: TypeOfOption<typeof forceNewStudioOption>;
+	[sampleRateOption.cliFlag]: TypeOfOption<typeof sampleRateOption>;
 };
 
 export const BooleanFlags = [

@@ -133,6 +133,7 @@ export const startHandler = async <Provider extends CloudProvider>({
 		storageClass: params.storageClass,
 		mediaCacheSizeInBytes: params.mediaCacheSizeInBytes,
 		isProduction: params.isProduction ?? true,
+		sampleRate: params.sampleRate ?? 48000,
 	};
 
 	await providerSpecifics.callFunctionAsync({

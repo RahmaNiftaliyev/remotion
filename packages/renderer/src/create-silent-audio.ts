@@ -1,7 +1,6 @@
 import {callFf} from './call-ffmpeg';
 import type {LogLevel} from './log-level';
 import type {CancelSignal} from './make-cancel-signal';
-import {DEFAULT_SAMPLE_RATE} from './sample-rate';
 
 export const createSilentAudio = async ({
 	outName,
@@ -10,6 +9,7 @@ export const createSilentAudio = async ({
 	binariesDirectory,
 	cancelSignal,
 	chunkLengthInSeconds,
+	sampleRate,
 }: {
 	chunkLengthInSeconds: number;
 	outName: string;
@@ -17,6 +17,7 @@ export const createSilentAudio = async ({
 	logLevel: LogLevel;
 	binariesDirectory: string | null;
 	cancelSignal: CancelSignal | undefined;
+	sampleRate: number;
 }) => {
 	await callFf({
 		bin: 'ffmpeg',
@@ -24,13 +25,13 @@ export const createSilentAudio = async ({
 			'-f',
 			'lavfi',
 			'-i',
-			`anullsrc=r=${DEFAULT_SAMPLE_RATE}`,
+			`anullsrc=r=${sampleRate}`,
 			'-c:a',
 			'pcm_s16le',
 			'-t',
 			String(chunkLengthInSeconds),
 			'-ar',
-			String(DEFAULT_SAMPLE_RATE),
+			String(sampleRate),
 			outName,
 		],
 		indent,

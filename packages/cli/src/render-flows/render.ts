@@ -132,6 +132,7 @@ export const renderVideoFlow = async ({
 	experimentalVisualModeEnabled,
 	keyboardShortcutsEnabled,
 	shouldCache,
+	sampleRate,
 }: {
 	remotionRoot: string;
 	fullEntryPoint: string;
@@ -200,6 +201,7 @@ export const renderVideoFlow = async ({
 	experimentalVisualModeEnabled: boolean;
 	keyboardShortcutsEnabled: boolean;
 	shouldCache: boolean;
+	sampleRate: number;
 }) => {
 	RenderInternals.validateConcurrency({
 		value: concurrency,
@@ -611,6 +613,7 @@ export const renderVideoFlow = async ({
 			server,
 			indent,
 			muted,
+			sampleRate,
 			onBrowserLog: null,
 			onFrameBuffer: null,
 			logLevel,
@@ -741,6 +744,7 @@ export const renderVideoFlow = async ({
 		onLog,
 		licenseKey: null,
 		isProduction: null,
+		sampleRate,
 	});
 	if (!updatesDontOverwrite) {
 		updateRenderProgress({newline: true, printToConsole: true});

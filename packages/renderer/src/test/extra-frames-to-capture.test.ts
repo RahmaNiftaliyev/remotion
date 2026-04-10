@@ -10,6 +10,7 @@ test('Extra frames to capture 0', () => {
 		compositionStart: 0,
 		realFrameRange: [0, 30],
 		forSeamlessAacConcatenation: true,
+		sampleRate: 48000,
 	});
 
 	expect([
@@ -27,6 +28,7 @@ test('Extra frames to capture 1', () => {
 		compositionStart: 100,
 		realFrameRange: [100, 116],
 		forSeamlessAacConcatenation: true,
+		sampleRate: 48000,
 	});
 
 	expect([
@@ -44,6 +46,7 @@ test('Extra frames to capture 2', () => {
 		compositionStart: 100,
 		realFrameRange: [151, 167],
 		forSeamlessAacConcatenation: true,
+		sampleRate: 48000,
 	});
 
 	expect([
@@ -65,6 +68,7 @@ test('Extra frames to capture 3', () => {
 		compositionStart: 100,
 		realFrameRange: [134, 150],
 		forSeamlessAacConcatenation: true,
+		sampleRate: 48000,
 	});
 
 	expect([
@@ -88,6 +92,7 @@ test('Extra frames to capture 4', () => {
 		realFrameRange: [117, 133],
 		fps: 30,
 		forSeamlessAacConcatenation: true,
+		sampleRate: 48000,
 	});
 
 	expect([

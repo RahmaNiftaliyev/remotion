@@ -68,6 +68,7 @@ const {
 	overrideWidthOption,
 	overrideFpsOption,
 	overrideDurationOption,
+	sampleRateOption,
 } = BrowserSafeApis.options;
 
 export const renderCommand = async ({
@@ -211,6 +212,9 @@ export const renderCommand = async ({
 		commandLine: CliInternals.parsedCli,
 	}).value;
 	const metadata = metadataOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
+	const sampleRate = sampleRateOption.getValue({
 		commandLine: CliInternals.parsedCli,
 	}).value;
 	const darkMode = darkModeOption.getValue({
@@ -397,6 +401,7 @@ export const renderCommand = async ({
 		isProduction:
 			parsedLambdaCli[BrowserSafeApis.options.isProductionOption.cliFlag] ??
 			true,
+		sampleRate,
 	});
 
 	const progressBar = CliInternals.createOverwriteableCliOutput({

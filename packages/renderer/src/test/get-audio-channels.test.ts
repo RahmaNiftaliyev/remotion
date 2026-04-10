@@ -56,7 +56,7 @@ test('Get audio channels for video without music', async () => {
 }, 90000);
 
 test('Get audio channels for mp3', async () => {
-	const downloadMap = makeDownloadMap();
+	const downloadMap = makeDownloadMap(48000);
 	const audio = path.join(
 		__dirname,
 		'..',
@@ -87,7 +87,7 @@ test('Get audio channels for mp3', async () => {
 }, 90000);
 
 test('Throw error if parsing a non video file', () => {
-	const downloadMap = makeDownloadMap();
+	const downloadMap = makeDownloadMap(48000);
 	const tsFile = path.join(__dirname, '..', 'can-use-parallel-encoding.ts');
 	expect(existsSync(tsFile)).toEqual(true);
 	expect(() =>

@@ -356,6 +356,7 @@ const renderHandler = async <Provider extends CloudProvider>({
 			// Not doing telemetry for the individual chunks
 			licenseKey: null,
 			isProduction: false,
+			sampleRate: params.sampleRate,
 		})
 			.then(({slowestFrames}) => {
 				RenderInternals.Log.verbose(

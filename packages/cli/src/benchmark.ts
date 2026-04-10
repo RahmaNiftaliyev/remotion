@@ -547,6 +547,7 @@ export const benchmarkCommand = async (
 					everyNthFrame,
 					logLevel,
 					muted,
+					sampleRate: 48000,
 					enforceAudioTrack,
 					browserExecutable,
 					ffmpegOverride,

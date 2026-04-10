@@ -106,7 +106,7 @@ const publishCodexPlugin = async () => {
 		await $`rm ${file}`.cwd(workingDir).quiet();
 	}
 
-	const filesToCopy = ['assets', 'skills', 'marketplace.json', 'README.md'];
+	const filesToCopy = ['.codex-plugin', 'assets', 'skills', 'README.md'];
 	for (const entry of filesToCopy) {
 		const src = path.join(codexPluginDir, entry);
 		const dst = path.join(workingDir, entry);

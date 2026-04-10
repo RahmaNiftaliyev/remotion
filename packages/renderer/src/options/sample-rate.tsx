@@ -10,8 +10,8 @@ export const sampleRateOption = {
 	description: () => (
 		<>
 			Controls the sample rate of the output audio. The default is{' '}
-			<code>48000</code> Hz. Set to <code>44100</code> for CD-quality audio or
-			to match your source audio and avoid resampling artifacts.
+			<code>48000</code> Hz. Match this to your source audio to avoid resampling
+			artifacts.
 		</>
 	),
 	ssrName: 'sampleRate' as const,

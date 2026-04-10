@@ -100,12 +100,7 @@ export const RenderModalAudio: React.FC<{
 
 	const sampleRateOptions: ComboboxValue[] = useMemo(() => {
 		return commonSampleRates.map((rate) => ({
-			label:
-				rate === 48000
-					? `${rate} Hz (default)`
-					: rate === 44100
-						? `${rate} Hz (CD quality)`
-						: `${rate} Hz`,
+			label: rate === 48000 ? `${rate} Hz (default)` : `${rate} Hz`,
 			onClick: () => setSampleRate(rate),
 			key: String(rate),
 			leftItem: sampleRate === rate ? <Checkmark /> : null,

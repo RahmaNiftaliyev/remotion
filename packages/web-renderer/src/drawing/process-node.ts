@@ -10,6 +10,7 @@ import {
 	getPrecomposeRectFor3DTransform,
 	handle3dTransform,
 } from './handle-3d-transform';
+import {getPrecomposeRectForFilter} from './handle-filter';
 import {getPrecomposeRectForMask, handleMask} from './handle-mask';
 import {roundToExpandRect} from './round-to-expand-rect';
 import {scaleRect} from './scale-rect';
@@ -73,6 +74,15 @@ export const processNode = async ({
 		let precomposeRect: DOMRect | null = null;
 		if (precompositing.needsMaskImage) {
 			precomposeRect = roundToExpandRect(getPrecomposeRectForMask(element));
+		}
+
+		if (precompositing.needsFilter) {
+			precomposeRect = roundToExpandRect(
+				getWiderRectAndExpand({
+					firstRect: precomposeRect,
+					secondRect: getPrecomposeRectForFilter(element),
+				}),
+			);
 		}
 
 		if (precompositing.needs3DTransformViaWebGL) {
@@ -151,8 +161,14 @@ export const processNode = async ({
 		}
 
 		const previousTransform = context.getTransform();
+		const previousFilter = context.filter;
 
 		context.setTransform(new DOMMatrix());
+
+		if (precompositing.needsFilter) {
+			context.filter = precompositing.needsFilter;
+		}
+
 		context.drawImage(
 			drawable,
 			0,
@@ -165,6 +181,7 @@ export const processNode = async ({
 			rectAfterTransforms.height,
 		);
 
+		context.filter = previousFilter;
 		context.setTransform(previousTransform);
 
 		Internals.Log.trace(

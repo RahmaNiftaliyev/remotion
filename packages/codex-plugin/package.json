@@ -1,0 +1,12 @@
+{
+	"name": "@remotion/codex-plugin",
+	"private": true,
+	"version": "1.0.0",
+	"description": "OpenAI Codex plugin that packages Remotion skills",
+	"scripts": {
+		"build": "bun build.mts"
+	},
+	"repository": {
+		"url": "https://github.com/remotion-dev/remotion/tree/main/packages/codex-plugin"
+	}
+}

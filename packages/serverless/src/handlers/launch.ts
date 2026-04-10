@@ -312,6 +312,7 @@ const innerLaunchHandler = async <Provider extends CloudProvider>({
 			metadata: params.metadata,
 			offthreadVideoThreads: params.offthreadVideoThreads,
 			mediaCacheSizeInBytes: params.mediaCacheSizeInBytes,
+			sampleRate: params.sampleRate,
 		};
 		return payload;
 	});
@@ -539,6 +540,7 @@ const innerLaunchHandler = async <Provider extends CloudProvider>({
 		frameRange: params.frameRange,
 		storageClass: params.storageClass,
 		requestHandler: null,
+		sampleRate: params.sampleRate,
 	});
 
 	return postRenderData;

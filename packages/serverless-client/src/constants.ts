@@ -163,6 +163,7 @@ export type ServerlessStartPayload<Provider extends CloudProvider> = {
 	licenseKey: string | null;
 	storageClass: Provider['storageClass'] | null;
 	isProduction: boolean | null;
+	sampleRate: number;
 };
 
 export type ServerlessPayloads<Provider extends CloudProvider> = {
@@ -225,6 +226,7 @@ export type ServerlessPayloads<Provider extends CloudProvider> = {
 		licenseKey: string | null;
 		storageClass: Provider['storageClass'] | null;
 		isProduction: boolean;
+		sampleRate: number;
 	};
 	status: ServerlessStatusPayload<Provider>;
 	renderer: {
@@ -277,6 +279,7 @@ export type ServerlessPayloads<Provider extends CloudProvider> = {
 		progressEveryNthFrame: number;
 		forcePathStyle: boolean;
 		metadata: Record<string, string> | null;
+		sampleRate: number;
 	};
 	still: {
 		type: ServerlessRoutines.still;

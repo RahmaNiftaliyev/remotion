@@ -285,6 +285,7 @@ const innerRenderStill = async ({
 		mediaCacheSizeInBytes,
 		initialMemoryAvailable: getAvailableMemory(logLevel),
 		darkMode: chromiumOptions.darkMode ?? false,
+		sampleRate: 48000,
 	});
 
 	await puppeteerEvaluateWithCatch({
@@ -301,6 +302,7 @@ const innerRenderStill = async ({
 			defaultVideoImageFormat: VideoImageFormat | null,
 			defaultPixelFormat: PixelFormat | null,
 			defaultProResProfile: _InternalTypes['ProResProfile'] | null,
+			defaultSampleRate: number | null,
 		) => {
 			window.remotion_setBundleMode({
 				type: 'composition',
@@ -315,6 +317,7 @@ const innerRenderStill = async ({
 				compositionDefaultVideoImageFormat: defaultVideoImageFormat,
 				compositionDefaultPixelFormat: defaultPixelFormat,
 				compositionDefaultProResProfile: defaultProResProfile,
+				compositionDefaultSampleRate: defaultSampleRate,
 			});
 		},
 		args: [
@@ -329,6 +332,7 @@ const innerRenderStill = async ({
 			composition.defaultVideoImageFormat,
 			composition.defaultPixelFormat,
 			composition.defaultProResProfile,
+			composition.defaultSampleRate,
 		],
 		frame: null,
 		page,
@@ -412,6 +416,7 @@ const internalRenderStillRaw = (
 				offthreadVideoCacheSizeInBytes: options.offthreadVideoCacheSizeInBytes,
 				binariesDirectory: options.binariesDirectory,
 				forceIPv4: false,
+				sampleRate: 48000,
 			},
 			{
 				onDownload: options.onDownload,

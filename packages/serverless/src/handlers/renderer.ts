@@ -252,6 +252,7 @@ const renderHandler = async <Provider extends CloudProvider>({
 				defaultPixelFormat: null,
 				defaultProResProfile: null,
 				defaultVideoImageFormat: null,
+				defaultSampleRate: null,
 			},
 			imageFormat: params.imageFormat,
 			serializedInputPropsWithCustomSchema,
@@ -356,6 +357,7 @@ const renderHandler = async <Provider extends CloudProvider>({
 			// Not doing telemetry for the individual chunks
 			licenseKey: null,
 			isProduction: false,
+			sampleRate: params.sampleRate,
 		})
 			.then(({slowestFrames}) => {
 				RenderInternals.Log.verbose(

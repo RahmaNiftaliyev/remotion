@@ -1,7 +1,7 @@
 import {
 	resampleAudioData,
 	TARGET_NUMBER_OF_CHANNELS,
-	TARGET_SAMPLE_RATE,
+	getTargetSampleRate,
 } from './resample-audiodata';
 
 export type ConvertAudioDataOptions = {
@@ -54,7 +54,7 @@ export const convertAudioData = ({
 		sampleRate: currentSampleRate,
 		numberOfFrames,
 	} = audioData;
-	const ratio = currentSampleRate / TARGET_SAMPLE_RATE;
+	const ratio = currentSampleRate / getTargetSampleRate();
 
 	// Always rounding down start timestamps and rounding up end durations
 	// to ensure there are no gaps when the samples don't align
@@ -144,7 +144,7 @@ export const convertAudioData = ({
 				audioDataTimestamp * 1_000_000 +
 				fixFloatingPoint(timestampOffsetMicroseconds),
 			durationInMicroSeconds: fixFloatingPoint(
-				(newNumberOfFrames / TARGET_SAMPLE_RATE) * 1_000_000,
+				(newNumberOfFrames / getTargetSampleRate()) * 1_000_000,
 			),
 		};
 	}
@@ -164,7 +164,7 @@ export const convertAudioData = ({
 			audioDataTimestamp * 1_000_000 +
 			fixFloatingPoint(timestampOffsetMicroseconds),
 		durationInMicroSeconds: fixFloatingPoint(
-			(newNumberOfFrames / TARGET_SAMPLE_RATE) * 1_000_000,
+			(newNumberOfFrames / getTargetSampleRate()) * 1_000_000,
 		),
 	};
 

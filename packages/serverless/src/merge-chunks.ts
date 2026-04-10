@@ -60,6 +60,7 @@ export const mergeChunksAndFinishRender = async <
 	frameRange: FrameRange | null;
 	storageClass: Provider['storageClass'] | null;
 	requestHandler: Provider['requestHandler'] | null;
+	sampleRate: number;
 }): Promise<PostRenderData<Provider>> => {
 	const onProgress: CombineChunksOnProgress = ({frames: framesEncoded}) => {
 		options.overallProgress.setCombinedFrames(framesEncoded);
@@ -93,6 +94,7 @@ export const mergeChunksAndFinishRender = async <
 		compositionDurationInFrames: options.numberOfFrames,
 		everyNthFrame: options.everyNthFrame,
 		frameRange: options.frameRange,
+		sampleRate: options.sampleRate,
 	});
 	const encodingStop = Date.now();
 	options.overallProgress.setTimeToCombine(encodingStop - encodingStart);

@@ -49,6 +49,7 @@ const {
 	overrideWidthOption,
 	overrideFpsOption,
 	overrideDurationOption,
+	sampleRateOption,
 } = BrowserSafeApis.options;
 
 export const renderCommand = async (
@@ -190,6 +191,7 @@ export const renderCommand = async (
 			offthreadVideoCacheSizeInBytes,
 			binariesDirectory,
 			forceIPv4: false,
+			sampleRate: 48000,
 		});
 
 		const indent = false;
@@ -335,6 +337,9 @@ ${downloadName ? `		Downloaded File = ${downloadName}` : ''}
 	const metadata = metadataOption.getValue({
 		commandLine: CliInternals.parsedCli,
 	}).value;
+	const sampleRate = sampleRateOption.getValue({
+		commandLine: CliInternals.parsedCli,
+	}).value;
 
 	const res = await internalRenderMediaOnCloudrun({
 		cloudRunUrl,
@@ -393,6 +398,7 @@ ${downloadName ? `		Downloaded File = ${downloadName}` : ''}
 			: null,
 		offthreadVideoThreads,
 		mediaCacheSizeInBytes,
+		sampleRate,
 	});
 
 	if (res.type === 'crash') {

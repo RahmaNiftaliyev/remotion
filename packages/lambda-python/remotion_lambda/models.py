@@ -334,6 +334,7 @@ class RenderMediaParams:
     encoding_buffer_size: Optional[str] = None
     encoding_max_rate: Optional[str] = None
     is_production: Optional[bool] = None
+    sample_rate: int = 48000
 
     def serialize_params(self) -> Dict:
         """
@@ -359,6 +360,7 @@ class RenderMediaParams:
             'frameRange': self.frame_range,
             'outName': self.out_name,
             'preferLossless': self.prefer_lossless,
+            'sampleRate': self.sample_rate,
             'timeoutInMilliseconds': self.timeout_in_milliseconds,
             'chromiumOptions': (
                 self.chromium_options if self.chromium_options is not None else {}

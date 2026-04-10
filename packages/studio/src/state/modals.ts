@@ -91,6 +91,7 @@ export type RenderModalState = {
 	initialEncodingBufferSize: string | null;
 	initialForSeamlessAacConcatenation: boolean;
 	initialHardwareAcceleration: HardwareAccelerationOption;
+	initialSampleRate: number;
 	initialBeep: boolean;
 	initialRepro: boolean;
 	initialChromeMode: ChromeMode;

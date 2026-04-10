@@ -471,6 +471,18 @@ Config.setEnforceAudioTrack(true);
 
 The [command line flag](/docs/cli/render#--enforce-audio-track) `--enforce-audio-track` will take precedence over this option.
 
+## `setSampleRate()`<AvailableFrom v="4.0.448" />
+
+<Options id="sample-rate" />
+
+```ts twoslash title="remotion.config.ts"
+import {Config} from '@remotion/cli/config';
+// ---cut---
+Config.setSampleRate(44100);
+```
+
+The [command line flag](/docs/cli/render#--sample-rate) `--sample-rate` will take precedence over this option.
+
 ## `setForSeamlessAacConcatenation()`<AvailableFrom v="4.0.123" />
 
 <Options id="for-seamless-aac-concatenation" />

@@ -28,6 +28,7 @@ type SetPropsAndEnv = {
 	isMainTab: boolean;
 	mediaCacheSizeInBytes: number | null;
 	initialMemoryAvailable: number | null;
+	sampleRate: number;
 };
 
 const innerSetPropsAndEnv = async ({
@@ -48,6 +49,7 @@ const innerSetPropsAndEnv = async ({
 	mediaCacheSizeInBytes,
 	initialMemoryAvailable,
 	darkMode,
+	sampleRate,
 }: SetPropsAndEnv): Promise<void> => {
 	validatePuppeteerTimeout(timeoutInMilliseconds);
 	const actualTimeout = timeoutInMilliseconds ?? DEFAULT_TIMEOUT;
@@ -62,11 +64,14 @@ const innerSetPropsAndEnv = async ({
 			mainTab: boolean,
 			cacheSizeInBytes: number | null,
 			initMemoryAvailable: number | null,
+			sRate: number,
+			// eslint-disable-next-line max-params
 		) => {
 			window.remotion_puppeteerTimeout = timeout;
 			window.remotion_isMainTab = mainTab;
 			window.remotion_mediaCacheSizeInBytes = cacheSizeInBytes;
 			window.remotion_initialMemoryAvailable = initMemoryAvailable;
+			window.remotion_sampleRate = sRate;
 			// To make useRemotionEnvironment() work
 			if (window.process === undefined) {
 				// @ts-expect-error
@@ -83,6 +88,7 @@ const innerSetPropsAndEnv = async ({
 		isMainTab,
 		mediaCacheSizeInBytes,
 		initialMemoryAvailable,
+		sampleRate,
 	);
 
 	await page.evaluateOnNewDocument(
@@ -176,6 +182,7 @@ const innerSetPropsAndEnv = async ({
 			mediaCacheSizeInBytes,
 			initialMemoryAvailable,
 			darkMode,
+			sampleRate,
 		});
 	};
 

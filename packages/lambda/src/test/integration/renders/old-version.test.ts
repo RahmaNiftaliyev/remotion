@@ -67,6 +67,7 @@ test(
 					storageClass: null,
 					mediaCacheSizeInBytes: null,
 					isProduction: true,
+					sampleRate: 48000,
 				},
 				functionName: 'remotion-dev-render',
 				region: 'us-east-1',

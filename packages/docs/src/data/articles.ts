@@ -5224,6 +5224,15 @@ export const articles = [
 		slug: 'rounded-text-box/index',
 	},
 	{
+		id: 'sample-rate',
+		title: 'Audio Sample Rate',
+		relativePath: 'docs/sample-rate.mdx',
+		compId: 'articles-docs-sample-rate',
+		crumb: 'Rendering',
+		noAi: false,
+		slug: 'sample-rate',
+	},
+	{
 		id: 'scaling',
 		title: 'Output scaling',
 		relativePath: 'docs/scaling.mdx',

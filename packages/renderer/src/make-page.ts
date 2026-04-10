@@ -35,6 +35,7 @@ export const makePage = async ({
 	mediaCacheSizeInBytes,
 	onLog,
 	darkMode,
+	sampleRate,
 }: {
 	context: SourceMapGetter;
 	initialFrame: number;
@@ -58,6 +59,7 @@ export const makePage = async ({
 	mediaCacheSizeInBytes: number | null;
 	onLog: OnLog;
 	darkMode: boolean;
+	sampleRate: number;
 }) => {
 	const page = await browserReplacer
 		.getBrowser()
@@ -87,6 +89,7 @@ export const makePage = async ({
 		mediaCacheSizeInBytes,
 		initialMemoryAvailable: getAvailableMemory(logLevel),
 		darkMode,
+		sampleRate,
 	});
 
 	await puppeteerEvaluateWithCatch({
@@ -103,6 +106,7 @@ export const makePage = async ({
 			defaultVideoImageFormat: VideoImageFormat | null,
 			defaultPixelFormat: PixelFormat | null,
 			defaultProResProfile: _InternalTypes['ProResProfile'] | null,
+			defaultSampleRate: number | null,
 		) => {
 			window.remotion_setBundleMode({
 				type: 'composition',
@@ -117,6 +121,7 @@ export const makePage = async ({
 				compositionDefaultVideoImageFormat: defaultVideoImageFormat,
 				compositionDefaultPixelFormat: defaultPixelFormat,
 				compositionDefaultProResProfile: defaultProResProfile,
+				compositionDefaultSampleRate: defaultSampleRate,
 			});
 		},
 		args: [
@@ -131,6 +136,7 @@ export const makePage = async ({
 			composition.defaultVideoImageFormat,
 			composition.defaultPixelFormat,
 			composition.defaultProResProfile,
+			composition.defaultSampleRate,
 		],
 		frame: null,
 		page,

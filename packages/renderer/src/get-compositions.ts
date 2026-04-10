@@ -89,6 +89,7 @@ const innerGetCompositions = async ({
 		mediaCacheSizeInBytes,
 		initialMemoryAvailable: getAvailableMemory(logLevel),
 		darkMode,
+		sampleRate: 48000,
 	});
 
 	await puppeteerEvaluateWithCatch({
@@ -136,6 +137,7 @@ const innerGetCompositions = async ({
 			defaultVideoImageFormat,
 			defaultPixelFormat,
 			defaultProResProfile,
+			defaultSampleRate,
 		} = r;
 
 		return {
@@ -155,6 +157,7 @@ const innerGetCompositions = async ({
 			defaultVideoImageFormat,
 			defaultPixelFormat,
 			defaultProResProfile,
+			defaultSampleRate,
 		};
 	});
 };
@@ -223,6 +226,7 @@ const internalGetCompositionsRaw = async ({
 				offthreadVideoCacheSizeInBytes,
 				binariesDirectory,
 				forceIPv4: false,
+				sampleRate: 48000,
 			},
 			{
 				onDownload: () => undefined,

@@ -63,6 +63,7 @@ const {
 	overrideFpsOption,
 	overrideDurationOption,
 	bundleCacheOption,
+	sampleRateOption,
 } = BrowserSafeApis.options;
 
 export const render = async (
@@ -225,6 +226,7 @@ export const render = async (
 		commandLine: parsedCli,
 	}).value;
 	const rspack = rspackOption.getValue({commandLine: parsedCli}).value;
+	const sampleRate = sampleRateOption.getValue({commandLine: parsedCli}).value;
 
 	const chromiumOptions: Required<ChromiumOptions> = {
 		disableWebSecurity,
@@ -335,6 +337,7 @@ export const render = async (
 		experimentalVisualModeEnabled,
 		keyboardShortcutsEnabled,
 		rspack,
+		sampleRate,
 		shouldCache,
 	});
 };

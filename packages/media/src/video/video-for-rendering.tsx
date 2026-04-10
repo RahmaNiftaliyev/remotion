@@ -22,7 +22,7 @@ import {
 } from 'remotion';
 import {useMaxMediaCacheSize} from '../caches';
 import {applyVolume} from '../convert-audiodata/apply-volume';
-import {TARGET_SAMPLE_RATE} from '../convert-audiodata/resample-audiodata';
+import {getTargetSampleRate} from '../convert-audiodata/resample-audiodata';
 import {frameForVolumeProp} from '../looped-frame';
 import {type MediaOnError, callOnErrorAndResolve} from '../on-error';
 import {extractFrameViaBroadcastChannel} from '../video-extraction/extract-frame-via-broadcast-channel';
@@ -341,7 +341,8 @@ export const VideoForRendering: React.FC<InnerVideoProps> = ({
 							: Array.from(audio.data),
 						frame: absoluteFrame,
 						timestamp: audio.timestamp,
-						duration: (audio.numberOfFrames / TARGET_SAMPLE_RATE) * 1_000_000,
+						duration:
+							(audio.numberOfFrames / getTargetSampleRate()) * 1_000_000,
 						toneFrequency,
 					});
 				}

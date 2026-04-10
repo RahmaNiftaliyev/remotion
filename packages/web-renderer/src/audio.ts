@@ -1,7 +1,6 @@
 import type {TRenderAsset} from 'remotion';
 
 const TARGET_NUMBER_OF_CHANNELS = 2;
-const TARGET_SAMPLE_RATE = 48000;
 
 function mixAudio(waves: Int16Array[], length: number) {
 	if (waves.length === 1 && waves[0].length === length) {
@@ -30,10 +29,12 @@ export const onlyInlineAudio = ({
 	assets,
 	fps,
 	timestamp,
+	sampleRate,
 }: {
 	assets: TRenderAsset[];
 	fps: number;
 	timestamp: number;
+	sampleRate: number;
 }): AudioData | null => {
 	const inlineAudio = assets.filter((asset) => asset.type === 'inline-audio');
 	if (inlineAudio.length === 0) {
@@ -41,7 +42,7 @@ export const onlyInlineAudio = ({
 	}
 
 	const expectedLength = Math.round(
-		(TARGET_NUMBER_OF_CHANNELS * TARGET_SAMPLE_RATE) / fps,
+		(TARGET_NUMBER_OF_CHANNELS * sampleRate) / fps,
 	);
 
 	for (const asset of inlineAudio) {
@@ -62,7 +63,7 @@ export const onlyInlineAudio = ({
 		format: 's16',
 		numberOfChannels: TARGET_NUMBER_OF_CHANNELS,
 		numberOfFrames: expectedLength / TARGET_NUMBER_OF_CHANNELS,
-		sampleRate: TARGET_SAMPLE_RATE,
+		sampleRate,
 		timestamp,
 	});
 };

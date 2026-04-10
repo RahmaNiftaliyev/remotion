@@ -186,6 +186,7 @@ type RenderMediaCommandOptions = Omit<
 			| 'videoBitrate'
 			| 'encodingMaxRate'
 			| 'encodingBufferSize'
+			| 'sampleRate'
 		>
 	>,
 	| 'audioBitrate'
@@ -243,6 +244,7 @@ type ReadOnlyStudioRenderCommandInput = RenderMediaCommandOptions &
 		multiProcessOnLinux: boolean;
 		darkMode: boolean;
 		beepOnFinish: boolean;
+		sampleRate: number;
 		envVariables: Record<string, string>;
 		inputProps: Record<string, unknown>;
 	};
@@ -299,6 +301,7 @@ export const makeReadOnlyStudioRenderCommand = ({
 	beepOnFinish,
 	repro,
 	metadata,
+	sampleRate,
 	envVariables,
 	inputProps,
 }: ReadOnlyStudioRenderCommandInput) => {
@@ -518,6 +521,14 @@ export const makeReadOnlyStudioRenderCommand = ({
 			if (audioCodec !== defaultAudioCodec) {
 				addFlagWithValue(flags, getRenderMediaFlag('audioCodec'), audioCodec);
 			}
+
+			addValueFlagsIfChanged(flags, [
+				renderMediaValueFlag(
+					'sampleRate',
+					sampleRate,
+					renderDefaults.sampleRate,
+				),
+			]);
 		}
 
 		addTrueBooleanFlagsIfChanged(flags, [

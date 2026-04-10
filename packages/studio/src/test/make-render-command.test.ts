@@ -50,6 +50,7 @@ const getDefaults = (): RenderDefaults => {
 		publicLicenseKey: null,
 		outputLocation: null,
 		allowHtmlInCanvas: false,
+		sampleRate: 48000,
 	};
 };
 
@@ -108,6 +109,7 @@ const getBaseInput = (): Parameters<
 		beepOnFinish: false,
 		repro: false,
 		metadata: null,
+		sampleRate: 48000,
 		envVariables: {},
 		inputProps: {},
 	};

@@ -2,7 +2,6 @@
 // to later align the audio correctly. This function calculates the exact frames to capture.
 
 import {getClosestAlignedTime} from './combine-audio';
-import {DEFAULT_SAMPLE_RATE} from './sample-rate';
 
 type ReturnType = {
 	extraFramesToCaptureAssetsFrontend: number[];
@@ -20,11 +19,13 @@ export const getExtraFramesToCapture = ({
 	realFrameRange,
 	fps,
 	forSeamlessAacConcatenation,
+	sampleRate,
 }: {
 	fps: number;
 	compositionStart: number;
 	realFrameRange: [number, number];
 	forSeamlessAacConcatenation: boolean;
+	sampleRate: number;
 }): ReturnType => {
 	// If the feature is disabled, don't capture extra frames.
 	if (!forSeamlessAacConcatenation) {
@@ -58,11 +59,12 @@ export const getExtraFramesToCapture = ({
 	// Find the closest AAC packet border and add two AAC packet padding.
 	const aacAdjustedLeftEnd = Math.max(
 		0,
-		getClosestAlignedTime(realLeftEnd / fps) - 2 * (1024 / DEFAULT_SAMPLE_RATE),
+		getClosestAlignedTime(realLeftEnd / fps, sampleRate) -
+			2 * (1024 / sampleRate),
 	);
 	const aacAdjustedRightEnd =
-		getClosestAlignedTime(realRightEnd / fps) +
-		2 * (1024 / DEFAULT_SAMPLE_RATE);
+		getClosestAlignedTime(realRightEnd / fps, sampleRate) +
+		2 * (1024 / sampleRate);
 
 	// Now find the additional frames that we need to capture to have enough audio
 	const alignedStartFrameWithoutOffset = Math.floor(aacAdjustedLeftEnd * fps);

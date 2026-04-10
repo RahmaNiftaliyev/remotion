@@ -27,6 +27,7 @@ type Options = {
 	onProgress: (progress: number) => void;
 	fps: number;
 	chunkLengthInSeconds: number;
+	sampleRate: number;
 };
 
 const mergeAudioTrackUnlimited = async ({
@@ -41,6 +42,7 @@ const mergeAudioTrackUnlimited = async ({
 	onProgress,
 	fps,
 	chunkLengthInSeconds,
+	sampleRate,
 }: Options): Promise<void> => {
 	if (files.length === 0) {
 		await createSilentAudio({
@@ -50,6 +52,7 @@ const mergeAudioTrackUnlimited = async ({
 			logLevel,
 			binariesDirectory,
 			cancelSignal,
+			sampleRate,
 		});
 		onProgress(1);
 		return;
@@ -92,6 +95,7 @@ const mergeAudioTrackUnlimited = async ({
 							callProgress();
 						},
 						fps,
+						sampleRate,
 					});
 					return chunkOutname;
 				}),
@@ -118,6 +122,7 @@ const mergeAudioTrackUnlimited = async ({
 				},
 				fps,
 				chunkLengthInSeconds,
+				sampleRate,
 			});
 			return;
 		} finally {

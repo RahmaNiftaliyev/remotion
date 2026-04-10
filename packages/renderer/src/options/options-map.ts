@@ -23,6 +23,7 @@ import {offthreadVideoThreadsOption} from './offthreadvideo-threads';
 import {onBrowserDownloadOption} from './on-browser-download';
 import {preferLosslessAudioOption} from './prefer-lossless';
 import {reproOption} from './repro';
+import {sampleRateOption} from './sample-rate';
 import {scaleOption} from './scale';
 import {separateAudioOption} from './separate-audio';
 import {throwIfSiteExistsOption} from './throw-if-site-exists';
@@ -59,6 +60,7 @@ export const optionsMap = {
 		hardwareAcceleration: hardwareAccelerationOption,
 		chromeMode: chromeModeOption,
 		licenseKey: licenseKeyOption,
+		sampleRate: sampleRateOption,
 	},
 	stitchFramesToVideo: {
 		separateAudioTo: separateAudioOption,
@@ -109,6 +111,7 @@ export const optionsMap = {
 		onBrowserDownload: onBrowserDownloadOption,
 		chromeMode: chromeModeOption,
 		imageSequencePattern: imageSequencePatternOption,
+		sampleRate: sampleRateOption,
 	},
 	renderMediaOnLambda: {
 		mediaCacheSizeInBytes: mediaCacheSizeInBytesOption,
@@ -128,6 +131,7 @@ export const optionsMap = {
 		timeoutInMilliseconds: delayRenderTimeoutInMillisecondsOption,
 		apiKey: apiKeyOption,
 		licenseKey: licenseKeyOption,
+		sampleRate: sampleRateOption,
 	},
 	renderStillOnLambda: {
 		mediaCacheSizeInBytes: mediaCacheSizeInBytesOption,
@@ -166,6 +170,7 @@ export const optionsMap = {
 		scale: scaleOption,
 		crf: crfOption,
 		jpegQuality: jpegQualityOption,
+		sampleRate: sampleRateOption,
 	},
 	renderStillOnCloudRun: {
 		mediaCacheSizeInBytes: mediaCacheSizeInBytesOption,

@@ -70,6 +70,7 @@ export const CloudRunPayload = z.discriminatedUnion('type', [
 		concurrency: z.number().or(z.string()).nullable(),
 		enforceAudioTrack: z.boolean(),
 		preferLossless: z.boolean(),
+		sampleRate: z.number(),
 		offthreadVideoCacheSizeInBytes: z.number().nullable(),
 		mediaCacheSizeInBytes: z.number().nullable(),
 		offthreadVideoThreads: z.number().nullable(),

@@ -69,7 +69,7 @@ export const makeAndReturn = (dir: string, name: string) => {
 	return p;
 };
 
-export const makeDownloadMap = (): DownloadMap => {
+export const makeDownloadMap = (sampleRate: number): DownloadMap => {
 	const dir = tmpDir(`remotion-v${VERSION}-assets`);
 
 	let prevented = false;
@@ -99,7 +99,7 @@ export const makeDownloadMap = (): DownloadMap => {
 		isPreventedFromCleanup: () => {
 			return prevented;
 		},
-		inlineAudioMixing: makeInlineAudioMixing(dir),
+		inlineAudioMixing: makeInlineAudioMixing(dir, sampleRate),
 		cleanupController: new AbortController(),
 	};
 };

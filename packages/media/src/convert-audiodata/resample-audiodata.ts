@@ -1,8 +1,13 @@
 // Remotion exports all videos with 2 channels.
 export const TARGET_NUMBER_OF_CHANNELS = 2;
 
-// Remotion exports all videos with 48kHz sample rate.
-export const TARGET_SAMPLE_RATE = 48000;
+export const getTargetSampleRate = () => {
+	if (typeof window !== 'undefined' && window.remotion_sampleRate) {
+		return window.remotion_sampleRate;
+	}
+
+	return 48000;
+};
 
 const fixFloatingPoint = (value: number) => {
 	if (value % 1 < 0.0000001) {

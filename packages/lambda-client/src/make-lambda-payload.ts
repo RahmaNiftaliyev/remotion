@@ -147,6 +147,7 @@ export const makeLambdaRenderMediaPayload = async ({
 	storageClass,
 	requestHandler,
 	isProduction,
+	sampleRate,
 }: InnerRenderMediaOnLambdaInput): Promise<
 	ServerlessStartPayload<AwsProvider>
 > => {
@@ -232,6 +233,7 @@ export const makeLambdaRenderMediaPayload = async ({
 		mediaCacheSizeInBytes: mediaCacheSizeInBytes ?? null,
 		storageClass: storageClass ?? null,
 		isProduction,
+		sampleRate,
 	};
 };
 

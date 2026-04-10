@@ -188,6 +188,7 @@ type RenderModalProps = {
 	readonly defaultConfigurationAudioCodec: AudioCodec | null;
 	readonly initialForSeamlessAacConcatenation: boolean;
 	readonly initialHardwareAcceleration: HardwareAccelerationOption;
+	readonly initialSampleRate: number;
 	readonly renderTypeOfLastRender: RenderType | null;
 	readonly initialChromeMode: ChromeMode;
 	readonly initialOffthreadVideoThreads: number | null;
@@ -244,6 +245,7 @@ const RenderModal: React.FC<
 	initialForSeamlessAacConcatenation,
 	renderTypeOfLastRender,
 	initialHardwareAcceleration,
+	initialSampleRate,
 	defaultMetadata,
 	initialChromeMode,
 	renderDefaults,
@@ -345,6 +347,7 @@ const RenderModal: React.FC<
 	);
 	const [forSeamlessAacConcatenation, setForSeamlessAacConcatenation] =
 		useState(() => initialForSeamlessAacConcatenation);
+	const [sampleRate, setSampleRate] = useState<number>(() => initialSampleRate);
 
 	const [renderMode, setRenderModeState] =
 		useState<RenderType>(initialRenderType);
@@ -869,6 +872,7 @@ const RenderModal: React.FC<
 			chromeMode,
 			offthreadVideoThreads,
 			mediaCacheSizeInBytes,
+			sampleRate,
 		})
 			.then(() => {
 				dispatchIfMounted({type: 'succeed'});
@@ -923,6 +927,7 @@ const RenderModal: React.FC<
 		chromeMode,
 		offthreadVideoThreads,
 		mediaCacheSizeInBytes,
+		sampleRate,
 	]);
 
 	const onClickSequence = useCallback(() => {
@@ -1239,6 +1244,7 @@ const RenderModal: React.FC<
 			beepOnFinish,
 			repro,
 			metadata,
+			sampleRate,
 			envVariables: envVariablesArrayToObject(envVariables),
 			inputProps,
 		});
@@ -1288,6 +1294,7 @@ const RenderModal: React.FC<
 		resolvedComposition.durationInFrames,
 		resolvedComposition.id,
 		scale,
+		sampleRate,
 		separateAudioTo,
 		sequenceImageFormat,
 		startFrame,
@@ -1565,6 +1572,8 @@ const RenderModal: React.FC<
 							separateAudioTo={separateAudioTo}
 							setSeparateAudioTo={setSeparateAudioTo}
 							outName={outName}
+							sampleRate={sampleRate}
+							setSampleRate={setSampleRate}
 						/>
 					) : tab === 'gif' ? (
 						<RenderModalGif

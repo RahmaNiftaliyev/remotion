@@ -8,10 +8,10 @@ import type {CancelSignal} from './make-cancel-signal';
 import type {AudioCodec} from './options/audio-codec';
 import {mapAudioCodecToFfmpegAudioCodecName} from './options/audio-codec';
 import {parseFfmpegProgress} from './parse-ffmpeg-progress';
-import {DEFAULT_SAMPLE_RATE} from './sample-rate';
 import {truthy} from './truthy';
 
-export const durationOf1Frame = (1024 / DEFAULT_SAMPLE_RATE) * 1_000_000;
+export const durationOf1Frame = (sampleRate: number) =>
+	(1024 / sampleRate) * 1_000_000;
 
 const roundWithFix = (targetTime: number) => {
 	// Round values where the fractional part is > 0.4999999 up to the next integer,
@@ -24,12 +24,16 @@ const roundWithFix = (targetTime: number) => {
 	return Math.floor(targetTime);
 };
 
-export const getClosestAlignedTime = (targetTime: number) => {
-	const decimalFramesToTargetTime = (targetTime * 1_000_000) / durationOf1Frame;
+export const getClosestAlignedTime = (
+	targetTime: number,
+	sampleRate: number,
+) => {
+	const dur = durationOf1Frame(sampleRate);
+	const decimalFramesToTargetTime = (targetTime * 1_000_000) / dur;
 	const nearestFrameIndexForTargetTime = roundWithFix(
 		decimalFramesToTargetTime,
 	);
-	return (nearestFrameIndexForTargetTime * durationOf1Frame) / 1_000_000;
+	return (nearestFrameIndexForTargetTime * dur) / 1_000_000;
 };
 
 const encodeAudio = async ({
@@ -132,6 +136,7 @@ const combineAudioSeamlessly = async ({
 	binariesDirectory,
 	cancelSignal,
 	onProgress,
+	sampleRate,
 }: {
 	files: string[];
 	filelistDir: string;
@@ -144,6 +149,7 @@ const combineAudioSeamlessly = async ({
 	cancelSignal: CancelSignal | undefined;
 	indent: boolean;
 	onProgress: (frames: number) => void;
+	sampleRate: number;
 }) => {
 	const startConcatenating = Date.now();
 	const fileList = files
@@ -152,8 +158,9 @@ const combineAudioSeamlessly = async ({
 			const targetStart = i * chunkDurationInSeconds;
 			const endStart = (i + 1) * chunkDurationInSeconds;
 
-			const startTime = getClosestAlignedTime(targetStart) * 1_000_000;
-			const endTime = getClosestAlignedTime(endStart) * 1_000_000;
+			const startTime =
+				getClosestAlignedTime(targetStart, sampleRate) * 1_000_000;
+			const endTime = getClosestAlignedTime(endStart, sampleRate) * 1_000_000;
 
 			const realDuration = endTime - startTime;
 
@@ -163,16 +170,16 @@ const combineAudioSeamlessly = async ({
 				// additional 2 frames of silence at the start of the segment. When we slice out
 				// our real data with inpoint and outpoint, we'll want remove both the silence
 				// and the extra frames we asked for.
-				inpoint = durationOf1Frame * 4;
+				inpoint = durationOf1Frame(sampleRate) * 4;
 			}
 
 			// inpoint is inclusive and outpoint is exclusive. To avoid overlap, we subtract
 			// the duration of one frame from the outpoint.
 			// we don't have to subtract a frame if this is the last segment.
 			const outpoint: number =
-				(i === 0 ? durationOf1Frame * 2 : inpoint) +
+				(i === 0 ? durationOf1Frame(sampleRate) * 2 : inpoint) +
 				realDuration -
-				(isLast ? 0 : durationOf1Frame);
+				(isLast ? 0 : durationOf1Frame(sampleRate));
 
 			return [`file '${p}'`, `inpoint ${inpoint}us`, `outpoint ${outpoint}us`]
 				.filter(truthy)
@@ -250,6 +257,7 @@ export const createCombinedAudio = ({
 	fps,
 	cancelSignal,
 	onProgress,
+	sampleRate,
 }: {
 	seamless: boolean;
 	filelistDir: string;
@@ -265,6 +273,7 @@ export const createCombinedAudio = ({
 	fps: number;
 	cancelSignal: CancelSignal | undefined;
 	onProgress: (frames: number) => void;
+	sampleRate: number;
 }): Promise<string> => {
 	if (seamless) {
 		return combineAudioSeamlessly({
@@ -279,6 +288,7 @@ export const createCombinedAudio = ({
 			fps,
 			cancelSignal,
 			onProgress,
+			sampleRate,
 		});
 	}
 

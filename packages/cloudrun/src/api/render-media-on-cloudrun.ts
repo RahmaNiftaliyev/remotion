@@ -153,6 +153,7 @@ const internalRenderMediaOnCloudrunRaw = async ({
 	downloadBehavior,
 	metadata,
 	mediaCacheSizeInBytes,
+	sampleRate,
 }: InternalRenderMediaOnCloudrun): Promise<
 	RenderMediaOnCloudrunOutput | CloudRunCrashResponse
 > => {
@@ -210,6 +211,7 @@ const internalRenderMediaOnCloudrunRaw = async ({
 		concurrency: concurrency ?? null,
 		enforceAudioTrack: enforceAudioTrack ?? false,
 		preferLossless: preferLossless ?? false,
+		sampleRate: sampleRate ?? 48000,
 		offthreadVideoCacheSizeInBytes: offthreadVideoCacheSizeInBytes ?? null,
 		offthreadVideoThreads: offthreadVideoThreads ?? null,
 		colorSpace: colorSpace ?? null,
@@ -357,6 +359,7 @@ export const renderMediaOnCloudrun = ({
 	renderStatusWebhook,
 	offthreadVideoThreads,
 	mediaCacheSizeInBytes,
+	sampleRate,
 }: RenderMediaOnCloudrunInput): Promise<
 	RenderMediaOnCloudrunOutput | CloudRunCrashResponse
 > => {
@@ -411,5 +414,6 @@ export const renderMediaOnCloudrun = ({
 		renderStatusWebhook: renderStatusWebhook ?? undefined,
 		offthreadVideoThreads: offthreadVideoThreads ?? null,
 		mediaCacheSizeInBytes: mediaCacheSizeInBytes ?? null,
+		sampleRate: sampleRate ?? 48000,
 	});
 };

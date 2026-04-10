@@ -73,6 +73,7 @@ import {publicPathOption} from './public-path';
 import {reproOption} from './repro';
 import {rspackOption} from './rspack';
 import {runsOption} from './runs';
+import {sampleRateOption} from './sample-rate';
 import {scaleOption} from './scale';
 import {separateAudioOption} from './separate-audio';
 import {stillFrameOption} from './still-frame';
@@ -169,6 +170,7 @@ export const allOptions = {
 	rspackOption,
 	outDirOption,
 	packageManagerOption,
+	sampleRateOption,
 	webpackPollOption,
 	stillFrameOption,
 	imageSequenceOption,

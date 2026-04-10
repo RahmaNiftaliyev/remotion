@@ -287,6 +287,7 @@ const internalRenderMediaRaw = ({
 	onLog,
 	licenseKey,
 	isProduction,
+	sampleRate,
 }: InternalRenderMediaOptions): Promise<RenderMediaResult> => {
 	const pixelFormat =
 		userPixelFormat ??
@@ -636,6 +637,7 @@ const internalRenderMediaRaw = ({
 							offthreadVideoCacheSizeInBytes ?? null,
 						binariesDirectory,
 						forceIPv4: false,
+						sampleRate,
 					},
 					{
 						onDownload,
@@ -744,6 +746,7 @@ const internalRenderMediaRaw = ({
 					imageSequencePattern: null,
 					mediaCacheSizeInBytes,
 					onLog,
+					sampleRate,
 				});
 
 				return renderFramesProc;
@@ -818,6 +821,7 @@ const internalRenderMediaRaw = ({
 					separateAudioTo,
 					metadata,
 					hardwareAcceleration,
+					sampleRate,
 				});
 			})
 			.then((buffer) => {
@@ -1006,6 +1010,7 @@ export const renderMedia = ({
 	compositionStart,
 	mediaCacheSizeInBytes,
 	isProduction,
+	sampleRate,
 	...apiKeyOrLicenseKey
 }: RenderMediaOptions): Promise<RenderMediaResult> => {
 	const indent = false;
@@ -1101,5 +1106,6 @@ export const renderMedia = ({
 		licenseKey: licenseKey ?? apiKey ?? null,
 		onLog: defaultOnLog,
 		isProduction: isProduction ?? null,
+		sampleRate: sampleRate ?? composition.defaultSampleRate ?? 48000,
 	});
 };

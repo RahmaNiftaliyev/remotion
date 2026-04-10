@@ -243,6 +243,7 @@ const innerRenderFrames = async ({
 	mediaCacheSizeInBytes,
 	onLog,
 	darkMode,
+	sampleRate,
 }: Omit<
 	InnerRenderFramesOptions,
 	'offthreadVideoCacheSizeInBytes'
@@ -273,6 +274,7 @@ const innerRenderFrames = async ({
 		compositionStart,
 		realFrameRange,
 		forSeamlessAacConcatenation,
+		sampleRate,
 	});
 
 	const framesToRender = getFramesToRender(realFrameRange, everyNthFrame);
@@ -307,6 +309,7 @@ const innerRenderFrames = async ({
 			mediaCacheSizeInBytes,
 			onLog,
 			darkMode,
+			sampleRate,
 		});
 	};
 
@@ -491,6 +494,7 @@ const internalRenderFramesRaw = ({
 	imageSequencePattern,
 	mediaCacheSizeInBytes,
 	onLog,
+	sampleRate,
 }: InternalRenderFramesOptions): Promise<RenderFramesOutput> => {
 	validateDimension(
 		composition.height,
@@ -562,6 +566,7 @@ const internalRenderFramesRaw = ({
 						offthreadVideoCacheSizeInBytes,
 						binariesDirectory,
 						forceIPv4: false,
+						sampleRate,
 					},
 					{
 						onDownload,
@@ -627,6 +632,7 @@ const internalRenderFramesRaw = ({
 					mediaCacheSizeInBytes,
 					onLog,
 					darkMode: chromiumOptions.darkMode ?? false,
+					sampleRate,
 				});
 			}),
 		])
@@ -727,6 +733,7 @@ export const renderFrames = (
 		offthreadVideoThreads,
 		imageSequencePattern,
 		mediaCacheSizeInBytes,
+		sampleRate,
 	} = options;
 
 	if (!composition) {
@@ -804,5 +811,6 @@ export const renderFrames = (
 		imageSequencePattern: imageSequencePattern ?? null,
 		mediaCacheSizeInBytes: mediaCacheSizeInBytes ?? null,
 		onLog: defaultOnLog,
+		sampleRate: sampleRate ?? composition.defaultSampleRate ?? 48000,
 	});
 };

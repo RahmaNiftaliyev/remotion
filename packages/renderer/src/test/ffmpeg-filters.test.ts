@@ -52,6 +52,7 @@ test('Should create a basic filter correctly', () => {
 			indent: false,
 			logLevel: 'info',
 			presentationTimeOffsetInSeconds: 0,
+			sampleRate: 48000,
 		}),
 	).toEqual({
 		actualTrimLeft: 0,
@@ -73,6 +74,7 @@ test('Trim the end', () => {
 		forSeamlessAacConcatenation: true,
 		fps: 30,
 		realFrameRange: [0, 99],
+		sampleRate: 48000,
 	});
 
 	expect(chunkLengthInSeconds).toEqual(3.3706666666666667);
@@ -101,6 +103,7 @@ test('Trim the end', () => {
 			indent: false,
 			logLevel: 'info',
 			presentationTimeOffsetInSeconds: 0,
+			sampleRate: 48000,
 		}),
 	).toEqual({
 		actualTrimLeft: 0,
@@ -123,6 +126,7 @@ test('Should handle trim correctly', () => {
 		forSeamlessAacConcatenation: true,
 		fps: 30,
 		realFrameRange: [0, 99],
+		sampleRate: 48000,
 	});
 
 	expect(chunkLengthInSeconds).toEqual(3.3706666666666667);
@@ -151,6 +155,7 @@ test('Should handle trim correctly', () => {
 			indent: false,
 			logLevel: 'info',
 			presentationTimeOffsetInSeconds: 0,
+			sampleRate: 48000,
 		}),
 	).toEqual({
 		actualTrimLeft: 0.3333333333333333,
@@ -167,6 +172,7 @@ test('Should add padding if audio is too short', () => {
 		forSeamlessAacConcatenation: false,
 		fps: 30,
 		realFrameRange: [0, 99],
+		sampleRate: 48000,
 	});
 
 	const padding = Math.round((3.3333 - 2 / 3) * 48000);
@@ -188,6 +194,7 @@ test('Should add padding if audio is too short', () => {
 			indent: false,
 			logLevel: 'info',
 			presentationTimeOffsetInSeconds: 0,
+			sampleRate: 48000,
 		}),
 	).toEqual({
 		actualTrimLeft: 0.3333333333333333,
@@ -210,6 +217,7 @@ test('Should handle delay correctly', () => {
 		forSeamlessAacConcatenation: true,
 		fps: 30,
 		realFrameRange: [0, 99],
+		sampleRate: 48000,
 	});
 
 	expect(
@@ -236,6 +244,7 @@ test('Should handle delay correctly', () => {
 			indent: false,
 			logLevel: 'info',
 			presentationTimeOffsetInSeconds: 0,
+			sampleRate: 48000,
 		}),
 	).toEqual({
 		actualTrimLeft: 0.3333333333333333,
@@ -258,6 +267,7 @@ test('Should offset multiple channels', () => {
 		forSeamlessAacConcatenation: true,
 		fps: 30,
 		realFrameRange: [0, 99],
+		sampleRate: 48000,
 	});
 
 	expect(
@@ -284,6 +294,7 @@ test('Should offset multiple channels', () => {
 			indent: false,
 			logLevel: 'info',
 			presentationTimeOffsetInSeconds: 0,
+			sampleRate: 48000,
 		}),
 	).toEqual({
 		actualTrimLeft: 0.3333333333333333,
@@ -310,6 +321,7 @@ test('Should calculate pad correctly with a lot of playbackRate', () => {
 		forSeamlessAacConcatenation: false,
 		fps: 30,
 		realFrameRange: [0, 1999],
+		sampleRate: 48000,
 	});
 
 	expect(
@@ -344,6 +356,7 @@ test('Should calculate pad correctly with a lot of playbackRate', () => {
 			indent: false,
 			logLevel: 'info',
 			presentationTimeOffsetInSeconds: 0,
+			sampleRate: 48000,
 		}),
 	).toEqual({
 		actualTrimLeft: 0,

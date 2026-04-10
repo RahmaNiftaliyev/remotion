@@ -84,6 +84,7 @@ declare global {
 		remotion_envVariables: string;
 		remotion_isMainTab: boolean;
 		remotion_mediaCacheSizeInBytes: number | null;
+		remotion_sampleRate: number;
 		remotion_initialMemoryAvailable: number | null;
 		remotion_collectAssets: () => TRenderAsset[];
 		remotion_isPlayer: boolean;
@@ -110,6 +111,7 @@ export type BundleCompositionState = {
 	compositionDefaultVideoImageFormat: VideoImageFormat | null;
 	compositionDefaultPixelFormat: PixelFormat | null;
 	compositionDefaultProResProfile: ProResProfile | null;
+	compositionDefaultSampleRate: number | null;
 };
 
 export type BundleIndexState = {

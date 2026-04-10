@@ -31,6 +31,7 @@ export const concatVideos = async <Provider extends CloudProvider>({
 	everyNthFrame,
 	frameRange,
 	compositionDurationInFrames,
+	sampleRate,
 }: {
 	onProgress: CombineChunksOnProgress;
 	codec: ServerlessCodec;
@@ -50,6 +51,7 @@ export const concatVideos = async <Provider extends CloudProvider>({
 	compositionDurationInFrames: number;
 	everyNthFrame: number;
 	frameRange: FrameRange | null;
+	sampleRate: number;
 }) => {
 	const outfile = join(
 		RenderInternals.tmpDir(REMOTION_CONCATENATED_TOKEN),
@@ -80,6 +82,7 @@ export const concatVideos = async <Provider extends CloudProvider>({
 		compositionDurationInFrames,
 		everyNthFrame,
 		frameRange,
+		sampleRate,
 	});
 
 	combine.end();

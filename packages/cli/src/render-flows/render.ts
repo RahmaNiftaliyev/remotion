@@ -132,6 +132,7 @@ export const renderVideoFlow = async ({
 	experimentalVisualModeEnabled,
 	keyboardShortcutsEnabled,
 	shouldCache,
+	sampleRate,
 }: {
 	remotionRoot: string;
 	fullEntryPoint: string;
@@ -200,6 +201,7 @@ export const renderVideoFlow = async ({
 	experimentalVisualModeEnabled: boolean;
 	keyboardShortcutsEnabled: boolean;
 	shouldCache: boolean;
+	sampleRate: number;
 }) => {
 	RenderInternals.validateConcurrency({
 		value: concurrency,
@@ -384,6 +386,7 @@ export const renderVideoFlow = async ({
 		offthreadVideoCacheSizeInBytes,
 		binariesDirectory,
 		forceIPv4: false,
+		sampleRate,
 	});
 
 	addCleanupCallback(`Close server`, () => server.closeServer(false));
@@ -443,6 +446,11 @@ export const renderVideoFlow = async ({
 				compositionCodec: config.defaultCodec,
 			},
 		);
+
+	const resolvedSampleRate = BrowserSafeApis.options.sampleRateOption.getValue(
+		{commandLine: parsedCli},
+		config.defaultSampleRate,
+	).value;
 
 	RenderInternals.validateEvenDimensionsWithCodec({
 		width: config.width,
@@ -611,6 +619,7 @@ export const renderVideoFlow = async ({
 			server,
 			indent,
 			muted,
+			sampleRate: resolvedSampleRate,
 			onBrowserLog: null,
 			onFrameBuffer: null,
 			logLevel,
@@ -741,6 +750,7 @@ export const renderVideoFlow = async ({
 		onLog,
 		licenseKey: null,
 		isProduction: null,
+		sampleRate: resolvedSampleRate,
 	});
 	if (!updatesDontOverwrite) {
 		updateRenderProgress({newline: true, printToConsole: true});

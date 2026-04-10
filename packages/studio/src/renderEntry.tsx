@@ -240,6 +240,7 @@ const renderContent = (Root: React.FC) => {
 						bundleMode.compositionDefaultVideoImageFormat,
 					defaultPixelFormat: bundleMode.compositionDefaultPixelFormat,
 					defaultProResProfile: bundleMode.compositionDefaultProResProfile,
+					defaultSampleRate: bundleMode.compositionDefaultSampleRate,
 				}}
 				initialCompositions={[]}
 			>

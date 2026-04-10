@@ -1,7 +1,7 @@
 import type {AudioBufferSink, WrappedAudioBuffer} from 'mediabunny';
 
 const AUDIO_PRIMING_SECONDS = 0.5;
-const PREDECODE_AHEAD_SECONDS = 8;
+const PREDECODE_AHEAD_SECONDS = 2;
 
 function makePredecodingIterator(
 	inner: AsyncGenerator<WrappedAudioBuffer, void, unknown>,

@@ -6629,6 +6629,15 @@ export const articles = [
 		slug: 'troubleshooting/player-flicker',
 	},
 	{
+		id: 'troubleshooting/video-has-no-sound',
+		title: 'Why does my video not have sound?',
+		relativePath: 'docs/troubleshooting/video-has-no-sound.mdx',
+		compId: 'articles-docs-troubleshooting-video-has-no-sound',
+		crumb: 'Troubleshooting',
+		noAi: false,
+		slug: 'troubleshooting/video-has-no-sound',
+	},
+	{
 		id: 'upgrading',
 		title: 'Upgrading Remotion',
 		relativePath: 'docs/upgrading.mdx',

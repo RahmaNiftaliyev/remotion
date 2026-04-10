@@ -54,7 +54,8 @@ export const getErrorRecord = async (
 const crashWithFrames = (crash: () => void) => (error: Error) => {
 	const didHookOrderChange =
 		error.message.startsWith('Rendered fewer hooks') ||
-		error.message.startsWith('Rendered more hooks');
+		error.message.startsWith('Rendered more hooks') ||
+		error.message.startsWith('Should have a queue');
 
 	const key = 'remotion.lastCrashBecauseOfHooks';
 	const previousCrashWasBecauseOfHooks = window.localStorage.getItem(key);

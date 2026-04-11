@@ -22,7 +22,11 @@ test(
 		});
 		expect(result.videoCodec).toEqual('h264');
 	},
-	{timeout: 15000},
+	// Bumped from 15000 — third-party CDN (test-videos.co.uk) has
+	// intermittent slow responses on CI runners; the test was
+	// timing out at exactly 15002ms in a known-flake pattern.
+	// 30s is generous headroom for the 1MB download + parse.
+	{timeout: 30000},
 );
 
 test(

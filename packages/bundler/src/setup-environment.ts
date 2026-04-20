@@ -102,9 +102,6 @@ injectCSS(`
   }
 
 
-  .__remotion-horizontal-scrollbar {
-    scrollbar-gutter: stable;
-  }
   .__remotion-horizontal-scrollbar::-webkit-scrollbar {
     height: 6px;
   }

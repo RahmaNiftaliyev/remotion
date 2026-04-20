@@ -1,8 +1,6 @@
 import {routes, type VercelConfig} from '@vercel/config/v1';
 
 export const config: VercelConfig = {
-	trailingSlash: false,
-	cleanUrls: true,
 	headers: [
 		routes.cacheControl('/assets/(.*)', {
 			public: true,

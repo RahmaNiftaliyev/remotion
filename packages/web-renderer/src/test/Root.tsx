@@ -27,6 +27,7 @@ import {flexPositionedScaled} from './fixtures/flex-positioned-scaled';
 import {gradientTransparentKeyword} from './fixtures/gradient-transparent-keyword';
 import {hugeImageTransform} from './fixtures/huge-image-transform';
 import {inside3dTransform} from './fixtures/inside-3d-transform';
+import {issue7050Repro} from './fixtures/issue-7050-repro';
 import {lineHeight} from './fixtures/line-height';
 import {linearGradient} from './fixtures/linear-gradient';
 import {manyLayers} from './fixtures/many-layers';
@@ -170,6 +171,7 @@ export const Root: React.FC = () => {
 				<Composition {...deeplyNestedTransform} />
 				<Composition {...manyLayers} />
 				<Composition {...threeDFlattening} />
+				<Composition {...issue7050Repro} />
 			</Folder>
 		</>
 	);

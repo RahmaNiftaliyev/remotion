@@ -6,13 +6,40 @@ id: hls
 crumb: 'Video'
 ---
 
-Remotion does not currently support HLS / HTTP Live streaming / `.m3u8` files natively.
+import {AvailableFrom} from '../../components/AvailableFrom';
 
-For full HLS support across all browsers and during rendering, we will support HLS through [`@remotion/media`](/docs/media/video) once [Mediabunny](/docs/mediabunny) has added support for it.
-While we don't control the timeline, we have mutually agreed that HLS should be put high on the roadmap.
-[Follow the status of this issue here](https://github.com/Vanilagy/mediabunny/issues/89).
+## Using `<Video>` from `@remotion/media`<AvailableFrom v="4.0.TBD" />
 
-## Using hls.js to play HLS videos during Preview
+[`<Video>`](/docs/media/video) from [`@remotion/media`](/docs/media) supports HLS / HTTP Live Streaming / `.m3u8` files natively via [Mediabunny](https://mediabunny.dev).
+
+Simply pass an `.m3u8` URL as the `src` prop:
+
+```tsx twoslash
+import {AbsoluteFill} from 'remotion';
+import {Video} from '@remotion/media';
+
+export const HlsExample = () => {
+  return (
+    <AbsoluteFill>
+      <Video src="https://stream.mux.com/nqGuji1CJuoPoU3iprRRhiy3HXiQN0201HLyliOg44HOU.m3u8" />
+    </AbsoluteFill>
+  );
+};
+```
+
+This works across all browsers and during rendering.
+When a master playlist with multiple quality variants is used, Remotion will automatically select the highest-quality video track and its accompanying audio.
+
+:::note
+Only VOD (Video on Demand) HLS playlists are supported.
+Live HLS streams are not supported.
+:::
+
+## Legacy approaches
+
+The following approaches are still available but are no longer recommended now that native HLS support is available.
+
+### Using hls.js to play HLS videos during Preview
 
 You can play HLS videos during preview in the [`<Player>`](/docs/player) and in the Remotion Studio.
 
@@ -75,4 +102,6 @@ This means [`<OffthreadVideo />`](/docs/offthreadvideo) can play HLS / HTTP Live
 
 ## See also
 
+- [`<Video>` from `@remotion/media`](/docs/media/video)
+- [Mediabunny HLS reading guide](https://mediabunny.dev/guide/reading-hls)
 - [GitHub issue for this feature request](https://github.com/remotion-dev/remotion/issues/2930)

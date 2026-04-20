@@ -16,6 +16,11 @@ import {borderRadiusNone} from './fixtures/border-radius-none';
 import {borderRadiusPercentage} from './fixtures/border-radius-percentage';
 import {borderRadiusSimple} from './fixtures/border-radius-simple';
 import {boxShadow} from './fixtures/box-shadow';
+import {clipPathCircle} from './fixtures/clip-path-circle';
+import {clipPathEllipse} from './fixtures/clip-path-ellipse';
+import {clipPathInset} from './fixtures/clip-path-inset';
+import {clipPathPath} from './fixtures/clip-path-path';
+import {clipPathPolygon} from './fixtures/clip-path-polygon';
 import {threeDFlattening} from './fixtures/clipped';
 import {complexNestedSvg} from './fixtures/complex-nested-svg';
 import {deeplyNestedTransform} from './fixtures/deeply-nested-transform';
@@ -170,6 +175,13 @@ export const Root: React.FC = () => {
 				<Composition {...deeplyNestedTransform} />
 				<Composition {...manyLayers} />
 				<Composition {...threeDFlattening} />
+			</Folder>
+			<Folder name="clip-path">
+				<Composition {...clipPathPolygon} />
+				<Composition {...clipPathPath} />
+				<Composition {...clipPathCircle} />
+				<Composition {...clipPathInset} />
+				<Composition {...clipPathEllipse} />
 			</Folder>
 		</>
 	);

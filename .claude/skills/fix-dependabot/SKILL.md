@@ -31,7 +31,7 @@ Update every match to the new version. Preserve the prefix style (`^`, `~`, or e
 6. **Commit and push**:
 
 ```bash
-git add bun.lock packages/*/package.json
+git add -u
 git commit -m "Update <dependency> to <version> across all monorepo packages"
 git push
 ```

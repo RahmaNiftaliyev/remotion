@@ -175,13 +175,20 @@ function parseInset(args: string, rect: DOMRect): ClipPathInset {
 	let left: number;
 
 	if (parts.length === 1) {
-		top = right = bottom = left = resolveLength(parts[0], rect.height);
+		const val = resolveLength(parts[0], rect.height);
+		top = val;
+		right = val;
+		bottom = val;
+		left = val;
 	} else if (parts.length === 2) {
-		top = bottom = resolveLength(parts[0], rect.height);
-		right = left = resolveLength(parts[1], rect.width);
+		top = resolveLength(parts[0], rect.height);
+		bottom = resolveLength(parts[0], rect.height);
+		right = resolveLength(parts[1], rect.width);
+		left = resolveLength(parts[1], rect.width);
 	} else if (parts.length === 3) {
 		top = resolveLength(parts[0], rect.height);
-		right = left = resolveLength(parts[1], rect.width);
+		right = resolveLength(parts[1], rect.width);
+		left = resolveLength(parts[1], rect.width);
 		bottom = resolveLength(parts[2], rect.height);
 	} else {
 		top = resolveLength(parts[0], rect.height);

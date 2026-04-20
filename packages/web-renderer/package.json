@@ -29,9 +29,12 @@
 	"devDependencies": {
 		"@react-three/fiber": "catalog:",
 		"@remotion/eslint-config-internal": "workspace:*",
+		"@remotion/paths": "workspace:*",
 		"@remotion/player": "workspace:*",
 		"@remotion/media": "workspace:*",
+		"@remotion/shapes": "workspace:*",
 		"@remotion/three": "workspace:*",
+		"@remotion/transitions": "workspace:*",
 		"@types/three": "catalog:",
 		"@typescript/native-preview": "catalog:",
 		"@vitejs/plugin-react": "catalog:",

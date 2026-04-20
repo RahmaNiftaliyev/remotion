@@ -6,7 +6,6 @@ const config: Config = {
 	tagline: 'Make videos programmatically',
 	url: 'https://www.remotion.dev',
 	baseUrl: '/',
-	trailingSlash: false,
 	onBrokenLinks: 'throw',
 	onBrokenAnchors: 'throw',
 	markdown: {

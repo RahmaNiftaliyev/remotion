@@ -85,6 +85,9 @@ injectCSS(`
     color: #0584f2
   }
 
+  .__remotion-vertical-scrollbar {
+    scrollbar-gutter: stable;
+  }
   .__remotion-vertical-scrollbar::-webkit-scrollbar {
       width: 6px;
   }
@@ -99,6 +102,9 @@ injectCSS(`
   }
 
 
+  .__remotion-horizontal-scrollbar {
+    scrollbar-gutter: stable;
+  }
   .__remotion-horizontal-scrollbar::-webkit-scrollbar {
     height: 6px;
   }

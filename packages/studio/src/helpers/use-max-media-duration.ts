@@ -1,5 +1,5 @@
 import {getVideoMetadata} from '@remotion/media-utils';
-import {ALL_FORMATS, Input, InputDisposedError, UrlSource} from 'mediabunny';
+import {ALL_FORMATS, InputDisposedError, createInputFrom} from 'mediabunny';
 import {useEffect, useState} from 'react';
 import {type TSequence} from 'remotion';
 
@@ -29,10 +29,7 @@ export const useMaxMediaDuration = (s: TSequence, fps: number) => {
 			return;
 		}
 
-		const input = new Input({
-			formats: ALL_FORMATS,
-			source: new UrlSource(src),
-		});
+		const input = createInputFrom(src, ALL_FORMATS);
 		input
 			.computeDuration()
 			.then((duration) => {

@@ -1,10 +1,9 @@
 import type {VideoSample} from 'mediabunny';
 import {
 	ALL_FORMATS,
-	Input,
 	InputDisposedError,
-	UrlSource,
 	VideoSampleSink,
+	createInputFrom,
 } from 'mediabunny';
 
 type Options = {
@@ -30,10 +29,7 @@ export async function extractFrames({
 	onVideoSample,
 	signal,
 }: ExtractFramesProps): Promise<void> {
-	const input = new Input({
-		formats: ALL_FORMATS,
-		source: new UrlSource(src),
-	});
+	const input = createInputFrom(src, ALL_FORMATS);
 
 	const dispose = () => {
 		input.dispose();

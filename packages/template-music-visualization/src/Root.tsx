@@ -1,4 +1,4 @@
-import { ALL_FORMATS, Input, UrlSource } from "mediabunny";
+import { ALL_FORMATS, createInputFrom } from "mediabunny";
 import { Composition, staticFile } from "remotion";
 import { Visualizer } from "./Visualizer/Main";
 import { visualizerCompositionSchema } from "./helpers/schema";
@@ -35,11 +35,8 @@ export const RemotionRoot: React.FC = () => {
         }}
         // Determine the length of the video based on the duration of the audio file
         calculateMetadata={async ({ props }) => {
-          const input = new Input({
-            source: new UrlSource(props.audioFileUrl, {
-              getRetryDelay: () => null,
-            }),
-            formats: ALL_FORMATS,
+          const input = createInputFrom(props.audioFileUrl, ALL_FORMATS, {
+            getRetryDelay: () => null,
           });
 
           const durationInSeconds = await input.computeDuration();

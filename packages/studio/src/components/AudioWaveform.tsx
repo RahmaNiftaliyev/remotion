@@ -157,6 +157,7 @@ export const AudioWaveform: React.FC<{
 	}, [visualizationWidth, volume, doesVolumeChange]);
 
 	if (error) {
+		console.error(error);
 		return (
 			<div style={container}>
 				<div style={errorMessage}>

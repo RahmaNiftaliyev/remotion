@@ -16,6 +16,11 @@ import {borderRadiusNone} from './fixtures/border-radius-none';
 import {borderRadiusPercentage} from './fixtures/border-radius-percentage';
 import {borderRadiusSimple} from './fixtures/border-radius-simple';
 import {boxShadow} from './fixtures/box-shadow';
+import {clipPathCircle} from './fixtures/clip-path-circle';
+import {clipPathEllipse} from './fixtures/clip-path-ellipse';
+import {clipPathInset} from './fixtures/clip-path-inset';
+import {clipPathPath} from './fixtures/clip-path-path';
+import {clipPathPolygon} from './fixtures/clip-path-polygon';
 import {threeDFlattening} from './fixtures/clipped';
 import {complexNestedSvg} from './fixtures/complex-nested-svg';
 import {deeplyNestedTransform} from './fixtures/deeply-nested-transform';
@@ -76,6 +81,9 @@ import {transformWithScale} from './fixtures/transforms/transform-with-scale';
 import {transformWithTranslate} from './fixtures/transforms/transform-with-translate';
 import {withMargin} from './fixtures/transforms/with-margin';
 import {withNegativeMargin} from './fixtures/transforms/with-negative-margin';
+import {transitionClockWipe} from './fixtures/transition-clock-wipe';
+import {transitionIris} from './fixtures/transition-iris';
+import {transitionWipe} from './fixtures/transition-wipe';
 import {unwrapped} from './fixtures/unwrapped';
 import {whiteSpaceCollapsing} from './fixtures/whitespace-collapsing';
 import {whiteSpaceCollapsing2} from './fixtures/whitespace-collapsing-2';
@@ -172,6 +180,18 @@ export const Root: React.FC = () => {
 				<Composition {...manyLayers} />
 				<Composition {...threeDFlattening} />
 				<Composition {...issue7050Repro} />
+			</Folder>
+			<Folder name="clip-path">
+				<Composition {...clipPathPolygon} />
+				<Composition {...clipPathPath} />
+				<Composition {...clipPathCircle} />
+				<Composition {...clipPathInset} />
+				<Composition {...clipPathEllipse} />
+			</Folder>
+			<Folder name="Transitions">
+				<Composition {...transitionWipe} />
+				<Composition {...transitionClockWipe} />
+				<Composition {...transitionIris} />
 			</Folder>
 		</>
 	);

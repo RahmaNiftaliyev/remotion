@@ -3,7 +3,7 @@ type ClipPathPolygon = {
 	type: 'polygon';
 	points: {x: number; y: number}[];
 };
-type ClipPathPath = {type: 'path'; d: string};
+type ClipPathPath = {type: 'path'; d: string; fillRule: CanvasFillRule};
 type ClipPathCircle = {
 	type: 'circle';
 	radius: number;
@@ -56,8 +56,7 @@ function parsePosition(
 	}
 
 	if (parts.length === 1) {
-		const val = resolveLength(parts[0], width);
-		return {x: val, y: val};
+		return {x: resolveLength(parts[0], width), y: height / 2};
 	}
 
 	return {
@@ -80,12 +79,18 @@ function parsePolygon(args: string, rect: DOMRect): ClipPathPolygon {
 }
 
 function parsePath(args: string): ClipPathPath {
-	const match = args.match(/^(?:(?:nonzero|evenodd)\s*,\s*)?["'](.+)["']$/);
+	const match = args.match(/^(?:(nonzero|evenodd)\s*,\s*)?["'](.+)["']$/);
 	if (!match) {
-		return {type: 'path', d: args.replace(/["']/g, '')};
+		return {
+			type: 'path',
+			d: args.replace(/["']/g, ''),
+			fillRule: 'nonzero',
+		};
 	}
 
-	return {type: 'path', d: match[1]};
+	const fillRule: CanvasFillRule =
+		match[1] === 'evenodd' ? 'evenodd' : 'nonzero';
+	return {type: 'path', d: match[2], fillRule};
 }
 
 function parseCircle(args: string, rect: DOMRect): ClipPathCircle {
@@ -168,7 +173,8 @@ function parseEllipse(args: string, rect: DOMRect): ClipPathEllipse {
 }
 
 function parseInset(args: string, rect: DOMRect): ClipPathInset {
-	const parts = args.split(/\s+/);
+	const [insetPart] = args.split(/\s+round\s+/);
+	const parts = insetPart.split(/\s+/);
 	let top: number;
 	let right: number;
 	let bottom: number;
@@ -271,7 +277,7 @@ export function setClipPath({
 			const path2d = new Path2D();
 			const offsetMatrix = new DOMMatrix().translate(rect.left, rect.top);
 			path2d.addPath(new Path2D(parsed.d), offsetMatrix);
-			ctx.clip(path2d);
+			ctx.clip(path2d, parsed.fillRule);
 			break;
 		}
 

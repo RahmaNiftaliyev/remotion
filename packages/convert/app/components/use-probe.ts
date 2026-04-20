@@ -77,7 +77,7 @@ export const useProbe = ({src}: {src: Source}) => {
 				} else if (track.isAudioTrack()) {
 					hasAudioTrack = true;
 					setAudioCodec(track.codec);
-					setSampleRate(track.sampleRate);
+					track.getSampleRate().then((sr) => setSampleRate(sr));
 				}
 			}
 

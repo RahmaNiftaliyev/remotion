@@ -11,8 +11,8 @@ export const getMediaMetadata = async (src: string) => {
     throw new Error(`Video track not found in source: ${src}`);
   }
   const dimensions = {
-    width: videoTrack.displayWidth,
-    height: videoTrack.displayHeight,
+    width: await videoTrack.getDisplayWidth(),
+    height: await videoTrack.getDisplayHeight(),
   };
   const packetStats = await videoTrack.computePacketStats(50);
   const fps = packetStats?.averagePacketRate ?? null;

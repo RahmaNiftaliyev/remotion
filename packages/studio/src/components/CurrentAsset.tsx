@@ -95,12 +95,12 @@ export const CurrentAsset: React.FC = () => {
 			input.getFormat(),
 			input.getPrimaryVideoTrack(),
 		])
-			.then(([duration, format, videoTrack]) => {
+			.then(async ([duration, format, videoTrack]) => {
 				setMediaMetadata({
 					duration,
 					format: format.name,
-					width: videoTrack?.displayWidth ?? null,
-					height: videoTrack?.displayHeight ?? null,
+					width: videoTrack ? await videoTrack.getDisplayWidth() : null,
+					height: videoTrack ? await videoTrack.getDisplayHeight() : null,
 				});
 			})
 			.catch(() => {

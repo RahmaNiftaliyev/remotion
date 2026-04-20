@@ -53,8 +53,8 @@ export async function extractFrames({
 			typeof timestampsInSeconds === 'function'
 				? await timestampsInSeconds({
 						track: {
-							width: videoTrack.displayWidth,
-							height: videoTrack.displayHeight,
+							width: await videoTrack.getDisplayWidth(),
+							height: await videoTrack.getDisplayHeight(),
 						},
 						container: format.name,
 						durationInSeconds,

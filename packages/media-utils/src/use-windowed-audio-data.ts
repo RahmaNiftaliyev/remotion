@@ -131,7 +131,8 @@ export const useWindowedAudioData = ({
 					);
 				}
 
-				const {numberOfChannels, sampleRate} = audioTrack;
+				const numberOfChannels = await audioTrack.getNumberOfChannels();
+				const sampleRate = await audioTrack.getSampleRate();
 
 				const format = await input.getFormat();
 

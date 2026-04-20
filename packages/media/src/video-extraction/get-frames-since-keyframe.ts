@@ -1,4 +1,5 @@
-import type {Input, InputFormat, UrlSourceOptions} from 'mediabunny';
+import type {Input, InputFormat} from 'mediabunny';
+import type {CreateInputFromOptions} from 'mediabunny';
 import {
 	AudioSampleSink,
 	EncodedPacketSink,
@@ -35,7 +36,7 @@ export type VideoSinkResult =
 
 const getRetryDelay = (() => {
 	return null;
-}) satisfies UrlSourceOptions['getRetryDelay'];
+}) satisfies CreateInputFromOptions['getRetryDelay'];
 
 const getFormatOrNullOrNetworkError = async (
 	input: Input,

@@ -11,9 +11,13 @@ function makePredecodingIterator(
 	let innerDone = false;
 	let returned = false;
 	let fetching = false;
-	let waiter:
-		| ((result: IteratorResult<WrappedAudioBuffer, void>) => void)
-		| null = null;
+	// Queue of pending next() callers. Concurrent .next() calls are valid
+	// — multiple code paths (the scheduler via getNextFn and the seek path
+	// via getNextOrNullIfNotAvailable) both call .next() on the same iterator
+	// and must each receive a distinct result.
+	const waiters: Array<
+		(result: IteratorResult<WrappedAudioBuffer, void>) => void
+	> = [];
 
 	const prefetch = () => {
 		if (fetching || returned || innerDone) {
@@ -39,18 +43,16 @@ function makePredecodingIterator(
 
 				if (result.done) {
 					innerDone = true;
-					if (waiter) {
-						const w = waiter;
-						waiter = null;
+					while (waiters.length > 0) {
+						const w = waiters.shift()!;
 						w({value: undefined, done: true});
 					}
 
 					return;
 				}
 
-				if (waiter) {
-					const w = waiter;
-					waiter = null;
+				if (waiters.length > 0) {
+					const w = waiters.shift()!;
 					const buf = result.value;
 					consumerEndTime = buf.timestamp + buf.duration;
 					w({value: buf, done: false});
@@ -64,9 +66,8 @@ function makePredecodingIterator(
 			() => {
 				fetching = false;
 				innerDone = true;
-				if (waiter) {
-					const w = waiter;
-					waiter = null;
+				while (waiters.length > 0) {
+					const w = waiters.shift()!;
 					w({value: undefined, done: true});
 				}
 			},
@@ -78,9 +79,8 @@ function makePredecodingIterator(
 	const _return = () => {
 		returned = true;
 		buffer.length = 0;
-		if (waiter) {
-			const w = waiter;
-			waiter = null;
+		while (waiters.length > 0) {
+			const w = waiters.shift()!;
 			w({value: undefined, done: true});
 		}
 
@@ -105,7 +105,7 @@ function makePredecodingIterator(
 			}
 
 			return new Promise((resolve) => {
-				waiter = resolve;
+				waiters.push(resolve);
 				prefetch();
 			});
 		},

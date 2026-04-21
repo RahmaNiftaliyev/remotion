@@ -3,7 +3,7 @@ type Waiter = {
 	getStale: () => boolean;
 	fn: () => Promise<unknown>;
 	onDone: (result: unknown, triggerNext: () => void) => void;
-	onError: (err: unknown, triggerNext: () => void) => void;
+	onError: (err: unknown) => void;
 };
 
 export class StaleWaiterError extends Error {
@@ -36,7 +36,7 @@ const processNext = (): void => {
 	}
 
 	for (const stale of staleWaiters) {
-		stale.onError(new StaleWaiterError(), processNext);
+		stale.onError(new StaleWaiterError());
 	}
 
 	if (waiters.length === 0) {
@@ -63,7 +63,7 @@ const processNext = (): void => {
 		},
 		(err) => {
 			running--;
-			next.onError(err, processNext);
+			next.onError(err);
 		},
 	);
 };
@@ -79,14 +79,14 @@ export const waitForTurn = <T>({
 	getStale: () => boolean;
 	fn: () => Promise<T>;
 	onDone: (result: T, triggerNext: () => void) => void;
-	onError: (err: unknown, triggerNext: () => void) => void;
+	onError: (err: unknown) => void;
 }): void => {
 	waiters.push({
 		getPriority,
 		getStale,
 		fn,
 		onDone: onDone as (result: unknown, triggerNext: () => void) => void,
-		onError: onError as (err: unknown, triggerNext: () => void) => void,
+		onError: onError as (err: unknown) => void,
 	});
 	processNext();
 };

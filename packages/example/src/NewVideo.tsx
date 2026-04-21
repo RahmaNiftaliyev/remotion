@@ -19,7 +19,7 @@ export const calculateMetadataFn: CalculateMetadataFunction<
 };
 
 export const Component = () => {
-	return <Video src={src} debugAudioScheduling />;
+	return <Video src={src} debugAudioScheduling debugOverlay />;
 };
 
 export const NewVideoComp = () => {

@@ -241,10 +241,6 @@ export const audioIteratorManager = ({
 					return Infinity;
 				}
 
-				if (nonce.isStale()) {
-					return Infinity;
-				}
-
 				const {currentTime} = sharedAudioContext.audioContext;
 
 				const guessedNextTimestamp = iterator.guessNextTimestamp();
@@ -266,17 +262,15 @@ export const audioIteratorManager = ({
 				return scheduledTime - currentTime;
 			},
 			fn: () => iterator.getNextFn(),
-			getStale: () => iterator.isDestroyed() || nonce.isStale(),
+			getStale: () => iterator.isDestroyed(),
 			onDone: (result, next) => {
 				if (iterator.isDestroyed()) {
 					next();
 					return;
 				}
 
-				if (nonce.isStale()) {
-					next();
-					return;
-				}
+				// We schedule even if nonce.isStale(), because the iterator is still alive and the seek did not destroy the
+				// iterator. So the seek was non-destructive, and the schedule valid. The iterator already progressed, we cannot get it again.
 
 				if (!result.value) {
 					// media ended
@@ -302,21 +296,18 @@ export const audioIteratorManager = ({
 				});
 				next();
 			},
-			onError: (e, next) => {
+			onError: (e) => {
 				if (e instanceof InputDisposedError) {
 					// iterator was disposed by a newer startAudioIterator call
 					// this is expected during rapid seeking
-					next();
 					return;
 				}
 
 				if (e instanceof StaleWaiterError) {
 					// iterator was stale before it got its turn
-					next();
 					return;
 				}
 
-				next();
 				throw e;
 			},
 		});
@@ -368,8 +359,6 @@ export const audioIteratorManager = ({
 			scheduleAudioNode,
 			debugAudioScheduling,
 		});
-
-		// TODO: Keep scheduling until Math.min(startFromSecond + MAX_BUFFER_AHEAD_SECONDS, getEndTime())
 	};
 
 	const pausePlayback = () => {
@@ -455,7 +444,19 @@ export const audioIteratorManager = ({
 				debugAudioScheduling,
 				getTargetTime,
 			});
+			return;
 		}
+
+		// current time is queued, let's just continue scheduling
+		proceedScheduling({
+			iterator: audioBufferIterator,
+			nonce,
+			getTargetTime,
+			getIsPlaying,
+			playbackRate,
+			scheduleAudioNode,
+			debugAudioScheduling,
+		});
 	};
 
 	return {

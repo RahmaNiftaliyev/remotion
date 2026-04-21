@@ -122,7 +122,6 @@ export const makeAudioIterator = ({
 	};
 
 	const getNextFn = async () => {
-		await Promise.resolve();
 		const next = await iterator.next();
 
 		if (next.value) {

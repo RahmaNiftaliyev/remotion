@@ -273,6 +273,7 @@ export const audioIteratorManager = ({
 						// TODO: Can scheduledTime change?
 						return scheduledTime - sharedAudioContext.audioContext.currentTime;
 					},
+					getStale: () => iterator.isDestroyed() || nonce.isStale(),
 				});
 				console.log('scheduledTime', scheduledTime);
 

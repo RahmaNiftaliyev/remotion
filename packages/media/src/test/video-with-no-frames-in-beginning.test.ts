@@ -118,6 +118,7 @@ test('same goes for audio', async () => {
 			scheduledTime: 0,
 		}),
 		debugAudioScheduling: false,
+		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 	});
 
 	await manager.seek({
@@ -130,6 +131,7 @@ test('same goes for audio', async () => {
 			scheduledTime: 0,
 		}),
 		debugAudioScheduling: false,
+		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 	});
 
 	const iterators = manager.getAudioIteratorsCreated();

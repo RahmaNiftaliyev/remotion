@@ -75,6 +75,7 @@ test('media player should work', async () => {
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
 		debugAudioScheduling: false,
+		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 	});
 
 	const chunksAt996 = manager
@@ -91,6 +92,7 @@ test('media player should work', async () => {
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
 		debugAudioScheduling: false,
+		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 	});
 
 	await manager.seek({
@@ -100,6 +102,7 @@ test('media player should work', async () => {
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
 		debugAudioScheduling: false,
+		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 	});
 
 	const chunksAtEnd = manager
@@ -138,6 +141,7 @@ test('should not create too many iterators when the audio ends', async () => {
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
 		debugAudioScheduling: false,
+		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 	});
 	await manager.seek({
 		newTime: 9.98,
@@ -146,14 +150,7 @@ test('should not create too many iterators when the audio ends', async () => {
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
 		debugAudioScheduling: false,
-	});
-	await manager.seek({
-		newTime: 9.99,
-		scheduleAudioNode,
-		getIsPlaying,
-		nonce: makeNonceManager().createAsyncOperation(),
-		playbackRate,
-		debugAudioScheduling: false,
+		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 	});
 
 	const created = manager.getAudioIteratorsCreated();
@@ -190,6 +187,7 @@ test('should create more iterators when seeking ', async () => {
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
 		debugAudioScheduling: false,
+		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 	});
 	const chunksAt0 = manager
 		.getAudioBufferIterator()
@@ -205,6 +203,7 @@ test('should create more iterators when seeking ', async () => {
 		nonce: makeNonceManager().createAsyncOperation(),
 		playbackRate,
 		debugAudioScheduling: false,
+		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 	});
 
 	const created = manager.getAudioIteratorsCreated();
@@ -288,6 +287,7 @@ test('should not schedule duplicate chunks with playbackRate=0.5', async () => {
 			nonce: makeNonceManager().createAsyncOperation(),
 			playbackRate,
 			debugAudioScheduling: false,
+			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 		});
 	}
 
@@ -361,6 +361,7 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 			nonce: makeNonceManager().createAsyncOperation(),
 			playbackRate: 1,
 			debugAudioScheduling: false,
+			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 		});
 	}
 

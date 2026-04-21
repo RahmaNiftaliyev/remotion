@@ -321,6 +321,7 @@ export class MediaPlayer {
 								getIsPlaying: () => this.playing,
 								scheduleAudioNode: this.scheduleAudioNode,
 								debugAudioScheduling: this.debugAudioScheduling,
+								getTargetTime: this.getTargetTime,
 							})
 						: Promise.resolve(),
 					this.videoIteratorManager
@@ -407,6 +408,7 @@ export class MediaPlayer {
 							getIsPlaying: () => this.playing,
 							scheduleAudioNode: this.scheduleAudioNode,
 							debugAudioScheduling: this.debugAudioScheduling,
+							getTargetTime: this.getTargetTime,
 						})
 					: null,
 			]);
@@ -643,6 +645,32 @@ export class MediaPlayer {
 		this.input.dispose();
 	}
 
+	private getTargetTime = (mediaTimestamp: number): number | null => {
+		if (!this.sharedAudioContext) {
+			throw new Error('Shared audio context not found');
+		}
+
+		const {audioContext} = this.sharedAudioContext;
+		const {currentTime} = audioContext;
+
+		const globalTime =
+			(currentTime - this.sharedAudioContext.audioSyncAnchor.value) *
+			this.globalPlaybackRate;
+
+		const timeInSeconds = globalTime - this.sequenceOffset;
+
+		const localTime = this.getTrimmedTime(timeInSeconds);
+		if (localTime === null) {
+			return null;
+		}
+
+		const targetTime =
+			(mediaTimestamp - localTime) /
+			(this.playbackRate * this.globalPlaybackRate);
+
+		return targetTime;
+	};
+
 	private scheduleAudioNode = (
 		node: AudioBufferSourceNode,
 		mediaTimestamp: number,
@@ -654,18 +682,10 @@ export class MediaPlayer {
 		const {audioContext} = this.sharedAudioContext;
 		const {currentTime} = audioContext;
 
-		const globalTime =
-			(currentTime - this.sharedAudioContext.audioSyncAnchor.value) *
-			this.globalPlaybackRate;
-		const timeInSeconds = globalTime - this.sequenceOffset;
-		const localTime = this.getTrimmedTime(timeInSeconds);
-		if (localTime === null) {
+		const targetTime = this.getTargetTime(mediaTimestamp);
+		if (targetTime === null) {
 			return {type: 'not-started'};
 		}
-
-		const targetTime =
-			(mediaTimestamp - localTime) /
-			(this.playbackRate * this.globalPlaybackRate);
 
 		return this.sharedAudioContext.scheduleAudioNode({
 			node,

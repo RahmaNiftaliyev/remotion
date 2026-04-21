@@ -6,6 +6,7 @@ import {
 	isAlreadyQueued,
 	makeAudioIterator,
 } from './audio/audio-preview-iterator';
+import {StaleWaiterError} from './audio/sort-by-priority';
 import type {DelayPlaybackIfNotPremounting} from './delay-playback-if-not-premounting';
 import type {Nonce} from './nonce-manager';
 import {makePrewarmedAudioIteratorCache} from './prewarm-iterator-for-looping';
@@ -317,6 +318,11 @@ export const audioIteratorManager = ({
 			if (e instanceof InputDisposedError) {
 				// iterator was disposed by a newer startAudioIterator call
 				// this is expected during rapid seeking
+				return;
+			}
+
+			if (e instanceof StaleWaiterError) {
+				// iterator was stale before it got its turn
 				return;
 			}
 

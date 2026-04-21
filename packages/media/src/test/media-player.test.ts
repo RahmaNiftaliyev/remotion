@@ -30,6 +30,10 @@ test('dispose should immediately unblock playback delays', async () => {
 			type: 'started',
 			scheduledTime: 0,
 		}),
+		getScheduledTime: () => ({
+			scheduledTime: 0,
+			duration: 0,
+		}),
 	};
 
 	const player = new MediaPlayer({

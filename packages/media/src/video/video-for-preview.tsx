@@ -264,7 +264,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 		if (!sharedAudioContext) return;
 		if (!sharedAudioContext.audioContext) return;
 
-		const {audioContext, audioSyncAnchor, scheduleAudioNode} =
+		const {audioContext, audioSyncAnchor, scheduleAudioNode, getScheduledTime} =
 			sharedAudioContext;
 
 		try {
@@ -272,7 +272,12 @@ const VideoForPreviewAssertedShowing: React.FC<
 				canvas: canvasRef.current,
 				src: preloadedSrc,
 				logLevel,
-				sharedAudioContext: {audioContext, audioSyncAnchor, scheduleAudioNode},
+				sharedAudioContext: {
+					audioContext,
+					audioSyncAnchor,
+					scheduleAudioNode,
+					getScheduledTime,
+				},
 				loop,
 				trimAfter: initialTrimAfterRef.current,
 				trimBefore: initialTrimBeforeRef.current,

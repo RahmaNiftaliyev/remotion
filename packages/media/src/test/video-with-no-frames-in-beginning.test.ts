@@ -96,6 +96,10 @@ test('same goes for audio', async () => {
 				type: 'started',
 				scheduledTime: 0,
 			}),
+			getScheduledTime: () => ({
+				scheduledTime: 0,
+				duration: 0,
+			}),
 		},
 		getIsLooping: () => false,
 		getEndTime: () => Infinity,

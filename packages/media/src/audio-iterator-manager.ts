@@ -254,31 +254,37 @@ export const audioIteratorManager = ({
 		try {
 			// Schedule at least 6 buffers ahead of the current time
 			for (let i = 0; i < 6; i++) {
-				const guessedNextTimestamp = iterator.guessNextTimestamp();
-				const targetTime = getTargetTime(guessedNextTimestamp);
-				if (targetTime === null) {
-					// Time will not be mounted
-					return;
-				}
-
-				const scheduledTime = sharedAudioContext.getScheduledTime({
-					mediaTimestamp: guessedNextTimestamp,
-					targetTime,
-					currentTime: sharedAudioContext.audioContext.currentTime,
-					sequenceStartTime: getStartTime(),
-				});
-
-				console.log('register', scheduledTime);
-
 				const result = await waitForTurn({
 					getPriority: () => {
+						if (iterator.isDestroyed()) {
+							return Infinity;
+						}
+
+						if (nonce.isStale()) {
+							return Infinity;
+						}
+
+						const guessedNextTimestamp = iterator.guessNextTimestamp();
+						const targetTime = getTargetTime(guessedNextTimestamp);
+						if (targetTime === null) {
+							// Time will not be mounted
+							// TODO: Run it not at all
+							return Infinity;
+						}
+
+						const scheduledTime = sharedAudioContext.getScheduledTime({
+							mediaTimestamp: guessedNextTimestamp,
+							targetTime,
+							currentTime: sharedAudioContext.audioContext.currentTime,
+							sequenceStartTime: getStartTime(),
+						});
+
 						// TODO: Can scheduledTime change?
 						return scheduledTime - sharedAudioContext.audioContext.currentTime;
 					},
 					fn: () => iterator.getNextFn(),
 					getStale: () => iterator.isDestroyed() || nonce.isStale(),
 				});
-				console.log('scheduledTime', scheduledTime);
 
 				if (iterator.isDestroyed()) {
 					return;
@@ -292,6 +298,8 @@ export const audioIteratorManager = ({
 					// media ended
 					return;
 				}
+
+				console.log('scheduledTime', result.value.timestamp);
 
 				onAudioChunk({
 					getIsPlaying,

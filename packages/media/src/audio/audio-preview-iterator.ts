@@ -280,7 +280,7 @@ export const makeAudioIterator = ({
 			iterator.return().catch(() => undefined);
 			audioChunksForAfterResuming.length = 0;
 		},
-		getNext: (getPriority: () => number) => {
+		getNext: ({getPriority}: {getPriority: () => number}) => {
 			return waitForTurn(getPriority, async () => {
 				const next = await iterator.next();
 				if (next.value) {

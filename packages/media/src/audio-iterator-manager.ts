@@ -268,9 +268,11 @@ export const audioIteratorManager = ({
 				});
 
 				console.log('register', scheduledTime);
-				const result = await iterator.getNext(() => {
-					// TODO: Can scheduledTime change?
-					return scheduledTime - sharedAudioContext.audioContext.currentTime;
+				const result = await iterator.getNext({
+					getPriority: () => {
+						// TODO: Can scheduledTime change?
+						return scheduledTime - sharedAudioContext.audioContext.currentTime;
+					},
 				});
 				console.log('scheduledTime', scheduledTime);
 

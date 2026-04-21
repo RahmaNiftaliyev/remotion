@@ -6,7 +6,7 @@ import {
 	isAlreadyQueued,
 	makeAudioIterator,
 } from './audio/audio-preview-iterator';
-import {StaleWaiterError} from './audio/sort-by-priority';
+import {StaleWaiterError, waitForTurn} from './audio/sort-by-priority';
 import type {DelayPlaybackIfNotPremounting} from './delay-playback-if-not-premounting';
 import type {Nonce} from './nonce-manager';
 import {makePrewarmedAudioIteratorCache} from './prewarm-iterator-for-looping';
@@ -269,11 +269,13 @@ export const audioIteratorManager = ({
 				});
 
 				console.log('register', scheduledTime);
-				const result = await iterator.getNext({
+
+				const result = await waitForTurn({
 					getPriority: () => {
 						// TODO: Can scheduledTime change?
 						return scheduledTime - sharedAudioContext.audioContext.currentTime;
 					},
+					fn: () => iterator.getNextFn(),
 					getStale: () => iterator.isDestroyed() || nonce.isStale(),
 				});
 				console.log('scheduledTime', scheduledTime);

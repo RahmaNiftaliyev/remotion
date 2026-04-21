@@ -4,7 +4,6 @@ import {roundTo4Digits} from '../helpers/round-to-4-digits';
 import type {PrewarmedAudioIteratorCache} from '../prewarm-iterator-for-looping';
 import {ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT} from '../set-global-time-anchor';
 import type {SharedAudioContextForMediaPlayer} from '../shared-audio-context-for-media-player';
-import {waitForTurn} from './sort-by-priority';
 
 export const HEALTHY_BUFFER_THRESHOLD_SECONDS = 1;
 
@@ -273,6 +272,18 @@ export const makeAudioIterator = ({
 		return audioChunksForAfterResuming.length;
 	};
 
+	const getNextFn = async () => {
+		const next = await iterator.next();
+		if (next.value) {
+			mostRecentTimestamp = Math.max(
+				mostRecentTimestamp,
+				next.value.timestamp + next.value.duration,
+			);
+		}
+
+		return next;
+	};
+
 	return {
 		destroy: (audioContext: SharedAudioContextForMediaPlayer) => {
 			cleanupAudioQueue(audioContext);
@@ -280,29 +291,7 @@ export const makeAudioIterator = ({
 			iterator.return().catch(() => undefined);
 			audioChunksForAfterResuming.length = 0;
 		},
-		getNext: ({
-			getPriority,
-			getStale,
-		}: {
-			getPriority: () => number;
-			getStale: () => boolean;
-		}) => {
-			return waitForTurn({
-				getPriority,
-				fn: async () => {
-					const next = await iterator.next();
-					if (next.value) {
-						mostRecentTimestamp = Math.max(
-							mostRecentTimestamp,
-							next.value.timestamp + next.value.duration,
-						);
-					}
-
-					return next;
-				},
-				getStale,
-			});
-		},
+		getNextFn,
 		isDestroyed: () => {
 			return destroyed;
 		},

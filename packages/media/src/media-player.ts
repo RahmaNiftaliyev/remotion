@@ -6,6 +6,7 @@ import {
 	audioIteratorManager,
 	type AudioIteratorManager,
 } from './audio-iterator-manager';
+import {getScheduledTime} from './audio/get-scheduled-time';
 import {drawPreviewOverlay} from './debug-overlay/preview-overlay';
 import type {DelayPlaybackIfNotPremounting} from './delay-playback-if-not-premounting';
 import {calculateEndTime, getTimeInSeconds} from './get-time-in-seconds';
@@ -687,14 +688,22 @@ export class MediaPlayer {
 			return {type: 'not-started'};
 		}
 
+		const sequenceStartTime = this.getStartTime();
+
 		return this.sharedAudioContext.scheduleAudioNode({
 			node,
 			mediaTimestamp,
 			targetTime,
 			currentTime,
 			sequenceEndTime: this.getEndTime(),
-			sequenceStartTime: this.getStartTime(),
+			sequenceStartTime,
 			debugAudioScheduling: this.debugAudioScheduling,
+			scheduledTime: getScheduledTime({
+				mediaTimestamp,
+				targetTime,
+				currentTime,
+				sequenceStartTime,
+			}),
 		});
 	};
 

@@ -6,12 +6,6 @@ export type SharedAudioContextForMediaPlayer = {
 	scheduleAudioNode: (
 		options: ScheduleAudioNodeOptions,
 	) => ScheduleAudioNodeResult;
-	getScheduledTime: (options: {
-		mediaTimestamp: number;
-		targetTime: number;
-		currentTime: number;
-		sequenceStartTime: number;
-	}) => number;
 	getDurationOfNode: (options: {
 		mediaTimestamp: number;
 		bufferDuration: number;

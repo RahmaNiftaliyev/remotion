@@ -30,7 +30,6 @@ test('dispose should immediately unblock playback delays', async () => {
 			type: 'started',
 			scheduledTime: 0,
 		}),
-		getScheduledTime: () => 0,
 		getDurationOfNode: () => 0,
 	};
 

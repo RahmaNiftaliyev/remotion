@@ -268,7 +268,6 @@ const VideoForPreviewAssertedShowing: React.FC<
 			audioContext,
 			audioSyncAnchor,
 			scheduleAudioNode,
-			getScheduledTime,
 			getDurationOfNode,
 		} = sharedAudioContext;
 
@@ -282,7 +281,6 @@ const VideoForPreviewAssertedShowing: React.FC<
 					audioSyncAnchor,
 					scheduleAudioNode,
 					getDurationOfNode,
-					getScheduledTime,
 				},
 				loop,
 				trimAfter: initialTrimAfterRef.current,

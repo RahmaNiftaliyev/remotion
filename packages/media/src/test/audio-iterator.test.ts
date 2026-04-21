@@ -29,13 +29,11 @@ const prepare = async () => {
 				type: 'started',
 				scheduledTime: 0,
 			}),
-			getScheduledTime: () => 0,
 			getDurationOfNode: () => 0,
 		},
 		getIsLooping: () => false,
 		getEndTime: () => Infinity,
 		getStartTime: () => 0,
-
 		initialMuted: false,
 		drawDebugOverlay: () => {},
 	});
@@ -244,7 +242,6 @@ test('should not schedule duplicate chunks with playbackRate=0.5', async () => {
 				type: 'started',
 				scheduledTime: 0,
 			}),
-			getScheduledTime: () => 0,
 			getDurationOfNode: () => 0,
 		},
 		getIsLooping: () => false,
@@ -323,7 +320,6 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 				type: 'started',
 				scheduledTime: 0,
 			}),
-			getScheduledTime: () => 0,
 			getDurationOfNode: () => 0,
 		},
 		getIsLooping: () => false,
@@ -354,7 +350,7 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 	for (let frame = 0; frame < 30; frame++) {
 		const mediaTime = frame / fps;
 
-		await manager.seek({
+		manager.seek({
 			newTime: mediaTime,
 			scheduleAudioNode,
 			getIsPlaying: () => true,

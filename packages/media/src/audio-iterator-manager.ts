@@ -6,6 +6,7 @@ import {
 	isAlreadyQueued,
 	makeAudioIterator,
 } from './audio/audio-preview-iterator';
+import {getScheduledTime} from './audio/get-scheduled-time';
 import {StaleWaiterError, waitForTurn} from './audio/sort-by-priority';
 import type {DelayPlaybackIfNotPremounting} from './delay-playback-if-not-premounting';
 import type {Nonce} from './nonce-manager';
@@ -238,7 +239,7 @@ export const audioIteratorManager = ({
 		waitForTurn({
 			getPriority: () => {
 				if (iterator.isDestroyed()) {
-					return Infinity;
+					return null;
 				}
 
 				const {currentTime} = sharedAudioContext.audioContext;
@@ -247,22 +248,19 @@ export const audioIteratorManager = ({
 				const targetTime = getTargetTime(guessedNextTimestamp, currentTime);
 				if (targetTime === null) {
 					// Time will not be mounted
-					// TODO: Run it not at all
-					return Infinity;
+					return null;
 				}
 
-				const scheduledTime = sharedAudioContext.getScheduledTime({
+				const scheduledTime = getScheduledTime({
 					mediaTimestamp: guessedNextTimestamp,
 					targetTime,
 					currentTime,
 					sequenceStartTime: getStartTime(),
 				});
 
-				// TODO: Can scheduledTime change?
 				return scheduledTime - currentTime;
 			},
 			fn: () => iterator.getNextFn(),
-			getStale: () => iterator.isDestroyed(),
 			onDone: (result, next) => {
 				if (iterator.isDestroyed()) {
 					next();

@@ -219,7 +219,6 @@ const AudioForPreviewAssertedShowing: React.FC<
 			audioContext,
 			audioSyncAnchor,
 			scheduleAudioNode,
-			getScheduledTime,
 			getDurationOfNode,
 		} = sharedAudioContext;
 
@@ -231,7 +230,6 @@ const AudioForPreviewAssertedShowing: React.FC<
 					audioContext,
 					audioSyncAnchor,
 					scheduleAudioNode,
-					getScheduledTime,
 					getDurationOfNode,
 				},
 				loop,

@@ -1,6 +1,4 @@
-import type {WrappedAudioBuffer} from 'mediabunny';
 import {Internals} from 'remotion';
-import {roundTo4Digits} from '../helpers/round-to-4-digits';
 import type {PrewarmedAudioIteratorCache} from '../prewarm-iterator-for-looping';
 import {ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT} from '../set-global-time-anchor';
 import type {SharedAudioContextForMediaPlayer} from '../shared-audio-context-for-media-player';
@@ -43,8 +41,6 @@ export const makeAudioIterator = ({
 		timestamp: number;
 	}[] = [];
 	let mostRecentTimestamp = -Infinity;
-	let pendingNext: Promise<IteratorResult<WrappedAudioBuffer, void>> | null =
-		null;
 
 	const cleanupAudioQueue = (
 		audioContext: SharedAudioContextForMediaPlayer,
@@ -84,153 +80,6 @@ export const makeAudioIterator = ({
 		}
 
 		queuedAudioNodes.length = 0;
-	};
-
-	const getNextOrNullIfNotAvailable = async () => {
-		let next = pendingNext;
-
-		if (!next) {
-			next = iterator.next();
-		}
-
-		pendingNext = null;
-		const result = await Promise.race([
-			next,
-			new Promise<void>((resolve) => {
-				Promise.resolve().then(() => resolve());
-			}),
-		]);
-
-		if (!result) {
-			pendingNext = next;
-			return {
-				type: 'need-to-wait-for-it' as const,
-				waitPromise: async () => {
-					const res = await next;
-					return res.value;
-				},
-			};
-		}
-
-		if (result.value) {
-			mostRecentTimestamp = Math.max(
-				mostRecentTimestamp,
-				result.value.timestamp + result.value.duration,
-			);
-			// preload next already
-			pendingNext = iterator.next();
-			return {
-				type: 'got-buffer' as const,
-				buffer: result.value,
-			};
-		}
-
-		return {
-			type: 'got-end' as const,
-			mostRecentTimestamp,
-		};
-	};
-
-	const tryToSatisfySeek = async (
-		time: number,
-		onBufferScheduled: (buffer: WrappedAudioBuffer) => void,
-	): Promise<
-		| {
-				type: 'not-satisfied';
-				reason: string;
-		  }
-		| {
-				type: 'ended';
-		  }
-		| {
-				type: 'satisfied';
-		  }
-	> => {
-		if (time < startFromSecond) {
-			return {
-				type: 'not-satisfied' as const,
-				reason: `time requested is before the start of the iterator`,
-			};
-		}
-
-		while (true) {
-			const buffer = await getNextOrNullIfNotAvailable();
-			if (buffer.type === 'need-to-wait-for-it') {
-				return {
-					type: 'not-satisfied' as const,
-					reason: 'iterator did not have buffer ready',
-				};
-			}
-
-			if (buffer.type === 'got-end') {
-				if (time >= mostRecentTimestamp) {
-					return {
-						type: 'ended' as const,
-					};
-				}
-
-				return {
-					type: 'not-satisfied' as const,
-					reason: `iterator ended before the requested time`,
-				};
-			}
-
-			if (buffer.type === 'got-buffer') {
-				const bufferTimestamp = roundTo4Digits(buffer.buffer.timestamp);
-				const bufferEndTimestamp = roundTo4Digits(
-					buffer.buffer.timestamp + buffer.buffer.duration,
-				);
-
-				const timestamp = roundTo4Digits(time);
-
-				if (timestamp < bufferTimestamp) {
-					return {
-						type: 'not-satisfied' as const,
-						reason: `iterator is too far, most recently returned ${bufferTimestamp}-${bufferEndTimestamp}, requested ${timestamp}`,
-					};
-				}
-
-				if (bufferTimestamp <= timestamp && bufferEndTimestamp >= timestamp) {
-					onBufferScheduled(buffer.buffer);
-					return {
-						type: 'satisfied' as const,
-					};
-				}
-
-				onBufferScheduled(buffer.buffer);
-
-				continue;
-			}
-
-			throw new Error('Unreachable');
-		}
-	};
-
-	const bufferAsFarAsPossible = async (
-		onBufferScheduled: (buffer: WrappedAudioBuffer) => void,
-		maxTimestamp: number,
-	): Promise<{type: 'ended'} | {type: 'waiting'} | {type: 'max-reached'}> => {
-		while (true) {
-			if (mostRecentTimestamp >= maxTimestamp) {
-				return {type: 'max-reached'};
-			}
-
-			const buffer = await getNextOrNullIfNotAvailable();
-			if (buffer.type === 'need-to-wait-for-it') {
-				return {type: 'waiting'};
-			}
-
-			if (buffer.type === 'got-end') {
-				return {type: 'ended'};
-			}
-
-			if (buffer.type === 'got-buffer') {
-				onBufferScheduled(buffer.buffer);
-				continue;
-			}
-
-			throw new Error('Unreachable');
-		}
 	};
 
 	const removeAndReturnAllQueuedAudioNodes = () => {
@@ -361,8 +210,6 @@ export const makeAudioIterator = ({
 				until,
 			};
 		},
-		tryToSatisfySeek,
-		bufferAsFarAsPossible,
 		addChunkForAfterResuming,
 		moveQueuedChunksToPauseQueue,
 		getNumberOfChunksAfterResuming,

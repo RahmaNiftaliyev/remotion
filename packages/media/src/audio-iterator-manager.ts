@@ -13,8 +13,6 @@ import {makePrewarmedAudioIteratorCache} from './prewarm-iterator-for-looping';
 import {ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT} from './set-global-time-anchor';
 import type {SharedAudioContextForMediaPlayer} from './shared-audio-context-for-media-player';
 
-const MAX_BUFFER_AHEAD_SECONDS = 2;
-
 type ScheduleAudioNode = (
 	node: AudioBufferSourceNode,
 	mediaTimestamp: number,
@@ -437,61 +435,16 @@ export const audioIteratorManager = ({
 		);
 
 		if (!currentTimeIsAlreadyQueued) {
-			const audioSatisfyResult = await audioBufferIterator.tryToSatisfySeek(
-				newTime,
-				(buffer) => {
-					if (!nonce.isStale()) {
-						onAudioChunk({
-							getIsPlaying,
-							buffer,
-							playbackRate,
-							scheduleAudioNode,
-							debugAudioScheduling,
-						});
-					}
-				},
-			);
-
-			if (nonce.isStale()) {
-				return;
-			}
-
-			if (audioSatisfyResult.type === 'ended') {
-				return;
-			}
-
-			if (audioSatisfyResult.type === 'not-satisfied') {
-				await startAudioIterator({
-					nonce,
-					playbackRate,
-					startFromSecond: newTime,
-					getIsPlaying,
-					scheduleAudioNode,
-					debugAudioScheduling,
-					getTargetTime,
-				});
-				return;
-			}
-
-			if (audioSatisfyResult.type === 'satisfied') {
-				// fall through
-			}
+			startAudioIterator({
+				nonce,
+				playbackRate,
+				startFromSecond: newTime,
+				getIsPlaying,
+				scheduleAudioNode,
+				debugAudioScheduling,
+				getTargetTime,
+			});
 		}
-
-		await audioBufferIterator.bufferAsFarAsPossible(
-			(buffer) => {
-				if (!nonce.isStale()) {
-					onAudioChunk({
-						getIsPlaying,
-						buffer,
-						playbackRate,
-						scheduleAudioNode,
-						debugAudioScheduling,
-					});
-				}
-			},
-			Math.min(newTime + MAX_BUFFER_AHEAD_SECONDS, getEndTime()),
-		);
 	};
 
 	return {

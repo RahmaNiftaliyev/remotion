@@ -50,6 +50,7 @@ export const audioIteratorManager = ({
 	let audioBufferIterator: AudioIterator | null = null;
 	let audioIteratorsCreated = 0;
 	let currentDelayHandle: {unblock: () => void} | null = null;
+	const id = Math.random();
 
 	const scheduleAudioChunk = ({
 		buffer,
@@ -223,6 +224,7 @@ export const audioIteratorManager = ({
 		getIsPlaying,
 		scheduleAudioNode,
 		debugAudioScheduling,
+		getTargetTime,
 	}: {
 		startFromSecond: number;
 		nonce: Nonce;
@@ -230,6 +232,7 @@ export const audioIteratorManager = ({
 		getIsPlaying: () => boolean;
 		scheduleAudioNode: ScheduleAudioNode;
 		debugAudioScheduling: boolean;
+		getTargetTime: (mediaTimestamp: number) => number | null;
 	}) => {
 		if (muted) {
 			return;
@@ -251,7 +254,28 @@ export const audioIteratorManager = ({
 		try {
 			// Schedule at least 6 buffers ahead of the current time
 			for (let i = 0; i < 6; i++) {
+				const guessedNextTimestamp = iterator.guessNextTimestamp();
+				const targetTime = getTargetTime(guessedNextTimestamp);
+				if (targetTime === null) {
+					// Time will not be mounted
+					return;
+				}
+
+				const scheduledTime = sharedAudioContext.getScheduledTime({
+					mediaTimestamp: guessedNextTimestamp,
+					targetTime,
+					currentTime: sharedAudioContext.audioContext.currentTime,
+					sequenceStartTime: getStartTime(),
+				});
+
 				const result = await iterator.getNext();
+				console.log(
+					'scheduledTime',
+					scheduledTime - sharedAudioContext.audioContext.currentTime,
+					sharedAudioContext.audioContext.currentTime,
+					guessedNextTimestamp,
+					id,
+				);
 
 				if (iterator.isDestroyed()) {
 					return;
@@ -315,6 +339,7 @@ export const audioIteratorManager = ({
 		getIsPlaying,
 		scheduleAudioNode,
 		debugAudioScheduling,
+		getTargetTime,
 	}: {
 		newTime: number;
 		nonce: Nonce;
@@ -322,6 +347,7 @@ export const audioIteratorManager = ({
 		getIsPlaying: () => boolean;
 		scheduleAudioNode: ScheduleAudioNode;
 		debugAudioScheduling: boolean;
+		getTargetTime: (mediaTimestamp: number) => number | null;
 	}) => {
 		if (muted) {
 			return;
@@ -345,6 +371,7 @@ export const audioIteratorManager = ({
 				getIsPlaying,
 				scheduleAudioNode,
 				debugAudioScheduling,
+				getTargetTime,
 			});
 			return;
 		}
@@ -399,6 +426,7 @@ export const audioIteratorManager = ({
 					getIsPlaying,
 					scheduleAudioNode,
 					debugAudioScheduling,
+					getTargetTime,
 				});
 				return;
 			}

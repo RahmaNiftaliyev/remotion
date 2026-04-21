@@ -16,6 +16,15 @@ const prepare = async () => {
 
 	const audioContext = new AudioContext();
 
+	let scheduledChunks = 0;
+	const scheduleAudioNode = (): ScheduleAudioNodeResult => {
+		scheduledChunks++;
+		return {
+			type: 'started',
+			scheduledTime: 0,
+		};
+	};
+
 	const manager = audioIteratorManager({
 		audioTrack,
 		delayPlaybackHandleIfNotPremounting: () => ({
@@ -25,10 +34,7 @@ const prepare = async () => {
 		sharedAudioContext: {
 			audioContext,
 			audioSyncAnchor: {value: 0},
-			scheduleAudioNode: () => ({
-				type: 'started',
-				scheduledTime: 0,
-			}),
+			scheduleAudioNode,
 		},
 		getIsLooping: () => false,
 		getEndTime: () => Infinity,
@@ -41,15 +47,21 @@ const prepare = async () => {
 	const playbackRate = 1;
 	const getIsPlaying = () => true;
 
+	const getAudioContextState = () => 'running' as const;
+	const getAudioContextOutputTimestamp = () => 1;
+
 	return {
 		manager,
 		fps,
 		playbackRate,
 		getIsPlaying,
+		getScheduledChunks: () => scheduledChunks,
+		getAudioContextState,
+		getAudioContextOutputTimestamp,
 	};
 };
 
-test('media player should work', async () => {
+test.only('media player should work', async () => {
 	const scheduledChunks: number[] = [];
 	const scheduleAudioNode = (
 		node: AudioBufferSourceNode,
@@ -63,7 +75,13 @@ test('media player should work', async () => {
 		};
 	};
 
-	const {manager, playbackRate, getIsPlaying} = await prepare();
+	const {
+		manager,
+		playbackRate,
+		getIsPlaying,
+		getAudioContextState,
+		getAudioContextOutputTimestamp,
+	} = await prepare();
 
 	await manager.seek({
 		newTime: 9.96,
@@ -73,15 +91,16 @@ test('media player should work', async () => {
 		playbackRate,
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
+		resolveAfterNScheduledNodes: 3,
+		getAudioContextState,
+		getAudioContextOutputTimestamp,
 	});
 
-	const chunksAt996 = manager
-		.getAudioBufferIterator()
-		?.getAndClearAudioChunksForAfterResuming();
-	expect(chunksAt996?.map((c) => c.timestamp)).toEqual([
+	expect(scheduledChunks).toEqual([
 		9.941333333333333, 9.962666666666667, 9.984,
 	]);
 
+	scheduledChunks.length = 0;
 	await manager.seek({
 		newTime: 0,
 		scheduleAudioNode,
@@ -90,7 +109,16 @@ test('media player should work', async () => {
 		playbackRate,
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
+		resolveAfterNScheduledNodes: 3,
+		getAudioContextState,
+		getAudioContextOutputTimestamp,
 	});
+
+	expect(scheduledChunks).toEqual([
+		0, 0.021333333333333333, 0.042666666666666665,
+	]);
+	scheduledChunks.length = 0;
+	console.log('-----');
 
 	await manager.seek({
 		newTime: 0.04,
@@ -100,23 +128,27 @@ test('media player should work', async () => {
 		playbackRate,
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
+		resolveAfterNScheduledNodes: 2,
+		getAudioContextState,
+		getAudioContextOutputTimestamp,
 	});
 
-	const chunksAtEnd = manager
-		.getAudioBufferIterator()
-		?.getAndClearAudioChunksForAfterResuming();
+	manager.destroyIterator();
+
+	expect(scheduledChunks).toEqual([0.064, 0.08533333333333333]);
 
 	const created = manager.getAudioIteratorsCreated();
 	expect(created).toBe(2);
-
-	expect(chunksAtEnd?.map((c) => c.timestamp)).toEqual([
-		0, 0.021333333333333333, 0.042666666666666665, 0.064, 0.08533333333333333,
-		0.10666666666666667,
-	]);
 });
 
 test('should not create too many iterators when the audio ends', async () => {
-	const {manager, playbackRate, getIsPlaying} = await prepare();
+	const {
+		manager,
+		playbackRate,
+		getIsPlaying,
+		getAudioContextState,
+		getAudioContextOutputTimestamp,
+	} = await prepare();
 
 	const scheduledChunks: number[] = [];
 	const scheduleAudioNode = (
@@ -139,6 +171,9 @@ test('should not create too many iterators when the audio ends', async () => {
 		playbackRate,
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
+		resolveAfterNScheduledNodes: 3,
+		getAudioContextState,
+		getAudioContextOutputTimestamp,
 	});
 	await manager.seek({
 		newTime: 9.98,
@@ -148,6 +183,9 @@ test('should not create too many iterators when the audio ends', async () => {
 		playbackRate,
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
+		resolveAfterNScheduledNodes: 3,
+		getAudioContextState,
+		getAudioContextOutputTimestamp,
 	});
 
 	const created = manager.getAudioIteratorsCreated();
@@ -162,7 +200,13 @@ test('should not create too many iterators when the audio ends', async () => {
 });
 
 test('should create more iterators when seeking ', async () => {
-	const {manager, playbackRate, getIsPlaying} = await prepare();
+	const {
+		manager,
+		playbackRate,
+		getIsPlaying,
+		getAudioContextState,
+		getAudioContextOutputTimestamp,
+	} = await prepare();
 
 	const scheduledChunks: number[] = [];
 	const scheduleAudioNode = (
@@ -185,6 +229,9 @@ test('should create more iterators when seeking ', async () => {
 		playbackRate,
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
+		resolveAfterNScheduledNodes: 3,
+		getAudioContextState,
+		getAudioContextOutputTimestamp,
 	});
 	const chunksAt0 = manager
 		.getAudioBufferIterator()
@@ -201,6 +248,9 @@ test('should create more iterators when seeking ', async () => {
 		playbackRate,
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
+		resolveAfterNScheduledNodes: 3,
+		getAudioContextState,
+		getAudioContextOutputTimestamp,
 	});
 
 	const created = manager.getAudioIteratorsCreated();
@@ -283,6 +333,9 @@ test('should not schedule duplicate chunks with playbackRate=0.5', async () => {
 			playbackRate,
 			debugAudioScheduling: false,
 			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
+			resolveAfterNScheduledNodes: 3,
+			getAudioContextState: () => 'running' as const,
+			getAudioContextOutputTimestamp: () => 1,
 		});
 	}
 
@@ -355,6 +408,9 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 			playbackRate: 1,
 			debugAudioScheduling: false,
 			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
+			resolveAfterNScheduledNodes: 3,
+			getAudioContextState: () => 'running' as const,
+			getAudioContextOutputTimestamp: () => 1,
 		});
 	}
 

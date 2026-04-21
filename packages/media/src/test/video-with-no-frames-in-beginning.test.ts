@@ -117,6 +117,9 @@ test('same goes for audio', async () => {
 		}),
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
+		resolveAfterNScheduledNodes: 0,
+		getAudioContextState: () => 'running' as const,
+		getAudioContextOutputTimestamp: () => 1,
 	});
 
 	await manager.seek({
@@ -130,6 +133,9 @@ test('same goes for audio', async () => {
 		}),
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
+		resolveAfterNScheduledNodes: 0,
+		getAudioContextState: () => 'running' as const,
+		getAudioContextOutputTimestamp: () => 1,
 	});
 
 	const iterators = manager.getAudioIteratorsCreated();

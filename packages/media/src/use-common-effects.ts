@@ -226,7 +226,7 @@ export const useCommonEffects = ({
 		const mediaPlayer = mediaPlayerRef.current;
 		if (!mediaPlayer || !mediaPlayerReady) return;
 
-		mediaPlayer.seekTo(currentTime).catch(() => {
+		mediaPlayer.seekTo(currentTime, 0).catch(() => {
 			// Might be disposed
 		});
 		Internals.Log.trace(

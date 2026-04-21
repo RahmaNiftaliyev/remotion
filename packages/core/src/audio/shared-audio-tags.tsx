@@ -54,13 +54,12 @@ export type ScheduleAudioNodeResult =
 
 export type ScheduleAudioNodeOptions = {
 	readonly node: AudioBufferSourceNode;
-	readonly targetTime: number;
 	readonly mediaTimestamp: number;
 	readonly currentTime: number;
-	readonly sequenceEndTime: number;
-	readonly sequenceStartTime: number;
 	readonly debugAudioScheduling: boolean;
 	readonly scheduledTime: number;
+	readonly duration: number;
+	readonly offset: number;
 };
 
 type SharedContext = {
@@ -85,12 +84,6 @@ type SharedContext = {
 	scheduleAudioNode: (
 		options: ScheduleAudioNodeOptions,
 	) => ScheduleAudioNodeResult;
-	getDurationOfNode: (options: {
-		mediaTimestamp: number;
-		bufferDuration: number;
-		sequenceEndTime: number;
-		offset: number;
-	}) => number;
 };
 
 const compareProps = (
@@ -175,74 +168,18 @@ export const SharedAudioContextProvider: React.FC<{
 		mediaEndTime: number | null;
 	}>({scheduledEndTime: null, mediaEndTime: null});
 
-	const getDurationOfNode = useCallback(
-		({
-			mediaTimestamp,
-			bufferDuration,
-			sequenceEndTime,
-			offset,
-		}: {
-			mediaTimestamp: number;
-			bufferDuration: number;
-			sequenceEndTime: number;
-			offset: number;
-		}) => {
-			const unclampedMediaEndTime = mediaTimestamp + bufferDuration;
-
-			const needsTrimEnd = unclampedMediaEndTime > sequenceEndTime;
-
-			const duration = needsTrimEnd
-				? bufferDuration -
-					Math.max(0, unclampedMediaEndTime - sequenceEndTime) -
-					offset
-				: bufferDuration - offset;
-
-			return duration;
-		},
-		[],
-	);
-
 	const scheduleAudioNode = useMemo(() => {
 		return ({
 			node,
 			mediaTimestamp,
-			targetTime,
 			currentTime,
-			sequenceEndTime,
-			sequenceStartTime,
 			debugAudioScheduling,
 			scheduledTime,
+			duration,
+			offset,
 		}: ScheduleAudioNodeOptions): ScheduleAudioNodeResult => {
 			if (!audioContext) {
 				throw new Error('Audio context not found');
-			}
-
-			const needsTrimStart = mediaTimestamp < sequenceStartTime;
-
-			const offsetBecauseOfTrim = needsTrimStart
-				? sequenceStartTime - mediaTimestamp
-				: 0;
-			const offsetBecauseOfTooLate = targetTime < 0 ? -targetTime : 0;
-			const offset = offsetBecauseOfTrim + offsetBecauseOfTooLate;
-
-			const duration = getDurationOfNode({
-				mediaTimestamp,
-				bufferDuration: node.buffer?.duration ?? 0,
-				sequenceEndTime,
-				offset,
-			});
-
-			if (offset < 0) {
-				throw new Error(
-					'offset < 0: ' +
-						JSON.stringify({
-							offset,
-							targetTime,
-							currentTime,
-							offsetBecauseOfTrim,
-							offsetBecauseOfTooLate,
-						}),
-				);
 			}
 
 			if (duration > 0) {
@@ -307,7 +244,7 @@ export const SharedAudioContextProvider: React.FC<{
 						type: 'not-started',
 					};
 		};
-	}, [audioContext, logLevel, getDurationOfNode]);
+	}, [audioContext, logLevel]);
 
 	const refs = useMemo(() => {
 		return new Array(numberOfAudioTags).fill(true).map((): Ref => {
@@ -536,7 +473,6 @@ export const SharedAudioContextProvider: React.FC<{
 			audioContext,
 			audioSyncAnchor,
 			scheduleAudioNode,
-			getDurationOfNode,
 		};
 	}, [
 		numberOfAudioTags,
@@ -547,7 +483,6 @@ export const SharedAudioContextProvider: React.FC<{
 		audioContext,
 		audioSyncAnchor,
 		scheduleAudioNode,
-		getDurationOfNode,
 	]);
 
 	return (

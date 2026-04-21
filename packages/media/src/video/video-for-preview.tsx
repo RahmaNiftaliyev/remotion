@@ -264,12 +264,8 @@ const VideoForPreviewAssertedShowing: React.FC<
 		if (!sharedAudioContext) return;
 		if (!sharedAudioContext.audioContext) return;
 
-		const {
-			audioContext,
-			audioSyncAnchor,
-			scheduleAudioNode,
-			getDurationOfNode,
-		} = sharedAudioContext;
+		const {audioContext, audioSyncAnchor, scheduleAudioNode} =
+			sharedAudioContext;
 
 		try {
 			const player = new MediaPlayer({
@@ -280,7 +276,6 @@ const VideoForPreviewAssertedShowing: React.FC<
 					audioContext,
 					audioSyncAnchor,
 					scheduleAudioNode,
-					getDurationOfNode,
 				},
 				loop,
 				trimAfter: initialTrimAfterRef.current,

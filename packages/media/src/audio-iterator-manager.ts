@@ -50,7 +50,6 @@ export const audioIteratorManager = ({
 	let audioBufferIterator: AudioIterator | null = null;
 	let audioIteratorsCreated = 0;
 	let currentDelayHandle: {unblock: () => void} | null = null;
-	const id = Math.random();
 
 	const scheduleAudioChunk = ({
 		buffer,
@@ -268,14 +267,12 @@ export const audioIteratorManager = ({
 					sequenceStartTime: getStartTime(),
 				});
 
-				const result = await iterator.getNext();
-				console.log(
-					'scheduledTime',
-					scheduledTime - sharedAudioContext.audioContext.currentTime,
-					sharedAudioContext.audioContext.currentTime,
-					guessedNextTimestamp,
-					id,
-				);
+				console.log('register', scheduledTime);
+				const result = await iterator.getNext(() => {
+					// TODO: Can scheduledTime change?
+					return scheduledTime - sharedAudioContext.audioContext.currentTime;
+				});
+				console.log('scheduledTime', scheduledTime);
 
 				if (iterator.isDestroyed()) {
 					return;

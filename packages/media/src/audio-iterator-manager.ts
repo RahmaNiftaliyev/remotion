@@ -226,7 +226,10 @@ export const audioIteratorManager = ({
 	}: {
 		iterator: AudioIterator;
 		nonce: Nonce;
-		getTargetTime: (mediaTimestamp: number) => number | null;
+		getTargetTime: (
+			mediaTimestamp: number,
+			currentTime: number,
+		) => number | null;
 		getIsPlaying: () => boolean;
 		playbackRate: number;
 		scheduleAudioNode: ScheduleAudioNode;
@@ -242,8 +245,10 @@ export const audioIteratorManager = ({
 					return Infinity;
 				}
 
+				const {currentTime} = sharedAudioContext.audioContext;
+
 				const guessedNextTimestamp = iterator.guessNextTimestamp();
-				const targetTime = getTargetTime(guessedNextTimestamp);
+				const targetTime = getTargetTime(guessedNextTimestamp, currentTime);
 				if (targetTime === null) {
 					// Time will not be mounted
 					// TODO: Run it not at all
@@ -253,12 +258,12 @@ export const audioIteratorManager = ({
 				const scheduledTime = sharedAudioContext.getScheduledTime({
 					mediaTimestamp: guessedNextTimestamp,
 					targetTime,
-					currentTime: sharedAudioContext.audioContext.currentTime,
+					currentTime,
 					sequenceStartTime: getStartTime(),
 				});
 
 				// TODO: Can scheduledTime change?
-				return scheduledTime - sharedAudioContext.audioContext.currentTime;
+				return scheduledTime - currentTime;
 			},
 			fn: () => iterator.getNextFn(),
 			getStale: () => iterator.isDestroyed() || nonce.isStale(),
@@ -332,7 +337,10 @@ export const audioIteratorManager = ({
 		getIsPlaying: () => boolean;
 		scheduleAudioNode: ScheduleAudioNode;
 		debugAudioScheduling: boolean;
-		getTargetTime: (mediaTimestamp: number) => number | null;
+		getTargetTime: (
+			mediaTimestamp: number,
+			currentTime: number,
+		) => number | null;
 	}) => {
 		if (muted) {
 			return;
@@ -372,7 +380,7 @@ export const audioIteratorManager = ({
 		audioBufferIterator.moveQueuedChunksToPauseQueue();
 	};
 
-	const seek = async ({
+	const seek = ({
 		newTime,
 		nonce,
 		playbackRate,
@@ -387,7 +395,10 @@ export const audioIteratorManager = ({
 		getIsPlaying: () => boolean;
 		scheduleAudioNode: ScheduleAudioNode;
 		debugAudioScheduling: boolean;
-		getTargetTime: (mediaTimestamp: number) => number | null;
+		getTargetTime: (
+			mediaTimestamp: number,
+			currentTime: number,
+		) => number | null;
 	}) => {
 		if (muted) {
 			return;
@@ -404,7 +415,7 @@ export const audioIteratorManager = ({
 		}
 
 		if (!audioBufferIterator) {
-			await startAudioIterator({
+			startAudioIterator({
 				nonce,
 				playbackRate,
 				startFromSecond: newTime,

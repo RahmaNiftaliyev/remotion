@@ -645,13 +645,13 @@ export class MediaPlayer {
 		this.input.dispose();
 	}
 
-	private getTargetTime = (mediaTimestamp: number): number | null => {
+	private getTargetTime = (
+		mediaTimestamp: number,
+		currentTime: number,
+	): number | null => {
 		if (!this.sharedAudioContext) {
 			throw new Error('Shared audio context not found');
 		}
-
-		const {audioContext} = this.sharedAudioContext;
-		const {currentTime} = audioContext;
 
 		const globalTime =
 			(currentTime - this.sharedAudioContext.audioSyncAnchor.value) *
@@ -682,7 +682,7 @@ export class MediaPlayer {
 		const {audioContext} = this.sharedAudioContext;
 		const {currentTime} = audioContext;
 
-		const targetTime = this.getTargetTime(mediaTimestamp);
+		const targetTime = this.getTargetTime(mediaTimestamp, currentTime);
 		if (targetTime === null) {
 			return {type: 'not-started'};
 		}

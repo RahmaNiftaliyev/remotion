@@ -10,9 +10,7 @@ export type SharedAudioContextForMediaPlayer = {
 		mediaTimestamp: number;
 		targetTime: number;
 		currentTime: number;
-		sequenceEndTime: number;
 		sequenceStartTime: number;
-		bufferDuration: number;
 	}) => number;
 	getDurationOfNode: (options: {
 		mediaTimestamp: number;

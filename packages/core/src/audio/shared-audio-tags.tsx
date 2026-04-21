@@ -88,9 +88,7 @@ type SharedContext = {
 		mediaTimestamp: number;
 		targetTime: number;
 		currentTime: number;
-		sequenceEndTime: number;
 		sequenceStartTime: number;
-		bufferDuration: number;
 	}) => number;
 	getDurationOfNode: (options: {
 		mediaTimestamp: number;

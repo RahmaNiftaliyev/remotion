@@ -329,6 +329,9 @@ export const makeAudioIterator = ({
 			audioChunksForAfterResuming.length = 0;
 			return chunks;
 		},
+		getMostRecentTimestamp: () => {
+			return mostRecentTimestamp;
+		},
 		getQueuedPeriod: () => {
 			let until = -Infinity;
 			let from = Infinity;

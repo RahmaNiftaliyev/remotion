@@ -217,7 +217,113 @@ export const audioIteratorManager = ({
 		drawDebugOverlay();
 	};
 
-	const startAudioIterator = async ({
+	const proceedScheduling = ({
+		iterator,
+		nonce,
+		getTargetTime,
+		getIsPlaying,
+		playbackRate,
+		scheduleAudioNode,
+		debugAudioScheduling,
+	}: {
+		iterator: AudioIterator;
+		nonce: Nonce;
+		getTargetTime: (mediaTimestamp: number) => number | null;
+		getIsPlaying: () => boolean;
+		playbackRate: number;
+		scheduleAudioNode: ScheduleAudioNode;
+		debugAudioScheduling: boolean;
+	}) => {
+		waitForTurn({
+			getPriority: () => {
+				if (iterator.isDestroyed()) {
+					return Infinity;
+				}
+
+				if (nonce.isStale()) {
+					return Infinity;
+				}
+
+				const guessedNextTimestamp = iterator.guessNextTimestamp();
+				const targetTime = getTargetTime(guessedNextTimestamp);
+				if (targetTime === null) {
+					// Time will not be mounted
+					// TODO: Run it not at all
+					return Infinity;
+				}
+
+				const scheduledTime = sharedAudioContext.getScheduledTime({
+					mediaTimestamp: guessedNextTimestamp,
+					targetTime,
+					currentTime: sharedAudioContext.audioContext.currentTime,
+					sequenceStartTime: getStartTime(),
+				});
+
+				// TODO: Can scheduledTime change?
+				return scheduledTime - sharedAudioContext.audioContext.currentTime;
+			},
+			fn: () => iterator.getNextFn(),
+			getStale: () => iterator.isDestroyed() || nonce.isStale(),
+			onDone: (result, next) => {
+				console.log('onDone', result.value?.timestamp);
+				if (iterator.isDestroyed()) {
+					next();
+					return;
+				}
+
+				if (nonce.isStale()) {
+					next();
+					return;
+				}
+
+				if (!result.value) {
+					// media ended
+					next();
+					return;
+				}
+
+				console.log('scheduledTime', result.value.timestamp);
+
+				onAudioChunk({
+					getIsPlaying,
+					buffer: result.value,
+					playbackRate,
+					scheduleAudioNode,
+					debugAudioScheduling,
+				});
+				proceedScheduling({
+					iterator,
+					nonce,
+					getTargetTime,
+					getIsPlaying,
+					playbackRate,
+					scheduleAudioNode,
+					debugAudioScheduling,
+				});
+				next();
+			},
+			onError: (e, next) => {
+				console.log(e);
+				if (e instanceof InputDisposedError) {
+					// iterator was disposed by a newer startAudioIterator call
+					// this is expected during rapid seeking
+					next();
+					return;
+				}
+
+				if (e instanceof StaleWaiterError) {
+					// iterator was stale before it got its turn
+					next();
+					return;
+				}
+
+				next();
+				throw e;
+			},
+		});
+	};
+
+	const startAudioIterator = ({
 		nonce,
 		playbackRate,
 		startFromSecond,
@@ -251,93 +357,17 @@ export const audioIteratorManager = ({
 		audioIteratorsCreated++;
 		audioBufferIterator = iterator;
 
-		try {
-			// Schedule at least 6 buffers ahead of the current time
-			for (let i = 0; i < 6; i++) {
-				const result = await waitForTurn({
-					getPriority: () => {
-						if (iterator.isDestroyed()) {
-							return Infinity;
-						}
+		proceedScheduling({
+			iterator,
+			nonce,
+			getTargetTime,
+			getIsPlaying,
+			playbackRate,
+			scheduleAudioNode,
+			debugAudioScheduling,
+		});
 
-						if (nonce.isStale()) {
-							return Infinity;
-						}
-
-						const guessedNextTimestamp = iterator.guessNextTimestamp();
-						const targetTime = getTargetTime(guessedNextTimestamp);
-						if (targetTime === null) {
-							// Time will not be mounted
-							// TODO: Run it not at all
-							return Infinity;
-						}
-
-						const scheduledTime = sharedAudioContext.getScheduledTime({
-							mediaTimestamp: guessedNextTimestamp,
-							targetTime,
-							currentTime: sharedAudioContext.audioContext.currentTime,
-							sequenceStartTime: getStartTime(),
-						});
-
-						// TODO: Can scheduledTime change?
-						return scheduledTime - sharedAudioContext.audioContext.currentTime;
-					},
-					fn: () => iterator.getNextFn(),
-					getStale: () => iterator.isDestroyed() || nonce.isStale(),
-				});
-
-				if (iterator.isDestroyed()) {
-					return;
-				}
-
-				if (nonce.isStale()) {
-					return;
-				}
-
-				if (!result.value) {
-					// media ended
-					return;
-				}
-
-				console.log('scheduledTime', result.value.timestamp);
-
-				onAudioChunk({
-					getIsPlaying,
-					buffer: result.value,
-					playbackRate,
-					scheduleAudioNode,
-					debugAudioScheduling,
-				});
-			}
-
-			await iterator.bufferAsFarAsPossible(
-				(buffer) => {
-					if (!nonce.isStale()) {
-						onAudioChunk({
-							getIsPlaying,
-							buffer,
-							playbackRate,
-							scheduleAudioNode,
-							debugAudioScheduling,
-						});
-					}
-				},
-				Math.min(startFromSecond + MAX_BUFFER_AHEAD_SECONDS, getEndTime()),
-			);
-		} catch (e) {
-			if (e instanceof InputDisposedError) {
-				// iterator was disposed by a newer startAudioIterator call
-				// this is expected during rapid seeking
-				return;
-			}
-
-			if (e instanceof StaleWaiterError) {
-				// iterator was stale before it got its turn
-				return;
-			}
-
-			throw e;
-		}
+		// TODO: Keep scheduling until Math.min(startFromSecond + MAX_BUFFER_AHEAD_SECONDS, getEndTime())
 	};
 
 	const pausePlayback = () => {

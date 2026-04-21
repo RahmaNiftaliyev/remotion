@@ -20,9 +20,12 @@ export const setGlobalTimeAnchor = ({
 	const newAnchor =
 		audioContext.currentTime - absoluteTimeInSeconds / globalPlaybackRate;
 	const shift = (newAnchor - audioSyncAnchor.value) * globalPlaybackRate;
+	const {outputLatency} = audioContext;
+	const safeOutputLatency = outputLatency === 0 ? 0.3 : outputLatency;
+	const latency = audioContext.baseLatency + safeOutputLatency;
 
 	// Skip small shifts to avoid audio glitches from frame-quantized re-anchoring
-	if (Math.abs(shift) < ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT) {
+	if (Math.abs(shift) < ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT + latency) {
 		return;
 	}
 

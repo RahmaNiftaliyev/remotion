@@ -364,7 +364,6 @@ export const audioIteratorManager = ({
 			return;
 		}
 
-		console.log('startAudioIterator');
 		audioBufferIterator?.destroy(sharedAudioContext);
 		// TODO: Delayhandle currently does nothing
 		using delayHandle = delayPlaybackHandleIfNotPremounting();
@@ -502,10 +501,8 @@ export const audioIteratorManager = ({
 				getAudioContextState,
 				getAudioContextOutputTimestamp,
 			});
-			return;
 		}
 
-		console.log('seek');
 		// Not further scheduling, initial iterator is already running
 	};
 

@@ -16,9 +16,9 @@ const prepare = async () => {
 
 	const audioContext = new AudioContext();
 
-	let scheduledChunks = 0;
-	const scheduleAudioNode = (): ScheduleAudioNodeResult => {
-		scheduledChunks++;
+	let sharedContextChunks = 0;
+	const scheduleSharedAudioNode = (): ScheduleAudioNodeResult => {
+		sharedContextChunks++;
 		return {
 			type: 'started',
 			scheduledTime: 0,
@@ -34,7 +34,7 @@ const prepare = async () => {
 		sharedAudioContext: {
 			audioContext,
 			audioSyncAnchor: {value: 0},
-			scheduleAudioNode,
+			scheduleAudioNode: scheduleSharedAudioNode,
 		},
 		getIsLooping: () => false,
 		getEndTime: () => Infinity,
@@ -50,37 +50,71 @@ const prepare = async () => {
 	const getAudioContextState = () => 'running' as const;
 	const getAudioContextOutputTimestamp = () => 1;
 
-	return {
-		manager,
-		fps,
-		playbackRate,
-		getIsPlaying,
-		getScheduledChunks: () => scheduledChunks,
-		getAudioContextState,
-		getAudioContextOutputTimestamp,
-	};
-};
-
-test.only('media player should work', async () => {
 	const scheduledChunks: number[] = [];
+	const waiters: {count: number; resolve: () => void}[] = [];
+
 	const scheduleAudioNode = (
 		node: AudioBufferSourceNode,
 		mediaTimestamp: number,
 	): ScheduleAudioNodeResult => {
 		node.start();
 		scheduledChunks.push(mediaTimestamp);
+		for (let i = waiters.length - 1; i >= 0; i--) {
+			if (scheduledChunks.length >= waiters[i].count) {
+				waiters[i].resolve();
+				waiters.splice(i, 1);
+			}
+		}
+
 		return {
 			type: 'started',
 			scheduledTime: mediaTimestamp,
 		};
 	};
 
+	const waitForNNodes = (n: number): Promise<void> => {
+		const target = scheduledChunks.length + n;
+		return new Promise<void>((resolve, reject) => {
+			const timeoutId = setTimeout(() => {
+				const i = waiters.indexOf(waiter);
+				if (i >= 0) waiters.splice(i, 1);
+				reject(new Error(`Timed out waiting for ${n} audio nodes`));
+			}, 10000);
+			const waiter = {
+				count: target,
+				resolve: () => {
+					clearTimeout(timeoutId);
+					resolve();
+				},
+			};
+			waiters.push(waiter);
+		});
+	};
+
+	return {
+		manager,
+		fps,
+		playbackRate,
+		getIsPlaying,
+		getScheduledChunks: () => sharedContextChunks,
+		getAudioContextState,
+		getAudioContextOutputTimestamp,
+		scheduleAudioNode,
+		scheduledChunks,
+		waitForNNodes,
+	};
+};
+
+test('media player should work', async () => {
 	const {
 		manager,
 		playbackRate,
 		getIsPlaying,
 		getAudioContextState,
 		getAudioContextOutputTimestamp,
+		scheduleAudioNode,
+		scheduledChunks,
+		waitForNNodes,
 	} = await prepare();
 
 	await manager.seek({
@@ -118,7 +152,6 @@ test.only('media player should work', async () => {
 		0, 0.021333333333333333, 0.042666666666666665,
 	]);
 	scheduledChunks.length = 0;
-	console.log('-----');
 
 	await manager.seek({
 		newTime: 0.04,
@@ -132,6 +165,8 @@ test.only('media player should work', async () => {
 		getAudioContextState,
 		getAudioContextOutputTimestamp,
 	});
+
+	await waitForNNodes(2);
 
 	manager.destroyIterator();
 

@@ -19,7 +19,6 @@ const waiters: Waiter[] = [];
 let running = 0;
 
 const processNext = (): void => {
-	console.log('processNext', running, waiters.length);
 	if (running >= CONCURRENCY) {
 		return;
 	}
@@ -41,7 +40,6 @@ const processNext = (): void => {
 	}
 
 	if (waiters.length === 0) {
-		console.log('no waiters');
 		return;
 	}
 
@@ -58,16 +56,12 @@ const processNext = (): void => {
 	const [next] = waiters.splice(bestIndex, 1);
 	running++;
 
-	console.log('calling', bestPriority);
 	next.fn().then(
 		(value) => {
-			console.log('onDone', value);
 			running--;
 			next.onDone(value, processNext);
 		},
 		(err) => {
-			console.log('onError', err);
-
 			running--;
 			next.onError(err, processNext);
 		},

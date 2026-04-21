@@ -265,7 +265,6 @@ export const audioIteratorManager = ({
 			fn: () => iterator.getNextFn(),
 			getStale: () => iterator.isDestroyed() || nonce.isStale(),
 			onDone: (result, next) => {
-				console.log('onDone', result.value?.timestamp);
 				if (iterator.isDestroyed()) {
 					next();
 					return;
@@ -281,8 +280,6 @@ export const audioIteratorManager = ({
 					next();
 					return;
 				}
-
-				console.log('scheduledTime', result.value.timestamp);
 
 				onAudioChunk({
 					getIsPlaying,
@@ -303,7 +300,6 @@ export const audioIteratorManager = ({
 				next();
 			},
 			onError: (e, next) => {
-				console.log(e);
 				if (e instanceof InputDisposedError) {
 					// iterator was disposed by a newer startAudioIterator call
 					// this is expected during rapid seeking

@@ -53,7 +53,8 @@ const makeMockSharedAudioContext = ({
 		} as unknown as AudioContext,
 		audioSyncAnchor: {value: anchorValue},
 		scheduleAudioNode: () => ({type: 'started', scheduledTime: 0}),
-		getScheduledTime: () => ({scheduledTime: 0, duration: 0}),
+		getScheduledTime: () => 0,
+		getDurationOfNode: () => 0,
 	};
 };
 

@@ -13,5 +13,11 @@ export type SharedAudioContextForMediaPlayer = {
 		sequenceEndTime: number;
 		sequenceStartTime: number;
 		bufferDuration: number;
-	}) => {scheduledTime: number; duration: number};
+	}) => number;
+	getDurationOfNode: (options: {
+		mediaTimestamp: number;
+		bufferDuration: number;
+		sequenceEndTime: number;
+		offset: number;
+	}) => number;
 };

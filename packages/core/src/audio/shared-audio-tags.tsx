@@ -91,7 +91,13 @@ type SharedContext = {
 		sequenceEndTime: number;
 		sequenceStartTime: number;
 		bufferDuration: number;
-	}) => {scheduledTime: number; duration: number};
+	}) => number;
+	getDurationOfNode: (options: {
+		mediaTimestamp: number;
+		bufferDuration: number;
+		sequenceEndTime: number;
+		offset: number;
+	}) => number;
 };
 
 const compareProps = (
@@ -181,20 +187,13 @@ export const SharedAudioContextProvider: React.FC<{
 			mediaTimestamp,
 			targetTime,
 			currentTime,
-			sequenceEndTime,
 			sequenceStartTime,
-			bufferDuration,
 		}: {
 			mediaTimestamp: number;
 			targetTime: number;
 			currentTime: number;
-			sequenceEndTime: number;
 			sequenceStartTime: number;
-			bufferDuration: number;
 		}) => {
-			const unclampedMediaEndTime = mediaTimestamp + bufferDuration;
-
-			const needsTrimEnd = unclampedMediaEndTime > sequenceEndTime;
 			const needsTrimStart = mediaTimestamp < sequenceStartTime;
 
 			const offsetBecauseOfTrim = needsTrimStart
@@ -203,15 +202,36 @@ export const SharedAudioContextProvider: React.FC<{
 			const offsetBecauseOfTooLate = targetTime < 0 ? -targetTime : 0;
 			const offset = offsetBecauseOfTrim + offsetBecauseOfTooLate;
 
+			const scheduledTime = targetTime + currentTime + offset;
+
+			return scheduledTime;
+		},
+		[],
+	);
+
+	const getDurationOfNode = useCallback(
+		({
+			mediaTimestamp,
+			bufferDuration,
+			sequenceEndTime,
+			offset,
+		}: {
+			mediaTimestamp: number;
+			bufferDuration: number;
+			sequenceEndTime: number;
+			offset: number;
+		}) => {
+			const unclampedMediaEndTime = mediaTimestamp + bufferDuration;
+
+			const needsTrimEnd = unclampedMediaEndTime > sequenceEndTime;
+
 			const duration = needsTrimEnd
 				? bufferDuration -
 					Math.max(0, unclampedMediaEndTime - sequenceEndTime) -
 					offset
 				: bufferDuration - offset;
 
-			const scheduledTime = targetTime + currentTime + offset;
-
-			return {scheduledTime, duration};
+			return duration;
 		},
 		[],
 	);
@@ -238,13 +258,17 @@ export const SharedAudioContextProvider: React.FC<{
 			const offsetBecauseOfTooLate = targetTime < 0 ? -targetTime : 0;
 			const offset = offsetBecauseOfTrim + offsetBecauseOfTooLate;
 
-			const {scheduledTime, duration} = getScheduledTime({
+			const scheduledTime = getScheduledTime({
 				mediaTimestamp,
 				targetTime,
 				currentTime,
-				sequenceEndTime,
 				sequenceStartTime,
+			});
+			const duration = getDurationOfNode({
+				mediaTimestamp,
 				bufferDuration: node.buffer?.duration ?? 0,
+				sequenceEndTime,
+				offset,
 			});
 
 			if (offset < 0) {
@@ -322,7 +346,7 @@ export const SharedAudioContextProvider: React.FC<{
 						type: 'not-started',
 					};
 		};
-	}, [audioContext, logLevel, getScheduledTime]);
+	}, [audioContext, logLevel, getScheduledTime, getDurationOfNode]);
 
 	const refs = useMemo(() => {
 		return new Array(numberOfAudioTags).fill(true).map((): Ref => {
@@ -552,6 +576,7 @@ export const SharedAudioContextProvider: React.FC<{
 			audioSyncAnchor,
 			scheduleAudioNode,
 			getScheduledTime,
+			getDurationOfNode,
 		};
 	}, [
 		numberOfAudioTags,
@@ -563,6 +588,7 @@ export const SharedAudioContextProvider: React.FC<{
 		audioSyncAnchor,
 		scheduleAudioNode,
 		getScheduledTime,
+		getDurationOfNode,
 	]);
 
 	return (

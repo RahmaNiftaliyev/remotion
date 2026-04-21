@@ -281,16 +281,19 @@ export const makeAudioIterator = ({
 			audioChunksForAfterResuming.length = 0;
 		},
 		getNext: ({getPriority}: {getPriority: () => number}) => {
-			return waitForTurn(getPriority, async () => {
-				const next = await iterator.next();
-				if (next.value) {
-					mostRecentTimestamp = Math.max(
-						mostRecentTimestamp,
-						next.value.timestamp + next.value.duration,
-					);
-				}
+			return waitForTurn({
+				getPriority,
+				fn: async () => {
+					const next = await iterator.next();
+					if (next.value) {
+						mostRecentTimestamp = Math.max(
+							mostRecentTimestamp,
+							next.value.timestamp + next.value.duration,
+						);
+					}
 
-				return next;
+					return next;
+				},
 			});
 		},
 		isDestroyed: () => {

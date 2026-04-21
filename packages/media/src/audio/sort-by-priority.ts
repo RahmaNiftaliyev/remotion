@@ -42,10 +42,13 @@ const processNext = (): void => {
 	);
 };
 
-export const waitForTurn = <T>(
-	getPriority: () => number,
-	fn: () => Promise<T>,
-): Promise<T> => {
+export const waitForTurn = <T>({
+	getPriority,
+	fn,
+}: {
+	getPriority: () => number;
+	fn: () => Promise<T>;
+}): Promise<T> => {
 	return new Promise<T>((resolve, reject) => {
 		waiters.push({
 			getPriority,

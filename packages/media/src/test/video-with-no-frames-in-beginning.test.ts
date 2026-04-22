@@ -117,11 +117,11 @@ test('same goes for audio', async () => {
 		}),
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
-		resolveAfterNScheduledNodes: 2,
 		getAudioContextState: () => 'running' as const,
 		getAudioContextOutputTimestamp: () => 1,
 	});
 
+	await manager.waitForNScheduledNodes(2);
 	await manager.seek({
 		newTime: 0.10007241372413796,
 		nonce: nonceManager.createAsyncOperation(),
@@ -133,7 +133,6 @@ test('same goes for audio', async () => {
 		}),
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
-		resolveAfterNScheduledNodes: 0,
 		getAudioContextState: () => 'running' as const,
 		getAudioContextOutputTimestamp: () => 1,
 	});

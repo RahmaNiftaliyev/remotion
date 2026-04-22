@@ -327,7 +327,6 @@ export class MediaPlayer {
 								scheduleAudioNode: this.scheduleAudioNode,
 								debugAudioScheduling: this.debugAudioScheduling,
 								getTargetTime: this.getTargetTime,
-								resolveAfterNScheduledNodes: 0,
 								getAudioContextOutputTimestamp: () =>
 									this.sharedAudioContext?.audioContext.getOutputTimestamp()
 										.contextTime ?? 0,
@@ -373,38 +372,27 @@ export class MediaPlayer {
 		}
 	}
 
-	private seekToWithQueue = async (
-		newTime: number,
-		resolveAfterNScheduledNodes: number,
-	) => {
+	private seekToWithQueue = async (newTime: number) => {
 		const nonce = this.nonceManager.createAsyncOperation();
 		await this.seekPromiseChain;
 
-		this.seekPromiseChain = this.seekToDoNotCallDirectly(
-			newTime,
-			nonce,
-			resolveAfterNScheduledNodes,
-		);
+		this.seekPromiseChain = this.seekToDoNotCallDirectly(newTime, nonce);
 		await this.seekPromiseChain;
 	};
 
-	public async seekTo(
-		time: number,
-		resolveAfterNScheduledNodes: number,
-	): Promise<void> {
+	public async seekTo(time: number): Promise<void> {
 		const newTime = this.getTrimmedTime(time);
 
 		if (newTime === null) {
 			throw new Error(`should have asserted that the time is not null`);
 		}
 
-		await this.seekToWithQueue(newTime, resolveAfterNScheduledNodes);
+		await this.seekToWithQueue(newTime);
 	}
 
 	private async seekToDoNotCallDirectly(
 		newTime: number,
 		nonce: Nonce,
-		resolveAfterNScheduledNodes: number,
 	): Promise<void> {
 		if (nonce.isStale()) {
 			return;
@@ -431,7 +419,6 @@ export class MediaPlayer {
 							scheduleAudioNode: this.scheduleAudioNode,
 							debugAudioScheduling: this.debugAudioScheduling,
 							getTargetTime: this.getTargetTime,
-							resolveAfterNScheduledNodes,
 							getAudioContextState: () =>
 								this.sharedAudioContext?.audioContext.state ?? 'suspended',
 							getAudioContextOutputTimestamp: () =>
@@ -549,7 +536,7 @@ export class MediaPlayer {
 
 		if (newMediaTime !== null) {
 			if (!this.playing && this.videoIteratorManager) {
-				await this.seekToWithQueue(newMediaTime, 0);
+				await this.seekToWithQueue(newMediaTime);
 			}
 		}
 	}
@@ -622,7 +609,7 @@ export class MediaPlayer {
 		if (previousRate !== rate) {
 			this.playbackRate = rate;
 			this.rescheduleAudioChunks();
-			await this.seekTo(unloopedTimeInSeconds, 0);
+			await this.seekTo(unloopedTimeInSeconds);
 		}
 	}
 

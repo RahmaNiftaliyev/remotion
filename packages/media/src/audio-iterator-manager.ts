@@ -51,6 +51,32 @@ export const audioIteratorManager = ({
 	let audioIteratorsCreated = 0;
 	let currentDelayHandle: {unblock: () => void} | null = null;
 
+	const pendingScheduleWaiters: {
+		remaining: number;
+		resolve: () => void;
+	}[] = [];
+
+	const notifyNodeScheduled = () => {
+		for (let i = pendingScheduleWaiters.length - 1; i >= 0; i--) {
+			const waiter = pendingScheduleWaiters[i];
+			waiter.remaining--;
+			if (waiter.remaining <= 0) {
+				waiter.resolve();
+				pendingScheduleWaiters.splice(i, 1);
+			}
+		}
+	};
+
+	const waitForNScheduledNodes = (n: number) => {
+		if (n <= 0) {
+			return Promise.resolve();
+		}
+
+		return new Promise<void>((resolve) => {
+			pendingScheduleWaiters.push({remaining: n, resolve});
+		});
+	};
+
 	const scheduleAudioChunk = ({
 		buffer,
 		mediaTimestamp,
@@ -293,6 +319,7 @@ export const audioIteratorManager = ({
 				}
 
 				onScheduled(result.value.timestamp);
+				notifyNodeScheduled();
 
 				onAudioChunk({
 					getIsPlaying,
@@ -342,7 +369,6 @@ export const audioIteratorManager = ({
 		scheduleAudioNode,
 		debugAudioScheduling,
 		getTargetTime,
-		resolveAfterNScheduledNodes,
 		getAudioContextState,
 		getAudioContextOutputTimestamp,
 	}: {
@@ -358,7 +384,6 @@ export const audioIteratorManager = ({
 			mediaTimestamp: number,
 			currentTime: number,
 		) => number | null;
-		resolveAfterNScheduledNodes: number;
 	}) => {
 		if (muted) {
 			return;
@@ -378,31 +403,17 @@ export const audioIteratorManager = ({
 		audioIteratorsCreated++;
 		audioBufferIterator = iterator;
 
-		let scheduledNodes = 0;
-
-		await new Promise<void>((resolve) => {
-			if (resolveAfterNScheduledNodes === 0) {
-				resolve();
-				// fall through
-			}
-
-			proceedScheduling({
-				iterator,
-				nonce,
-				getTargetTime,
-				getIsPlaying,
-				playbackRate,
-				scheduleAudioNode,
-				debugAudioScheduling,
-				onScheduled: () => {
-					scheduledNodes++;
-					if (scheduledNodes >= resolveAfterNScheduledNodes) {
-						resolve();
-					}
-				},
-				getAudioContextState,
-				getAudioContextOutputTimestamp,
-			});
+		proceedScheduling({
+			iterator,
+			nonce,
+			getTargetTime,
+			getIsPlaying,
+			playbackRate,
+			scheduleAudioNode,
+			debugAudioScheduling,
+			onScheduled: () => {},
+			getAudioContextState,
+			getAudioContextOutputTimestamp,
 		});
 	};
 
@@ -422,7 +433,6 @@ export const audioIteratorManager = ({
 		scheduleAudioNode,
 		debugAudioScheduling,
 		getTargetTime,
-		resolveAfterNScheduledNodes,
 		getAudioContextState,
 		getAudioContextOutputTimestamp,
 	}: {
@@ -436,7 +446,6 @@ export const audioIteratorManager = ({
 			mediaTimestamp: number,
 			currentTime: number,
 		) => number | null;
-		resolveAfterNScheduledNodes: number;
 		getAudioContextState: () => AudioContextState;
 		getAudioContextOutputTimestamp: () => number;
 	}) => {
@@ -454,54 +463,50 @@ export const audioIteratorManager = ({
 			}
 		}
 
-		if (!audioBufferIterator) {
-			await startAudioIterator({
-				nonce,
-				playbackRate,
-				startFromSecond: newTime,
-				getIsPlaying,
-				scheduleAudioNode,
-				debugAudioScheduling,
-				getTargetTime,
-				resolveAfterNScheduledNodes,
-				getAudioContextState,
-				getAudioContextOutputTimestamp,
-			});
-			return;
+		if (audioBufferIterator && !audioBufferIterator.isDestroyed()) {
+			const queuedPeriod = audioBufferIterator.getQueuedPeriod();
+			// If there is a missing period, but we'd have no chance to schedule nodes,
+			// then let's not bother. Let's just leave the gap.
+			const queuedPeriodMinusLatency: QueuedPeriod | null = queuedPeriod
+				? {
+						from:
+							queuedPeriod.from -
+							ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT -
+							sharedAudioContext.audioContext.baseLatency -
+							sharedAudioContext.audioContext.outputLatency,
+						until: queuedPeriod.until,
+					}
+				: null;
+			const currentTimeIsAlreadyQueued = isAlreadyQueued(
+				newTime,
+				queuedPeriodMinusLatency,
+			);
+			if (currentTimeIsAlreadyQueued) {
+				// current time is scheduled, will keep scheduling
+				return;
+			}
+
+			const currentIteratorTimestamp = audioBufferIterator.guessNextTimestamp();
+			if (
+				currentIteratorTimestamp < newTime &&
+				Math.abs(currentIteratorTimestamp - newTime) < 1
+			) {
+				// iterator is less than 1 second behind, we will just let it run
+				return;
+			}
 		}
 
-		const queuedPeriod = audioBufferIterator.getQueuedPeriod();
-		// If there is a missing period, but we'd have no chance to schedule nodes,
-		// then let's not bother. Let's just leave the gap.
-		const queuedPeriodMinusLatency: QueuedPeriod | null = queuedPeriod
-			? {
-					from:
-						queuedPeriod.from -
-						ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT -
-						sharedAudioContext.audioContext.baseLatency -
-						sharedAudioContext.audioContext.outputLatency,
-					until: queuedPeriod.until,
-				}
-			: null;
-		const currentTimeIsAlreadyQueued = isAlreadyQueued(
-			newTime,
-			queuedPeriodMinusLatency,
-		);
-
-		if (!currentTimeIsAlreadyQueued) {
-			await startAudioIterator({
-				nonce,
-				playbackRate,
-				startFromSecond: newTime,
-				getIsPlaying,
-				scheduleAudioNode,
-				debugAudioScheduling,
-				getTargetTime,
-				resolveAfterNScheduledNodes,
-				getAudioContextState,
-				getAudioContextOutputTimestamp,
-			});
-		}
+		await startAudioIterator({
+			nonce,
+			playbackRate,
+			startFromSecond: newTime,
+			getIsPlaying,
+			scheduleAudioNode,
+			debugAudioScheduling,
+			getTargetTime,
+			getAudioContextState,
+			getAudioContextOutputTimestamp,
+		});
 
 		// Not further scheduling, initial iterator is already running
 	};
@@ -532,6 +537,7 @@ export const audioIteratorManager = ({
 			gainNode.gain.value = muted ? 0 : currentVolume;
 		},
 		scheduleAudioChunk,
+		waitForNScheduledNodes,
 	};
 };
 

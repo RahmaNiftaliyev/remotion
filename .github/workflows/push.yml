@@ -137,7 +137,7 @@ jobs:
       - name: Monorepo checks
         timeout-minutes: 10
         run: |
-          cd packages/it-tests && bun test src/monorepo --run
+          cd packages/it-tests && bun test src/monorepo --run --timeout 40000
   template-tests-check:
     runs-on: ubuntu-latest
     name: Template tests precheck

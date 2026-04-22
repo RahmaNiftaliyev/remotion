@@ -54,10 +54,9 @@ const prepare = async () => {
 	const waiters: {count: number; resolve: () => void}[] = [];
 
 	const scheduleAudioNode = (
-		node: AudioBufferSourceNode,
+		_node: AudioBufferSourceNode,
 		mediaTimestamp: number,
 	): ScheduleAudioNodeResult => {
-		node.start();
 		scheduledChunks.push(mediaTimestamp);
 		for (let i = waiters.length - 1; i >= 0; i--) {
 			if (scheduledChunks.length >= waiters[i].count) {
@@ -189,10 +188,9 @@ test('should not create too many iterators when the audio ends', async () => {
 
 	const scheduledChunks: number[] = [];
 	const scheduleAudioNode = (
-		node: AudioBufferSourceNode,
+		_node: AudioBufferSourceNode,
 		mediaTimestamp: number,
 	): ScheduleAudioNodeResult => {
-		node.start();
 		scheduledChunks.push(mediaTimestamp);
 		return {
 			type: 'started',
@@ -242,10 +240,9 @@ test('should create more iterators when seeking ', async () => {
 
 	const scheduledChunks: number[] = [];
 	const scheduleAudioNode = (
-		node: AudioBufferSourceNode,
+		_node: AudioBufferSourceNode,
 		mediaTimestamp: number,
 	): ScheduleAudioNodeResult => {
-		node.start();
 		scheduledChunks.push(mediaTimestamp);
 		return {
 			type: 'started',
@@ -329,10 +326,9 @@ test('should not schedule duplicate chunks with playbackRate=0.5', async () => {
 
 	const scheduledChunks: number[] = [];
 	const scheduleAudioNode = (
-		node: AudioBufferSourceNode,
+		_node: AudioBufferSourceNode,
 		mediaTimestamp: number,
 	): ScheduleAudioNodeResult => {
-		node.start();
 		scheduledChunks.push(mediaTimestamp);
 		return {
 			type: 'started',
@@ -411,10 +407,9 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 		timestamp: number;
 	}[] = [];
 	const scheduleAudioNode = (
-		node: AudioBufferSourceNode,
+		_node: AudioBufferSourceNode,
 		mediaTimestamp: number,
 	): ScheduleAudioNodeResult => {
-		node.start();
 		scheduledChunks.push({
 			timestamp: mediaTimestamp,
 		});

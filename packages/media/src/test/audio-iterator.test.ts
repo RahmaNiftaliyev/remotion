@@ -71,26 +71,6 @@ const prepare = async () => {
 		};
 	};
 
-	const waitForNNodes = (n: number): Promise<void> => {
-		const target = scheduledChunks.length + n;
-		return new Promise<void>((resolve, reject) => {
-			const timeoutId = setTimeout(() => {
-				// eslint-disable-next-line @typescript-eslint/no-use-before-define
-				const i = waiters.indexOf(waiter);
-				if (i >= 0) waiters.splice(i, 1);
-				reject(new Error(`Timed out waiting for ${n} audio nodes`));
-			}, 10000);
-			const waiter = {
-				count: target,
-				resolve: () => {
-					clearTimeout(timeoutId);
-					resolve();
-				},
-			};
-			waiters.push(waiter);
-		});
-	};
-
 	return {
 		manager,
 		fps,
@@ -101,7 +81,6 @@ const prepare = async () => {
 		getAudioContextOutputTimestamp,
 		scheduleAudioNode,
 		scheduledChunks,
-		waitForNNodes,
 	};
 };
 
@@ -114,7 +93,6 @@ test('media player should work', async () => {
 		getAudioContextOutputTimestamp,
 		scheduleAudioNode,
 		scheduledChunks,
-		waitForNNodes,
 	} = await prepare();
 
 	await manager.seek({
@@ -165,7 +143,7 @@ test('media player should work', async () => {
 		getAudioContextOutputTimestamp,
 	});
 
-	await waitForNNodes(2);
+	await manager.waitForNScheduledNodes(2);
 
 	manager.destroyIterator();
 

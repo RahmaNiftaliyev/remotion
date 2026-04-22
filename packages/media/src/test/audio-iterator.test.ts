@@ -1,6 +1,5 @@
 import {ALL_FORMATS, Input, UrlSource} from 'mediabunny';
 import type {ScheduleAudioNodeResult} from 'remotion';
-import {collapseTextChangeRangesAcrossMultipleVersions} from 'typescript';
 import {expect, test} from 'vitest';
 import {audioIteratorManager} from '../audio-iterator-manager';
 import {makeNonceManager} from '../nonce-manager';
@@ -77,6 +76,7 @@ const prepare = async () => {
 		const target = scheduledChunks.length + n;
 		return new Promise<void>((resolve, reject) => {
 			const timeoutId = setTimeout(() => {
+				// eslint-disable-next-line @typescript-eslint/no-use-before-define
 				const i = waiters.indexOf(waiter);
 				if (i >= 0) waiters.splice(i, 1);
 				reject(new Error(`Timed out waiting for ${n} audio nodes`));

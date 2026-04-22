@@ -1,22 +1,18 @@
 import {test} from 'vitest';
-import {page} from 'vitest/browser';
 import {renderStillOnWeb} from '../render-still-on-web';
 import '../symbol-dispose';
-import {issue7050Repro} from './fixtures/issue-7050-repro';
+import {issue7050Minimal} from './fixtures/issue-7050-minimal';
 import {testImage} from './utils';
 
-test('should render issue-7050-repro', async () => {
-	await page.viewport(1600, 800);
-
+test('should render issue-7050-minimal', async () => {
 	const blob = await (
 		await renderStillOnWeb({
 			licenseKey: 'free-license',
-			composition: issue7050Repro,
+			composition: issue7050Minimal,
 			frame: 0,
 			inputProps: {},
-			scale: 2,
 		})
 	).blob({format: 'png'});
 
-	await testImage({blob, testId: 'issue-7050-repro'});
+	await testImage({blob, testId: 'issue-7050-minimal'});
 });

@@ -5,7 +5,7 @@ import type {
 	InputVideoTrack,
 	MetadataTags,
 } from 'mediabunny';
-import {ALL_FORMATS, createInputFrom} from 'mediabunny';
+import {ALL_FORMATS, BlobSource, Input, UrlSource} from 'mediabunny';
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import type {Dimensions} from '~/lib/calculate-new-dimensions-from-dimensions';
 import type {Source} from '~/lib/convert-state';
@@ -41,10 +41,11 @@ export const useProbe = ({src}: {src: Source}) => {
 	const [error, setError] = useState<Error | null>(null);
 
 	const input = useMemo(() => {
-		return createInputFrom(
-			src.type === 'file' ? src.file : src.url,
-			ALL_FORMATS,
-		);
+		return new Input({
+			formats: ALL_FORMATS,
+			source:
+				src.type === 'file' ? new BlobSource(src.file) : new UrlSource(src.url),
+		});
 	}, [src]);
 
 	const getStart = useCallback(() => {

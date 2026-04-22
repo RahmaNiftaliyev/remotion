@@ -1,5 +1,5 @@
 import {formatBytes} from '@remotion/studio-shared';
-import {ALL_FORMATS, createInputFrom} from 'mediabunny';
+import {ALL_FORMATS, Input, UrlSource} from 'mediabunny';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {Internals, staticFile} from 'remotion';
 import {BACKGROUND, BORDER_COLOR} from '../helpers/colors';
@@ -88,7 +88,10 @@ export const CurrentAsset: React.FC = () => {
 		}
 
 		const url = staticFile(assetName);
-		const input = createInputFrom(url, ALL_FORMATS);
+		const input = new Input({
+			formats: ALL_FORMATS,
+			source: new UrlSource(url),
+		});
 
 		Promise.all([
 			input.computeDuration(),

@@ -1,4 +1,4 @@
-import type {Input} from 'mediabunny';
+import {ALL_FORMATS, Input, UrlSource} from 'mediabunny';
 import type {LogLevel, useBufferState} from 'remotion';
 import {Internals} from 'remotion';
 import type {ScheduleAudioNodeResult} from 'remotion';
@@ -6,7 +6,6 @@ import {
 	audioIteratorManager,
 	type AudioIteratorManager,
 } from './audio-iterator-manager';
-import {createInput} from './create-input';
 import {drawPreviewOverlay} from './debug-overlay/preview-overlay';
 import type {DelayPlaybackIfNotPremounting} from './delay-playback-if-not-premounting';
 import {calculateEndTime, getTimeInSeconds} from './get-time-in-seconds';
@@ -136,9 +135,16 @@ export class MediaPlayer {
 		this.onVideoFrameCallback = onVideoFrameCallback;
 		this.playing = playing;
 		this.sequenceOffset = sequenceOffset;
-		this.input = createInput({
-			src: this.src,
-			credentials,
+		this.input = new Input({
+			source: new UrlSource(
+				this.src,
+				credentials
+					? {
+							requestInit: {credentials},
+						}
+					: undefined,
+			),
+			formats: ALL_FORMATS,
 		});
 
 		if (canvas) {

@@ -1,11 +1,11 @@
 import type {InputAudioTrack} from 'mediabunny';
-import type {Input} from 'mediabunny';
 import {
 	ALL_FORMATS,
+	Input,
 	InputDisposedError,
 	MATROSKA,
+	UrlSource,
 	WEBM,
-	createInputFrom,
 } from 'mediabunny';
 import {
 	useCallback,
@@ -102,7 +102,10 @@ export const useWindowedAudioData = ({
 
 			signal.addEventListener('abort', cont, {once: true});
 
-			const input = createInputFrom(src, ALL_FORMATS);
+			const input = new Input({
+				formats: ALL_FORMATS,
+				source: new UrlSource(src),
+			});
 
 			const onAbort = () => {
 				input.dispose();

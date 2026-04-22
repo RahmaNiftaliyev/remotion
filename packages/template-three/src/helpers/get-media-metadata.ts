@@ -1,8 +1,11 @@
-import { ALL_FORMATS, createInputFrom } from "mediabunny";
+import { ALL_FORMATS, Input, UrlSource } from "mediabunny";
 
 export const getMediaMetadata = async (src: string) => {
-  const input = createInputFrom(src, ALL_FORMATS, {
-    getRetryDelay: () => null,
+  const input = new Input({
+    formats: ALL_FORMATS,
+    source: new UrlSource(src, {
+      getRetryDelay: () => null,
+    }),
   });
 
   const durationInSeconds = await input.computeDuration();
@@ -11,8 +14,8 @@ export const getMediaMetadata = async (src: string) => {
     throw new Error(`Video track not found in source: ${src}`);
   }
   const dimensions = {
-    width: await videoTrack.getDisplayWidth(),
-    height: await videoTrack.getDisplayHeight(),
+    width: videoTrack.displayWidth,
+    height: videoTrack.displayHeight,
   };
   const packetStats = await videoTrack.computePacketStats(50);
   const fps = packetStats?.averagePacketRate ?? null;

@@ -1,4 +1,4 @@
-import {ALL_FORMATS, AudioSampleSink, createInputFrom} from 'mediabunny';
+import {ALL_FORMATS, AudioSampleSink, Input, UrlSource} from 'mediabunny';
 
 const TARGET_SAMPLE_RATE = 100;
 
@@ -13,7 +13,10 @@ export async function loadWaveformPeaks(
 	const cached = peaksCache.get(url);
 	if (cached) return cached;
 
-	const input = createInputFrom(url, ALL_FORMATS);
+	const input = new Input({
+		formats: ALL_FORMATS,
+		source: new UrlSource(url),
+	});
 
 	try {
 		const audioTrack = await input.getPrimaryAudioTrack();

@@ -16,11 +16,14 @@ then [Mediabunny](https://mediabunny.dev) is the ideal library for doing so.
 ## Getting metadata from a URL
 
 ```tsx twoslash title="get-media-metadata.ts"
-import {ALL_FORMATS, createInputFrom} from 'mediabunny';
+import {Input, ALL_FORMATS, UrlSource} from 'mediabunny';
 
 export const getMediaMetadata = async (src: string) => {
-  const input = createInputFrom(src, ALL_FORMATS, {
-    getRetryDelay: () => null,
+  const input = new Input({
+    formats: ALL_FORMATS,
+    source: new UrlSource(src, {
+      getRetryDelay: () => null,
+    }),
   });
 
   const durationInSeconds = await input.computeDuration();
@@ -49,16 +52,19 @@ export const getMediaMetadata = async (src: string) => {
   <p>By setting `getRetryDelay` to `() => null`, we prevent Mediabunny from infinitely retrying if the request fails.</p>
   <p>We compute the duration, the dimensions and the frame rate. If the media file is an audio file, we return `null` for the dimensions and the frame rate.</p>
   <p>To avoid reading the entire file, we at most read 50 packets to compute the frame rate.</p>
-  <p>`createInputFrom` also supports HLS (`.m3u8`) URLs - it automatically handles the multi-file nature of HLS playlists.</p>
+  <p>`UrlSource` also supports HLS (`.m3u8`) URLs - it automatically handles the multi-file nature of HLS playlists.</p>
 </details>
 
 ```tsx twoslash title="Usage example"
 // @filename: get-media-metadata.ts
-import {ALL_FORMATS, createInputFrom} from 'mediabunny';
+import {Input, ALL_FORMATS, UrlSource} from 'mediabunny';
 
 export const getMediaMetadata = async (src: string) => {
-  const input = createInputFrom(src, ALL_FORMATS, {
-    getRetryDelay: () => null,
+  const input = new Input({
+    formats: ALL_FORMATS,
+    source: new UrlSource(src, {
+      getRetryDelay: () => null,
+    }),
   });
 
   const durationInSeconds = await input.computeDuration();

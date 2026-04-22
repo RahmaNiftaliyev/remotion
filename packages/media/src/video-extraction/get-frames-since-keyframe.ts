@@ -1,14 +1,15 @@
-import type {Input, InputFormat} from 'mediabunny';
-import type {CreateInputFromOptions} from 'mediabunny';
+import type {InputFormat, UrlSourceOptions} from 'mediabunny';
 import {
+	ALL_FORMATS,
 	AudioSampleSink,
 	EncodedPacketSink,
+	Input,
 	MATROSKA,
+	UrlSource,
 	VideoSampleSink,
 	WEBM,
 } from 'mediabunny';
 import {canBrowserUseWebGl2} from '../browser-can-use-webgl2';
-import {createInput} from '../create-input';
 import {isNetworkError} from '../is-type-of-error';
 import {rememberActualMatroskaTimestamps} from './remember-actual-matroska-timestamps';
 
@@ -36,7 +37,7 @@ export type VideoSinkResult =
 
 const getRetryDelay = (() => {
 	return null;
-}) satisfies CreateInputFromOptions['getRetryDelay'];
+}) satisfies UrlSourceOptions['getRetryDelay'];
 
 const getFormatOrNullOrNetworkError = async (
 	input: Input,
@@ -56,10 +57,12 @@ export const getSinks = async (
 	src: string,
 	credentials: RequestCredentials | undefined,
 ) => {
-	const input = createInput({
-		src,
-		credentials,
-		urlSourceOptions: {getRetryDelay},
+	const input = new Input({
+		formats: ALL_FORMATS,
+		source: new UrlSource(src, {
+			getRetryDelay,
+			...(credentials ? {requestInit: {credentials}} : undefined),
+		}),
 	});
 
 	const format = await getFormatOrNullOrNetworkError(input);

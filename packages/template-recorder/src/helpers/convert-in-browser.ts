@@ -1,9 +1,10 @@
 import {
   ALL_FORMATS,
+  BlobSource,
   BufferTarget,
   Conversion,
+  Input,
   Output,
-  createInputFrom,
 } from "mediabunny";
 import { getMediabunnyOutput } from "./find-good-supported-codec";
 
@@ -16,7 +17,10 @@ export const convertInBrowser = async ({
   onProgress: (progress: number, abort: () => void) => void;
   mimeType: string;
 }) => {
-  const input = createInputFrom(src, ALL_FORMATS);
+  const input = new Input({
+    formats: ALL_FORMATS,
+    source: new BlobSource(src),
+  });
   const output = new Output({
     format: getMediabunnyOutput(mimeType),
     target: new BufferTarget(),

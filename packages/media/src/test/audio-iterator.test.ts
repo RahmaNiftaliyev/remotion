@@ -1,5 +1,6 @@
 import {ALL_FORMATS, Input, UrlSource} from 'mediabunny';
 import type {ScheduleAudioNodeResult} from 'remotion';
+import {collapseTextChangeRangesAcrossMultipleVersions} from 'typescript';
 import {expect, test} from 'vitest';
 import {audioIteratorManager} from '../audio-iterator-manager';
 import {makeNonceManager} from '../nonce-manager';
@@ -174,6 +175,7 @@ test('media player should work', async () => {
 
 	const created = manager.getAudioIteratorsCreated();
 	expect(created).toBe(2);
+	manager.destroyIterator();
 });
 
 test('should not create too many iterators when the audio ends', async () => {
@@ -206,7 +208,7 @@ test('should not create too many iterators when the audio ends', async () => {
 		playbackRate,
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
-		resolveAfterNScheduledNodes: 3,
+		resolveAfterNScheduledNodes: 2,
 		getAudioContextState,
 		getAudioContextOutputTimestamp,
 	});
@@ -218,7 +220,7 @@ test('should not create too many iterators when the audio ends', async () => {
 		playbackRate,
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
-		resolveAfterNScheduledNodes: 3,
+		resolveAfterNScheduledNodes: 2,
 		getAudioContextState,
 		getAudioContextOutputTimestamp,
 	});
@@ -226,12 +228,7 @@ test('should not create too many iterators when the audio ends', async () => {
 	const created = manager.getAudioIteratorsCreated();
 	expect(created).toBe(1);
 
-	const chunksAt999 = manager
-		.getAudioBufferIterator()
-		?.getAndClearAudioChunksForAfterResuming();
-	expect(chunksAt999?.map((c) => c.timestamp)).toEqual([
-		9.962666666666667, 9.984,
-	]);
+	expect(scheduledChunks).toEqual([9.962666666666667, 9.984]);
 });
 
 test('should create more iterators when seeking ', async () => {
@@ -264,17 +261,15 @@ test('should create more iterators when seeking ', async () => {
 		playbackRate,
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
-		resolveAfterNScheduledNodes: 3,
+		resolveAfterNScheduledNodes: 6,
 		getAudioContextState,
 		getAudioContextOutputTimestamp,
 	});
-	const chunksAt0 = manager
-		.getAudioBufferIterator()
-		?.getAndClearAudioChunksForAfterResuming();
-	expect(chunksAt0?.map((c) => c.timestamp)).toEqual([
+	expect(scheduledChunks).toEqual([
 		0, 0.021333333333333333, 0.042666666666666665, 0.064, 0.08533333333333333,
 		0.10666666666666667,
 	]);
+	scheduledChunks.length = 0;
 	await manager.seek({
 		newTime: 1,
 		scheduleAudioNode,
@@ -283,7 +278,7 @@ test('should create more iterators when seeking ', async () => {
 		playbackRate,
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
-		resolveAfterNScheduledNodes: 3,
+		resolveAfterNScheduledNodes: 6,
 		getAudioContextState,
 		getAudioContextOutputTimestamp,
 	});
@@ -291,10 +286,7 @@ test('should create more iterators when seeking ', async () => {
 	const created = manager.getAudioIteratorsCreated();
 	expect(created).toBe(2);
 
-	const chunksAt1 = manager
-		.getAudioBufferIterator()
-		?.getAndClearAudioChunksForAfterResuming();
-	expect(chunksAt1?.map((c) => c.timestamp)).toEqual([
+	expect(scheduledChunks).toEqual([
 		0.9813333333333333, 1.0026666666666666, 1.024, 1.0453333333333332,
 		1.0666666666666667, 1.088,
 	]);
@@ -375,6 +367,7 @@ test('should not schedule duplicate chunks with playbackRate=0.5', async () => {
 	}
 
 	const uniqueChunks = [...new Set(scheduledChunks)];
+	expect(uniqueChunks.length).toEqual(30);
 	expect(scheduledChunks.length).toBe(uniqueChunks.length);
 });
 

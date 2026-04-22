@@ -62,7 +62,8 @@ test('dispose should immediately unblock playback delays', async () => {
 		delayPlaybackCalled = resolve;
 	});
 
-	const seekPromise = player.seekTo(9, 3);
+	const seekPromise = player.seekTo(9, 0);
+
 	await seekDelayPromise;
 
 	expect(activeBlocks).toBeGreaterThan(0);

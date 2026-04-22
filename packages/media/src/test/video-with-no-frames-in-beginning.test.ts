@@ -117,7 +117,7 @@ test('same goes for audio', async () => {
 		}),
 		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
-		resolveAfterNScheduledNodes: 0,
+		resolveAfterNScheduledNodes: 2,
 		getAudioContextState: () => 'running' as const,
 		getAudioContextOutputTimestamp: () => 1,
 	});

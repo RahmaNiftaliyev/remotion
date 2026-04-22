@@ -703,7 +703,14 @@ export class MediaPlayer {
 
 		const targetTime = this.getTargetTime(mediaTimestamp, currentTime);
 		if (targetTime === null) {
-			return {type: 'not-started'};
+			return {
+				type: 'not-started',
+				reason:
+					'no target for' +
+					mediaTimestamp.toFixed(3) +
+					',' +
+					currentTime.toFixed(3),
+			};
 		}
 
 		const sequenceStartTime = this.getStartTime();

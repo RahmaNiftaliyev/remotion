@@ -50,6 +50,7 @@ export type ScheduleAudioNodeResult =
 	  }
 	| {
 			type: 'not-started';
+			reason: string;
 	  };
 
 export type ScheduleAudioNodeOptions = {
@@ -242,6 +243,7 @@ export const SharedAudioContextProvider: React.FC<{
 					}
 				: {
 						type: 'not-started',
+						reason: 'missed ' + Math.abs(offset).toFixed(2) + 's',
 					};
 		};
 	}, [audioContext, logLevel]);

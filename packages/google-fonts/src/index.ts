@@ -792,7 +792,7 @@ export const getAvailableFonts = () => [
 		load: () => import('./BIZUDPMincho') as Promise<GoogleFont>,
 	},
 	{
-		fontFamily: 'BJ Cree',
+		fontFamily: 'BJCree',
 		importName: 'BJCree',
 		load: () => import('./BJCree') as Promise<GoogleFont>,
 	},

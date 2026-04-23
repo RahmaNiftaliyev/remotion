@@ -154,15 +154,15 @@ export const SharedPlayerContexts: React.FC<{
 											<Internals.SetMediaVolumeContext.Provider
 												value={setMediaVolumeContextValue}
 											>
-												<Internals.SharedAudioContextProvider
-													numberOfAudioTags={numberOfSharedAudioTags}
-													audioLatencyHint={audioLatencyHint}
-													audioEnabled={audioEnabled}
-												>
-													<Internals.BufferingProvider>
+												<Internals.BufferingProvider>
+													<Internals.SharedAudioContextProvider
+														numberOfAudioTags={numberOfSharedAudioTags}
+														audioLatencyHint={audioLatencyHint}
+														audioEnabled={audioEnabled}
+													>
 														{children}
-													</Internals.BufferingProvider>
-												</Internals.SharedAudioContextProvider>
+													</Internals.SharedAudioContextProvider>
+												</Internals.BufferingProvider>
 											</Internals.SetMediaVolumeContext.Provider>
 										</Internals.MediaVolumeContext.Provider>
 									</Internals.DurationsContextProvider>

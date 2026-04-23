@@ -11,10 +11,12 @@ import React, {
 import {useLogLevel, useMountTime} from '../log-level-context.js';
 import {Log} from '../log.js';
 import {playAndHandleNotAllowedError} from '../play-and-handle-not-allowed-error.js';
+import {useBufferState} from '../use-buffer-state.js';
 import {useRemotionEnvironment} from '../use-remotion-environment.js';
 import type {SharedElementSourceNode} from './shared-element-source-node.js';
 import {makeSharedElementSourceNode} from './shared-element-source-node.js';
 import {useSingletonAudioContext} from './use-audio-context.js';
+import {waitUntilActuallyResumed} from './wait-until-actually-resumed.js';
 
 /**
  * This functionality of Remotion will keep a certain amount
@@ -204,7 +206,7 @@ export const SharedAudioContextProvider: React.FC<{
 			const mediaEndTime = mediaTime + duration;
 
 			const latency = audioContext.baseLatency + audioContext.outputLatency;
-			const timeDiff = scheduledTime - currentTime - latency;
+			const timeDiff = scheduledTime - currentTime;
 			const prev = prevEndTimes.current;
 			const scheduledMismatch =
 				prev.scheduledEndTime !== null &&
@@ -453,17 +455,22 @@ export const SharedAudioContextProvider: React.FC<{
 	const mountTime = useMountTime();
 
 	const env = useRemotionEnvironment();
+	const bufferState = useBufferState();
 
 	const resume = useCallback(() => {
 		if (!audioContext) {
 			return Promise.resolve();
 		}
 
+		const handle = bufferState.delayPlayback();
+		waitUntilActuallyResumed(audioContext, logLevel).then(() => {
+			handle.unblock();
+		});
 		return audioContext.resume().then(() => {
 			nodesToResume.current.forEach((r) => r());
 			nodesToResume.current = [];
 		});
-	}, [audioContext]);
+	}, [audioContext, bufferState, logLevel]);
 
 	const playAllAudios = useCallback(() => {
 		refs.forEach((ref) => {

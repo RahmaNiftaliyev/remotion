@@ -54,15 +54,17 @@ export const RemotionRootContexts: React.FC<{
 						<EditorPropsProvider>
 							<PrefetchProvider>
 								<SequenceManagerProvider visualModeEnabled={visualModeEnabled}>
-									<SharedAudioContextProvider
-										numberOfAudioTags={numberOfAudioTags}
-										audioLatencyHint={audioLatencyHint}
-										audioEnabled={audioEnabled}
-									>
-										<DurationsContextProvider>
-											<BufferingProvider>{children}</BufferingProvider>
-										</DurationsContextProvider>
-									</SharedAudioContextProvider>
+									<DurationsContextProvider>
+										<BufferingProvider>
+											<SharedAudioContextProvider
+												numberOfAudioTags={numberOfAudioTags}
+												audioLatencyHint={audioLatencyHint}
+												audioEnabled={audioEnabled}
+											>
+												{children}
+											</SharedAudioContextProvider>
+										</BufferingProvider>
+									</DurationsContextProvider>
 								</SequenceManagerProvider>
 							</PrefetchProvider>
 						</EditorPropsProvider>

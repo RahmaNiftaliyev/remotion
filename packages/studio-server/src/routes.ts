@@ -176,7 +176,7 @@ const handleFallback = async ({
 				packageManager === 'unknown' ? 'unknown' : packageManager.manager,
 			logLevel,
 			mode: 'dev',
-			audioLatencyHint: audioLatencyHint ?? 'interactive',
+			audioLatencyHint: audioLatencyHint ?? 'playback',
 		}),
 	);
 };

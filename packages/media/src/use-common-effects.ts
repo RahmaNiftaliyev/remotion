@@ -153,8 +153,11 @@ export const useCommonEffects = ({
 			return;
 		}
 
-		mediaPlayer.setGlobalPlaybackRate(globalPlaybackRate);
-	}, [globalPlaybackRate, mediaPlayerReady, mediaPlayerRef]);
+		mediaPlayer.setGlobalPlaybackRate(
+			globalPlaybackRate,
+			currentTimeRef.current,
+		);
+	}, [globalPlaybackRate, mediaPlayerReady, mediaPlayerRef, currentTimeRef]);
 
 	useLayoutEffect(() => {
 		const mediaPlayer = mediaPlayerRef.current;

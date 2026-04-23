@@ -540,10 +540,6 @@ export class MediaPlayer {
 		this.debugAudioScheduling = debugAudioScheduling;
 	}
 
-	private rescheduleAudioChunks(): void {
-		// TODO: Reschedule
-	}
-
 	public async setPlaybackRate(
 		rate: number,
 		unloopedTimeInSeconds: number,
@@ -552,16 +548,20 @@ export class MediaPlayer {
 
 		if (previousRate !== rate) {
 			this.playbackRate = rate;
-			this.rescheduleAudioChunks();
+			this.audioIteratorManager?.destroyIterator();
 			await this.seekTo(unloopedTimeInSeconds);
 		}
 	}
 
-	public setGlobalPlaybackRate(rate: number): void {
+	public async setGlobalPlaybackRate(
+		rate: number,
+		unloopedTimeInSeconds: number,
+	): Promise<void> {
 		const previousRate = this.globalPlaybackRate;
 		if (previousRate !== rate) {
 			this.globalPlaybackRate = rate;
-			this.rescheduleAudioChunks();
+			this.audioIteratorManager?.destroyIterator();
+			await this.seekTo(unloopedTimeInSeconds);
 		}
 	}
 

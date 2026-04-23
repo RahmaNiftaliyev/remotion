@@ -31,6 +31,7 @@ export const usePlayer = (): UsePlayerMethods => {
 	const setFrame = Internals.Timeline.useTimelineSetFrame();
 	const setTimelinePosition = Internals.Timeline.useTimelineSetFrame();
 	const audioContext = useContext(Internals.SharedAudioContext);
+	const audioTagsContext = useContext(Internals.SharedAudioTagsContext);
 	const {audioAndVideoTags} = Internals.useTimelineContext();
 
 	const frameRef = useRef<number>(frame);
@@ -87,8 +88,8 @@ export const usePlayer = (): UsePlayerMethods => {
 			/**
 			 * Play silent audio tags to warm them up for autoplay
 			 */
-			if (audioContext && audioContext.numberOfAudioTags > 0 && e) {
-				audioContext.playAllAudios();
+			if (audioTagsContext && audioTagsContext.numberOfAudioTags > 0 && e) {
+				audioTagsContext.playAllAudios();
 			}
 
 			/**
@@ -108,6 +109,7 @@ export const usePlayer = (): UsePlayerMethods => {
 			imperativePlaying,
 			isLastFrame,
 			audioContext,
+			audioTagsContext,
 			setPlaying,
 			emitter,
 			seek,

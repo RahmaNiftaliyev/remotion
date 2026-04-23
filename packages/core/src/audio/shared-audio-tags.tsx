@@ -64,7 +64,16 @@ export type ScheduleAudioNodeOptions = {
 	readonly offset: number;
 };
 
-type SharedContext = {
+type SharedAudioContextValue = {
+	audioContext: AudioContext | null;
+	audioSyncAnchor: {value: number};
+	scheduleAudioNode: (
+		options: ScheduleAudioNodeOptions,
+	) => ScheduleAudioNodeResult;
+	resume: () => Promise<void>;
+};
+
+type SharedAudioTagsContextValue = {
 	registerAudio: (options: {
 		aud: AudioHTMLAttributes<HTMLAudioElement>;
 		audioId: string;
@@ -81,12 +90,6 @@ type SharedContext = {
 	}) => void;
 	playAllAudios: () => void;
 	numberOfAudioTags: number;
-	audioContext: AudioContext | null;
-	audioSyncAnchor: {value: number};
-	scheduleAudioNode: (
-		options: ScheduleAudioNodeOptions,
-	) => ScheduleAudioNodeResult;
-	resume: () => Promise<void>;
 };
 
 const compareProps = (
@@ -140,7 +143,12 @@ type Ref = {
 	mediaElementSourceNode: SharedElementSourceNode | null;
 };
 
-export const SharedAudioContext = createContext<SharedContext | null>(null);
+export const SharedAudioContext = createContext<SharedAudioContextValue | null>(
+	null,
+);
+
+export const SharedAudioTagsContext =
+	createContext<SharedAudioTagsContextValue | null>(null);
 
 export const SharedAudioContextProvider: React.FC<{
 	readonly numberOfAudioTags: number;
@@ -487,17 +495,22 @@ export const SharedAudioContextProvider: React.FC<{
 		resume();
 	}, [logLevel, mountTime, refs, env.isPlayer, resume]);
 
-	const value: SharedContext = useMemo(() => {
+	const audioContextValue: SharedAudioContextValue = useMemo(() => {
+		return {
+			audioContext,
+			audioSyncAnchor,
+			scheduleAudioNode,
+			resume,
+		};
+	}, [audioContext, audioSyncAnchor, scheduleAudioNode, resume]);
+
+	const audioTagsValue: SharedAudioTagsContextValue = useMemo(() => {
 		return {
 			registerAudio,
 			unregisterAudio,
 			updateAudio,
 			playAllAudios,
 			numberOfAudioTags,
-			audioContext,
-			audioSyncAnchor,
-			scheduleAudioNode,
-			resume,
 		};
 	}, [
 		numberOfAudioTags,
@@ -505,23 +518,21 @@ export const SharedAudioContextProvider: React.FC<{
 		registerAudio,
 		unregisterAudio,
 		updateAudio,
-		audioContext,
-		audioSyncAnchor,
-		scheduleAudioNode,
-		resume,
 	]);
 
 	return (
-		<SharedAudioContext.Provider value={value}>
-			{refs.map(({id, ref}) => {
-				return (
-					// Without preload="metadata", iOS will seek the time internally
-					// but not actually with sound. Adding `preload="metadata"` helps here.
-					// https://discord.com/channels/809501355504959528/817306414069710848/1130519583367888906
-					<audio key={id} ref={ref} preload="metadata" src={EMPTY_AUDIO} />
-				);
-			})}
-			{children}
+		<SharedAudioContext.Provider value={audioContextValue}>
+			<SharedAudioTagsContext.Provider value={audioTagsValue}>
+				{refs.map(({id, ref}) => {
+					return (
+						// Without preload="metadata", iOS will seek the time internally
+						// but not actually with sound. Adding `preload="metadata"` helps here.
+						// https://discord.com/channels/809501355504959528/817306414069710848/1130519583367888906
+						<audio key={id} ref={ref} preload="metadata" src={EMPTY_AUDIO} />
+					);
+				})}
+				{children}
+			</SharedAudioTagsContext.Provider>
 		</SharedAudioContext.Provider>
 	);
 };
@@ -537,21 +548,22 @@ export const useSharedAudio = ({
 	premounting: boolean;
 	postmounting: boolean;
 }) => {
-	const ctx = useContext(SharedAudioContext);
+	const audioCtx = useContext(SharedAudioContext);
+	const tagsCtx = useContext(SharedAudioTagsContext);
 
 	/**
 	 * We work around this in React 18 so an audio tag will only register itself once
 	 */
 	const [elem] = useState((): AudioElem => {
-		if (ctx && ctx.numberOfAudioTags > 0) {
-			return ctx.registerAudio({aud, audioId, premounting, postmounting});
+		if (tagsCtx && tagsCtx.numberOfAudioTags > 0) {
+			return tagsCtx.registerAudio({aud, audioId, premounting, postmounting});
 		}
 
 		// numberOfSharedAudioTags is 0
 		const el = React.createRef<HTMLAudioElement>();
-		const mediaElementSourceNode = ctx?.audioContext
+		const mediaElementSourceNode = audioCtx?.audioContext
 			? makeSharedElementSourceNode({
-					audioContext: ctx.audioContext,
+					audioContext: audioCtx.audioContext,
 					ref: el,
 				})
 			: null;
@@ -582,18 +594,24 @@ export const useSharedAudio = ({
 
 	if (typeof document !== 'undefined') {
 		effectToUse(() => {
-			if (ctx && ctx.numberOfAudioTags > 0) {
-				ctx.updateAudio({id: elem.id, aud, audioId, premounting, postmounting});
+			if (tagsCtx && tagsCtx.numberOfAudioTags > 0) {
+				tagsCtx.updateAudio({
+					id: elem.id,
+					aud,
+					audioId,
+					premounting,
+					postmounting,
+				});
 			}
-		}, [aud, ctx, elem.id, audioId, premounting, postmounting]);
+		}, [aud, tagsCtx, elem.id, audioId, premounting, postmounting]);
 
 		effectToUse(() => {
 			return () => {
-				if (ctx && ctx.numberOfAudioTags > 0) {
-					ctx.unregisterAudio(elem.id);
+				if (tagsCtx && tagsCtx.numberOfAudioTags > 0) {
+					tagsCtx.unregisterAudio(elem.id);
 				}
 			};
-		}, [ctx, elem.id]);
+		}, [tagsCtx, elem.id]);
 	}
 
 	return elem;

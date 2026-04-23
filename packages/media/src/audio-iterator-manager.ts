@@ -186,6 +186,8 @@ export const audioIteratorManager = ({
 		onScheduled,
 		getAudioContextState,
 		getAudioContextOutputTimestamp,
+		onDestroyed,
+		onDone,
 	}: {
 		iterator: AudioIterator;
 		nonce: Nonce;
@@ -200,6 +202,8 @@ export const audioIteratorManager = ({
 		scheduleAudioNode: ScheduleAudioNode;
 		debugAudioScheduling: boolean;
 		onScheduled: (mediaTimestamp: number) => void;
+		onDone: () => void;
+		onDestroyed: () => void;
 	}) => {
 		waitForTurn({
 			getPriority: () => {
@@ -229,6 +233,7 @@ export const audioIteratorManager = ({
 			onDone: (result, next) => {
 				if (iterator.isDestroyed()) {
 					next();
+					onDestroyed();
 					return;
 				}
 
@@ -261,6 +266,8 @@ export const audioIteratorManager = ({
 					onScheduled,
 					getAudioContextState,
 					getAudioContextOutputTimestamp,
+					onDestroyed,
+					onDone,
 				});
 				next();
 			},
@@ -310,8 +317,7 @@ export const audioIteratorManager = ({
 		}
 
 		audioBufferIterator?.destroy(sharedAudioContext);
-		// TODO: Delayhandle currently does nothing
-		using delayHandle = delayPlaybackHandleIfNotPremounting();
+		const delayHandle = delayPlaybackHandleIfNotPremounting();
 		currentDelayHandle = delayHandle;
 
 		const iterator = makeAudioIterator({
@@ -331,9 +337,17 @@ export const audioIteratorManager = ({
 			playbackRate,
 			scheduleAudioNode,
 			debugAudioScheduling,
-			onScheduled: () => {},
+			onScheduled: () => {
+				delayHandle.unblock();
+			},
 			getAudioContextState,
 			getAudioContextOutputTimestamp,
+			onDestroyed: () => {
+				delayHandle.unblock();
+			},
+			onDone: () => {
+				delayHandle.unblock();
+			},
 		});
 	};
 
@@ -408,6 +422,12 @@ export const audioIteratorManager = ({
 			}
 		}
 
+		console.log(
+			'new iterator',
+			audioBufferIterator?.getQueuedPeriod(),
+			audioBufferIterator?.isDestroyed(),
+			newTime,
+		);
 		await startAudioIterator({
 			nonce,
 			playbackRate,

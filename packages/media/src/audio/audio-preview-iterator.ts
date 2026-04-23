@@ -47,7 +47,7 @@ export const makeAudioIterator = ({
 				// we should not stop the nodes
 				const isAlreadyPlaying =
 					node.scheduledTime - ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT <
-					audioContext.audioContext.currentTime;
+					audioContext.audioContext.getOutputTimestamp().contextTime!;
 
 				// except for when the audio anchor changed (e.g. through a seek)
 				const wasScheduledForThisAnchor =

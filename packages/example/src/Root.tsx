@@ -72,7 +72,6 @@ import StarTest from './Shapes/StarTest';
 import TriangleTest from './Shapes/TriangleTest';
 import {SimpleImg} from './SimpleImg';
 import {SkipZeroFrame} from './SkipZeroFrame';
-import {SlicedVideo} from './SlicedVideo';
 import {BaseSpring, SpringWithDuration} from './Spring/base-spring';
 import {SeriesTesting} from './StaggerTesting';
 import {StaticDemo} from './StaticServer';
@@ -124,6 +123,9 @@ import {ThreeDCheck} from './3DCheck';
 import {ThreeDContext} from './3DContext';
 import {ThreeDSvgContent} from './3DSvgContent';
 import {AnimatedImages} from './AnimatedImage/Avif';
+import {AudioSmoothnessBufferInterruptionComp} from './AudioSmoothness/BufferInterruption';
+import {AudioSmoothnessNewVideoComp} from './AudioSmoothness/NewVideo';
+import {AudioSmoothnessSlicedVideoComp} from './AudioSmoothness/SlicedVideo';
 import Amplify from './AudioTesting/Amplify';
 import {BrowserTest} from './BrowserTest';
 import {EdgeBlur} from './EdgeBlur/EdgeBlur';
@@ -1453,14 +1455,11 @@ export const Index: React.FC = () => {
 					durationInFrames={300}
 					width={1080}
 				/>
-				<Composition
-					id="sliced-video"
-					component={SlicedVideo}
-					fps={30}
-					height={1080}
-					durationInFrames={300}
-					width={1920}
-				/>
+			</Folder>
+			<Folder name="AudioSmoothness">
+				<AudioSmoothnessNewVideoComp />
+				<AudioSmoothnessSlicedVideoComp />
+				<AudioSmoothnessBufferInterruptionComp />
 			</Folder>
 			<Folder name="Postmount">
 				<Composition

@@ -19,7 +19,7 @@ export const calculateMetadataFn: CalculateMetadataFunction<
 };
 
 const Component: React.FC = () => {
-	return <Video src={src} debugAudioScheduling />;
+	return <Video src={src} debugOverlay logLevel="verbose" />;
 };
 
 export const AudioSmoothnessNewVideoComp: React.FC = () => {

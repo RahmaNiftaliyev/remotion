@@ -1,9 +1,10 @@
+import type {LogLevel} from 'remotion';
 import {Internals} from 'remotion';
 import type {PrewarmedAudioIteratorCache} from '../prewarm-iterator-for-looping';
-import {ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT} from '../set-global-time-anchor';
 import type {SharedAudioContextForMediaPlayer} from '../shared-audio-context-for-media-player';
 
 export const HEALTHY_BUFFER_THRESHOLD_SECONDS = 1;
+export const ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT = 0.1;
 
 export type QueuedNode = {
 	node: AudioBufferSourceNode;
@@ -23,12 +24,12 @@ export const makeAudioIterator = ({
 	startFromSecond,
 	maximumTimestamp,
 	cache,
-	debugAudioScheduling,
+	logLevel,
 }: {
 	startFromSecond: number;
 	maximumTimestamp: number;
 	cache: PrewarmedAudioIteratorCache;
-	debugAudioScheduling: boolean;
+	logLevel: LogLevel;
 }) => {
 	let destroyed = false;
 	const iterator = cache.makeIteratorOrUsePrewarmed(
@@ -57,17 +58,15 @@ export const makeAudioIterator = ({
 					continue;
 				}
 
-				if (debugAudioScheduling) {
-					const currentlyHearing =
-						audioContext.audioContext.getOutputTimestamp().contextTime!;
-					const nodeEndTime =
-						node.scheduledTime + node.buffer.duration / node.playbackRate;
+				const currentlyHearing =
+					audioContext.audioContext.getOutputTimestamp().contextTime!;
+				const nodeEndTime =
+					node.scheduledTime + node.buffer.duration / node.playbackRate;
 
-					Internals.Log.info(
-						{logLevel: 'trace', tag: 'audio-scheduling'},
-						`Stopping node ${node.timestamp.toFixed(3)}, currently hearing = ${currentlyHearing.toFixed(3)} currentTime = ${audioContext.audioContext.currentTime.toFixed(3)} nodeEndTime = ${nodeEndTime.toFixed(3)} scheduledTime = ${node.scheduledTime.toFixed(3)}`,
-					);
-				}
+				Internals.Log.verbose(
+					{logLevel, tag: 'audio-scheduling'},
+					`Stopping node ${node.timestamp.toFixed(3)}, currently hearing = ${currentlyHearing.toFixed(3)} currentTime = ${audioContext.audioContext.currentTime.toFixed(3)} nodeEndTime = ${nodeEndTime.toFixed(3)} scheduledTime = ${node.scheduledTime.toFixed(3)}`,
+				);
 
 				node.node.stop();
 			} catch {

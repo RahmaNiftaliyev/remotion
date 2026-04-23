@@ -59,7 +59,6 @@ export class MediaPlayer {
 	private totalDuration: number | undefined;
 
 	private debugOverlay = false;
-	private debugAudioScheduling = false;
 
 	private nonceManager: NonceManager;
 
@@ -87,7 +86,6 @@ export class MediaPlayer {
 		audioStreamIndex,
 		fps,
 		debugOverlay,
-		debugAudioScheduling,
 		bufferState,
 		isPremounting,
 		isPostmounting,
@@ -109,7 +107,6 @@ export class MediaPlayer {
 		audioStreamIndex: number;
 		fps: number;
 		debugOverlay: boolean;
-		debugAudioScheduling: boolean;
 		bufferState: ReturnType<typeof useBufferState>;
 		isPremounting: boolean;
 		isPostmounting: boolean;
@@ -131,7 +128,6 @@ export class MediaPlayer {
 		this.audioStreamIndex = audioStreamIndex ?? 0;
 		this.fps = fps;
 		this.debugOverlay = debugOverlay;
-		this.debugAudioScheduling = debugAudioScheduling;
 		this.bufferState = bufferState;
 		this.isPremounting = isPremounting;
 		this.isPostmounting = isPostmounting;
@@ -326,13 +322,13 @@ export class MediaPlayer {
 								startFromSecond: startTime,
 								getIsPlaying: () => this.playing,
 								scheduleAudioNode: this.scheduleAudioNode,
-								debugAudioScheduling: this.debugAudioScheduling,
 								getTargetTime: this.getTargetTime,
 								getAudioContextOutputTimestamp: () =>
 									this.sharedAudioContext?.audioContext.getOutputTimestamp()
 										.contextTime ?? 0,
 								getAudioContextState: () =>
 									this.sharedAudioContext?.audioContext.state ?? 'suspended',
+								logLevel: this.logLevel,
 							})
 						: Promise.resolve(),
 					this.videoIteratorManager
@@ -411,13 +407,13 @@ export class MediaPlayer {
 					playbackRate: this.playbackRate * this.globalPlaybackRate,
 					getIsPlaying: () => this.playing,
 					scheduleAudioNode: this.scheduleAudioNode,
-					debugAudioScheduling: this.debugAudioScheduling,
 					getTargetTime: this.getTargetTime,
 					getAudioContextState: () =>
 						this.sharedAudioContext?.audioContext.state ?? 'suspended',
 					getAudioContextOutputTimestamp: () =>
 						this.sharedAudioContext?.audioContext.getOutputTimestamp()
 							.contextTime ?? 0,
+					logLevel: this.logLevel,
 				}),
 			]);
 		} catch (error) {
@@ -534,10 +530,6 @@ export class MediaPlayer {
 
 	public setDebugOverlay(debugOverlay: boolean): void {
 		this.debugOverlay = debugOverlay;
-	}
-
-	public setDebugAudioScheduling(debugAudioScheduling: boolean): void {
-		this.debugAudioScheduling = debugAudioScheduling;
 	}
 
 	public async setPlaybackRate(
@@ -670,7 +662,6 @@ export class MediaPlayer {
 			node,
 			mediaTimestamp,
 			currentTime,
-			debugAudioScheduling: this.debugAudioScheduling,
 			scheduledTime: getScheduledTime({
 				mediaTimestamp,
 				targetTime,
@@ -715,5 +706,6 @@ export class MediaPlayer {
 		}
 
 		this.audioIteratorManager.destroyIterator();
+		console.log('destroyed');
 	};
 }

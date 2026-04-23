@@ -62,7 +62,7 @@ test('destroy should NOT stop nodes that are already playing with the same ancho
 		startFromSecond: 0,
 		maximumTimestamp: Infinity,
 		cache,
-		debugAudioScheduling: false,
+		logLevel: 'info',
 	});
 
 	const mock1 = makeMockNode();
@@ -103,7 +103,7 @@ test('destroy should stop nodes when the audio anchor changed (seek to different
 		startFromSecond: 0,
 		maximumTimestamp: Infinity,
 		cache,
-		debugAudioScheduling: false,
+		logLevel: 'info',
 	});
 
 	const mock1 = makeMockNode();

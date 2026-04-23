@@ -76,9 +76,9 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 			getIsPlaying,
 			nonce: makeNonceManager().createAsyncOperation(),
 			playbackRate,
-			debugAudioScheduling: false,
 			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 			getAudioContextState,
+			logLevel: 'info',
 			getAudioContextOutputTimestamp,
 		});
 	};
@@ -297,10 +297,10 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 			getIsPlaying: () => true,
 			nonce: makeNonceManager().createAsyncOperation(),
 			playbackRate: 1,
-			debugAudioScheduling: false,
 			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 			getAudioContextState: () => 'running' as const,
 			getAudioContextOutputTimestamp: () => 1,
+			logLevel: 'info',
 		});
 	}
 

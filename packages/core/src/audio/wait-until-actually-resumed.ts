@@ -22,7 +22,7 @@ export const waitUntilActuallyResumed = (
 			) {
 				Log.info(
 					{logLevel, tag: 'audio'},
-					`waitUntilActuallyResumed: getOutputTimestamp.contextTime advanced from ${startOutputPerformanceTime.toFixed(
+					`waitUntilActuallyResumed: getOutputTimestamp.performanceTime advanced from ${startOutputPerformanceTime.toFixed(
 						6,
 					)} to ${outputTimestamp.performanceTime.toFixed(
 						6,

@@ -1,9 +1,8 @@
 import type React from 'react';
-import {useLayoutEffect} from 'react';
+import {useContext, useLayoutEffect} from 'react';
 import type {LogLevel} from 'remotion';
 import {Internals} from 'remotion';
 import type {MediaPlayer} from './media-player';
-import {setGlobalTimeAnchor} from './set-global-time-anchor';
 
 export const useCommonEffects = ({
 	mediaPlayerRef,
@@ -21,13 +20,11 @@ export const useCommonEffects = ({
 	fps,
 	sequenceOffset,
 	loop,
-	debugAudioScheduling,
 	durationInFrames,
 	isPremounting,
 	isPostmounting,
 	currentTime,
 	logLevel,
-	sharedAudioContext,
 	label,
 }: {
 	readonly mediaPlayerRef: React.RefObject<MediaPlayer | null>;
@@ -45,46 +42,14 @@ export const useCommonEffects = ({
 	readonly fps: number;
 	readonly sequenceOffset: number;
 	readonly loop: boolean;
-	readonly debugAudioScheduling: boolean;
 	readonly durationInFrames: number;
 	readonly isPremounting: boolean;
 	readonly isPostmounting: boolean;
 	readonly currentTime: number;
 	readonly logLevel: LogLevel;
-	readonly sharedAudioContext: {
-		readonly audioContext: AudioContext | null;
-		readonly audioSyncAnchor: {value: number};
-	} | null;
 	readonly label: string;
 }) => {
-	const absoluteTime = Internals.useAbsoluteTimelinePosition();
-
-	useLayoutEffect(() => {
-		if (
-			sharedAudioContext?.audioContext &&
-			sharedAudioContext.audioSyncAnchor
-		) {
-			const changed = setGlobalTimeAnchor({
-				audioContext: sharedAudioContext.audioContext,
-				audioSyncAnchor: sharedAudioContext.audioSyncAnchor,
-				absoluteTimeInSeconds: absoluteTime / fps,
-				globalPlaybackRate,
-				debugAudioScheduling,
-				logLevel,
-			});
-			if (changed) {
-				mediaPlayerRef.current?.audioSyncAnchorChanged();
-			}
-		}
-	}, [
-		absoluteTime,
-		globalPlaybackRate,
-		sharedAudioContext,
-		fps,
-		debugAudioScheduling,
-		logLevel,
-		mediaPlayerRef,
-	]);
+	const sharedAudioContext = useContext(Internals.SharedAudioContext);
 
 	useLayoutEffect(() => {
 		const mediaPlayer = mediaPlayerRef.current;
@@ -103,6 +68,22 @@ export const useCommonEffects = ({
 		frame,
 		mediaPlayerRef,
 	]);
+
+	useLayoutEffect(() => {
+		if (!sharedAudioContext) return;
+
+		const {remove} = sharedAudioContext.audioSyncAnchorEmitter.subscribe(
+			(event) => {
+				if (event === 'changed') {
+					mediaPlayerRef.current?.audioSyncAnchorChanged();
+				}
+			},
+		);
+
+		return () => {
+			remove();
+		};
+	}, [sharedAudioContext, mediaPlayerRef]);
 
 	useLayoutEffect(() => {
 		const mediaPlayer = mediaPlayerRef.current;
@@ -212,15 +193,6 @@ export const useCommonEffects = ({
 
 		mediaPlayer.setSequenceOffset(sequenceOffset);
 	}, [sequenceOffset, mediaPlayerReady, mediaPlayerRef]);
-
-	useLayoutEffect(() => {
-		const mediaPlayer = mediaPlayerRef.current;
-		if (!mediaPlayer || !mediaPlayerReady) {
-			return;
-		}
-
-		mediaPlayer.setDebugAudioScheduling(debugAudioScheduling);
-	}, [debugAudioScheduling, mediaPlayerReady, mediaPlayerRef]);
 
 	useLayoutEffect(() => {
 		const mediaPlayer = mediaPlayerRef.current;

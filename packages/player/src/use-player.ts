@@ -123,7 +123,7 @@ export const usePlayer = (): UsePlayerMethods => {
 
 			setPlaying(false);
 			emitter.dispatchPause();
-			audioContext?.audioContext?.suspend();
+			audioContext?.suspend();
 		}
 	}, [emitter, imperativePlaying, setPlaying, audioContext]);
 

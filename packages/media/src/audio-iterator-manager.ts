@@ -1,7 +1,12 @@
 import type {InputAudioTrack, WrappedAudioBuffer} from 'mediabunny';
 import {AudioBufferSink, InputDisposedError} from 'mediabunny';
+import type {LogLevel} from 'remotion';
 import {Internals, type ScheduleAudioNodeResult} from 'remotion';
-import type {AudioIterator, QueuedPeriod} from './audio/audio-preview-iterator';
+import {
+	ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT,
+	type AudioIterator,
+	type QueuedPeriod,
+} from './audio/audio-preview-iterator';
 import {
 	isAlreadyQueued,
 	makeAudioIterator,
@@ -11,7 +16,6 @@ import {StaleWaiterError, waitForTurn} from './audio/sort-by-priority';
 import type {DelayPlaybackIfNotPremounting} from './delay-playback-if-not-premounting';
 import type {Nonce} from './nonce-manager';
 import {makePrewarmedAudioIteratorCache} from './prewarm-iterator-for-looping';
-import {ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT} from './set-global-time-anchor';
 import type {SharedAudioContextForMediaPlayer} from './shared-audio-context-for-media-player';
 
 type ScheduleAudioNode = (
@@ -85,13 +89,13 @@ export const audioIteratorManager = ({
 		mediaTimestamp,
 		playbackRate,
 		scheduleAudioNode,
-		debugAudioScheduling,
+		logLevel,
 	}: {
 		buffer: AudioBuffer;
 		mediaTimestamp: number;
 		playbackRate: number;
 		scheduleAudioNode: ScheduleAudioNode;
-		debugAudioScheduling: boolean;
+		logLevel: LogLevel;
 	}) => {
 		if (!audioBufferIterator) {
 			throw new Error('Audio buffer iterator not found');
@@ -109,14 +113,12 @@ export const audioIteratorManager = ({
 		const started = scheduleAudioNode(node, mediaTimestamp);
 
 		if (started.type === 'not-started') {
-			if (debugAudioScheduling) {
-				Internals.Log.info(
-					{logLevel: 'trace', tag: 'audio-scheduling'},
-					'not started, disconnected: %s %s',
-					mediaTimestamp.toFixed(3),
-					buffer.duration.toFixed(3),
-				);
-			}
+			Internals.Log.verbose(
+				{logLevel, tag: 'audio-scheduling'},
+				'not started, disconnected: %s %s',
+				mediaTimestamp.toFixed(3),
+				buffer.duration.toFixed(3),
+			);
 
 			node.disconnect();
 			return;
@@ -138,12 +140,12 @@ export const audioIteratorManager = ({
 		buffer,
 		playbackRate,
 		scheduleAudioNode,
-		debugAudioScheduling,
+		logLevel,
 	}: {
 		buffer: WrappedAudioBuffer;
 		playbackRate: number;
 		scheduleAudioNode: ScheduleAudioNode;
-		debugAudioScheduling: boolean;
+		logLevel: LogLevel;
 	}) => {
 		if (muted) {
 			return;
@@ -166,7 +168,7 @@ export const audioIteratorManager = ({
 			mediaTimestamp: buffer.timestamp,
 			playbackRate,
 			scheduleAudioNode,
-			debugAudioScheduling,
+			logLevel,
 		});
 
 		drawDebugOverlay();
@@ -179,12 +181,12 @@ export const audioIteratorManager = ({
 		getIsPlaying,
 		playbackRate,
 		scheduleAudioNode,
-		debugAudioScheduling,
 		onScheduled,
 		getAudioContextState,
 		getAudioContextOutputTimestamp,
 		onDestroyed,
 		onDone,
+		logLevel,
 	}: {
 		iterator: AudioIterator;
 		nonce: Nonce;
@@ -197,10 +199,10 @@ export const audioIteratorManager = ({
 		getAudioContextOutputTimestamp: () => number;
 		playbackRate: number;
 		scheduleAudioNode: ScheduleAudioNode;
-		debugAudioScheduling: boolean;
 		onScheduled: (mediaTimestamp: number) => void;
 		onDone: () => void;
 		onDestroyed: () => void;
+		logLevel: LogLevel;
 	}) => {
 		waitForTurn({
 			getPriority: () => {
@@ -250,7 +252,7 @@ export const audioIteratorManager = ({
 					buffer: result.value,
 					playbackRate,
 					scheduleAudioNode,
-					debugAudioScheduling,
+					logLevel,
 				});
 				proceedScheduling({
 					iterator,
@@ -259,12 +261,12 @@ export const audioIteratorManager = ({
 					getIsPlaying,
 					playbackRate,
 					scheduleAudioNode,
-					debugAudioScheduling,
 					onScheduled,
 					getAudioContextState,
 					getAudioContextOutputTimestamp,
 					onDestroyed,
 					onDone,
+					logLevel,
 				});
 				next();
 			},
@@ -291,10 +293,10 @@ export const audioIteratorManager = ({
 		startFromSecond,
 		getIsPlaying,
 		scheduleAudioNode,
-		debugAudioScheduling,
 		getTargetTime,
 		getAudioContextState,
 		getAudioContextOutputTimestamp,
+		logLevel,
 	}: {
 		startFromSecond: number;
 		nonce: Nonce;
@@ -303,11 +305,11 @@ export const audioIteratorManager = ({
 		getAudioContextState: () => AudioContextState;
 		getAudioContextOutputTimestamp: () => number;
 		scheduleAudioNode: ScheduleAudioNode;
-		debugAudioScheduling: boolean;
 		getTargetTime: (
 			mediaTimestamp: number,
 			currentTime: number,
 		) => number | null;
+		logLevel: LogLevel;
 	}) => {
 		if (muted) {
 			return;
@@ -321,7 +323,7 @@ export const audioIteratorManager = ({
 			startFromSecond,
 			maximumTimestamp: getEndTime(),
 			cache: prewarmedAudioIteratorCache,
-			debugAudioScheduling,
+			logLevel,
 		});
 		audioIteratorsCreated++;
 		audioBufferIterator = iterator;
@@ -333,7 +335,6 @@ export const audioIteratorManager = ({
 			getIsPlaying,
 			playbackRate,
 			scheduleAudioNode,
-			debugAudioScheduling,
 			onScheduled: () => {
 				delayHandle.unblock();
 			},
@@ -345,6 +346,7 @@ export const audioIteratorManager = ({
 			onDone: () => {
 				delayHandle.unblock();
 			},
+			logLevel,
 		});
 	};
 
@@ -354,23 +356,23 @@ export const audioIteratorManager = ({
 		playbackRate,
 		getIsPlaying,
 		scheduleAudioNode,
-		debugAudioScheduling,
 		getTargetTime,
 		getAudioContextState,
 		getAudioContextOutputTimestamp,
+		logLevel,
 	}: {
 		newTime: number;
 		nonce: Nonce;
 		playbackRate: number;
 		getIsPlaying: () => boolean;
 		scheduleAudioNode: ScheduleAudioNode;
-		debugAudioScheduling: boolean;
 		getTargetTime: (
 			mediaTimestamp: number,
 			currentTime: number,
 		) => number | null;
 		getAudioContextState: () => AudioContextState;
 		getAudioContextOutputTimestamp: () => number;
+		logLevel: LogLevel;
 	}) => {
 		if (currentSeek === newTime) {
 			return;
@@ -431,10 +433,10 @@ export const audioIteratorManager = ({
 			startFromSecond: newTime,
 			getIsPlaying,
 			scheduleAudioNode,
-			debugAudioScheduling,
 			getTargetTime,
 			getAudioContextState,
 			getAudioContextOutputTimestamp,
+			logLevel,
 		});
 
 		// Not further scheduling, initial iterator is already running

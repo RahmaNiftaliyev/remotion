@@ -116,10 +116,10 @@ test('same goes for audio', async () => {
 			type: 'started',
 			scheduledTime: 0,
 		}),
-		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 		getAudioContextState: () => 'running' as const,
 		getAudioContextOutputTimestamp: () => 1,
+		logLevel: 'info',
 	});
 
 	await manager.waitForNScheduledNodes(2);
@@ -132,10 +132,10 @@ test('same goes for audio', async () => {
 			type: 'started',
 			scheduledTime: 0,
 		}),
-		debugAudioScheduling: false,
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 		getAudioContextState: () => 'running' as const,
 		getAudioContextOutputTimestamp: () => 1,
+		logLevel: 'info',
 	});
 
 	const iterators = manager.getAudioIteratorsCreated();

@@ -53,7 +53,7 @@ const Interrupter: React.FC = () => {
 const Component: React.FC = () => {
 	return (
 		<>
-			<Video src={src} debugAudioScheduling />
+			<Video src={src} />
 			<Sequence from={BUFFER_START_FRAME} layout="none">
 				<Interrupter />
 			</Sequence>

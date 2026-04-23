@@ -7,14 +7,12 @@ export const setGlobalTimeAnchor = ({
 	audioSyncAnchor,
 	absoluteTimeInSeconds,
 	globalPlaybackRate,
-	debugAudioScheduling,
 	logLevel,
 }: {
 	audioContext: AudioContext;
 	audioSyncAnchor: {value: number};
 	absoluteTimeInSeconds: number;
 	globalPlaybackRate: number;
-	debugAudioScheduling: boolean;
 	logLevel: LogLevel;
 }): boolean => {
 	const newAnchor =
@@ -30,15 +28,13 @@ export const setGlobalTimeAnchor = ({
 		return false;
 	}
 
-	if (debugAudioScheduling) {
-		Internals.Log.info(
-			{logLevel, tag: 'audio-scheduling'},
-			'Anchor changed from %s to %s with shift %s',
-			audioSyncAnchor.value,
-			newAnchor,
-			shift,
-		);
-	}
+	Internals.Log.verbose(
+		{logLevel, tag: 'audio-scheduling'},
+		'Anchor changed from %s to %s with shift %s',
+		audioSyncAnchor.value,
+		newAnchor,
+		shift,
+	);
 
 	audioSyncAnchor.value = newAnchor;
 	return true;

@@ -58,19 +58,30 @@ export type ScheduleAudioNodeOptions = {
 	readonly node: AudioBufferSourceNode;
 	readonly mediaTimestamp: number;
 	readonly currentTime: number;
-	readonly debugAudioScheduling: boolean;
 	readonly scheduledTime: number;
 	readonly duration: number;
 	readonly offset: number;
 };
 
+export type AudioSyncAnchorEvent = 'changed';
+
+export type AudioSyncAnchorListener = (event: AudioSyncAnchorEvent) => void;
+
+export type AudioSyncAnchorEmitter = {
+	dispatch: (event: AudioSyncAnchorEvent) => void;
+	subscribe: (listener: AudioSyncAnchorListener) => {remove: () => void};
+};
+
 type SharedAudioContextValue = {
 	audioContext: AudioContext | null;
 	audioSyncAnchor: {value: number};
+	audioSyncAnchorEmitter: AudioSyncAnchorEmitter;
 	scheduleAudioNode: (
 		options: ScheduleAudioNodeOptions,
 	) => ScheduleAudioNodeResult;
 	resume: () => Promise<void>;
+	suspend: () => void;
+	getIsResumingAudioContext: () => Promise<void> | null;
 };
 
 type SharedAudioTagsContextValue = {
@@ -161,8 +172,28 @@ export const SharedAudioContextProvider: React.FC<{
 		latencyHint: audioLatencyHint,
 		audioEnabled,
 	});
+	const audioContextIsPlayingEventually = useRef(false);
+	const isResuming = useRef<Promise<void> | null>(null);
 
 	const audioSyncAnchor = useMemo(() => ({value: 0}), []);
+
+	const audioSyncAnchorListeners = useRef<AudioSyncAnchorListener[]>([]);
+	const audioSyncAnchorEmitter: AudioSyncAnchorEmitter = useMemo(() => {
+		return {
+			dispatch: (event) => {
+				audioSyncAnchorListeners.current.forEach((l) => l(event));
+			},
+			subscribe: (listener) => {
+				audioSyncAnchorListeners.current.push(listener);
+				return {
+					remove: () => {
+						audioSyncAnchorListeners.current =
+							audioSyncAnchorListeners.current.filter((l) => l !== listener);
+					},
+				};
+			},
+		};
+	}, []);
 
 	const prevEndTimes = useRef<{
 		scheduledEndTime: number | null;
@@ -176,7 +207,6 @@ export const SharedAudioContextProvider: React.FC<{
 			node,
 			mediaTimestamp,
 			currentTime,
-			debugAudioScheduling,
 			scheduledTime,
 			duration,
 			offset,
@@ -212,34 +242,32 @@ export const SharedAudioContextProvider: React.FC<{
 				prev.mediaEndTime !== null &&
 				Math.abs(mediaTime - prev.mediaEndTime) > 0.001;
 
-			if (debugAudioScheduling) {
-				Log.info(
-					{logLevel, tag: 'audio-scheduling'},
-					'scheduled %c%s%c %s %c%s%c %s %c%s%c %s %s %s',
-					scheduledMismatch ? 'color: red; font-weight: bold' : '',
-					scheduledTime.toFixed(4),
-					'',
-					scheduledEndTime.toFixed(4),
-					mediaMismatch ? 'color: red; font-weight: bold' : '',
-					mediaTime.toFixed(4),
-					'',
-					mediaEndTime.toFixed(4),
-					duration < 0
+			Log.verbose(
+				{logLevel, tag: 'audio-scheduling'},
+				'scheduled %c%s%c %s %c%s%c %s %c%s%c %s %s %s',
+				scheduledMismatch ? 'color: red; font-weight: bold' : '',
+				scheduledTime.toFixed(4),
+				'',
+				scheduledEndTime.toFixed(4),
+				mediaMismatch ? 'color: red; font-weight: bold' : '',
+				mediaTime.toFixed(4),
+				'',
+				mediaEndTime.toFixed(4),
+				duration < 0
+					? 'color: red; font-weight: bold'
+					: timeDiff < 0
 						? 'color: red; font-weight: bold'
-						: timeDiff < 0
-							? 'color: red; font-weight: bold'
-							: 'color: blue; font-weight: bold',
-					duration < 0
-						? 'missed ' + Math.abs(offset).toFixed(2) + 's'
-						: Math.abs(timeDiff).toFixed(2) +
-								(timeDiff < 0 ? ' delay' : ' ahead'),
-					'',
-					'current=' + currentTime.toFixed(4),
-					'offset=' + offset.toFixed(4),
-					'latency=' + latency.toFixed(4),
-					'state=' + audioContext.state,
-				);
-			}
+						: 'color: blue; font-weight: bold',
+				duration < 0
+					? 'missed ' + Math.abs(offset).toFixed(2) + 's'
+					: Math.abs(timeDiff).toFixed(2) +
+							(timeDiff < 0 ? ' delay' : ' ahead'),
+				'',
+				'current=' + currentTime.toFixed(4),
+				'offset=' + offset.toFixed(4),
+				'latency=' + latency.toFixed(4),
+				'state=' + audioContext.state,
+			);
 
 			prev.scheduledEndTime = scheduledEndTime;
 			prev.mediaEndTime = mediaEndTime;
@@ -261,21 +289,58 @@ export const SharedAudioContextProvider: React.FC<{
 			return Promise.resolve();
 		}
 
-		waitUntilActuallyResumed(audioContext, logLevel).then(() => {});
+		if (audioContextIsPlayingEventually.current) {
+			return Promise.resolve();
+		}
+
+		audioContextIsPlayingEventually.current = true;
+		isResuming.current = waitUntilActuallyResumed(audioContext, logLevel)
+			.then(() => {})
+			.finally(() => {
+				isResuming.current = null;
+			});
 		return audioContext.resume().then(() => {
 			nodesToResume.current.forEach((r) => r());
 			nodesToResume.current = [];
 		});
 	}, [audioContext, logLevel]);
 
+	const getIsResumingAudioContext = useCallback(() => {
+		return isResuming.current;
+	}, []);
+
+	const suspend = useCallback(() => {
+		if (!audioContext) {
+			return;
+		}
+
+		if (!audioContextIsPlayingEventually.current) {
+			return;
+		}
+
+		audioContextIsPlayingEventually.current = false;
+		audioContext.suspend();
+	}, [audioContext]);
+
 	const audioContextValue: SharedAudioContextValue = useMemo(() => {
 		return {
 			audioContext,
 			audioSyncAnchor,
+			audioSyncAnchorEmitter,
 			scheduleAudioNode,
 			resume,
+			suspend,
+			getIsResumingAudioContext,
 		};
-	}, [audioContext, audioSyncAnchor, scheduleAudioNode, resume]);
+	}, [
+		audioContext,
+		audioSyncAnchor,
+		audioSyncAnchorEmitter,
+		scheduleAudioNode,
+		resume,
+		suspend,
+		getIsResumingAudioContext,
+	]);
 
 	return (
 		<SharedAudioContext.Provider value={audioContextValue}>

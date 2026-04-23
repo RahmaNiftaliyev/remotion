@@ -20,7 +20,7 @@ export const waitUntilActuallyResumed = (
 				outputTimestamp.performanceTime !== undefined &&
 				outputTimestamp.performanceTime > startOutputPerformanceTime
 			) {
-				Log.info(
+				Log.verbose(
 					{logLevel, tag: 'audio'},
 					`waitUntilActuallyResumed: getOutputTimestamp.performanceTime advanced from ${startOutputPerformanceTime.toFixed(
 						6,

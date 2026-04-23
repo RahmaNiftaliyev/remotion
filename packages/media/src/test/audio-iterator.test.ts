@@ -46,7 +46,6 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 	const getIsPlaying = () => true;
 
 	const getAudioContextState = () => 'running' as const;
-	const getAudioContextOutputTimestamp = () => 1;
 
 	const scheduledChunks: number[] = [];
 	const waiters: {count: number; resolve: () => void}[] = [];
@@ -79,7 +78,6 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 			getAudioContextState,
 			logLevel: 'info',
-			getAudioContextOutputTimestamp,
 		});
 	};
 
@@ -299,7 +297,6 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 			playbackRate: 1,
 			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 			getAudioContextState: () => 'running' as const,
-			getAudioContextOutputTimestamp: () => 1,
 			logLevel: 'info',
 		});
 	}

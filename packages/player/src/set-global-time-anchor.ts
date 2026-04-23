@@ -15,9 +15,8 @@ export const setGlobalTimeAnchor = ({
 	globalPlaybackRate: number;
 	logLevel: LogLevel;
 }): boolean => {
-	const newAnchor =
-		audioContext.getOutputTimestamp().contextTime! -
-		absoluteTimeInSeconds / globalPlaybackRate;
+	const contextTime = audioContext.currentTime!;
+	const newAnchor = contextTime! - absoluteTimeInSeconds / globalPlaybackRate;
 	const shift = (newAnchor - audioSyncAnchor.value) * globalPlaybackRate;
 	const {outputLatency} = audioContext;
 	const safeOutputLatency = outputLatency === 0 ? 0.3 : outputLatency;

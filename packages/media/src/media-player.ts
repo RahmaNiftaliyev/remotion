@@ -323,9 +323,6 @@ export class MediaPlayer {
 								getIsPlaying: () => this.playing,
 								scheduleAudioNode: this.scheduleAudioNode,
 								getTargetTime: this.getTargetTime,
-								getAudioContextOutputTimestamp: () =>
-									this.sharedAudioContext?.audioContext.getOutputTimestamp()
-										.contextTime ?? 0,
 								getAudioContextState: () =>
 									this.sharedAudioContext?.audioContext.state ?? 'suspended',
 								logLevel: this.logLevel,
@@ -410,9 +407,6 @@ export class MediaPlayer {
 					getTargetTime: this.getTargetTime,
 					getAudioContextState: () =>
 						this.sharedAudioContext?.audioContext.state ?? 'suspended',
-					getAudioContextOutputTimestamp: () =>
-						this.sharedAudioContext?.audioContext.getOutputTimestamp()
-							.contextTime ?? 0,
 					logLevel: this.logLevel,
 				}),
 			]);

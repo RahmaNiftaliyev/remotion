@@ -118,7 +118,6 @@ test('same goes for audio', async () => {
 		}),
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 		getAudioContextState: () => 'running' as const,
-		getAudioContextOutputTimestamp: () => 1,
 		logLevel: 'info',
 	});
 
@@ -134,7 +133,6 @@ test('same goes for audio', async () => {
 		}),
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 		getAudioContextState: () => 'running' as const,
-		getAudioContextOutputTimestamp: () => 1,
 		logLevel: 'info',
 	});
 

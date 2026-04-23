@@ -183,7 +183,6 @@ export const audioIteratorManager = ({
 		scheduleAudioNode,
 		onScheduled,
 		getAudioContextState,
-		getAudioContextOutputTimestamp,
 		onDestroyed,
 		onDone,
 		logLevel,
@@ -196,7 +195,6 @@ export const audioIteratorManager = ({
 		) => number | null;
 		getIsPlaying: () => boolean;
 		getAudioContextState: () => AudioContextState;
-		getAudioContextOutputTimestamp: () => number;
 		playbackRate: number;
 		scheduleAudioNode: ScheduleAudioNode;
 		onScheduled: (mediaTimestamp: number) => void;
@@ -263,7 +261,6 @@ export const audioIteratorManager = ({
 					scheduleAudioNode,
 					onScheduled,
 					getAudioContextState,
-					getAudioContextOutputTimestamp,
 					onDestroyed,
 					onDone,
 					logLevel,
@@ -295,7 +292,6 @@ export const audioIteratorManager = ({
 		scheduleAudioNode,
 		getTargetTime,
 		getAudioContextState,
-		getAudioContextOutputTimestamp,
 		logLevel,
 	}: {
 		startFromSecond: number;
@@ -303,7 +299,6 @@ export const audioIteratorManager = ({
 		playbackRate: number;
 		getIsPlaying: () => boolean;
 		getAudioContextState: () => AudioContextState;
-		getAudioContextOutputTimestamp: () => number;
 		scheduleAudioNode: ScheduleAudioNode;
 		getTargetTime: (
 			mediaTimestamp: number,
@@ -339,7 +334,6 @@ export const audioIteratorManager = ({
 				delayHandle.unblock();
 			},
 			getAudioContextState,
-			getAudioContextOutputTimestamp,
 			onDestroyed: () => {
 				delayHandle.unblock();
 			},
@@ -358,7 +352,6 @@ export const audioIteratorManager = ({
 		scheduleAudioNode,
 		getTargetTime,
 		getAudioContextState,
-		getAudioContextOutputTimestamp,
 		logLevel,
 	}: {
 		newTime: number;
@@ -371,7 +364,6 @@ export const audioIteratorManager = ({
 			currentTime: number,
 		) => number | null;
 		getAudioContextState: () => AudioContextState;
-		getAudioContextOutputTimestamp: () => number;
 		logLevel: LogLevel;
 	}) => {
 		if (currentSeek === newTime) {
@@ -435,7 +427,6 @@ export const audioIteratorManager = ({
 			scheduleAudioNode,
 			getTargetTime,
 			getAudioContextState,
-			getAudioContextOutputTimestamp,
 			logLevel,
 		});
 

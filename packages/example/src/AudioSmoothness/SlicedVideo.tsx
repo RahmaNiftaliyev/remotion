@@ -3,7 +3,7 @@ import React from 'react';
 import {Composition, Sequence, useVideoConfig} from 'remotion';
 
 const SLICE_DURATION_FRAMES = 6; // 0.1sec at 30fps
-const NUM_SLICES = 2;
+const NUM_SLICES = 100;
 const PREMOUNT_SEC = 0.5;
 
 const SlicedVideo: React.FC = () => {

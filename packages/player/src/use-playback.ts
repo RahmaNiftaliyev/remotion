@@ -177,6 +177,27 @@ export const usePlayback = ({
 				sharedAudioContext?.getIsResumingAudioContext?.() ?? null;
 			if (getIsResumingAudioContext !== null) {
 				getIsResumingAudioContext.then(() => {
+					if (!sharedAudioContext?.audioContext) {
+						return;
+					}
+
+					if (!sharedAudioContext.audioSyncAnchor) {
+						return;
+					}
+
+					// set it here and DON'T propagate an event
+					// the useLayoutEffect above is supposed to handle a user seek,
+					// this is a natural wait for the audio playback to start.
+					// we don't wanna destroy the iterators.
+					setGlobalTimeAnchor({
+						audioContext: sharedAudioContext.audioContext,
+						audioSyncAnchor: sharedAudioContext.audioSyncAnchor,
+						absoluteTimeInSeconds: getCurrentFrame() / config.fps,
+						globalPlaybackRate: timelineContext.playbackRate,
+						logLevel,
+					});
+					startedTime = performance.now();
+					framesAdvanced = 0;
 					queueNextFrame();
 				});
 
@@ -241,6 +262,8 @@ export const usePlayback = ({
 		context,
 		isPlaying,
 		sharedAudioContext,
+		timelineContext.playbackRate,
+		logLevel,
 	]);
 
 	useEffect(() => {

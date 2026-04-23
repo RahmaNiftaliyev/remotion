@@ -183,11 +183,9 @@ export const audioIteratorManager = ({
 		iterator,
 		nonce,
 		getTargetTime,
-		getIsPlaying,
 		playbackRate,
 		scheduleAudioNode,
 		onScheduled,
-		getAudioContextState,
 		onDestroyed,
 		onDone,
 		logLevel,
@@ -198,8 +196,6 @@ export const audioIteratorManager = ({
 			mediaTimestamp: number,
 			currentTime: number,
 		) => number | null;
-		getIsPlaying: () => boolean;
-		getAudioContextState: () => AudioContextState;
 		playbackRate: number;
 		scheduleAudioNode: ScheduleAudioNode;
 		onScheduled: (mediaTimestamp: number) => void;
@@ -261,11 +257,9 @@ export const audioIteratorManager = ({
 					iterator,
 					nonce,
 					getTargetTime,
-					getIsPlaying,
 					playbackRate,
 					scheduleAudioNode,
 					onScheduled,
-					getAudioContextState,
 					onDestroyed,
 					onDone,
 					logLevel,
@@ -293,17 +287,13 @@ export const audioIteratorManager = ({
 		nonce,
 		playbackRate,
 		startFromSecond,
-		getIsPlaying,
 		scheduleAudioNode,
 		getTargetTime,
-		getAudioContextState,
 		logLevel,
 	}: {
 		startFromSecond: number;
 		nonce: Nonce;
 		playbackRate: number;
-		getIsPlaying: () => boolean;
-		getAudioContextState: () => AudioContextState;
 		scheduleAudioNode: ScheduleAudioNode;
 		getTargetTime: (
 			mediaTimestamp: number,
@@ -332,13 +322,11 @@ export const audioIteratorManager = ({
 			iterator,
 			nonce,
 			getTargetTime,
-			getIsPlaying,
 			playbackRate,
 			scheduleAudioNode,
 			onScheduled: () => {
 				delayHandle.unblock();
 			},
-			getAudioContextState,
 			onDestroyed: () => {
 				delayHandle.unblock();
 			},
@@ -353,22 +341,18 @@ export const audioIteratorManager = ({
 		newTime,
 		nonce,
 		playbackRate,
-		getIsPlaying,
 		scheduleAudioNode,
 		getTargetTime,
-		getAudioContextState,
 		logLevel,
 	}: {
 		newTime: number;
 		nonce: Nonce;
 		playbackRate: number;
-		getIsPlaying: () => boolean;
 		scheduleAudioNode: ScheduleAudioNode;
 		getTargetTime: (
 			mediaTimestamp: number,
 			currentTime: number,
 		) => number | null;
-		getAudioContextState: () => AudioContextState;
 		logLevel: LogLevel;
 	}) => {
 		if (currentSeek === newTime) {
@@ -428,10 +412,8 @@ export const audioIteratorManager = ({
 			nonce,
 			playbackRate,
 			startFromSecond: newTime,
-			getIsPlaying,
 			scheduleAudioNode,
 			getTargetTime,
-			getAudioContextState,
 			logLevel,
 		});
 

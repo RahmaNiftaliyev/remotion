@@ -320,11 +320,8 @@ export class MediaPlayer {
 								nonce,
 								playbackRate: this.playbackRate * this.globalPlaybackRate,
 								startFromSecond: startTime,
-								getIsPlaying: () => this.playing,
 								scheduleAudioNode: this.scheduleAudioNode,
 								getTargetTime: this.getTargetTime,
-								getAudioContextState: () =>
-									this.sharedAudioContext?.audioContext.state ?? 'suspended',
 								logLevel: this.logLevel,
 							})
 						: Promise.resolve(),
@@ -402,11 +399,8 @@ export class MediaPlayer {
 					newTime,
 					nonce,
 					playbackRate: this.playbackRate * this.globalPlaybackRate,
-					getIsPlaying: () => this.playing,
 					scheduleAudioNode: this.scheduleAudioNode,
 					getTargetTime: this.getTargetTime,
-					getAudioContextState: () =>
-						this.sharedAudioContext?.audioContext.state ?? 'suspended',
 					logLevel: this.logLevel,
 				}),
 			]);

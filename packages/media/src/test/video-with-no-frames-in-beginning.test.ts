@@ -111,13 +111,11 @@ test('same goes for audio', async () => {
 		nonce: nonceManager.createAsyncOperation(),
 		playbackRate: 1,
 		startFromSecond: 0.06671494248275864,
-		getIsPlaying: () => true,
 		scheduleAudioNode: () => ({
 			type: 'started',
 			scheduledTime: 0,
 		}),
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
-		getAudioContextState: () => 'running' as const,
 		logLevel: 'info',
 	});
 
@@ -126,13 +124,11 @@ test('same goes for audio', async () => {
 		newTime: 0.10007241372413796,
 		nonce: nonceManager.createAsyncOperation(),
 		playbackRate: 1,
-		getIsPlaying: () => true,
 		scheduleAudioNode: () => ({
 			type: 'started',
 			scheduledTime: 0,
 		}),
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
-		getAudioContextState: () => 'running' as const,
 		logLevel: 'info',
 	});
 

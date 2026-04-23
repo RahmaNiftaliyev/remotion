@@ -43,10 +43,6 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 		initialTime: 0,
 	});
 
-	const getIsPlaying = () => true;
-
-	const getAudioContextState = () => 'running' as const;
-
 	const scheduledChunks: number[] = [];
 	const waiters: {count: number; resolve: () => void}[] = [];
 
@@ -72,11 +68,9 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 		await manager.seek({
 			newTime: time,
 			scheduleAudioNode,
-			getIsPlaying,
 			nonce: makeNonceManager().createAsyncOperation(),
 			playbackRate,
 			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
-			getAudioContextState,
 			logLevel: 'info',
 		});
 	};
@@ -292,11 +286,9 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 		manager.seek({
 			newTime: mediaTime,
 			scheduleAudioNode,
-			getIsPlaying: () => true,
 			nonce: makeNonceManager().createAsyncOperation(),
 			playbackRate: 1,
 			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
-			getAudioContextState: () => 'running' as const,
 			logLevel: 'info',
 		});
 	}

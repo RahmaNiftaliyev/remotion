@@ -1,8 +1,6 @@
 import type {AudioBufferSink} from 'mediabunny';
 import type {LogLevel} from 'remotion';
-import {Internals} from 'remotion';
 import {makeIteratorWithPriming} from '../make-iterator-with-priming';
-import type {SharedAudioContextForMediaPlayer} from '../shared-audio-context-for-media-player';
 
 export const HEALTHY_BUFFER_THRESHOLD_SECONDS = 1;
 export const ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT = 0.1;
@@ -24,7 +22,6 @@ export type QueuedPeriod = {
 export const makeAudioIterator = ({
 	startFromSecond,
 	maximumTimestamp,
-	logLevel,
 	audioSink,
 }: {
 	startFromSecond: number;
@@ -41,36 +38,9 @@ export const makeAudioIterator = ({
 	const queuedAudioNodes: QueuedNode[] = [];
 	let mostRecentTimestamp = -Infinity;
 
-	const cleanupAudioQueue = (
-		audioContext: SharedAudioContextForMediaPlayer,
-	) => {
+	const cleanupAudioQueue = () => {
 		for (const node of queuedAudioNodes) {
 			try {
-				// When we unmount at the end of playback, we might not yet be done with audio anchors
-				// we should not stop the nodes
-				const isAlreadyPlaying =
-					node.scheduledTime - ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT <
-					audioContext.audioContext.currentTime!;
-
-				// except for when the audio anchor changed (e.g. through a seek)
-				const wasScheduledForThisAnchor =
-					node.scheduledAtAnchor === audioContext.audioSyncAnchor.value;
-
-				if (isAlreadyPlaying && wasScheduledForThisAnchor) {
-					console.log('not cleaning up!');
-					continue;
-				}
-
-				const currentlyHearing =
-					audioContext.audioContext.getOutputTimestamp().contextTime!;
-				const nodeEndTime =
-					node.scheduledTime + node.buffer.duration / node.playbackRate;
-
-				Internals.Log.verbose(
-					{logLevel, tag: 'audio-scheduling'},
-					`Stopping node ${node.timestamp.toFixed(3)}, currently hearing = ${currentlyHearing.toFixed(3)} currentTime = ${audioContext.audioContext.currentTime.toFixed(3)} nodeEndTime = ${nodeEndTime.toFixed(3)} scheduledTime = ${node.scheduledTime.toFixed(3)}`,
-				);
-
 				node.node.stop();
 			} catch {
 				// Node may not have been started
@@ -94,8 +64,8 @@ export const makeAudioIterator = ({
 	};
 
 	return {
-		destroy: (audioContext: SharedAudioContextForMediaPlayer) => {
-			cleanupAudioQueue(audioContext);
+		destroy: () => {
+			cleanupAudioQueue();
 			destroyed = true;
 			iterator.return().catch(() => undefined);
 		},

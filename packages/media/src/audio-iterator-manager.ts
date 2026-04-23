@@ -310,7 +310,7 @@ export const audioIteratorManager = ({
 			return;
 		}
 
-		audioBufferIterator?.destroy(sharedAudioContext);
+		audioBufferIterator?.destroy();
 		const delayHandle = delayPlaybackHandleIfNotPremounting();
 		currentDelayHandle = delayHandle;
 
@@ -419,7 +419,7 @@ export const audioIteratorManager = ({
 		startAudioIterator,
 		getAudioBufferIterator: () => audioBufferIterator,
 		destroyIterator: () => {
-			audioBufferIterator?.destroy(sharedAudioContext);
+			audioBufferIterator?.destroy();
 			audioBufferIterator = null;
 
 			if (currentDelayHandle) {

@@ -85,6 +85,7 @@ type SharedContext = {
 	scheduleAudioNode: (
 		options: ScheduleAudioNodeOptions,
 	) => ScheduleAudioNodeResult;
+	resume: () => Promise<void>;
 };
 
 const compareProps = (
@@ -169,6 +170,8 @@ export const SharedAudioContextProvider: React.FC<{
 		mediaEndTime: number | null;
 	}>({scheduledEndTime: null, mediaEndTime: null});
 
+	const nodesToResume = useRef<(() => void)[]>([]);
+
 	const scheduleAudioNode = useMemo(() => {
 		return ({
 			node,
@@ -184,7 +187,13 @@ export const SharedAudioContextProvider: React.FC<{
 			}
 
 			if (duration > 0) {
-				node.start(scheduledTime, offset, duration);
+				if (audioContext.state === 'suspended') {
+					nodesToResume.current.push(() =>
+						node.start(scheduledTime, offset, duration),
+					);
+				} else {
+					node.start(scheduledTime, offset, duration);
+				}
 			}
 
 			const scheduledEndTime =
@@ -445,6 +454,17 @@ export const SharedAudioContextProvider: React.FC<{
 
 	const env = useRemotionEnvironment();
 
+	const resume = useCallback(() => {
+		if (!audioContext) {
+			return Promise.resolve();
+		}
+
+		return audioContext.resume().then(() => {
+			nodesToResume.current.forEach((r) => r());
+			nodesToResume.current = [];
+		});
+	}, [audioContext]);
+
 	const playAllAudios = useCallback(() => {
 		refs.forEach((ref) => {
 			const audio = audios.current.find((a) => a.el === ref.ref);
@@ -462,8 +482,8 @@ export const SharedAudioContextProvider: React.FC<{
 				isPlayer: env.isPlayer,
 			});
 		});
-		audioContext?.resume();
-	}, [audioContext, logLevel, mountTime, refs, env.isPlayer]);
+		resume();
+	}, [logLevel, mountTime, refs, env.isPlayer, resume]);
 
 	const value: SharedContext = useMemo(() => {
 		return {
@@ -475,6 +495,7 @@ export const SharedAudioContextProvider: React.FC<{
 			audioContext,
 			audioSyncAnchor,
 			scheduleAudioNode,
+			resume,
 		};
 	}, [
 		numberOfAudioTags,
@@ -485,6 +506,7 @@ export const SharedAudioContextProvider: React.FC<{
 		audioContext,
 		audioSyncAnchor,
 		scheduleAudioNode,
+		resume,
 	]);
 
 	return (

@@ -82,7 +82,7 @@ export const usePlayer = (): UsePlayerMethods => {
 				seek(0);
 			}
 
-			audioContext?.audioContext?.resume();
+			audioContext?.resume();
 
 			/**
 			 * Play silent audio tags to warm them up for autoplay

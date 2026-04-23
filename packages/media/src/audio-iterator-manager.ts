@@ -83,23 +83,15 @@ export const audioIteratorManager = ({
 		playbackRate,
 		scheduleAudioNode,
 		debugAudioScheduling,
-		getAudioContextState,
 	}: {
 		buffer: AudioBuffer;
 		mediaTimestamp: number;
 		playbackRate: number;
 		scheduleAudioNode: ScheduleAudioNode;
-		getAudioContextState: () => AudioContextState;
 		debugAudioScheduling: boolean;
 	}) => {
 		if (!audioBufferIterator) {
 			throw new Error('Audio buffer iterator not found');
-		}
-
-		if (getAudioContextState() !== 'running') {
-			throw new Error(
-				'Tried to schedule node while audio context is not running',
-			);
 		}
 
 		if (muted) {
@@ -146,13 +138,11 @@ export const audioIteratorManager = ({
 	};
 
 	const onAudioChunk = ({
-		getAudioContextState,
 		buffer,
 		playbackRate,
 		scheduleAudioNode,
 		debugAudioScheduling,
 	}: {
-		getAudioContextState: () => AudioContextState;
 		buffer: WrappedAudioBuffer;
 		playbackRate: number;
 		scheduleAudioNode: ScheduleAudioNode;
@@ -180,7 +170,6 @@ export const audioIteratorManager = ({
 			playbackRate,
 			scheduleAudioNode,
 			debugAudioScheduling,
-			getAudioContextState,
 		});
 
 		drawDebugOverlay();
@@ -256,7 +245,6 @@ export const audioIteratorManager = ({
 				notifyNodeScheduled();
 
 				onAudioChunk({
-					getAudioContextState,
 					buffer: result.value,
 					playbackRate,
 					scheduleAudioNode,

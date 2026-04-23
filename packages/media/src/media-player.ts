@@ -735,4 +735,12 @@ export class MediaPlayer {
 			});
 		}
 	};
+
+	public audioSyncAnchorChanged = () => {
+		if (!this.audioIteratorManager) {
+			return;
+		}
+
+		this.audioIteratorManager.destroyIterator();
+	};
 }

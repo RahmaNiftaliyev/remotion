@@ -16,7 +16,7 @@ export const setGlobalTimeAnchor = ({
 	globalPlaybackRate: number;
 	debugAudioScheduling: boolean;
 	logLevel: LogLevel;
-}): void => {
+}): boolean => {
 	const newAnchor =
 		audioContext.currentTime - absoluteTimeInSeconds / globalPlaybackRate;
 	const shift = (newAnchor - audioSyncAnchor.value) * globalPlaybackRate;
@@ -26,7 +26,7 @@ export const setGlobalTimeAnchor = ({
 
 	// Skip small shifts to avoid audio glitches from frame-quantized re-anchoring
 	if (Math.abs(shift) < ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT + latency) {
-		return;
+		return false;
 	}
 
 	if (debugAudioScheduling) {
@@ -40,4 +40,5 @@ export const setGlobalTimeAnchor = ({
 	}
 
 	audioSyncAnchor.value = newAnchor;
+	return true;
 };

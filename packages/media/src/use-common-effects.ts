@@ -1,5 +1,5 @@
 import type React from 'react';
-import {useContext, useLayoutEffect} from 'react';
+import {useLayoutEffect} from 'react';
 import type {LogLevel} from 'remotion';
 import {Internals} from 'remotion';
 import type {MediaPlayer} from './media-player';
@@ -58,16 +58,13 @@ export const useCommonEffects = ({
 	readonly label: string;
 }) => {
 	const absoluteTime = Internals.useAbsoluteTimelinePosition();
-	const {playing: playingWhilePremounting} = useContext(
-		Internals.PremountContext,
-	);
 
 	useLayoutEffect(() => {
 		if (
 			sharedAudioContext?.audioContext &&
 			sharedAudioContext.audioSyncAnchor
 		) {
-			setGlobalTimeAnchor({
+			const changed = setGlobalTimeAnchor({
 				audioContext: sharedAudioContext.audioContext,
 				audioSyncAnchor: sharedAudioContext.audioSyncAnchor,
 				absoluteTimeInSeconds: absoluteTime / fps,
@@ -75,6 +72,9 @@ export const useCommonEffects = ({
 				debugAudioScheduling,
 				logLevel,
 			});
+			if (changed) {
+				mediaPlayerRef.current?.audioSyncAnchorChanged();
+			}
 		}
 	}, [
 		absoluteTime,
@@ -83,6 +83,7 @@ export const useCommonEffects = ({
 		fps,
 		debugAudioScheduling,
 		logLevel,
+		mediaPlayerRef,
 	]);
 
 	useLayoutEffect(() => {

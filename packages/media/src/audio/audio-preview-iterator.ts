@@ -36,10 +36,6 @@ export const makeAudioIterator = ({
 		maximumTimestamp,
 	);
 	const queuedAudioNodes: QueuedNode[] = [];
-	const audioChunksForAfterResuming: {
-		buffer: AudioBuffer;
-		timestamp: number;
-	}[] = [];
 	let mostRecentTimestamp = -Infinity;
 
 	const cleanupAudioQueue = (
@@ -82,45 +78,6 @@ export const makeAudioIterator = ({
 		queuedAudioNodes.length = 0;
 	};
 
-	const removeAndReturnAllQueuedAudioNodes = () => {
-		const nodes = queuedAudioNodes.slice();
-		for (const node of nodes) {
-			try {
-				node.node.stop();
-			} catch {
-				// Node may not have been started
-			}
-		}
-
-		queuedAudioNodes.length = 0;
-		return nodes;
-	};
-
-	const addChunkForAfterResuming = (buffer: AudioBuffer, timestamp: number) => {
-		audioChunksForAfterResuming.push({
-			buffer,
-			timestamp,
-		});
-	};
-
-	const moveQueuedChunksToPauseQueue = () => {
-		const toQueue = removeAndReturnAllQueuedAudioNodes();
-		for (const chunk of toQueue) {
-			addChunkForAfterResuming(chunk.buffer, chunk.timestamp);
-		}
-
-		if (debugAudioScheduling && toQueue.length > 0) {
-			Internals.Log.trace(
-				{logLevel: 'trace', tag: 'audio-scheduling'},
-				`Moved ${toQueue.length} ${toQueue.length === 1 ? 'chunk' : 'chunks'} to pause queue (${toQueue[0].timestamp.toFixed(3)}-${toQueue[toQueue.length - 1].timestamp + toQueue[toQueue.length - 1].buffer.duration.toFixed(3)})`,
-			);
-		}
-	};
-
-	const getNumberOfChunksAfterResuming = () => {
-		return audioChunksForAfterResuming.length;
-	};
-
 	const getNextFn = async () => {
 		const next = await iterator.next();
 
@@ -139,7 +96,6 @@ export const makeAudioIterator = ({
 			cleanupAudioQueue(audioContext);
 			destroyed = true;
 			iterator.return().catch(() => undefined);
-			audioChunksForAfterResuming.length = 0;
 		},
 		getNextFn,
 		isDestroyed: () => {
@@ -176,11 +132,6 @@ export const makeAudioIterator = ({
 				queuedAudioNodes.splice(index, 1);
 			}
 		},
-		getAndClearAudioChunksForAfterResuming: () => {
-			const chunks = audioChunksForAfterResuming.slice();
-			audioChunksForAfterResuming.length = 0;
-			return chunks;
-		},
 		guessNextTimestamp: () => {
 			return !Number.isFinite(mostRecentTimestamp)
 				? startFromSecond
@@ -195,11 +146,6 @@ export const makeAudioIterator = ({
 				from = Math.min(from, node.timestamp);
 			}
 
-			for (const chunk of audioChunksForAfterResuming) {
-				until = Math.max(until, chunk.timestamp + chunk.buffer.duration);
-				from = Math.min(from, chunk.timestamp);
-			}
-
 			if (!Number.isFinite(from) || !Number.isFinite(until)) {
 				return null;
 			}
@@ -209,9 +155,6 @@ export const makeAudioIterator = ({
 				until,
 			};
 		},
-		addChunkForAfterResuming,
-		moveQueuedChunksToPauseQueue,
-		getNumberOfChunksAfterResuming,
 	};
 };
 

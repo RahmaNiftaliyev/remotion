@@ -85,10 +85,6 @@ export const useCommonEffects = ({
 		logLevel,
 	]);
 
-	if (playingWhilePremounting) {
-		mediaPlayerRef.current?.playAudio();
-	}
-
 	useLayoutEffect(() => {
 		const mediaPlayer = mediaPlayerRef.current;
 		if (!mediaPlayer) return;

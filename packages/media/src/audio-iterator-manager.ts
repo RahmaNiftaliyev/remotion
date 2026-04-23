@@ -145,49 +145,14 @@ export const audioIteratorManager = ({
 		};
 	};
 
-	const resumeScheduledAudioChunks = ({
-		playbackRate,
-		scheduleAudioNode,
-		debugAudioScheduling,
-		getAudioContextState,
-	}: {
-		playbackRate: number;
-		scheduleAudioNode: ScheduleAudioNode;
-		debugAudioScheduling: boolean;
-		getAudioContextState: () => AudioContextState;
-	}) => {
-		if (muted) {
-			return;
-		}
-
-		if (!audioBufferIterator) {
-			return;
-		}
-
-		for (const chunk of audioBufferIterator.getAndClearAudioChunksForAfterResuming()) {
-			scheduleAudioChunk({
-				buffer: chunk.buffer,
-				mediaTimestamp: chunk.timestamp,
-				playbackRate,
-				scheduleAudioNode,
-				debugAudioScheduling,
-				getAudioContextState,
-			});
-		}
-	};
-
 	const onAudioChunk = ({
-		getIsPlaying,
 		getAudioContextState,
-		getAudioContextOutputTimestamp,
 		buffer,
 		playbackRate,
 		scheduleAudioNode,
 		debugAudioScheduling,
 	}: {
-		getIsPlaying: () => boolean;
 		getAudioContextState: () => AudioContextState;
-		getAudioContextOutputTimestamp: () => number;
 		buffer: WrappedAudioBuffer;
 		playbackRate: number;
 		scheduleAudioNode: ScheduleAudioNode;
@@ -209,45 +174,14 @@ export const audioIteratorManager = ({
 			return;
 		}
 
-		if (
-			getIsPlaying() &&
-			getAudioContextState() === 'running' &&
-			getAudioContextOutputTimestamp() > 0
-		) {
-			resumeScheduledAudioChunks({
-				playbackRate,
-				scheduleAudioNode,
-				debugAudioScheduling,
-				getAudioContextState,
-			});
-
-			scheduleAudioChunk({
-				buffer: buffer.buffer,
-				mediaTimestamp: buffer.timestamp,
-				playbackRate,
-				scheduleAudioNode,
-				debugAudioScheduling,
-				getAudioContextState,
-			});
-		} else {
-			if (!audioBufferIterator) {
-				throw new Error('Audio buffer iterator not found');
-			}
-
-			if (debugAudioScheduling) {
-				Internals.Log.info(
-					{logLevel: 'trace', tag: 'audio-scheduling'},
-					'not ready, added to queue: %s %s',
-					buffer.timestamp.toFixed(3),
-					buffer.duration.toFixed(3),
-				);
-			}
-
-			audioBufferIterator.addChunkForAfterResuming(
-				buffer.buffer,
-				buffer.timestamp,
-			);
-		}
+		scheduleAudioChunk({
+			buffer: buffer.buffer,
+			mediaTimestamp: buffer.timestamp,
+			playbackRate,
+			scheduleAudioNode,
+			debugAudioScheduling,
+			getAudioContextState,
+		});
 
 		drawDebugOverlay();
 	};
@@ -322,9 +256,7 @@ export const audioIteratorManager = ({
 				notifyNodeScheduled();
 
 				onAudioChunk({
-					getIsPlaying,
 					getAudioContextState,
-					getAudioContextOutputTimestamp,
 					buffer: result.value,
 					playbackRate,
 					scheduleAudioNode,
@@ -417,14 +349,6 @@ export const audioIteratorManager = ({
 		});
 	};
 
-	const pausePlayback = () => {
-		if (!audioBufferIterator) {
-			return;
-		}
-
-		audioBufferIterator.moveQueuedChunksToPauseQueue();
-	};
-
 	const seek = async ({
 		newTime,
 		nonce,
@@ -513,8 +437,6 @@ export const audioIteratorManager = ({
 
 	return {
 		startAudioIterator,
-		resumeScheduledAudioChunks,
-		pausePlayback,
 		getAudioBufferIterator: () => audioBufferIterator,
 		destroyIterator: () => {
 			prewarmedAudioIteratorCache.destroy();

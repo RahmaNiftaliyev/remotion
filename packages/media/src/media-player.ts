@@ -436,27 +436,7 @@ export class MediaPlayer {
 		}
 	}
 
-	public playAudio(): void {
-		if (
-			this.audioIteratorManager &&
-			this.sharedAudioContext?.audioContext.state === 'running' &&
-			(this.sharedAudioContext?.audioContext?.getOutputTimestamp()
-				.contextTime ?? 0) > 0
-		) {
-			this.audioIteratorManager.resumeScheduledAudioChunks({
-				playbackRate: this.playbackRate * this.globalPlaybackRate,
-				scheduleAudioNode: this.scheduleAudioNode,
-				debugAudioScheduling: this.debugAudioScheduling,
-				getAudioContextState: () =>
-					this.sharedAudioContext?.audioContext.state ?? 'suspended',
-			});
-		}
-	}
-
 	public play(): void {
-		// This part is idempotent, will schedule audio chunks if needed
-		this.playAudio();
-
 		if (this.playing) {
 			return;
 		}
@@ -490,8 +470,6 @@ export class MediaPlayer {
 		}
 
 		this.playing = false;
-		this.audioIteratorManager?.pausePlayback();
-
 		this.drawDebugOverlay();
 	}
 
@@ -570,34 +548,7 @@ export class MediaPlayer {
 	}
 
 	private rescheduleAudioChunks(): void {
-		if (!this.audioIteratorManager) {
-			return;
-		}
-
-		if (!this.sharedAudioContext) {
-			return;
-		}
-
-		const iterator = this.audioIteratorManager.getAudioBufferIterator();
-		if (!iterator) {
-			return;
-		}
-
-		iterator.moveQueuedChunksToPauseQueue();
-		if (
-			this.playing &&
-			this.sharedAudioContext.audioContext.state === 'running' &&
-			(this.sharedAudioContext.audioContext?.getOutputTimestamp().contextTime ??
-				0) > 0
-		) {
-			this.audioIteratorManager.resumeScheduledAudioChunks({
-				playbackRate: this.playbackRate * this.globalPlaybackRate,
-				scheduleAudioNode: this.scheduleAudioNode,
-				debugAudioScheduling: this.debugAudioScheduling,
-				getAudioContextState: () =>
-					this.sharedAudioContext?.audioContext.state ?? 'suspended',
-			});
-		}
+		// TODO: Reschedule
 	}
 
 	public async setPlaybackRate(

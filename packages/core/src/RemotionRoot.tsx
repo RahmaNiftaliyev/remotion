@@ -1,5 +1,8 @@
 import React, {useMemo} from 'react';
-import {SharedAudioContextProvider} from './audio/shared-audio-tags.js';
+import {
+	SharedAudioContextProvider,
+	SharedAudioTagsContextProvider,
+} from './audio/shared-audio-tags.js';
 import {BufferingProvider} from './buffering.js';
 import {EditorPropsProvider} from './EditorProps.js';
 import type {LoggingContextValue} from './log-level-context.js';
@@ -57,11 +60,14 @@ export const RemotionRootContexts: React.FC<{
 									<DurationsContextProvider>
 										<BufferingProvider>
 											<SharedAudioContextProvider
-												numberOfAudioTags={numberOfAudioTags}
 												audioLatencyHint={audioLatencyHint}
 												audioEnabled={audioEnabled}
 											>
-												{children}
+												<SharedAudioTagsContextProvider
+													numberOfAudioTags={numberOfAudioTags}
+												>
+													{children}
+												</SharedAudioTagsContextProvider>
 											</SharedAudioContextProvider>
 										</BufferingProvider>
 									</DurationsContextProvider>

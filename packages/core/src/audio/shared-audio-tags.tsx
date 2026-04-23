@@ -151,20 +151,10 @@ export const SharedAudioTagsContext =
 	createContext<SharedAudioTagsContextValue | null>(null);
 
 export const SharedAudioContextProvider: React.FC<{
-	readonly numberOfAudioTags: number;
 	readonly children: React.ReactNode;
 	readonly audioLatencyHint: AudioContextLatencyCategory;
 	readonly audioEnabled: boolean;
-}> = ({children, numberOfAudioTags, audioLatencyHint, audioEnabled}) => {
-	const audios = useRef<AudioElem[]>([]);
-	const [initialNumberOfAudioTags] = useState(numberOfAudioTags);
-
-	if (numberOfAudioTags !== initialNumberOfAudioTags) {
-		throw new Error(
-			'The number of shared audio tags has changed dynamically. Once you have set this property, you cannot change it afterwards.',
-		);
-	}
-
+}> = ({children, audioLatencyHint, audioEnabled}) => {
 	const logLevel = useLogLevel();
 	const audioContext = useSingletonAudioContext({
 		logLevel,
@@ -265,6 +255,54 @@ export const SharedAudioContextProvider: React.FC<{
 					};
 		};
 	}, [audioContext, logLevel]);
+
+	const resume = useCallback(() => {
+		if (!audioContext) {
+			return Promise.resolve();
+		}
+
+		waitUntilActuallyResumed(audioContext, logLevel).then(() => {});
+		return audioContext.resume().then(() => {
+			nodesToResume.current.forEach((r) => r());
+			nodesToResume.current = [];
+		});
+	}, [audioContext, logLevel]);
+
+	const audioContextValue: SharedAudioContextValue = useMemo(() => {
+		return {
+			audioContext,
+			audioSyncAnchor,
+			scheduleAudioNode,
+			resume,
+		};
+	}, [audioContext, audioSyncAnchor, scheduleAudioNode, resume]);
+
+	return (
+		<SharedAudioContext.Provider value={audioContextValue}>
+			{children}
+		</SharedAudioContext.Provider>
+	);
+};
+
+export const SharedAudioTagsContextProvider: React.FC<{
+	readonly numberOfAudioTags: number;
+	readonly children: React.ReactNode;
+}> = ({children, numberOfAudioTags}) => {
+	const audios = useRef<AudioElem[]>([]);
+	const [initialNumberOfAudioTags] = useState(numberOfAudioTags);
+
+	if (numberOfAudioTags !== initialNumberOfAudioTags) {
+		throw new Error(
+			'The number of shared audio tags has changed dynamically. Once you have set this property, you cannot change it afterwards.',
+		);
+	}
+
+	const logLevel = useLogLevel();
+	const mountTime = useMountTime();
+	const env = useRemotionEnvironment();
+	const audioCtx = useContext(SharedAudioContext);
+	const audioContext = audioCtx?.audioContext ?? null;
+	const resume = audioCtx?.resume;
 
 	const refs = useMemo(() => {
 		return new Array(numberOfAudioTags).fill(true).map((): Ref => {
@@ -459,22 +497,6 @@ export const SharedAudioContextProvider: React.FC<{
 		[rerenderAudios],
 	);
 
-	const mountTime = useMountTime();
-
-	const env = useRemotionEnvironment();
-
-	const resume = useCallback(() => {
-		if (!audioContext) {
-			return Promise.resolve();
-		}
-
-		waitUntilActuallyResumed(audioContext, logLevel).then(() => {});
-		return audioContext.resume().then(() => {
-			nodesToResume.current.forEach((r) => r());
-			nodesToResume.current = [];
-		});
-	}, [audioContext, logLevel]);
-
 	const playAllAudios = useCallback(() => {
 		refs.forEach((ref) => {
 			const audio = audios.current.find((a) => a.el === ref.ref);
@@ -492,17 +514,8 @@ export const SharedAudioContextProvider: React.FC<{
 				isPlayer: env.isPlayer,
 			});
 		});
-		resume();
+		resume?.();
 	}, [logLevel, mountTime, refs, env.isPlayer, resume]);
-
-	const audioContextValue: SharedAudioContextValue = useMemo(() => {
-		return {
-			audioContext,
-			audioSyncAnchor,
-			scheduleAudioNode,
-			resume,
-		};
-	}, [audioContext, audioSyncAnchor, scheduleAudioNode, resume]);
 
 	const audioTagsValue: SharedAudioTagsContextValue = useMemo(() => {
 		return {
@@ -521,19 +534,17 @@ export const SharedAudioContextProvider: React.FC<{
 	]);
 
 	return (
-		<SharedAudioContext.Provider value={audioContextValue}>
-			<SharedAudioTagsContext.Provider value={audioTagsValue}>
-				{refs.map(({id, ref}) => {
-					return (
-						// Without preload="metadata", iOS will seek the time internally
-						// but not actually with sound. Adding `preload="metadata"` helps here.
-						// https://discord.com/channels/809501355504959528/817306414069710848/1130519583367888906
-						<audio key={id} ref={ref} preload="metadata" src={EMPTY_AUDIO} />
-					);
-				})}
-				{children}
-			</SharedAudioTagsContext.Provider>
-		</SharedAudioContext.Provider>
+		<SharedAudioTagsContext.Provider value={audioTagsValue}>
+			{refs.map(({id, ref}) => {
+				return (
+					// Without preload="metadata", iOS will seek the time internally
+					// but not actually with sound. Adding `preload="metadata"` helps here.
+					// https://discord.com/channels/809501355504959528/817306414069710848/1130519583367888906
+					<audio key={id} ref={ref} preload="metadata" src={EMPTY_AUDIO} />
+				);
+			})}
+			{children}
+		</SharedAudioTagsContext.Provider>
 	);
 };
 

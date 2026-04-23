@@ -56,6 +56,7 @@ export const audioIteratorManager = ({
 		makePrewarmedAudioIteratorCache(audioSink);
 	let audioBufferIterator: AudioIterator | null = null;
 	let audioIteratorsCreated = 0;
+	let totalAudioScheduledInSeconds = 0;
 	let currentDelayHandle: {unblock: () => void} | null = null;
 
 	const pendingScheduleWaiters: {
@@ -162,6 +163,10 @@ export const audioIteratorManager = ({
 		if (buffer.timestamp >= endTime) {
 			return;
 		}
+
+		const scheduledStart = Math.max(buffer.timestamp, startTime);
+		const scheduledEnd = Math.min(buffer.timestamp + buffer.duration, endTime);
+		totalAudioScheduledInSeconds += Math.max(0, scheduledEnd - scheduledStart);
 
 		scheduleAudioChunk({
 			buffer: buffer.buffer,
@@ -448,6 +453,7 @@ export const audioIteratorManager = ({
 		},
 		seek,
 		getAudioIteratorsCreated: () => audioIteratorsCreated,
+		getTotalAudioScheduledInSeconds: () => totalAudioScheduledInSeconds,
 		setMuted: (newMuted: boolean) => {
 			muted = newMuted;
 			gainNode.gain.value = muted ? 0 : currentVolume;

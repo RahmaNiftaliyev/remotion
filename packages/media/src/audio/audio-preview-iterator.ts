@@ -55,6 +55,7 @@ export const makeAudioIterator = ({
 					node.scheduledAtAnchor === audioContext.audioSyncAnchor.value;
 
 				if (isAlreadyPlaying && wasScheduledForThisAnchor) {
+					console.log('not cleaning up!');
 					continue;
 				}
 

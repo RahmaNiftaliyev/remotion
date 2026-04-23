@@ -126,6 +126,8 @@ import {AnimatedImages} from './AnimatedImage/Avif';
 import {AudioSmoothnessBufferInterruptionComp} from './AudioSmoothness/BufferInterruption';
 import {AudioSmoothnessNewVideoComp} from './AudioSmoothness/NewVideo';
 import {AudioSmoothnessSlicedVideoComp} from './AudioSmoothness/SlicedVideo';
+import {AudioSmoothnessTrimAfterLoopComp} from './AudioSmoothness/TrimAfterLoop';
+import {AudioSmoothnessTrimButtonComp} from './AudioSmoothness/TrimButton';
 import Amplify from './AudioTesting/Amplify';
 import {BrowserTest} from './BrowserTest';
 import {EdgeBlur} from './EdgeBlur/EdgeBlur';
@@ -1460,6 +1462,8 @@ export const Index: React.FC = () => {
 				<AudioSmoothnessNewVideoComp />
 				<AudioSmoothnessSlicedVideoComp />
 				<AudioSmoothnessBufferInterruptionComp />
+				<AudioSmoothnessTrimButtonComp />
+				<AudioSmoothnessTrimAfterLoopComp />
 			</Folder>
 			<Folder name="Postmount">
 				<Composition

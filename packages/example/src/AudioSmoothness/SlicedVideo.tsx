@@ -1,4 +1,4 @@
-import {Audio} from '@remotion/media';
+import {Video} from '@remotion/media';
 import React from 'react';
 import {Composition, Sequence, useVideoConfig} from 'remotion';
 
@@ -21,7 +21,7 @@ const SlicedVideo: React.FC = () => {
 						durationInFrames={SLICE_DURATION_FRAMES}
 						premountFor={PREMOUNT_SEC * fps}
 					>
-						<Audio src={src} trimBefore={from} />
+						<Video src={src} trimBefore={from} debugOverlay />
 					</Sequence>
 				);
 			})}

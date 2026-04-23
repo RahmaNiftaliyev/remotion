@@ -11,7 +11,6 @@ import React, {
 import {useLogLevel, useMountTime} from '../log-level-context.js';
 import {Log} from '../log.js';
 import {playAndHandleNotAllowedError} from '../play-and-handle-not-allowed-error.js';
-import {useBufferState} from '../use-buffer-state.js';
 import {useRemotionEnvironment} from '../use-remotion-environment.js';
 import type {SharedElementSourceNode} from './shared-element-source-node.js';
 import {makeSharedElementSourceNode} from './shared-element-source-node.js';

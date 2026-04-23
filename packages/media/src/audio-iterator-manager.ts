@@ -129,12 +129,6 @@ export const audioIteratorManager = ({
 			playbackRate,
 			scheduledAtAnchor: sharedAudioContext.audioSyncAnchor.value,
 		});
-		node.onended = () => {
-			// Some leniancy is needed as we find that sometimes onended is fired a bit too early
-			setTimeout(() => {
-				iterator.removeQueuedAudioNode(node);
-			}, 30);
-		};
 	};
 
 	const onAudioChunk = ({
@@ -424,6 +418,8 @@ export const audioIteratorManager = ({
 
 		console.log(
 			'new iterator',
+			Boolean(audioBufferIterator),
+			audioBufferIterator?.guessNextTimestamp(),
 			audioBufferIterator?.getQueuedPeriod(),
 			audioBufferIterator?.isDestroyed(),
 			newTime,

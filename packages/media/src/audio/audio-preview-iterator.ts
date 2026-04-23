@@ -47,7 +47,7 @@ export const makeAudioIterator = ({
 				// we should not stop the nodes
 				const isAlreadyPlaying =
 					node.scheduledTime - ALLOWED_GLOBAL_TIME_ANCHOR_SHIFT <
-					audioContext.audioContext.getOutputTimestamp().contextTime!;
+					audioContext.audioContext.currentTime!;
 
 				// except for when the audio anchor changed (e.g. through a seek)
 				const wasScheduledForThisAnchor =
@@ -125,12 +125,6 @@ export const makeAudioIterator = ({
 				playbackRate,
 				scheduledAtAnchor,
 			});
-		},
-		removeQueuedAudioNode: (node: AudioBufferSourceNode) => {
-			const index = queuedAudioNodes.findIndex((n) => n.node === node);
-			if (index !== -1) {
-				queuedAudioNodes.splice(index, 1);
-			}
 		},
 		guessNextTimestamp: () => {
 			return !Number.isFinite(mostRecentTimestamp)

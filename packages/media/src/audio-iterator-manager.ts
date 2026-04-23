@@ -15,7 +15,6 @@ import {getScheduledTime} from './audio/get-scheduled-time';
 import {StaleWaiterError, waitForTurn} from './audio/sort-by-priority';
 import type {DelayPlaybackIfNotPremounting} from './delay-playback-if-not-premounting';
 import type {Nonce} from './nonce-manager';
-import {makePrewarmedAudioIteratorCache} from './prewarm-iterator-for-looping';
 import type {SharedAudioContextForMediaPlayer} from './shared-audio-context-for-media-player';
 
 type ScheduleAudioNode = (
@@ -48,12 +47,18 @@ export const audioIteratorManager = ({
 	let currentVolume = 1;
 	let currentSeek = initialTime;
 
+	// TODO: do something with looping
+	const _looping = getIsLooping();
+	Internals.Log.trace(
+		{logLevel: 'info', tag: 'audio-iterator-manager'},
+		'looping: %s',
+		_looping,
+	);
+
 	const gainNode = sharedAudioContext.audioContext.createGain();
 	gainNode.connect(sharedAudioContext.audioContext.destination);
 
 	const audioSink = new AudioBufferSink(audioTrack);
-	const prewarmedAudioIteratorCache =
-		makePrewarmedAudioIteratorCache(audioSink);
 	let audioBufferIterator: AudioIterator | null = null;
 	let audioIteratorsCreated = 0;
 	let totalAudioScheduledInSeconds = 0;
@@ -312,7 +317,7 @@ export const audioIteratorManager = ({
 		const iterator = makeAudioIterator({
 			startFromSecond,
 			maximumTimestamp: getEndTime(),
-			cache: prewarmedAudioIteratorCache,
+			audioSink,
 			logLevel,
 		});
 		audioIteratorsCreated++;
@@ -365,16 +370,6 @@ export const audioIteratorManager = ({
 			return;
 		}
 
-		if (getIsLooping()) {
-			// If less than 1 second from the end away, we pre-warm a new iterator
-			if (getEndTime() - newTime < 1) {
-				prewarmedAudioIteratorCache.prewarmIteratorForLooping({
-					timeToSeek: getStartTime(),
-					maximumTimestamp: getEndTime(),
-				});
-			}
-		}
-
 		if (audioBufferIterator && !audioBufferIterator.isDestroyed()) {
 			const queuedPeriod = audioBufferIterator.getQueuedPeriod();
 			// If there is a missing period, but we'd have no chance to schedule nodes,
@@ -424,7 +419,6 @@ export const audioIteratorManager = ({
 		startAudioIterator,
 		getAudioBufferIterator: () => audioBufferIterator,
 		destroyIterator: () => {
-			prewarmedAudioIteratorCache.destroy();
 			audioBufferIterator?.destroy(sharedAudioContext);
 			audioBufferIterator = null;
 

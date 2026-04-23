@@ -1,7 +1,6 @@
 import {ALL_FORMATS, AudioBufferSink, Input, UrlSource} from 'mediabunny';
 import {expect, test} from 'vitest';
 import {makeAudioIterator} from '../audio/audio-preview-iterator';
-import {makePrewarmedAudioIteratorCache} from '../prewarm-iterator-for-looping';
 import type {SharedAudioContextForMediaPlayer} from '../shared-audio-context-for-media-player';
 
 const makeCache = async () => {
@@ -16,7 +15,7 @@ const makeCache = async () => {
 
 	const audioBufferSink = new AudioBufferSink(audioTrack);
 
-	return makePrewarmedAudioIteratorCache(audioBufferSink);
+	return audioBufferSink;
 };
 
 const makeMockNode = () => {
@@ -57,11 +56,11 @@ const makeMockSharedAudioContext = ({
 };
 
 test('destroy should NOT stop nodes that are already playing with the same anchor', async () => {
-	const cache = await makeCache();
+	const audioSink = await makeCache();
 	const iterator = makeAudioIterator({
 		startFromSecond: 0,
 		maximumTimestamp: Infinity,
-		cache,
+		audioSink,
 		logLevel: 'info',
 	});
 
@@ -98,11 +97,11 @@ test('destroy should NOT stop nodes that are already playing with the same ancho
 });
 
 test('destroy should stop nodes when the audio anchor changed (seek to different position)', async () => {
-	const cache = await makeCache();
+	const audioBufferSink = await makeCache();
 	const iterator = makeAudioIterator({
 		startFromSecond: 0,
 		maximumTimestamp: Infinity,
-		cache,
+		audioSink: audioBufferSink,
 		logLevel: 'info',
 	});
 

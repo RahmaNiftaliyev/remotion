@@ -1,6 +1,7 @@
+import type {AudioBufferSink} from 'mediabunny';
 import type {LogLevel} from 'remotion';
 import {Internals} from 'remotion';
-import type {PrewarmedAudioIteratorCache} from '../prewarm-iterator-for-looping';
+import {makeIteratorWithPriming} from '../make-iterator-with-priming';
 import type {SharedAudioContextForMediaPlayer} from '../shared-audio-context-for-media-player';
 
 export const HEALTHY_BUFFER_THRESHOLD_SECONDS = 1;
@@ -23,19 +24,20 @@ export type QueuedPeriod = {
 export const makeAudioIterator = ({
 	startFromSecond,
 	maximumTimestamp,
-	cache,
 	logLevel,
+	audioSink,
 }: {
 	startFromSecond: number;
 	maximumTimestamp: number;
-	cache: PrewarmedAudioIteratorCache;
 	logLevel: LogLevel;
+	audioSink: AudioBufferSink;
 }) => {
 	let destroyed = false;
-	const iterator = cache.makeIteratorOrUsePrewarmed(
-		startFromSecond,
+	const iterator = makeIteratorWithPriming({
+		audioSink,
+		timeToSeek: startFromSecond,
 		maximumTimestamp,
-	);
+	});
 	const queuedAudioNodes: QueuedNode[] = [];
 	let mostRecentTimestamp = -Infinity;
 

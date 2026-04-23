@@ -28,6 +28,7 @@ export const audioIteratorManager = ({
 	getStartTime,
 	initialMuted,
 	drawDebugOverlay,
+	initialTime,
 }: {
 	audioTrack: InputAudioTrack;
 	delayPlaybackHandleIfNotPremounting: () => DelayPlaybackIfNotPremounting;
@@ -37,9 +38,11 @@ export const audioIteratorManager = ({
 	getStartTime: () => number;
 	initialMuted: boolean;
 	drawDebugOverlay: () => void;
+	initialTime: number;
 }) => {
 	let muted = initialMuted;
 	let currentVolume = 1;
+	let currentSeek = initialTime;
 
 	const gainNode = sharedAudioContext.audioContext.createGain();
 	gainNode.connect(sharedAudioContext.audioContext.destination);
@@ -369,6 +372,12 @@ export const audioIteratorManager = ({
 		getAudioContextState: () => AudioContextState;
 		getAudioContextOutputTimestamp: () => number;
 	}) => {
+		if (currentSeek === newTime) {
+			return;
+		}
+
+		currentSeek = newTime;
+
 		if (muted) {
 			return;
 		}
@@ -416,14 +425,6 @@ export const audioIteratorManager = ({
 			}
 		}
 
-		console.log(
-			'new iterator',
-			Boolean(audioBufferIterator),
-			audioBufferIterator?.guessNextTimestamp(),
-			audioBufferIterator?.getQueuedPeriod(),
-			audioBufferIterator?.isDestroyed(),
-			newTime,
-		);
 		await startAudioIterator({
 			nonce,
 			playbackRate,

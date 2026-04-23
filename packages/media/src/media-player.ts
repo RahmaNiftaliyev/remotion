@@ -311,6 +311,7 @@ export class MediaPlayer {
 					getStartTime: () => this.getStartTime(),
 					initialMuted,
 					drawDebugOverlay: this.drawDebugOverlay,
+					initialTime: startTime,
 				});
 			}
 
@@ -398,34 +399,26 @@ export class MediaPlayer {
 			return;
 		}
 
-		const shouldSeekAudio =
-			this.audioIteratorManager &&
-			this.getAudioPlaybackTime(
-				this.sharedAudioContext?.audioContext.currentTime ?? 0,
-			) !== newTime;
-
 		try {
 			await Promise.all([
 				this.videoIteratorManager?.seek({
 					newTime,
 					nonce,
 				}),
-				shouldSeekAudio
-					? this.audioIteratorManager?.seek({
-							newTime,
-							nonce,
-							playbackRate: this.playbackRate * this.globalPlaybackRate,
-							getIsPlaying: () => this.playing,
-							scheduleAudioNode: this.scheduleAudioNode,
-							debugAudioScheduling: this.debugAudioScheduling,
-							getTargetTime: this.getTargetTime,
-							getAudioContextState: () =>
-								this.sharedAudioContext?.audioContext.state ?? 'suspended',
-							getAudioContextOutputTimestamp: () =>
-								this.sharedAudioContext?.audioContext.getOutputTimestamp()
-									.contextTime ?? 0,
-						})
-					: null,
+				this.audioIteratorManager?.seek({
+					newTime,
+					nonce,
+					playbackRate: this.playbackRate * this.globalPlaybackRate,
+					getIsPlaying: () => this.playing,
+					scheduleAudioNode: this.scheduleAudioNode,
+					debugAudioScheduling: this.debugAudioScheduling,
+					getTargetTime: this.getTargetTime,
+					getAudioContextState: () =>
+						this.sharedAudioContext?.audioContext.state ?? 'suspended',
+					getAudioContextOutputTimestamp: () =>
+						this.sharedAudioContext?.audioContext.getOutputTimestamp()
+							.contextTime ?? 0,
+				}),
 			]);
 		} catch (error) {
 			if (this.isDisposalError()) {
@@ -693,26 +686,6 @@ export class MediaPlayer {
 			offset,
 		});
 	};
-
-	private getAudioPlaybackTime(currentTime: number): number {
-		if (!this.sharedAudioContext) {
-			throw new Error('Shared audio context not found');
-		}
-
-		const globalTime =
-			(currentTime - this.sharedAudioContext.audioSyncAnchor.value) *
-			this.globalPlaybackRate;
-		const localTime = globalTime - this.sequenceOffset;
-
-		// Pass through getTrimmedTime to apply loop wrapping and trim
-		const trimmedTime = this.getTrimmedTime(localTime);
-		if (trimmedTime !== null) {
-			return trimmedTime;
-		}
-
-		// Fallback for when time is outside valid range
-		return localTime * this.playbackRate + (this.trimBefore ?? 0) / this.fps;
-	}
 
 	public setVideoFrameCallback(
 		callback: null | ((frame: CanvasImageSource) => void),

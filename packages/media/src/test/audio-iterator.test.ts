@@ -40,6 +40,7 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 		getStartTime: () => 0,
 		initialMuted: false,
 		drawDebugOverlay: () => {},
+		initialTime: 0,
 	});
 
 	const getIsPlaying = () => true;
@@ -265,6 +266,7 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 		getStartTime: () => 0,
 		initialMuted: false,
 		drawDebugOverlay: () => {},
+		initialTime: 0,
 	});
 
 	const scheduledChunks: {

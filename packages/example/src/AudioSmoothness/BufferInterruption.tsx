@@ -1,5 +1,5 @@
 import {Video} from '@remotion/media';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {AbsoluteFill, Composition, Sequence, useBufferState} from 'remotion';
 import {calculateMetadataFn} from './NewVideo';
 
@@ -10,18 +10,18 @@ const BUFFER_DURATION_MS = 3000;
 
 const Interrupter: React.FC = () => {
 	const buffer = useBufferState();
-	const [block] = useState(() => buffer.delayPlayback());
 
 	useEffect(() => {
+		const delayHandle = buffer.delayPlayback();
 		const timeout = setTimeout(() => {
-			block.unblock();
+			delayHandle.unblock();
 		}, BUFFER_DURATION_MS);
 
 		return () => {
 			clearTimeout(timeout);
-			block.unblock();
+			delayHandle.unblock();
 		};
-	}, [block]);
+	}, [buffer]);
 
 	return (
 		<AbsoluteFill

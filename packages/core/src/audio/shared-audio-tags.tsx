@@ -455,22 +455,18 @@ export const SharedAudioContextProvider: React.FC<{
 	const mountTime = useMountTime();
 
 	const env = useRemotionEnvironment();
-	const bufferState = useBufferState();
 
 	const resume = useCallback(() => {
 		if (!audioContext) {
 			return Promise.resolve();
 		}
 
-		const handle = bufferState.delayPlayback();
-		waitUntilActuallyResumed(audioContext, logLevel).then(() => {
-			handle.unblock();
-		});
+		waitUntilActuallyResumed(audioContext, logLevel).then(() => {});
 		return audioContext.resume().then(() => {
 			nodesToResume.current.forEach((r) => r());
 			nodesToResume.current = [];
 		});
-	}, [audioContext, bufferState, logLevel]);
+	}, [audioContext, logLevel]);
 
 	const playAllAudios = useCallback(() => {
 		refs.forEach((ref) => {

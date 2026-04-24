@@ -106,6 +106,12 @@ test('same goes for audio', async () => {
 		drawDebugOverlay: () => {},
 		initialTime: 0,
 		initialPlaybackRate: 1,
+		initialTrimBefore: undefined,
+		initialTrimAfter: undefined,
+		initialSequenceOffset: 0,
+		initialSequenceDurationInFrames: 10,
+		initialLoop: false,
+		initialFps: 30,
 	});
 
 	const nonceManager = makeNonceManager();
@@ -135,6 +141,11 @@ test('same goes for audio', async () => {
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 		logLevel: 'info',
 		loop: false,
+		trimBefore: undefined,
+		trimAfter: undefined,
+		sequenceOffset: 0,
+		sequenceDurationInFrames: 10,
+		fps: 30,
 	});
 
 	const iterators = manager.getAudioIteratorsCreated();

@@ -46,7 +46,6 @@ export class MediaPlayer {
 
 	audioIteratorManager: AudioIteratorManager | null = null;
 	videoIteratorManager: VideoIteratorManager | null = null;
-	private sequenceOffset: number;
 
 	private playing = false;
 	private loop = false;
@@ -54,7 +53,8 @@ export class MediaPlayer {
 
 	private trimBefore: number | undefined;
 	private trimAfter: number | undefined;
-	private initialSequenceDurationInFrames: number;
+	private sequenceDurationInFrames: number;
+	private sequenceOffset: number;
 
 	private totalDuration: number | undefined;
 
@@ -131,7 +131,7 @@ export class MediaPlayer {
 		this.bufferState = bufferState;
 		this.isPremounting = isPremounting;
 		this.isPostmounting = isPostmounting;
-		this.initialSequenceDurationInFrames = durationInFrames;
+		this.sequenceDurationInFrames = durationInFrames;
 		this.nonceManager = makeNonceManager();
 		this.onVideoFrameCallback = onVideoFrameCallback;
 		this.playing = playing;
@@ -188,13 +188,13 @@ export class MediaPlayer {
 		// Cap at the media time corresponding to the end of the sequence
 		// TODO: Initial? What if it changes=
 		return (
-			(this.initialSequenceDurationInFrames / this.fps) * this.playbackRate +
+			(this.sequenceDurationInFrames / this.fps) * this.playbackRate +
 			this.getStartTime()
 		);
 	}
 
 	private getSequenceDurationInSeconds(): number {
-		return this.initialSequenceDurationInFrames / this.fps;
+		return this.sequenceDurationInFrames / this.fps;
 	}
 
 	private getMediaEndTimestamp(): number {
@@ -322,6 +322,12 @@ export class MediaPlayer {
 					initialPlaybackRate: this.playbackRate * this.globalPlaybackRate,
 					getSequenceDurationInSeconds: () =>
 						this.getSequenceDurationInSeconds(),
+					initialTrimBefore: this.trimBefore,
+					initialTrimAfter: this.trimAfter,
+					initialSequenceOffset: this.sequenceOffset,
+					initialSequenceDurationInFrames: this.sequenceDurationInFrames,
+					initialLoop: this.loop,
+					initialFps: this.fps,
 				});
 			}
 
@@ -418,6 +424,11 @@ export class MediaPlayer {
 					getTargetTime: this.getTargetTime,
 					logLevel: this.logLevel,
 					loop: this.loop,
+					trimBefore: this.trimBefore,
+					trimAfter: this.trimAfter,
+					sequenceOffset: this.sequenceOffset,
+					sequenceDurationInFrames: this.sequenceDurationInFrames,
+					fps: this.fps,
 				}),
 			]);
 		} catch (error) {
@@ -492,33 +503,14 @@ export class MediaPlayer {
 		});
 	}
 
-	private async updateAfterTrimChange(
-		unloopedTimeInSeconds: number,
-	): Promise<void> {
-		if (!this.audioIteratorManager && !this.videoIteratorManager) {
-			return;
-		}
-
-		const newMediaTime = this.getTrimmedTime(unloopedTimeInSeconds);
-
-		// audio iterator will be re-created on next play/seek
-		// video iterator doesn't need to be re-created
-		this.audioIteratorManager?.destroyIterator();
-
-		if (newMediaTime !== null) {
-			if (!this.playing && this.videoIteratorManager) {
-				await this.seekToWithQueue(newMediaTime);
-			}
-		}
-	}
-
 	public async setTrimBefore(
 		trimBefore: number | undefined,
 		unloopedTimeInSeconds: number,
 	): Promise<void> {
 		if (this.trimBefore !== trimBefore) {
 			this.trimBefore = trimBefore;
-			await this.updateAfterTrimChange(unloopedTimeInSeconds);
+			this.audioIteratorManager?.destroyIterator();
+			await this.seekTo(unloopedTimeInSeconds);
 		}
 	}
 
@@ -528,7 +520,8 @@ export class MediaPlayer {
 	): Promise<void> {
 		if (this.trimAfter !== trimAfter) {
 			this.trimAfter = trimAfter;
-			await this.updateAfterTrimChange(unloopedTimeInSeconds);
+			this.audioIteratorManager?.destroyIterator();
+			await this.seekTo(unloopedTimeInSeconds);
 		}
 	}
 
@@ -561,8 +554,16 @@ export class MediaPlayer {
 		}
 	}
 
-	public setFps(fps: number): void {
-		this.fps = fps;
+	public async setFps(
+		fps: number,
+		unloopedTimeInSeconds: number,
+	): Promise<void> {
+		const previousFps = this.fps;
+		if (previousFps !== fps) {
+			this.fps = fps;
+			this.audioIteratorManager?.destroyIterator();
+			await this.seekTo(unloopedTimeInSeconds);
+		}
 	}
 
 	public setIsPremounting(isPremounting: boolean): void {
@@ -573,16 +574,39 @@ export class MediaPlayer {
 		this.isPostmounting = isPostmounting;
 	}
 
-	public setLoop(loop: boolean): void {
-		this.loop = loop;
+	public async setLoop(
+		loop: boolean,
+		unloopedTimeInSeconds: number,
+	): Promise<void> {
+		const previousLoop = this.loop;
+		if (previousLoop !== loop) {
+			this.loop = loop;
+			this.audioIteratorManager?.destroyIterator();
+			await this.seekTo(unloopedTimeInSeconds);
+		}
 	}
 
-	public setSequenceOffset(offset: number): void {
-		this.sequenceOffset = offset;
+	public async setSequenceOffset(
+		offset: number,
+		unloopedTimeInSeconds: number,
+	): Promise<void> {
+		const previousOffset = this.sequenceOffset;
+		if (previousOffset !== offset) {
+			this.sequenceOffset = offset;
+			this.audioIteratorManager?.destroyIterator();
+			await this.seekTo(unloopedTimeInSeconds);
+		}
 	}
 
-	public setSequenceDurationInFrames(sequenceDurationInFrames: number): void {
-		this.initialSequenceDurationInFrames = sequenceDurationInFrames;
+	public async setSequenceDurationInFrames(
+		sequenceDurationInFrames: number,
+		unloopedTimeInSeconds: number,
+	): Promise<void> {
+		const previousDuration = this.sequenceDurationInFrames;
+		if (previousDuration !== sequenceDurationInFrames) {
+			this.sequenceDurationInFrames = sequenceDurationInFrames;
+			await this.seekTo(unloopedTimeInSeconds);
+		}
 	}
 
 	public async dispose(): Promise<void> {

@@ -146,8 +146,8 @@ export const useCommonEffects = ({
 			return;
 		}
 
-		mediaPlayer.setLoop(loop);
-	}, [loop, mediaPlayerReady, mediaPlayerRef]);
+		mediaPlayer.setLoop(loop, currentTimeRef.current);
+	}, [loop, mediaPlayerReady, mediaPlayerRef, currentTimeRef]);
 
 	useLayoutEffect(() => {
 		const mediaPlayer = mediaPlayerRef.current;
@@ -155,8 +155,11 @@ export const useCommonEffects = ({
 			return;
 		}
 
-		mediaPlayer.setSequenceDurationInFrames(durationInFrames);
-	}, [durationInFrames, mediaPlayerReady, mediaPlayerRef]);
+		mediaPlayer.setSequenceDurationInFrames(
+			durationInFrames,
+			currentTimeRef.current,
+		);
+	}, [durationInFrames, mediaPlayerReady, mediaPlayerRef, currentTimeRef]);
 
 	useLayoutEffect(() => {
 		const mediaPlayer = mediaPlayerRef.current;
@@ -182,8 +185,8 @@ export const useCommonEffects = ({
 			return;
 		}
 
-		mediaPlayer.setFps(fps);
-	}, [fps, mediaPlayerReady, mediaPlayerRef]);
+		mediaPlayer.setFps(fps, currentTimeRef.current);
+	}, [fps, mediaPlayerReady, mediaPlayerRef, currentTimeRef]);
 
 	useLayoutEffect(() => {
 		const mediaPlayer = mediaPlayerRef.current;
@@ -191,8 +194,8 @@ export const useCommonEffects = ({
 			return;
 		}
 
-		mediaPlayer.setSequenceOffset(sequenceOffset);
-	}, [sequenceOffset, mediaPlayerReady, mediaPlayerRef]);
+		mediaPlayer.setSequenceOffset(sequenceOffset, currentTimeRef.current);
+	}, [sequenceOffset, mediaPlayerReady, mediaPlayerRef, currentTimeRef]);
 
 	useLayoutEffect(() => {
 		const mediaPlayer = mediaPlayerRef.current;

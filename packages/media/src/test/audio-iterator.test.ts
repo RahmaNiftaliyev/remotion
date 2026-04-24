@@ -44,6 +44,12 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 		drawDebugOverlay: () => {},
 		initialTime: 0,
 		initialPlaybackRate: 1,
+		initialTrimBefore: undefined,
+		initialTrimAfter: undefined,
+		initialSequenceOffset: 0,
+		initialSequenceDurationInFrames: 10,
+		initialLoop: false,
+		initialFps: 30,
 	});
 
 	const scheduledChunks: number[] = [];
@@ -76,6 +82,11 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 			logLevel: 'info',
 			loop: false,
+			trimBefore: undefined,
+			trimAfter: undefined,
+			sequenceOffset: 0,
+			sequenceDurationInFrames: 10,
+			fps,
 		});
 	};
 
@@ -266,6 +277,12 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 		drawDebugOverlay: () => {},
 		initialTime: 0,
 		initialPlaybackRate: 1,
+		initialTrimBefore: undefined,
+		initialTrimAfter: undefined,
+		initialSequenceOffset: 0,
+		initialSequenceDurationInFrames: 10,
+		initialLoop: false,
+		initialFps: 30,
 	});
 
 	const scheduledChunks: {
@@ -298,6 +315,11 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 			logLevel: 'info',
 			loop: false,
+			trimBefore: undefined,
+			trimAfter: undefined,
+			sequenceOffset: 0,
+			sequenceDurationInFrames: 10,
+			fps,
 		});
 	}
 

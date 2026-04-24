@@ -37,6 +37,12 @@ export const audioIteratorManager = ({
 	drawDebugOverlay,
 	initialTime,
 	initialPlaybackRate,
+	initialTrimBefore,
+	initialTrimAfter,
+	initialSequenceOffset,
+	initialSequenceDurationInFrames,
+	initialLoop,
+	initialFps,
 }: {
 	audioTrack: InputAudioTrack;
 	delayPlaybackHandleIfNotPremounting: () => DelayPlaybackIfNotPremounting;
@@ -50,10 +56,25 @@ export const audioIteratorManager = ({
 	drawDebugOverlay: () => void;
 	initialTime: number;
 	initialPlaybackRate: number;
+	initialTrimBefore: number | undefined;
+	initialTrimAfter: number | undefined;
+	initialSequenceOffset: number;
+	initialSequenceDurationInFrames: number;
+	initialLoop: boolean;
+	initialFps: number;
 }) => {
 	let muted = initialMuted;
 	let currentVolume = 1;
-	let currentSeek = {time: initialTime, playbackRate: initialPlaybackRate};
+	let currentSeek = {
+		time: initialTime,
+		playbackRate: initialPlaybackRate,
+		trimBefore: initialTrimBefore,
+		trimAfter: initialTrimAfter,
+		sequenceOffset: initialSequenceOffset,
+		sequenceDurationInFrames: initialSequenceDurationInFrames,
+		loop: initialLoop,
+		fps: initialFps,
+	};
 
 	// TODO: do something with looping
 	const _looping = getIsLooping();
@@ -372,6 +393,11 @@ export const audioIteratorManager = ({
 		getTargetTime,
 		logLevel,
 		loop,
+		trimBefore,
+		trimAfter,
+		sequenceOffset,
+		sequenceDurationInFrames,
+		fps,
 	}: {
 		newTime: number;
 		nonce: Nonce;
@@ -383,16 +409,35 @@ export const audioIteratorManager = ({
 		) => number | null;
 		logLevel: LogLevel;
 		loop: boolean;
+		trimBefore: number | undefined;
+		trimAfter: number | undefined;
+		sequenceOffset: number;
+		sequenceDurationInFrames: number;
+		fps: number;
 	}) => {
-		// TODO: Current seek should also compare playback rate!
 		if (
 			currentSeek.time === newTime &&
-			currentSeek.playbackRate === playbackRate
+			currentSeek.playbackRate === playbackRate &&
+			currentSeek.trimBefore === trimBefore &&
+			currentSeek.trimAfter === trimAfter &&
+			currentSeek.sequenceOffset === sequenceOffset &&
+			currentSeek.sequenceDurationInFrames === sequenceDurationInFrames &&
+			currentSeek.loop === loop &&
+			currentSeek.fps === fps
 		) {
 			return;
 		}
 
-		currentSeek = {time: newTime, playbackRate};
+		currentSeek = {
+			time: newTime,
+			playbackRate,
+			trimBefore,
+			trimAfter,
+			sequenceOffset,
+			sequenceDurationInFrames,
+			loop,
+			fps,
+		};
 
 		if (muted) {
 			return;

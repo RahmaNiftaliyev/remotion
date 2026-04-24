@@ -186,7 +186,6 @@ export class MediaPlayer {
 
 	private getSequenceEndTimestamp(): number {
 		// Cap at the media time corresponding to the end of the sequence
-		// TODO: Initial? What if it changes=
 		return (
 			(this.sequenceDurationInFrames / this.fps) * this.playbackRate +
 			this.getStartTime()
@@ -670,6 +669,7 @@ export class MediaPlayer {
 
 		const targetTime = this.getTargetTime(mediaTimestamp, currentTime);
 		if (targetTime === null) {
+			console.log('not started', mediaTimestamp, currentTime);
 			return {
 				type: 'not-started',
 				reason:
@@ -696,16 +696,20 @@ export class MediaPlayer {
 			originalUnloopedMediaTimestamp,
 		});
 
+		const scheduledTime = getScheduledTime({
+			mediaTimestamp,
+			targetTime,
+			currentTime,
+			sequenceStartTime,
+		});
+
+		console.log('here', mediaTimestamp, scheduledTime, targetTime);
+
 		return this.sharedAudioContext.scheduleAudioNode({
 			node,
 			mediaTimestamp,
 			currentTime,
-			scheduledTime: getScheduledTime({
-				mediaTimestamp,
-				targetTime,
-				currentTime,
-				sequenceStartTime,
-			}),
+			scheduledTime,
 			duration,
 			offset,
 			originalUnloopedMediaTimestamp,

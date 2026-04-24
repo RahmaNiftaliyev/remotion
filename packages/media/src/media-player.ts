@@ -344,6 +344,8 @@ export class MediaPlayer {
 								getTargetTime: this.getTargetTime,
 								logLevel: this.logLevel,
 								loop: this.loop,
+								unscheduleAudioNode:
+									this.sharedAudioContext!.unscheduleAudioNode,
 							})
 						: Promise.resolve(),
 					this.videoIteratorManager

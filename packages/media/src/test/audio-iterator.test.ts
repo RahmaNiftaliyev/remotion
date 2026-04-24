@@ -24,6 +24,8 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 		};
 	};
 
+	const unscheduleAudioNode = () => {};
+
 	const manager = audioIteratorManager({
 		audioTrack,
 		delayPlaybackHandleIfNotPremounting: () => ({
@@ -34,6 +36,7 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 			audioContext,
 			audioSyncAnchor: {value: 0},
 			scheduleAudioNode: scheduleSharedAudioNode,
+			unscheduleAudioNode,
 		},
 		getIsLooping: () => false,
 		getMediaEndTimestamp: () => Infinity,
@@ -267,6 +270,7 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 				type: 'started',
 				scheduledTime: 0,
 			}),
+			unscheduleAudioNode: () => {},
 		},
 		getIsLooping: () => false,
 		getMediaEndTimestamp: () => endTime,

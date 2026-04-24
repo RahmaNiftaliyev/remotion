@@ -47,6 +47,7 @@ test('destroy should NOT stop nodes that are already playing with the same ancho
 		loop: false,
 		playbackRate: 1,
 		sequenceDurationInSeconds: 10,
+		unscheduleAudioNode: () => {},
 	});
 
 	const mock1 = makeMockNode();
@@ -87,6 +88,7 @@ test('destroy should stop nodes when the audio anchor changed (seek to different
 		loop: false,
 		playbackRate: 1,
 		sequenceDurationInSeconds: 10,
+		unscheduleAudioNode: () => {},
 	});
 
 	const mock1 = makeMockNode();

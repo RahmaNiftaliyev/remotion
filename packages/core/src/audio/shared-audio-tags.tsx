@@ -83,6 +83,7 @@ type SharedAudioContextValue = {
 	resume: () => Promise<void>;
 	suspend: () => void;
 	getIsResumingAudioContext: () => Promise<void> | null;
+	unscheduleAudioNode: (node: AudioBufferSourceNode) => void;
 };
 
 type SharedAudioTagsContextValue = {
@@ -162,6 +163,12 @@ export const SharedAudioContext = createContext<SharedAudioContextValue | null>(
 export const SharedAudioTagsContext =
 	createContext<SharedAudioTagsContextValue | null>(null);
 
+type NodeToResume = {
+	scheduledTime: number;
+	offset: number;
+	duration: number;
+};
+
 export const SharedAudioContextProvider: React.FC<{
 	readonly children: React.ReactNode;
 	readonly audioLatencyHint: AudioContextLatencyCategory;
@@ -201,7 +208,13 @@ export const SharedAudioContextProvider: React.FC<{
 		mediaEndTime: number | null;
 	}>({scheduledEndTime: null, mediaEndTime: null});
 
-	const nodesToResume = useRef<(() => void)[]>([]);
+	const nodesToResume = useRef<Map<AudioBufferSourceNode, NodeToResume>>(
+		new Map(),
+	);
+
+	const unscheduleAudioNode = useCallback((node: AudioBufferSourceNode) => {
+		nodesToResume.current.delete(node);
+	}, []);
 
 	const scheduleAudioNode = useMemo(() => {
 		return ({
@@ -219,9 +232,11 @@ export const SharedAudioContextProvider: React.FC<{
 
 			if (duration > 0) {
 				if (audioContext.state === 'suspended') {
-					nodesToResume.current.push(() =>
-						node.start(scheduledTime, offset, duration),
-					);
+					nodesToResume.current.set(node, {
+						scheduledTime,
+						offset,
+						duration,
+					});
 				} else {
 					node.start(scheduledTime, offset, duration);
 				}
@@ -305,8 +320,10 @@ export const SharedAudioContextProvider: React.FC<{
 				isResuming.current = null;
 			});
 		return audioContext.resume().then(() => {
-			nodesToResume.current.forEach((r) => r());
-			nodesToResume.current = [];
+			nodesToResume.current.forEach((r, node) =>
+				node.start(r.scheduledTime, r.offset, r.duration),
+			);
+			nodesToResume.current.clear();
 		});
 	}, [audioContext, logLevel]);
 
@@ -336,6 +353,7 @@ export const SharedAudioContextProvider: React.FC<{
 			resume,
 			suspend,
 			getIsResumingAudioContext,
+			unscheduleAudioNode,
 		};
 	}, [
 		audioContext,
@@ -345,6 +363,7 @@ export const SharedAudioContextProvider: React.FC<{
 		resume,
 		suspend,
 		getIsResumingAudioContext,
+		unscheduleAudioNode,
 	]);
 
 	return (

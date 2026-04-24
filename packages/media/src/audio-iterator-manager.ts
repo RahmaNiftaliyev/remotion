@@ -165,9 +165,7 @@ export const audioIteratorManager = ({
 			return;
 		}
 
-		const iterator = audioBufferIterator;
-
-		iterator.addQueuedAudioNode({
+		audioBufferIterator.addQueuedAudioNode({
 			node,
 			timestamp: mediaTimestamp,
 			buffer,
@@ -334,6 +332,7 @@ export const audioIteratorManager = ({
 		getTargetTime,
 		logLevel,
 		loop,
+		unscheduleAudioNode,
 	}: {
 		startFromSecond: number;
 		nonce: Nonce;
@@ -345,8 +344,14 @@ export const audioIteratorManager = ({
 		) => number | null;
 		logLevel: LogLevel;
 		loop: boolean;
+		unscheduleAudioNode: (node: AudioBufferSourceNode) => void;
 	}) => {
 		if (muted) {
+			return;
+		}
+
+		const maximumTimestamp = getMediaEndTimestamp();
+		if (startFromSecond >= maximumTimestamp) {
 			return;
 		}
 
@@ -356,12 +361,13 @@ export const audioIteratorManager = ({
 
 		const iterator = makeAudioIterator({
 			startFromSecond,
-			maximumTimestamp: getMediaEndTimestamp(),
+			maximumTimestamp,
 			audioSink,
 			logLevel,
 			loop,
 			playbackRate,
 			sequenceDurationInSeconds: getSequenceDurationInSeconds(),
+			unscheduleAudioNode,
 		});
 		audioIteratorsCreated++;
 		audioBufferIterator = iterator;
@@ -484,6 +490,7 @@ export const audioIteratorManager = ({
 			getTargetTime,
 			logLevel,
 			loop,
+			unscheduleAudioNode: sharedAudioContext.unscheduleAudioNode,
 		});
 
 		// Not further scheduling, initial iterator is already running

@@ -26,6 +26,7 @@ export const makeAudioIterator = ({
 	loop,
 	playbackRate,
 	sequenceDurationInSeconds,
+	unscheduleAudioNode,
 }: {
 	startFromSecond: number;
 	maximumTimestamp: number;
@@ -34,6 +35,7 @@ export const makeAudioIterator = ({
 	loop: boolean;
 	playbackRate: number;
 	sequenceDurationInSeconds: number;
+	unscheduleAudioNode: (node: AudioBufferSourceNode) => void;
 }) => {
 	let destroyed = false;
 	const iterator = makeIteratorWithPriming({
@@ -49,6 +51,7 @@ export const makeAudioIterator = ({
 
 	const cleanupAudioQueue = () => {
 		for (const node of queuedAudioNodes) {
+			unscheduleAudioNode(node.node);
 			try {
 				node.node.stop();
 			} catch {

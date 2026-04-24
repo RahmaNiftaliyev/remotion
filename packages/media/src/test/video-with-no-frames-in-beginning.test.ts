@@ -96,6 +96,7 @@ test('same goes for audio', async () => {
 				type: 'started',
 				scheduledTime: 0,
 			}),
+			unscheduleAudioNode: () => {},
 		},
 		getIsLooping: () => false,
 		getMediaEndTimestamp: () => Infinity,
@@ -127,6 +128,7 @@ test('same goes for audio', async () => {
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 		logLevel: 'info',
 		loop: false,
+		unscheduleAudioNode: () => {},
 	});
 
 	await manager.waitForNScheduledNodes(2);

@@ -107,7 +107,7 @@ test('same goes for audio', async () => {
 
 	const nonceManager = makeNonceManager();
 
-	await manager.startAudioIterator({
+	manager.startAudioIterator({
 		nonce: nonceManager.createAsyncOperation(),
 		playbackRate: 1,
 		startFromSecond: 0.06671494248275864,
@@ -117,10 +117,11 @@ test('same goes for audio', async () => {
 		}),
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 		logLevel: 'info',
+		loop: false,
 	});
 
 	await manager.waitForNScheduledNodes(2);
-	await manager.seek({
+	manager.seek({
 		newTime: 0.10007241372413796,
 		nonce: nonceManager.createAsyncOperation(),
 		playbackRate: 1,
@@ -130,6 +131,7 @@ test('same goes for audio', async () => {
 		}),
 		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 		logLevel: 'info',
+		loop: false,
 	});
 
 	const iterators = manager.getAudioIteratorsCreated();

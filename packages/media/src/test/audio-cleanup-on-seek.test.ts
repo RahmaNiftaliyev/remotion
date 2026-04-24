@@ -44,6 +44,7 @@ test('destroy should NOT stop nodes that are already playing with the same ancho
 		maximumTimestamp: Infinity,
 		audioSink,
 		logLevel: 'info',
+		loop: false,
 	});
 
 	const mock1 = makeMockNode();
@@ -83,6 +84,7 @@ test('destroy should stop nodes when the audio anchor changed (seek to different
 		maximumTimestamp: Infinity,
 		audioSink: audioBufferSink,
 		logLevel: 'info',
+		loop: false,
 	});
 
 	const mock1 = makeMockNode();

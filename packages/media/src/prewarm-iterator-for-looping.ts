@@ -1,5 +1,4 @@
-import type {AudioBufferSink, CanvasSink, WrappedCanvas} from 'mediabunny';
-import {makeIteratorWithPriming} from './make-iterator-with-priming';
+import type {CanvasSink, WrappedCanvas} from 'mediabunny';
 
 export const makePrewarmedVideoIteratorCache = (videoSink: CanvasSink) => {
 	const prewarmedVideoIterators: Map<
@@ -42,20 +41,3 @@ export const makePrewarmedVideoIteratorCache = (videoSink: CanvasSink) => {
 export type PrewarmedVideoIteratorCache = ReturnType<
 	typeof makePrewarmedVideoIteratorCache
 >;
-
-export const makePrewarmedAudioIteratorCache = (audioSink: AudioBufferSink) => {
-	const makeIteratorOrUsePrewarmed = (
-		timeToSeek: number,
-		maximumTimestamp: number,
-	) => {
-		return makeIteratorWithPriming({
-			audioSink,
-			timeToSeek,
-			maximumTimestamp,
-		});
-	};
-
-	return {
-		makeIteratorOrUsePrewarmed,
-	};
-};

@@ -288,13 +288,14 @@ export const audioIteratorManager = ({
 		});
 	};
 
-	const startAudioIterator = async ({
+	const startAudioIterator = ({
 		nonce,
 		playbackRate,
 		startFromSecond,
 		scheduleAudioNode,
 		getTargetTime,
 		logLevel,
+		loop,
 	}: {
 		startFromSecond: number;
 		nonce: Nonce;
@@ -305,6 +306,7 @@ export const audioIteratorManager = ({
 			currentTime: number,
 		) => number | null;
 		logLevel: LogLevel;
+		loop: boolean;
 	}) => {
 		if (muted) {
 			return;
@@ -319,6 +321,7 @@ export const audioIteratorManager = ({
 			maximumTimestamp: getEndTime(),
 			audioSink,
 			logLevel,
+			loop,
 		});
 		audioIteratorsCreated++;
 		audioBufferIterator = iterator;
@@ -342,13 +345,14 @@ export const audioIteratorManager = ({
 		});
 	};
 
-	const seek = async ({
+	const seek = ({
 		newTime,
 		nonce,
 		playbackRate,
 		scheduleAudioNode,
 		getTargetTime,
 		logLevel,
+		loop,
 	}: {
 		newTime: number;
 		nonce: Nonce;
@@ -359,6 +363,7 @@ export const audioIteratorManager = ({
 			currentTime: number,
 		) => number | null;
 		logLevel: LogLevel;
+		loop: boolean;
 	}) => {
 		if (currentSeek === newTime) {
 			return;
@@ -403,13 +408,14 @@ export const audioIteratorManager = ({
 			}
 		}
 
-		await startAudioIterator({
+		startAudioIterator({
 			nonce,
 			playbackRate,
 			startFromSecond: newTime,
 			scheduleAudioNode,
 			getTargetTime,
 			logLevel,
+			loop,
 		});
 
 		// Not further scheduling, initial iterator is already running

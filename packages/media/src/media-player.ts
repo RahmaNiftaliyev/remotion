@@ -323,6 +323,7 @@ export class MediaPlayer {
 								scheduleAudioNode: this.scheduleAudioNode,
 								getTargetTime: this.getTargetTime,
 								logLevel: this.logLevel,
+								loop: this.loop,
 							})
 						: Promise.resolve(),
 					this.videoIteratorManager
@@ -402,6 +403,7 @@ export class MediaPlayer {
 					scheduleAudioNode: this.scheduleAudioNode,
 					getTargetTime: this.getTargetTime,
 					logLevel: this.logLevel,
+					loop: this.loop,
 				}),
 			]);
 		} catch (error) {

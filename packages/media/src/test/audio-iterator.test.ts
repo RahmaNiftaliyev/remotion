@@ -64,14 +64,15 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 		};
 	};
 
-	const seek = async ({time}: {time: number}) => {
-		await manager.seek({
+	const seek = ({time}: {time: number}) => {
+		manager.seek({
 			newTime: time,
 			scheduleAudioNode,
 			nonce: makeNonceManager().createAsyncOperation(),
 			playbackRate,
 			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 			logLevel: 'info',
+			loop: false,
 		});
 	};
 
@@ -290,6 +291,7 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 			playbackRate: 1,
 			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
 			logLevel: 'info',
+			loop: false,
 		});
 	}
 

@@ -23,17 +23,20 @@ export const makeAudioIterator = ({
 	startFromSecond,
 	maximumTimestamp,
 	audioSink,
+	loop,
 }: {
 	startFromSecond: number;
 	maximumTimestamp: number;
 	logLevel: LogLevel;
 	audioSink: AudioBufferSink;
+	loop: boolean;
 }) => {
 	let destroyed = false;
 	const iterator = makeIteratorWithPriming({
 		audioSink,
 		timeToSeek: startFromSecond,
 		maximumTimestamp,
+		loop,
 	});
 	const queuedAudioNodes: QueuedNode[] = [];
 	let mostRecentTimestamp = -Infinity;

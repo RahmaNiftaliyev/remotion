@@ -35,6 +35,7 @@ export const audioIteratorManager = ({
 	initialMuted,
 	drawDebugOverlay,
 	initialTime,
+	initialPlaybackRate,
 }: {
 	audioTrack: InputAudioTrack;
 	delayPlaybackHandleIfNotPremounting: () => DelayPlaybackIfNotPremounting;
@@ -46,10 +47,11 @@ export const audioIteratorManager = ({
 	initialMuted: boolean;
 	drawDebugOverlay: () => void;
 	initialTime: number;
+	initialPlaybackRate: number;
 }) => {
 	let muted = initialMuted;
 	let currentVolume = 1;
-	let currentSeek = initialTime;
+	let currentSeek = {time: initialTime, playbackRate: initialPlaybackRate};
 
 	// TODO: do something with looping
 	const _looping = getIsLooping();
@@ -379,11 +381,15 @@ export const audioIteratorManager = ({
 		logLevel: LogLevel;
 		loop: boolean;
 	}) => {
-		if (currentSeek === newTime) {
+		// TODO: Current seek should also compare playback rate!
+		if (
+			currentSeek.time === newTime &&
+			currentSeek.playbackRate === playbackRate
+		) {
 			return;
 		}
 
-		currentSeek = newTime;
+		currentSeek = {time: newTime, playbackRate};
 
 		if (muted) {
 			return;

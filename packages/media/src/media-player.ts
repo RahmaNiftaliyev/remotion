@@ -319,6 +319,7 @@ export class MediaPlayer {
 					initialMuted,
 					drawDebugOverlay: this.drawDebugOverlay,
 					initialTime: startTime,
+					initialPlaybackRate: this.playbackRate * this.globalPlaybackRate,
 				});
 			}
 

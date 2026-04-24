@@ -3,7 +3,7 @@ import {parseColor} from './parse-color';
 const CLIPPING_COLOR = '#FF7F50';
 
 export const drawBars = (
-	canvas: HTMLCanvasElement,
+	canvas: HTMLCanvasElement | OffscreenCanvas,
 	peaks: Float32Array,
 	color: string,
 	volume: number,

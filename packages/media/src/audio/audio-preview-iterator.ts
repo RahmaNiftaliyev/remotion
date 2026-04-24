@@ -59,7 +59,7 @@ export const makeAudioIterator = ({
 		if (next.value) {
 			mostRecentTimestamp = Math.max(
 				mostRecentTimestamp,
-				next.value.timestamp + next.value.duration,
+				next.value.timestamp + next.value.buffer.duration,
 			);
 		}
 

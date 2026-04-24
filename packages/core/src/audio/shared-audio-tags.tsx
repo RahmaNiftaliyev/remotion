@@ -59,6 +59,7 @@ export type ScheduleAudioNodeOptions = {
 	readonly mediaTimestamp: number;
 	readonly currentTime: number;
 	readonly scheduledTime: number;
+	readonly originalUnloopedMediaTimestamp: number;
 	readonly duration: number;
 	readonly offset: number;
 };
@@ -210,6 +211,7 @@ export const SharedAudioContextProvider: React.FC<{
 			scheduledTime,
 			duration,
 			offset,
+			originalUnloopedMediaTimestamp,
 		}: ScheduleAudioNodeOptions): ScheduleAudioNodeResult => {
 			if (!audioContext) {
 				throw new Error('Audio context not found');
@@ -267,6 +269,9 @@ export const SharedAudioContextProvider: React.FC<{
 				'offset=' + offset.toFixed(4),
 				'latency=' + latency.toFixed(4),
 				'state=' + audioContext.state,
+				originalUnloopedMediaTimestamp !== mediaTime
+					? 'original_ts=' + originalUnloopedMediaTimestamp.toFixed(4)
+					: '',
 			);
 
 			prev.scheduledEndTime = scheduledEndTime;

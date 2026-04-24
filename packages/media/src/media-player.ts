@@ -54,7 +54,7 @@ export class MediaPlayer {
 
 	private trimBefore: number | undefined;
 	private trimAfter: number | undefined;
-	private durationInFrames: number;
+	private initialSequenceDurationInFrames: number;
 
 	private totalDuration: number | undefined;
 
@@ -131,7 +131,7 @@ export class MediaPlayer {
 		this.bufferState = bufferState;
 		this.isPremounting = isPremounting;
 		this.isPostmounting = isPostmounting;
-		this.durationInFrames = durationInFrames;
+		this.initialSequenceDurationInFrames = durationInFrames;
 		this.nonceManager = makeNonceManager();
 		this.onVideoFrameCallback = onVideoFrameCallback;
 		this.playing = playing;
@@ -184,7 +184,16 @@ export class MediaPlayer {
 		return (this.trimBefore ?? 0) / this.fps;
 	}
 
-	private getEndTime(): number {
+	private getSequenceEndTimestamp(): number {
+		// Cap at the media time corresponding to the end of the sequence
+		const sequenceEndMediaTime =
+			(this.initialSequenceDurationInFrames / this.fps) * this.playbackRate +
+			(this.trimBefore ?? 0) / this.fps;
+
+		return sequenceEndMediaTime;
+	}
+
+	private getMediaEndTimestamp(): number {
 		const mediaEndTime = calculateEndTime({
 			mediaDurationInSeconds: this.totalDuration!,
 			ifNoMediaDuration: 'fail',
@@ -193,17 +202,18 @@ export class MediaPlayer {
 			trimBefore: this.trimBefore,
 			fps: this.fps,
 		});
+		return mediaEndTime;
+	}
 
+	private getVideoEndTime(): number {
 		if (this.loop) {
-			return mediaEndTime;
+			return this.getMediaEndTimestamp();
 		}
 
-		// Cap at the media time corresponding to the end of the sequence
-		const sequenceEndMediaTime =
-			(this.durationInFrames / this.fps) * this.playbackRate +
-			(this.trimBefore ?? 0) / this.fps;
-
-		return Math.min(mediaEndTime, sequenceEndMediaTime);
+		return Math.min(
+			this.getMediaEndTimestamp(),
+			this.getSequenceEndTimestamp(),
+		);
 	}
 
 	private async _initialize(
@@ -275,7 +285,7 @@ export class MediaPlayer {
 					getOnVideoFrameCallback: () => this.onVideoFrameCallback,
 					logLevel: this.logLevel,
 					drawDebugOverlay: this.drawDebugOverlay,
-					getEndTime: () => this.getEndTime(),
+					getEndTime: () => this.getVideoEndTime(),
 					getStartTime: () => this.getStartTime(),
 					getIsLooping: () => this.loop,
 				});
@@ -303,7 +313,8 @@ export class MediaPlayer {
 						this.delayPlaybackHandleIfNotPremounting,
 					sharedAudioContext: this.sharedAudioContext,
 					getIsLooping: () => this.loop,
-					getEndTime: () => this.getEndTime(),
+					getMediaEndTimestamp: () => this.getMediaEndTimestamp(),
+					getSequenceEndTimestamp: () => this.getSequenceEndTimestamp(),
 					getStartTime: () => this.getStartTime(),
 					initialMuted,
 					drawDebugOverlay: this.drawDebugOverlay,
@@ -567,8 +578,8 @@ export class MediaPlayer {
 		this.sequenceOffset = offset;
 	}
 
-	public setDurationInFrames(durationInFrames: number): void {
-		this.durationInFrames = durationInFrames;
+	public setSequenceDurationInFrames(sequenceDurationInFrames: number): void {
+		this.initialSequenceDurationInFrames = sequenceDurationInFrames;
 	}
 
 	public async dispose(): Promise<void> {
@@ -619,6 +630,7 @@ export class MediaPlayer {
 	private scheduleAudioNode = (
 		node: AudioBufferSourceNode,
 		mediaTimestamp: number,
+		originalUnloopedMediaTimestamp: number,
 	): ScheduleAudioNodeResult => {
 		if (!this.sharedAudioContext) {
 			throw new Error('Shared audio context not found');
@@ -640,7 +652,7 @@ export class MediaPlayer {
 		}
 
 		const sequenceStartTime = this.getStartTime();
-		const sequenceEndTime = this.getEndTime();
+		const sequenceEndTime = this.getSequenceEndTimestamp();
 
 		const offset = getOffset({
 			mediaTimestamp,
@@ -665,6 +677,7 @@ export class MediaPlayer {
 				offset,
 			}),
 			offset,
+			originalUnloopedMediaTimestamp,
 		});
 	};
 
@@ -696,6 +709,5 @@ export class MediaPlayer {
 		}
 
 		this.audioIteratorManager.destroyIterator();
-		console.log('destroyed');
 	};
 }

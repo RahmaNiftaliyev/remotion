@@ -2,21 +2,28 @@ import type {AudioBufferSink, WrappedAudioBuffer} from 'mediabunny';
 
 const AUDIO_PRIMING_SECONDS = 0.5;
 
+export type BufferWithMediaTimestamp = {
+	buffer: WrappedAudioBuffer;
+	timestamp: number;
+};
+
 async function* makeIteratorWithPrimingInner(
 	audioSink: AudioBufferSink,
 	timeToSeek: number,
 	maximumTimestamp: number,
-): AsyncGenerator<WrappedAudioBuffer, void, unknown> {
+): AsyncGenerator<BufferWithMediaTimestamp, void, unknown> {
 	const primingStart = Math.max(0, timeToSeek - AUDIO_PRIMING_SECONDS);
 	const iterator = audioSink.buffers(primingStart, maximumTimestamp);
 
-	console.log({timeToSeek, maximumTimestamp});
 	for await (const buffer of iterator) {
 		if (buffer.timestamp + buffer.duration <= timeToSeek) {
 			continue;
 		}
 
-		yield buffer;
+		yield {
+			buffer,
+			timestamp: buffer.timestamp,
+		};
 	}
 }
 
@@ -24,13 +31,23 @@ async function* makeLoopingIterator(
 	audioSink: AudioBufferSink,
 	timeToSeek: number,
 	maximumTimestamp: number,
-): AsyncGenerator<WrappedAudioBuffer, void, unknown> {
+): AsyncGenerator<BufferWithMediaTimestamp, void, unknown> {
+	const duration = maximumTimestamp - timeToSeek;
+	let iteration = 0;
+
 	while (true) {
-		yield* makeIteratorWithPrimingInner(
+		for await (const item of makeIteratorWithPrimingInner(
 			audioSink,
 			timeToSeek,
 			maximumTimestamp,
-		);
+		)) {
+			yield {
+				buffer: item.buffer,
+				timestamp: item.timestamp + iteration * duration,
+			};
+		}
+
+		iteration++;
 	}
 }
 
@@ -44,7 +61,7 @@ export const makeIteratorWithPriming = ({
 	timeToSeek: number;
 	maximumTimestamp: number;
 	loop: boolean;
-}): AsyncGenerator<WrappedAudioBuffer, void, unknown> => {
+}): AsyncGenerator<BufferWithMediaTimestamp, void, unknown> => {
 	if (loop) {
 		return makeLoopingIterator(audioSink, timeToSeek, maximumTimestamp);
 	}

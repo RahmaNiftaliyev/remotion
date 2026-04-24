@@ -155,7 +155,7 @@ export const useCommonEffects = ({
 			return;
 		}
 
-		mediaPlayer.setDurationInFrames(durationInFrames);
+		mediaPlayer.setSequenceDurationInFrames(durationInFrames);
 	}, [durationInFrames, mediaPlayerReady, mediaPlayerRef]);
 
 	useLayoutEffect(() => {

@@ -1,4 +1,4 @@
-import type {InputAudioTrack, WrappedAudioBuffer} from 'mediabunny';
+import {type InputAudioTrack} from 'mediabunny';
 import {AudioBufferSink, InputDisposedError} from 'mediabunny';
 import type {LogLevel} from 'remotion';
 import {Internals, type ScheduleAudioNodeResult} from 'remotion';
@@ -14,12 +14,14 @@ import {
 import {getScheduledTime} from './audio/get-scheduled-time';
 import {StaleWaiterError, waitForTurn} from './audio/sort-by-priority';
 import type {DelayPlaybackIfNotPremounting} from './delay-playback-if-not-premounting';
+import type {BufferWithMediaTimestamp} from './make-iterator-with-priming';
 import type {Nonce} from './nonce-manager';
 import type {SharedAudioContextForMediaPlayer} from './shared-audio-context-for-media-player';
 
 type ScheduleAudioNode = (
 	node: AudioBufferSourceNode,
 	mediaTimestamp: number,
+	originalUnloopedMediaTimestamp: number,
 ) => ScheduleAudioNodeResult;
 
 export const audioIteratorManager = ({
@@ -27,7 +29,8 @@ export const audioIteratorManager = ({
 	delayPlaybackHandleIfNotPremounting,
 	sharedAudioContext,
 	getIsLooping,
-	getEndTime,
+	getSequenceEndTimestamp,
+	getMediaEndTimestamp,
 	getStartTime,
 	initialMuted,
 	drawDebugOverlay,
@@ -37,7 +40,8 @@ export const audioIteratorManager = ({
 	delayPlaybackHandleIfNotPremounting: () => DelayPlaybackIfNotPremounting;
 	sharedAudioContext: SharedAudioContextForMediaPlayer;
 	getIsLooping: () => boolean;
-	getEndTime: () => number;
+	getSequenceEndTimestamp: () => number;
+	getMediaEndTimestamp: () => number;
 	getStartTime: () => number;
 	initialMuted: boolean;
 	drawDebugOverlay: () => void;
@@ -93,6 +97,7 @@ export const audioIteratorManager = ({
 	const scheduleAudioChunk = ({
 		buffer,
 		mediaTimestamp,
+		originalUnloopedMediaTimestamp,
 		playbackRate,
 		scheduleAudioNode,
 		logLevel,
@@ -102,6 +107,7 @@ export const audioIteratorManager = ({
 		playbackRate: number;
 		scheduleAudioNode: ScheduleAudioNode;
 		logLevel: LogLevel;
+		originalUnloopedMediaTimestamp: number;
 	}) => {
 		if (!audioBufferIterator) {
 			throw new Error('Audio buffer iterator not found');
@@ -116,7 +122,11 @@ export const audioIteratorManager = ({
 		node.playbackRate.value = playbackRate;
 		node.connect(gainNode);
 
-		const started = scheduleAudioNode(node, mediaTimestamp);
+		const started = scheduleAudioNode(
+			node,
+			mediaTimestamp,
+			originalUnloopedMediaTimestamp,
+		);
 
 		if (started.type === 'not-started') {
 			Internals.Log.verbose(
@@ -148,7 +158,7 @@ export const audioIteratorManager = ({
 		scheduleAudioNode,
 		logLevel,
 	}: {
-		buffer: WrappedAudioBuffer;
+		buffer: BufferWithMediaTimestamp;
 		playbackRate: number;
 		scheduleAudioNode: ScheduleAudioNode;
 		logLevel: LogLevel;
@@ -158,27 +168,31 @@ export const audioIteratorManager = ({
 		}
 
 		const startTime = getStartTime();
-		const endTime = getEndTime();
+		const sequenceEndTime = getSequenceEndTimestamp();
 
 		// Skip chunks entirely outside the range
-		if (buffer.timestamp + buffer.duration <= startTime) {
+		if (buffer.timestamp + buffer.buffer.duration <= startTime) {
 			return;
 		}
 
-		if (buffer.timestamp >= endTime) {
+		if (buffer.timestamp >= sequenceEndTime) {
 			return;
 		}
 
 		const scheduledStart = Math.max(buffer.timestamp, startTime);
-		const scheduledEnd = Math.min(buffer.timestamp + buffer.duration, endTime);
+		const scheduledEnd = Math.min(
+			buffer.timestamp + buffer.buffer.duration,
+			sequenceEndTime,
+		);
 		totalAudioScheduledInSeconds += Math.max(0, scheduledEnd - scheduledStart);
 
 		scheduleAudioChunk({
-			buffer: buffer.buffer,
+			buffer: buffer.buffer.buffer,
 			mediaTimestamp: buffer.timestamp,
 			playbackRate,
 			scheduleAudioNode,
 			logLevel,
+			originalUnloopedMediaTimestamp: buffer.buffer.timestamp,
 		});
 
 		drawDebugOverlay();
@@ -318,7 +332,7 @@ export const audioIteratorManager = ({
 
 		const iterator = makeAudioIterator({
 			startFromSecond,
-			maximumTimestamp: getEndTime(),
+			maximumTimestamp: getMediaEndTimestamp(),
 			audioSink,
 			logLevel,
 			loop,

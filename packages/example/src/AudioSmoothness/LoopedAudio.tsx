@@ -5,11 +5,7 @@ import {Composition, Sequence} from 'remotion';
 const src = 'https://remotion.media/dialogue.wav';
 
 const Component: React.FC = () => {
-	return (
-		<Sequence durationInFrames={420} from={100}>
-			<Audio src={src} trimBefore={10 * 30} trimAfter={11 * 30} loop />
-		</Sequence>
-	);
+	return <Audio src={src} trimAfter={2 * 30} loop />;
 };
 
 export const AudioSmoothnessLoopedAudioComp: React.FC = () => {

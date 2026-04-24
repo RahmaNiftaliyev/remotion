@@ -306,7 +306,6 @@ When auditing a video/audio player component (Themes 4, 7, 12), check against th
 | `Shift+←` / `Shift+→` | Fine seek (±1 s or per frame)                   |
 | `PageUp` / `PageDown` | Seek ±10 s                                      |
 | `Home` / `End`        | Jump to start / end                             |
-| `0`–`9`               | Jump to 0 %, 10 %, … 90 % (YouTube pattern)     |
 | `↑` / `↓`             | Volume ±5 %                                     |
 | `M`                   | Mute toggle                                     |
 | `F`                   | Fullscreen toggle                               |

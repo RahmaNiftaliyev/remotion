@@ -509,7 +509,6 @@ When a product includes a video or audio player, check against the de-facto stan
 | `Shift+←` / `Shift+→` | Fine seek (±1 s or per frame)                   |
 | `PageUp` / `PageDown` | Seek ±10 s                                      |
 | `Home` / `End`        | Jump to start / end                             |
-| `0`–`9`               | Jump to 0 %, 10 %, … 90 % (YouTube pattern)     |
 | `↑` / `↓`             | Volume ±5 %                                     |
 | `M`                   | Mute toggle                                     |
 | `F`                   | Fullscreen toggle                               |

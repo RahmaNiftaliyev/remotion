@@ -17,7 +17,7 @@ const CONCURRENCY = 1;
 const waiters: Waiter[] = [];
 let running = 0;
 
-const processNext = (): void => {
+export const processNext = (): void => {
 	if (running >= CONCURRENCY) {
 		return;
 	}
@@ -58,6 +58,11 @@ const processNext = (): void => {
 			bestPriority = priority;
 			bestIndex = i;
 		}
+	}
+
+	if (bestPriority > 2) {
+		// more than 2 seconds time, let's not do it yet!
+		return;
 	}
 
 	const [next] = waiters.splice(bestIndex, 1);

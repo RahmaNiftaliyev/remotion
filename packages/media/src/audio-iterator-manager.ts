@@ -12,7 +12,11 @@ import {
 	makeAudioIterator,
 } from './audio/audio-preview-iterator';
 import {getScheduledTime} from './audio/get-scheduled-time';
-import {StaleWaiterError, waitForTurn} from './audio/sort-by-priority';
+import {
+	processNext,
+	StaleWaiterError,
+	waitForTurn,
+} from './audio/sort-by-priority';
 import type {DelayPlaybackIfNotPremounting} from './delay-playback-if-not-premounting';
 import type {BufferWithMediaTimestamp} from './make-iterator-with-priming';
 import type {Nonce} from './nonce-manager';
@@ -22,6 +26,7 @@ type ScheduleAudioNode = (
 	node: AudioBufferSourceNode,
 	mediaTimestamp: number,
 	originalUnloopedMediaTimestamp: number,
+	currentTime: number,
 ) => ScheduleAudioNodeResult;
 
 export const audioIteratorManager = ({
@@ -126,6 +131,7 @@ export const audioIteratorManager = ({
 		playbackRate,
 		scheduleAudioNode,
 		logLevel,
+		currentTime,
 	}: {
 		buffer: AudioBuffer;
 		mediaTimestamp: number;
@@ -133,6 +139,7 @@ export const audioIteratorManager = ({
 		scheduleAudioNode: ScheduleAudioNode;
 		logLevel: LogLevel;
 		originalUnloopedMediaTimestamp: number;
+		currentTime: number;
 	}) => {
 		if (!audioBufferIterator) {
 			throw new Error('Audio buffer iterator not found');
@@ -151,6 +158,7 @@ export const audioIteratorManager = ({
 			node,
 			mediaTimestamp,
 			originalUnloopedMediaTimestamp,
+			currentTime,
 		);
 
 		if (started.type === 'not-started') {
@@ -179,11 +187,13 @@ export const audioIteratorManager = ({
 		playbackRate,
 		scheduleAudioNode,
 		logLevel,
+		currentTime,
 	}: {
 		buffer: BufferWithMediaTimestamp;
 		playbackRate: number;
 		scheduleAudioNode: ScheduleAudioNode;
 		logLevel: LogLevel;
+		currentTime: number;
 	}) => {
 		if (muted) {
 			return;
@@ -215,6 +225,7 @@ export const audioIteratorManager = ({
 			scheduleAudioNode,
 			logLevel,
 			originalUnloopedMediaTimestamp: buffer.buffer.timestamp,
+			currentTime,
 		});
 
 		drawDebugOverlay();
@@ -230,6 +241,7 @@ export const audioIteratorManager = ({
 		onDestroyed,
 		onDone,
 		logLevel,
+		currentTime,
 	}: {
 		iterator: AudioIterator;
 		nonce: Nonce;
@@ -243,14 +255,13 @@ export const audioIteratorManager = ({
 		onDone: () => void;
 		onDestroyed: () => void;
 		logLevel: LogLevel;
+		currentTime: number;
 	}) => {
 		waitForTurn({
 			getPriority: () => {
 				if (iterator.isDestroyed()) {
 					return null;
 				}
-
-				const {currentTime} = sharedAudioContext.audioContext;
 
 				const guessedNextTimestamp = iterator.guessNextTimestamp();
 				const targetTime = getTargetTime(guessedNextTimestamp, currentTime);
@@ -266,7 +277,7 @@ export const audioIteratorManager = ({
 					sequenceStartTime: getStartTime(),
 				});
 
-				return scheduledTime - currentTime;
+				return scheduledTime - sharedAudioContext.audioContext.currentTime;
 			},
 			fn: () => iterator.getNextFn(),
 			onDone: (result, next) => {
@@ -293,6 +304,7 @@ export const audioIteratorManager = ({
 					playbackRate,
 					scheduleAudioNode,
 					logLevel,
+					currentTime,
 				});
 				proceedScheduling({
 					iterator,
@@ -304,6 +316,7 @@ export const audioIteratorManager = ({
 					onDestroyed,
 					onDone,
 					logLevel,
+					currentTime,
 				});
 				next();
 			},
@@ -388,6 +401,7 @@ export const audioIteratorManager = ({
 				delayHandle.unblock();
 			},
 			logLevel,
+			currentTime: sharedAudioContext.audioContext.currentTime,
 		});
 	};
 
@@ -468,6 +482,7 @@ export const audioIteratorManager = ({
 				queuedPeriodMinusLatency,
 			);
 			if (currentTimeIsAlreadyQueued) {
+				processNext();
 				// current time is scheduled, will keep scheduling
 				return;
 			}
@@ -477,6 +492,7 @@ export const audioIteratorManager = ({
 				currentIteratorTimestamp < newTime &&
 				Math.abs(currentIteratorTimestamp - newTime) < 1
 			) {
+				processNext();
 				// iterator is less than 1 second behind, we will just let it run
 				return;
 			}

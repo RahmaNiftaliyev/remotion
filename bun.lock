@@ -1161,6 +1161,25 @@
         "react-dom": ">=16.8.0",
       },
     },
+    "packages/player-a11y": {
+      "name": "@remotion/player-a11y",
+      "version": "4.0.448",
+      "dependencies": {
+        "@remotion/player": "workspace:*",
+        "remotion": "workspace:*",
+      },
+      "devDependencies": {
+        "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
+        "eslint": "catalog:",
+        "react": "catalog:",
+        "react-dom": "catalog:",
+      },
+      "peerDependencies": {
+        "react": ">=16.8.0",
+        "react-dom": ">=16.8.0",
+      },
+    },
     "packages/player-example": {
       "name": "@remotion/player-example",
       "version": "4.0.448",
@@ -3849,6 +3868,8 @@
     "@remotion/paths": ["@remotion/paths@workspace:packages/paths"],
 
     "@remotion/player": ["@remotion/player@workspace:packages/player"],
+
+    "@remotion/player-a11y": ["@remotion/player-a11y@workspace:packages/player-a11y"],
 
     "@remotion/player-example": ["@remotion/player-example@workspace:packages/player-example"],
 

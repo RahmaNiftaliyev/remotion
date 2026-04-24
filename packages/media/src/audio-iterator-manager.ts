@@ -30,6 +30,7 @@ export const audioIteratorManager = ({
 	sharedAudioContext,
 	getIsLooping,
 	getSequenceEndTimestamp,
+	getSequenceDurationInSeconds,
 	getMediaEndTimestamp,
 	getStartTime,
 	initialMuted,
@@ -42,6 +43,7 @@ export const audioIteratorManager = ({
 	sharedAudioContext: SharedAudioContextForMediaPlayer;
 	getIsLooping: () => boolean;
 	getSequenceEndTimestamp: () => number;
+	getSequenceDurationInSeconds: () => number;
 	getMediaEndTimestamp: () => number;
 	getStartTime: () => number;
 	initialMuted: boolean;
@@ -149,7 +151,6 @@ export const audioIteratorManager = ({
 			timestamp: mediaTimestamp,
 			buffer,
 			scheduledTime: started.scheduledTime,
-			playbackRate,
 			scheduledAtAnchor: sharedAudioContext.audioSyncAnchor.value,
 		});
 	};
@@ -338,6 +339,8 @@ export const audioIteratorManager = ({
 			audioSink,
 			logLevel,
 			loop,
+			playbackRate,
+			sequenceDurationInSeconds: getSequenceDurationInSeconds(),
 		});
 		audioIteratorsCreated++;
 		audioBufferIterator = iterator;

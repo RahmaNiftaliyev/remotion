@@ -27,24 +27,47 @@ async function* makeIteratorWithPrimingInner(
 	}
 }
 
-async function* makeLoopingIterator(
-	audioSink: AudioBufferSink,
-	timeToSeek: number,
-	maximumTimestamp: number,
-): AsyncGenerator<BufferWithMediaTimestamp, void, unknown> {
-	const duration = maximumTimestamp - timeToSeek;
+async function* makeLoopingIterator({
+	audioSink,
+	segmentStartInSeconds,
+	segmentEndInSeconds,
+	playbackRate,
+	sequenceDurationInSeconds,
+}: {
+	audioSink: AudioBufferSink;
+	segmentStartInSeconds: number;
+	segmentEndInSeconds: number;
+	playbackRate: number;
+	sequenceDurationInSeconds: number;
+}): AsyncGenerator<BufferWithMediaTimestamp, void, unknown> {
+	const duration = segmentEndInSeconds - segmentStartInSeconds;
 	let iteration = 0;
 
+	let broken = false;
 	while (true) {
 		for await (const item of makeIteratorWithPrimingInner(
 			audioSink,
-			timeToSeek,
-			maximumTimestamp,
+			segmentStartInSeconds,
+			segmentEndInSeconds,
 		)) {
+			const timestamp = item.timestamp + iteration * duration;
+
+			const endTimestamp =
+				duration * iteration +
+				(item.timestamp - segmentStartInSeconds + item.buffer.duration);
+			if (endTimestamp > sequenceDurationInSeconds * playbackRate) {
+				broken = true;
+				break;
+			}
+
 			yield {
 				buffer: item.buffer,
-				timestamp: item.timestamp + iteration * duration,
+				timestamp,
 			};
+		}
+
+		if (broken) {
+			break;
 		}
 
 		iteration++;
@@ -56,14 +79,24 @@ export const makeIteratorWithPriming = ({
 	timeToSeek,
 	maximumTimestamp,
 	loop,
+	playbackRate,
+	sequenceDurationInSeconds,
 }: {
 	audioSink: AudioBufferSink;
 	timeToSeek: number;
 	maximumTimestamp: number;
 	loop: boolean;
+	playbackRate: number;
+	sequenceDurationInSeconds: number;
 }): AsyncGenerator<BufferWithMediaTimestamp, void, unknown> => {
 	if (loop) {
-		return makeLoopingIterator(audioSink, timeToSeek, maximumTimestamp);
+		return makeLoopingIterator({
+			audioSink,
+			segmentStartInSeconds: timeToSeek,
+			segmentEndInSeconds: maximumTimestamp,
+			playbackRate,
+			sequenceDurationInSeconds,
+		});
 	}
 
 	return makeIteratorWithPrimingInner(audioSink, timeToSeek, maximumTimestamp);

@@ -45,6 +45,8 @@ test('destroy should NOT stop nodes that are already playing with the same ancho
 		audioSink,
 		logLevel: 'info',
 		loop: false,
+		playbackRate: 1,
+		sequenceDurationInSeconds: 10,
 	});
 
 	const mock1 = makeMockNode();
@@ -56,7 +58,6 @@ test('destroy should NOT stop nodes that are already playing with the same ancho
 		timestamp: 0,
 		buffer: makeMockBuffer(0.021),
 		scheduledTime: 0.1, // in the past relative to currentTime=1.0
-		playbackRate: 1,
 		scheduledAtAnchor: 0,
 	});
 	iterator.addQueuedAudioNode({
@@ -64,7 +65,6 @@ test('destroy should NOT stop nodes that are already playing with the same ancho
 		timestamp: 0.021,
 		buffer: makeMockBuffer(0.021),
 		scheduledTime: 0.121,
-		playbackRate: 1,
 		scheduledAtAnchor: 0,
 	});
 
@@ -85,6 +85,8 @@ test('destroy should stop nodes when the audio anchor changed (seek to different
 		audioSink: audioBufferSink,
 		logLevel: 'info',
 		loop: false,
+		playbackRate: 1,
+		sequenceDurationInSeconds: 10,
 	});
 
 	const mock1 = makeMockNode();
@@ -96,7 +98,6 @@ test('destroy should stop nodes when the audio anchor changed (seek to different
 		timestamp: 0,
 		buffer: makeMockBuffer(0.021),
 		scheduledTime: 0.1,
-		playbackRate: 1,
 		scheduledAtAnchor: 0,
 	});
 	iterator.addQueuedAudioNode({
@@ -104,7 +105,6 @@ test('destroy should stop nodes when the audio anchor changed (seek to different
 		timestamp: 0.021,
 		buffer: makeMockBuffer(0.021),
 		scheduledTime: 0.121,
-		playbackRate: 1,
 		scheduledAtAnchor: 0,
 	});
 

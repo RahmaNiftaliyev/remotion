@@ -24,7 +24,7 @@ test('in preview, should properly buffer and draw frames', async (t) => {
 
 	const manager = videoIteratorManager({
 		getIsLooping: () => false,
-		getEndTime: () => {
+		getLoopSegmentMediaEndTimestamp: () => {
 			throw new Error('not implemented');
 		},
 		getStartTime: () => {
@@ -100,6 +100,7 @@ test('same goes for audio', async () => {
 		getIsLooping: () => false,
 		getMediaEndTimestamp: () => Infinity,
 		getSequenceEndTimestamp: () => Infinity,
+		getSequenceDurationInSeconds: () => 10,
 		getStartTime: () => 0,
 		initialMuted: false,
 		drawDebugOverlay: () => {},

@@ -24,12 +24,16 @@ export const makeAudioIterator = ({
 	maximumTimestamp,
 	audioSink,
 	loop,
+	playbackRate,
+	sequenceDurationInSeconds,
 }: {
 	startFromSecond: number;
 	maximumTimestamp: number;
 	logLevel: LogLevel;
 	audioSink: AudioBufferSink;
 	loop: boolean;
+	playbackRate: number;
+	sequenceDurationInSeconds: number;
 }) => {
 	let destroyed = false;
 	const iterator = makeIteratorWithPriming({
@@ -37,6 +41,8 @@ export const makeAudioIterator = ({
 		timeToSeek: startFromSecond,
 		maximumTimestamp,
 		loop,
+		playbackRate,
+		sequenceDurationInSeconds,
 	});
 	const queuedAudioNodes: QueuedNode[] = [];
 	let mostRecentTimestamp = -Infinity;
@@ -82,14 +88,12 @@ export const makeAudioIterator = ({
 			timestamp,
 			buffer,
 			scheduledTime,
-			playbackRate,
 			scheduledAtAnchor,
 		}: {
 			node: AudioBufferSourceNode;
 			timestamp: number;
 			buffer: AudioBuffer;
 			scheduledTime: number;
-			playbackRate: number;
 			scheduledAtAnchor: number;
 		}) => {
 			queuedAudioNodes.push({

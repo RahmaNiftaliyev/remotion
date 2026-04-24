@@ -23,25 +23,27 @@ export const getScheduledTime = ({
 };
 
 export const getDurationOfNode = ({
-	mediaTimestamp,
 	bufferDuration,
-	sequenceEndTime,
+	loopSegmentMediaEndTimestamp,
 	offset,
+	originalUnloopedMediaTimestamp,
 }: {
-	mediaTimestamp: number;
 	bufferDuration: number;
-	sequenceEndTime: number;
+	loopSegmentMediaEndTimestamp: number;
 	offset: number;
+	originalUnloopedMediaTimestamp: number;
 }) => {
-	const unclampedMediaEndTime = mediaTimestamp + bufferDuration;
+	const originalUnloopedMediaEndTime =
+		originalUnloopedMediaTimestamp + bufferDuration;
+	const needsTrimEnd =
+		originalUnloopedMediaEndTime > loopSegmentMediaEndTimestamp;
 
-	const needsTrimEnd = unclampedMediaEndTime > sequenceEndTime;
+	const durationMinusOffset = bufferDuration - offset;
 
 	const duration = needsTrimEnd
-		? bufferDuration -
-			Math.max(0, unclampedMediaEndTime - sequenceEndTime) -
-			offset
-		: bufferDuration - offset;
+		? durationMinusOffset -
+			Math.max(0, originalUnloopedMediaEndTime - loopSegmentMediaEndTimestamp)
+		: durationMinusOffset;
 
 	return duration;
 };

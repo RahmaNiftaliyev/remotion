@@ -124,6 +124,7 @@ import {ThreeDContext} from './3DContext';
 import {ThreeDSvgContent} from './3DSvgContent';
 import {AnimatedImages} from './AnimatedImage/Avif';
 import {AudioSmoothnessBufferInterruptionComp} from './AudioSmoothness/BufferInterruption';
+import {AudioSmoothnessLoopedAudioComp} from './AudioSmoothness/LoopedAudio';
 import {AudioSmoothnessNewVideoComp} from './AudioSmoothness/NewVideo';
 import {AudioSmoothnessSlicedVideoComp} from './AudioSmoothness/SlicedVideo';
 import {AudioSmoothnessTrimAfterLoopComp} from './AudioSmoothness/TrimAfterLoop';
@@ -1464,6 +1465,7 @@ export const Index: React.FC = () => {
 				<AudioSmoothnessBufferInterruptionComp />
 				<AudioSmoothnessTrimButtonComp />
 				<AudioSmoothnessTrimAfterLoopComp />
+				<AudioSmoothnessLoopedAudioComp />
 			</Folder>
 			<Folder name="Postmount">
 				<Composition

@@ -186,15 +186,19 @@ export class MediaPlayer {
 
 	private getSequenceEndTimestamp(): number {
 		// Cap at the media time corresponding to the end of the sequence
-		const sequenceEndMediaTime =
+		// TODO: Initial? What if it changes=
+		return (
 			(this.initialSequenceDurationInFrames / this.fps) * this.playbackRate +
-			(this.trimBefore ?? 0) / this.fps;
+			this.getStartTime()
+		);
+	}
 
-		return sequenceEndMediaTime;
+	private getSequenceDurationInSeconds(): number {
+		return this.initialSequenceDurationInFrames / this.fps;
 	}
 
 	private getMediaEndTimestamp(): number {
-		const mediaEndTime = calculateEndTime({
+		return calculateEndTime({
 			mediaDurationInSeconds: this.totalDuration!,
 			ifNoMediaDuration: 'fail',
 			src: this.src,
@@ -202,14 +206,9 @@ export class MediaPlayer {
 			trimBefore: this.trimBefore,
 			fps: this.fps,
 		});
-		return mediaEndTime;
 	}
 
-	private getVideoEndTime(): number {
-		if (this.loop) {
-			return this.getMediaEndTimestamp();
-		}
-
+	private getLoopSegmentMediaEndTimestamp(): number {
 		return Math.min(
 			this.getMediaEndTimestamp(),
 			this.getSequenceEndTimestamp(),
@@ -285,7 +284,8 @@ export class MediaPlayer {
 					getOnVideoFrameCallback: () => this.onVideoFrameCallback,
 					logLevel: this.logLevel,
 					drawDebugOverlay: this.drawDebugOverlay,
-					getEndTime: () => this.getVideoEndTime(),
+					getLoopSegmentMediaEndTimestamp: () =>
+						this.getLoopSegmentMediaEndTimestamp(),
 					getStartTime: () => this.getStartTime(),
 					getIsLooping: () => this.loop,
 				});
@@ -320,6 +320,8 @@ export class MediaPlayer {
 					drawDebugOverlay: this.drawDebugOverlay,
 					initialTime: startTime,
 					initialPlaybackRate: this.playbackRate * this.globalPlaybackRate,
+					getSequenceDurationInSeconds: () =>
+						this.getSequenceDurationInSeconds(),
 				});
 			}
 
@@ -653,12 +655,19 @@ export class MediaPlayer {
 		}
 
 		const sequenceStartTime = this.getStartTime();
-		const sequenceEndTime = this.getSequenceEndTimestamp();
+		const loopSegmentMediaEndTimestamp = this.getLoopSegmentMediaEndTimestamp();
 
 		const offset = getOffset({
 			mediaTimestamp,
 			targetTime,
 			sequenceStartTime,
+		});
+
+		const duration = getDurationOfNode({
+			bufferDuration: node.buffer?.duration ?? 0,
+			loopSegmentMediaEndTimestamp,
+			offset,
+			originalUnloopedMediaTimestamp,
 		});
 
 		return this.sharedAudioContext.scheduleAudioNode({
@@ -671,12 +680,7 @@ export class MediaPlayer {
 				currentTime,
 				sequenceStartTime,
 			}),
-			duration: getDurationOfNode({
-				mediaTimestamp,
-				bufferDuration: node.buffer?.duration ?? 0,
-				sequenceEndTime,
-				offset,
-			}),
+			duration,
 			offset,
 			originalUnloopedMediaTimestamp,
 		});

@@ -1,3 +1,4 @@
+import {copyFileSync, existsSync} from 'fs';
 import {buildPackage} from '../.monorepo/builder';
 
 const external = [
@@ -45,5 +46,16 @@ await buildPackage({
 			path: 'src/previewEntry.tsx',
 			target: 'browser',
 		},
+		{
+			path: 'src/audio-waveform-worker.ts',
+			target: 'browser',
+		},
 	],
 });
+
+// Mirror the ESM worker asset next to the CJS helper so consumers that
+// resolve `@remotion/studio` via CJS can still locate the worker entry.
+const esmWorker = 'dist/esm/audio-waveform-worker.mjs';
+if (existsSync(esmWorker)) {
+	copyFileSync(esmWorker, 'dist/audio-waveform-worker.mjs');
+}

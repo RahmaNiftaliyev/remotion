@@ -2,13 +2,13 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Internals} from 'remotion';
 import {LIGHT_TRANSPARENT} from '../helpers/colors';
 import {TIMELINE_BORDER} from '../helpers/timeline-layout';
+import {makeAudioWaveformWorker} from '../make-audio-waveform-worker';
 import type {
 	AudioWaveformWorkerOutgoingMessage,
 	AudioWaveformWorkerRenderMessage,
 } from './audio-waveform-worker-types';
 import {drawBars} from './draw-peaks';
 import {loadWaveformPeaks} from './load-waveform-peaks';
-import {makeAudioWaveformWorker} from './make-audio-waveform-worker';
 import {sliceWaveformPeaks} from './slice-waveform-peaks';
 
 const EMPTY_PEAKS = new Float32Array(0);

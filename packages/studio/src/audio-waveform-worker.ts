@@ -4,10 +4,10 @@ import type {
 	AudioWaveformWorkerIncomingMessage,
 	AudioWaveformWorkerOutgoingMessage,
 	AudioWaveformWorkerRenderMessage,
-} from './audio-waveform-worker-types';
-import {drawBars} from './draw-peaks';
-import {loadWaveformPeaks} from './load-waveform-peaks';
-import {sliceWaveformPeaks} from './slice-waveform-peaks';
+} from './components/audio-waveform-worker-types';
+import {drawBars} from './components/draw-peaks';
+import {loadWaveformPeaks} from './components/load-waveform-peaks';
+import {sliceWaveformPeaks} from './components/slice-waveform-peaks';
 
 declare const self: DedicatedWorkerGlobalScope;
 

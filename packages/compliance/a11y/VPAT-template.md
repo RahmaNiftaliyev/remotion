@@ -495,3 +495,33 @@ A public [Accessibility Statement]({{/accessibility}}) is available on the {{Pro
 | Criterion | Issue | Affected Pages / Components |
 | --------- | ----- | --------------------------- |
 |           |       |                             |
+
+---
+
+## Appendix — Standard media-player keyboard shortcuts
+
+When a product includes a video or audio player, check against the de-facto standard shortcut set used by YouTube, Vimeo, Able Player, Video.js, OzPlayer, and native `<video controls>`:
+
+| Key                   | Action                                          |
+| --------------------- | ----------------------------------------------- |
+| `Space` / `K`         | Play-pause                                      |
+| `←` / `→`             | Seek −5 s / +5 s                                |
+| `Shift+←` / `Shift+→` | Fine seek (±1 s or per frame)                   |
+| `PageUp` / `PageDown` | Seek ±10 s                                      |
+| `Home` / `End`        | Jump to start / end                             |
+| `0`–`9`               | Jump to 0 %, 10 %, … 90 % (YouTube pattern)     |
+| `↑` / `↓`             | Volume ±5 %                                     |
+| `M`                   | Mute toggle                                     |
+| `F`                   | Fullscreen toggle                               |
+| `C`                   | Captions toggle                                 |
+| `<` / `>`             | Playback rate down / up                         |
+
+Related WCAG criteria: **2.1.1 Keyboard**, **2.1.4 Character Key Shortcuts** (provide a mechanism to turn off or remap), **4.1.2 Name, Role, Value** (sliders), **4.1.3 Status Messages** (announce seek / volume / mute changes).
+
+Slider requirements for seek and volume controls: `role="slider"` with `aria-valuemin`, `aria-valuemax`, `aria-valuenow`, and `aria-valuetext` (for human-readable time / percentage). Arrow keys on a focused slider natively adjust `aria-valuenow` by 1. Container should be focusable (`tabindex="0"`) and announce its purpose via `aria-label`.
+
+References:
+
+- [WAI-ARIA Authoring Practices — Slider pattern](https://www.w3.org/WAI/ARIA/apg/patterns/slider/)
+- [Able Player keyboard controls](https://ableplayer.github.io/ableplayer/#keyboard)
+- [YouTube player keyboard shortcuts](https://support.google.com/youtube/answer/7631406)

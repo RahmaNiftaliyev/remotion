@@ -292,3 +292,31 @@ Primary gaps are with {{list primary non-conformant themes}}. The application pe
 _This report was prepared on the basis of RGAA v.4.1.2 criteria and tests._
 _Auditor: {{Name}} ({{internal/external}}) — {{OS, Browser + Screen reader}}_
 _Reference: https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/_
+
+---
+
+## Appendix — Standard media-player keyboard shortcuts
+
+When auditing a video/audio player component (Themes 4, 7, 12), check against the de-facto standard shortcut set used by YouTube, Vimeo, Able Player, Video.js, OzPlayer, and native `<video controls>`:
+
+| Key                   | Action                                          |
+| --------------------- | ----------------------------------------------- |
+| `Space` / `K`         | Play-pause                                      |
+| `←` / `→`             | Seek −5 s / +5 s                                |
+| `Shift+←` / `Shift+→` | Fine seek (±1 s or per frame)                   |
+| `PageUp` / `PageDown` | Seek ±10 s                                      |
+| `Home` / `End`        | Jump to start / end                             |
+| `0`–`9`               | Jump to 0 %, 10 %, … 90 % (YouTube pattern)     |
+| `↑` / `↓`             | Volume ±5 %                                     |
+| `M`                   | Mute toggle                                     |
+| `F`                   | Fullscreen toggle                               |
+| `C`                   | Captions toggle                                 |
+| `<` / `>`             | Playback rate down / up                         |
+
+Slider requirements for seek and volume controls: `role="slider"` with `aria-valuemin`, `aria-valuemax`, `aria-valuenow`, and `aria-valuetext` (for human-readable time / percentage). Arrow keys on a focused slider natively adjust `aria-valuenow` by 1. Container should be focusable (`tabindex="0"`) and announce its purpose via `aria-label`.
+
+References:
+
+- [WAI-ARIA Authoring Practices — Slider pattern](https://www.w3.org/WAI/ARIA/apg/patterns/slider/)
+- [Able Player keyboard controls](https://ableplayer.github.io/ableplayer/#keyboard)
+- [YouTube player keyboard shortcuts](https://support.google.com/youtube/answer/7631406)

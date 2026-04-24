@@ -13,6 +13,12 @@ import {sliceWaveformPeaks} from './slice-waveform-peaks';
 
 const EMPTY_PEAKS = new Float32Array(0);
 
+// Recreate the canvas after Fast Refresh because an already transferred canvas
+// cannot be handed to OffscreenCanvas again.
+const canRetryCanvasTransfer = (err: unknown) => {
+	return err instanceof DOMException && err.name === 'InvalidStateError';
+};
+
 const canUseAudioWaveformWorker = () => {
 	if (
 		typeof Worker === 'undefined' ||
@@ -73,6 +79,7 @@ export const AudioWaveform: React.FC<{
 }) => {
 	const [peaks, setPeaks] = useState<Float32Array | null>(null);
 	const [error, setError] = useState<Error | null>(null);
+	const [waveformCanvasKey, setWaveformCanvasKey] = useState(0);
 	const canUseWorkerPath = useMemo(() => canUseAudioWaveformWorker(), []);
 	const vidConf = Internals.useUnsafeVideoConfig();
 	if (vidConf === null) {
@@ -135,7 +142,20 @@ export const AudioWaveform: React.FC<{
 			},
 		);
 
-		const offscreen = canvasElement.transferControlToOffscreen();
+		let offscreen: OffscreenCanvas;
+		try {
+			offscreen = canvasElement.transferControlToOffscreen();
+		} catch (err) {
+			worker.terminate();
+			waveformWorker.current = null;
+			if (canRetryCanvasTransfer(err)) {
+				setWaveformCanvasKey((key) => key + 1);
+				return;
+			}
+
+			throw err;
+		}
+
 		hasTransferredCanvas.current = true;
 		worker.postMessage({type: 'init', canvas: offscreen}, [offscreen]);
 
@@ -145,7 +165,7 @@ export const AudioWaveform: React.FC<{
 			waveformWorker.current = null;
 			hasTransferredCanvas.current = false;
 		};
-	}, [canUseWorkerPath]);
+	}, [canUseWorkerPath, waveformCanvasKey]);
 
 	const portionPeaks = useMemo(() => {
 		if (canUseWorkerPath || !peaks) {
@@ -223,6 +243,7 @@ export const AudioWaveform: React.FC<{
 		vidConf.fps,
 		visualizationWidth,
 		volume,
+		waveformCanvasKey,
 	]);
 
 	useEffect(() => {
@@ -278,7 +299,11 @@ export const AudioWaveform: React.FC<{
 
 	return (
 		<div ref={containerRef} style={container}>
-			<canvas ref={waveformCanvas} style={waveformCanvasStyle} />
+			<canvas
+				key={waveformCanvasKey}
+				ref={waveformCanvas}
+				style={waveformCanvasStyle}
+			/>
 			<canvas ref={volumeCanvas} style={volumeCanvasStyle} />
 		</div>
 	);

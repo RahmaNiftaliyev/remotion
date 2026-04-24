@@ -25,7 +25,7 @@ export const sliceWaveformPeaks = ({
 		(startTimeInSeconds + durationInSeconds) * TARGET_SAMPLE_RATE,
 	);
 
-	return peaks.slice(
+	return peaks.subarray(
 		Math.max(0, startPeakIndex),
 		Math.min(peaks.length, endPeakIndex),
 	);

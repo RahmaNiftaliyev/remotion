@@ -27,6 +27,31 @@ const postError = (requestId: number, error: unknown) => {
 	self.postMessage(payload);
 };
 
+const drawPartialWaveform = (
+	message: AudioWaveformWorkerRenderMessage,
+	peaks: Float32Array,
+) => {
+	if (!canvas) {
+		return;
+	}
+
+	const portionPeaks = sliceWaveformPeaks({
+		durationInFrames: message.durationInFrames,
+		fps: message.fps,
+		peaks,
+		playbackRate: message.playbackRate,
+		startFrom: message.startFrom,
+	});
+
+	drawBars(
+		canvas,
+		portionPeaks,
+		'rgba(255, 255, 255, 0.6)',
+		message.volume,
+		message.width,
+	);
+};
+
 const renderWaveform = async (message: AudioWaveformWorkerRenderMessage) => {
 	if (!canvas) {
 		postError(message.requestId, new Error('Waveform canvas not initialized'));
@@ -42,26 +67,23 @@ const renderWaveform = async (message: AudioWaveformWorkerRenderMessage) => {
 		canvas.width = message.width;
 		canvas.height = message.height;
 
-		const peaks = await loadWaveformPeaks(message.src, controller.signal);
+		const peaks = await loadWaveformPeaks(message.src, controller.signal, {
+			onProgress: ({peaks: nextPeaks}) => {
+				if (
+					controller.signal.aborted ||
+					latestRequestId !== message.requestId
+				) {
+					return;
+				}
+
+				drawPartialWaveform(message, nextPeaks);
+			},
+		});
 		if (controller.signal.aborted || latestRequestId !== message.requestId) {
 			return;
 		}
 
-		const portionPeaks = sliceWaveformPeaks({
-			durationInFrames: message.durationInFrames,
-			fps: message.fps,
-			peaks,
-			playbackRate: message.playbackRate,
-			startFrom: message.startFrom,
-		});
-
-		drawBars(
-			canvas,
-			portionPeaks,
-			'rgba(255, 255, 255, 0.6)',
-			message.volume,
-			message.width,
-		);
+		drawPartialWaveform(message, peaks);
 	} catch (error) {
 		if (controller.signal.aborted || latestRequestId !== message.requestId) {
 			return;

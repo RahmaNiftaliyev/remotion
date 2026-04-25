@@ -1,8 +1,6 @@
 import {ALL_FORMATS, AudioBufferSink, Input, UrlSource} from 'mediabunny';
 import {expect, test} from 'vitest';
 import {makeAudioIterator} from '../audio/audio-preview-iterator';
-import {makePrewarmedAudioIteratorCache} from '../prewarm-iterator-for-looping';
-import type {SharedAudioContextForMediaPlayer} from '../shared-audio-context-for-media-player';
 
 const makeCache = async () => {
 	const input = new Input({
@@ -16,7 +14,7 @@ const makeCache = async () => {
 
 	const audioBufferSink = new AudioBufferSink(audioTrack);
 
-	return makePrewarmedAudioIteratorCache(audioBufferSink);
+	return audioBufferSink;
 };
 
 const makeMockNode = () => {
@@ -39,30 +37,17 @@ const makeMockBuffer = (duration: number) => {
 	} as unknown as AudioBuffer;
 };
 
-const makeMockSharedAudioContext = ({
-	currentTime,
-	anchorValue,
-}: {
-	currentTime: number;
-	anchorValue: number;
-}): SharedAudioContextForMediaPlayer => {
-	return {
-		audioContext: {
-			currentTime,
-			getOutputTimestamp: () => ({contextTime: currentTime}),
-		} as unknown as AudioContext,
-		audioSyncAnchor: {value: anchorValue},
-		scheduleAudioNode: () => ({type: 'started', scheduledTime: 0}),
-	};
-};
-
 test('destroy should NOT stop nodes that are already playing with the same anchor', async () => {
-	const cache = await makeCache();
+	const audioSink = await makeCache();
 	const iterator = makeAudioIterator({
 		startFromSecond: 0,
 		maximumTimestamp: Infinity,
-		cache,
-		debugAudioScheduling: false,
+		audioSink,
+		logLevel: 'info',
+		loop: false,
+		playbackRate: 1,
+		sequenceDurationInSeconds: 10,
+		unscheduleAudioNode: () => {},
 	});
 
 	const mock1 = makeMockNode();
@@ -74,7 +59,6 @@ test('destroy should NOT stop nodes that are already playing with the same ancho
 		timestamp: 0,
 		buffer: makeMockBuffer(0.021),
 		scheduledTime: 0.1, // in the past relative to currentTime=1.0
-		playbackRate: 1,
 		scheduledAtAnchor: 0,
 	});
 	iterator.addQueuedAudioNode({
@@ -82,14 +66,11 @@ test('destroy should NOT stop nodes that are already playing with the same ancho
 		timestamp: 0.021,
 		buffer: makeMockBuffer(0.021),
 		scheduledTime: 0.121,
-		playbackRate: 1,
 		scheduledAtAnchor: 0,
 	});
 
 	// Destroy with same anchor (0) and currentTime well past scheduledTime
-	iterator.destroy(
-		makeMockSharedAudioContext({currentTime: 1.0, anchorValue: 0}),
-	);
+	iterator.destroy();
 
 	// Nodes should NOT have been stopped because they are already playing
 	// and were scheduled for the current anchor
@@ -98,12 +79,16 @@ test('destroy should NOT stop nodes that are already playing with the same ancho
 });
 
 test('destroy should stop nodes when the audio anchor changed (seek to different position)', async () => {
-	const cache = await makeCache();
+	const audioBufferSink = await makeCache();
 	const iterator = makeAudioIterator({
 		startFromSecond: 0,
 		maximumTimestamp: Infinity,
-		cache,
-		debugAudioScheduling: false,
+		audioSink: audioBufferSink,
+		logLevel: 'info',
+		loop: false,
+		playbackRate: 1,
+		sequenceDurationInSeconds: 10,
+		unscheduleAudioNode: () => {},
 	});
 
 	const mock1 = makeMockNode();
@@ -115,7 +100,6 @@ test('destroy should stop nodes when the audio anchor changed (seek to different
 		timestamp: 0,
 		buffer: makeMockBuffer(0.021),
 		scheduledTime: 0.1,
-		playbackRate: 1,
 		scheduledAtAnchor: 0,
 	});
 	iterator.addQueuedAudioNode({
@@ -123,16 +107,13 @@ test('destroy should stop nodes when the audio anchor changed (seek to different
 		timestamp: 0.021,
 		buffer: makeMockBuffer(0.021),
 		scheduledTime: 0.121,
-		playbackRate: 1,
 		scheduledAtAnchor: 0,
 	});
 
 	// Destroy with a DIFFERENT anchor (simulating a seek happened)
 	// Even though nodes are "already playing" (currentTime > scheduledTime),
 	// they should be stopped because the anchor changed
-	iterator.destroy(
-		makeMockSharedAudioContext({currentTime: 1.0, anchorValue: 1}),
-	);
+	iterator.destroy();
 
 	// Nodes SHOULD be stopped because the anchor changed (seek happened)
 	expect(mock1.wasStopped()).toBe(true);

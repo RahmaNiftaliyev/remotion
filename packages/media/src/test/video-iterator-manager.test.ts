@@ -41,7 +41,7 @@ test('seek should not cause overlapping block/unblock cycles', async () => {
 		getOnVideoFrameCallback: () => null,
 		logLevel: 'error',
 		drawDebugOverlay: () => {},
-		getEndTime: () => {
+		getLoopSegmentMediaEndTimestamp: () => {
 			throw new Error('not implemented');
 		},
 		getStartTime: () => {
@@ -92,7 +92,7 @@ test('rapid sequential seeks should not cause overlapping blocks', async () => {
 		getOnVideoFrameCallback: () => null,
 		logLevel: 'error',
 		drawDebugOverlay: () => {},
-		getEndTime: () => {
+		getLoopSegmentMediaEndTimestamp: () => {
 			throw new Error('not implemented');
 		},
 		getStartTime: () => {

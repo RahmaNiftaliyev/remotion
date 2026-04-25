@@ -21,7 +21,7 @@ const enableProxy = <
 		apply(target, thisArg, argArray) {
 			if (componentsToAddStacksTo.includes(argArray[0])) {
 				const [first, props, ...rest] = argArray;
-				const newProps = props.stack
+				const newProps = props?.stack
 					? props
 					: {
 							...(props ?? {}),

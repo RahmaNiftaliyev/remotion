@@ -24,7 +24,7 @@ test('in preview, should properly buffer and draw frames', async (t) => {
 
 	const manager = videoIteratorManager({
 		getIsLooping: () => false,
-		getEndTime: () => {
+		getLoopSegmentMediaEndTimestamp: () => {
 			throw new Error('not implemented');
 		},
 		getStartTime: () => {
@@ -96,38 +96,58 @@ test('same goes for audio', async () => {
 				type: 'started',
 				scheduledTime: 0,
 			}),
+			unscheduleAudioNode: () => {},
 		},
 		getIsLooping: () => false,
-		getEndTime: () => Infinity,
+		getMediaEndTimestamp: () => Infinity,
+		getSequenceEndTimestamp: () => Infinity,
+		getSequenceDurationInSeconds: () => 10,
 		getStartTime: () => 0,
 		initialMuted: false,
 		drawDebugOverlay: () => {},
+		initialTime: 0,
+		initialPlaybackRate: 1,
+		initialTrimBefore: undefined,
+		initialTrimAfter: undefined,
+		initialSequenceOffset: 0,
+		initialSequenceDurationInFrames: 10,
+		initialLoop: false,
+		initialFps: 30,
 	});
 
 	const nonceManager = makeNonceManager();
 
-	await manager.startAudioIterator({
+	manager.startAudioIterator({
 		nonce: nonceManager.createAsyncOperation(),
 		playbackRate: 1,
 		startFromSecond: 0.06671494248275864,
-		getIsPlaying: () => true,
 		scheduleAudioNode: () => ({
 			type: 'started',
 			scheduledTime: 0,
 		}),
-		debugAudioScheduling: false,
+		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
+		logLevel: 'info',
+		loop: false,
+		unscheduleAudioNode: () => {},
 	});
 
-	await manager.seek({
+	await manager.waitForNScheduledNodes(2);
+	manager.seek({
 		newTime: 0.10007241372413796,
 		nonce: nonceManager.createAsyncOperation(),
 		playbackRate: 1,
-		getIsPlaying: () => true,
 		scheduleAudioNode: () => ({
 			type: 'started',
 			scheduledTime: 0,
 		}),
-		debugAudioScheduling: false,
+		getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
+		logLevel: 'info',
+		loop: false,
+		trimBefore: undefined,
+		trimAfter: undefined,
+		sequenceOffset: 0,
+		sequenceDurationInFrames: 10,
+		fps: 30,
 	});
 
 	const iterators = manager.getAudioIteratorsCreated();

@@ -27,7 +27,10 @@ export async function loadWaveformPeaks(
 		const sampleRate = await audioTrack.getSampleRate();
 		const durationInSeconds = await audioTrack.computeDuration();
 		const totalPeaks = Math.ceil(durationInSeconds * TARGET_SAMPLE_RATE);
-		const samplesPerPeak = Math.floor(sampleRate / TARGET_SAMPLE_RATE);
+		const samplesPerPeak = Math.max(
+			1,
+			Math.floor(sampleRate / TARGET_SAMPLE_RATE),
+		);
 
 		const peaks = new Float32Array(totalPeaks);
 		let peakIndex = 0;
@@ -48,11 +51,25 @@ export async function loadWaveformPeaks(
 			});
 			const floats = new Float32Array(bytesNeeded / 4);
 			sample.copyTo(floats, {format: 'f32', planeIndex: 0});
+			const channels = Math.max(1, sample.numberOfChannels);
+			const frames = sample.numberOfFrames;
 			sample.close();
 
-			for (let i = 0; i < floats.length; i++) {
-				const abs = Math.abs(floats[i]);
-				if (abs > peakMax) peakMax = abs;
+			for (let frame = 0; frame < frames; frame++) {
+				// `f32` copies are interleaved, so timing must advance per frame, not per float.
+				let framePeak = 0;
+				for (let channel = 0; channel < channels; channel++) {
+					const sampleIndex = frame * channels + channel;
+					const abs = Math.abs(floats[sampleIndex] ?? 0);
+					if (abs > framePeak) {
+						framePeak = abs;
+					}
+				}
+
+				if (framePeak > peakMax) {
+					peakMax = framePeak;
+				}
+
 				sampleInPeak++;
 
 				if (sampleInPeak >= samplesPerPeak) {

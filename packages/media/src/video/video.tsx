@@ -82,7 +82,6 @@ const InnerVideo: React.FC<
 	toneFrequency,
 	showInTimeline,
 	debugOverlay,
-	debugAudioScheduling,
 	headless,
 	onError,
 	credentials,
@@ -172,7 +171,6 @@ const InnerVideo: React.FC<
 			disallowFallbackToOffthreadVideo={disallowFallbackToOffthreadVideo}
 			fallbackOffthreadVideoProps={fallbackOffthreadVideoProps}
 			debugOverlay={debugOverlay ?? false}
-			debugAudioScheduling={debugAudioScheduling ?? false}
 			headless={headless ?? false}
 			onError={onError}
 			credentials={credentials}
@@ -212,7 +210,6 @@ const VideoInner: React.FC<
 	stack,
 	toneFrequency,
 	debugOverlay,
-	debugAudioScheduling,
 	headless,
 	onError,
 	credentials,
@@ -257,7 +254,6 @@ const VideoInner: React.FC<
 				toneFrequency={toneFrequency ?? 1}
 				stack={stack}
 				debugOverlay={debugOverlay ?? false}
-				debugAudioScheduling={debugAudioScheduling ?? false}
 				headless={headless ?? false}
 				onError={onError}
 				credentials={credentials}

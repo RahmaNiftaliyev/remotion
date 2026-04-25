@@ -250,7 +250,7 @@ export const SharedAudioContextProvider: React.FC<{
 			const mediaEndTime = mediaTime + duration;
 
 			const latency = audioContext.baseLatency + audioContext.outputLatency;
-			const timeDiff = scheduledTime - currentTime;
+			const timeDiff = scheduledTime - audioContext.currentTime;
 			const prev = prevEndTimes.current;
 			const scheduledMismatch =
 				prev.scheduledEndTime !== null &&

@@ -6,8 +6,8 @@ export const waitUntilActuallyResumed = (
 ): Promise<void> => {
 	return new Promise((resolve) => {
 		const startCurrentTime = audioContext.currentTime;
-		const startOutputPerformanceTime =
-			audioContext.getOutputTimestamp().performanceTime;
+		const start = audioContext.getOutputTimestamp();
+		const startOutputPerformanceTime = start.performanceTime;
 		const startWallClock = performance.now();
 
 		const check = () => {
@@ -18,7 +18,9 @@ export const waitUntilActuallyResumed = (
 			if (
 				startOutputPerformanceTime !== undefined &&
 				outputTimestamp.performanceTime !== undefined &&
-				outputTimestamp.performanceTime > startOutputPerformanceTime
+				outputTimestamp.performanceTime > startOutputPerformanceTime &&
+				outputTimestamp.contextTime !== undefined &&
+				outputTimestamp.contextTime > startCurrentTime
 			) {
 				Log.verbose(
 					{logLevel, tag: 'audio'},

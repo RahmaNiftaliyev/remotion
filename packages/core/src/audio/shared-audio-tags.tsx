@@ -75,6 +75,7 @@ export type AudioSyncAnchorEmitter = {
 
 type SharedAudioContextValue = {
 	audioContext: AudioContext | null;
+	gainNode: GainNode | null;
 	audioSyncAnchor: {value: number};
 	audioSyncAnchorEmitter: AudioSyncAnchorEmitter;
 	scheduleAudioNode: (
@@ -175,7 +176,7 @@ export const SharedAudioContextProvider: React.FC<{
 	readonly audioEnabled: boolean;
 }> = ({children, audioLatencyHint, audioEnabled}) => {
 	const logLevel = useLogLevel();
-	const audioContext = useSingletonAudioContext({
+	const ctxAndGain = useSingletonAudioContext({
 		logLevel,
 		latencyHint: audioLatencyHint,
 		audioEnabled,
@@ -226,12 +227,12 @@ export const SharedAudioContextProvider: React.FC<{
 			offset,
 			originalUnloopedMediaTimestamp,
 		}: ScheduleAudioNodeOptions): ScheduleAudioNodeResult => {
-			if (!audioContext) {
+			if (!ctxAndGain) {
 				throw new Error('Audio context not found');
 			}
 
 			if (duration > 0) {
-				if (audioContext.state === 'suspended') {
+				if (ctxAndGain.audioContext.state === 'suspended') {
 					nodesToResume.current.set(node, {
 						scheduledTime,
 						offset,
@@ -249,8 +250,10 @@ export const SharedAudioContextProvider: React.FC<{
 
 			const mediaEndTime = mediaTime + duration;
 
-			const latency = audioContext.baseLatency + audioContext.outputLatency;
-			const timeDiff = scheduledTime - audioContext.currentTime;
+			const latency =
+				ctxAndGain.audioContext.baseLatency +
+				ctxAndGain.audioContext.outputLatency;
+			const timeDiff = scheduledTime - ctxAndGain.audioContext.currentTime;
 			const prev = prevEndTimes.current;
 			const scheduledMismatch =
 				prev.scheduledEndTime !== null &&
@@ -283,7 +286,7 @@ export const SharedAudioContextProvider: React.FC<{
 				'current=' + currentTime.toFixed(4),
 				'offset=' + offset.toFixed(4),
 				'latency=' + latency.toFixed(4),
-				'state=' + audioContext.state,
+				'state=' + ctxAndGain.audioContext.state,
 				originalUnloopedMediaTimestamp !== mediaTime
 					? 'original_ts=' + originalUnloopedMediaTimestamp.toFixed(4)
 					: '',
@@ -302,10 +305,10 @@ export const SharedAudioContextProvider: React.FC<{
 						reason: 'missed ' + Math.abs(offset).toFixed(2) + 's',
 					};
 		};
-	}, [audioContext, logLevel]);
+	}, [ctxAndGain, logLevel]);
 
 	const resume = useCallback(() => {
-		if (!audioContext) {
+		if (!ctxAndGain) {
 			return Promise.resolve();
 		}
 
@@ -314,25 +317,41 @@ export const SharedAudioContextProvider: React.FC<{
 		}
 
 		audioContextIsPlayingEventually.current = true;
-		isResuming.current = waitUntilActuallyResumed(audioContext, logLevel)
+		isResuming.current = waitUntilActuallyResumed(
+			ctxAndGain.audioContext,
+			logLevel,
+		)
 			.then(() => {})
 			.finally(() => {
 				isResuming.current = null;
 			});
-		return audioContext.resume().then(() => {
+
+		ctxAndGain.gainNode.gain.cancelScheduledValues(
+			ctxAndGain.audioContext.currentTime,
+		);
+		ctxAndGain.gainNode?.gain.setValueAtTime(
+			0,
+			ctxAndGain.audioContext.currentTime,
+		);
+		ctxAndGain.gainNode?.gain.linearRampToValueAtTime(
+			1,
+			ctxAndGain.audioContext.currentTime + 0.03,
+		);
+
+		return ctxAndGain.audioContext.resume().then(() => {
 			nodesToResume.current.forEach((r, node) =>
 				node.start(r.scheduledTime, r.offset, r.duration),
 			);
 			nodesToResume.current.clear();
 		});
-	}, [audioContext, logLevel]);
+	}, [ctxAndGain, logLevel]);
 
 	const getIsResumingAudioContext = useCallback(() => {
 		return isResuming.current;
 	}, []);
 
 	const suspend = useCallback(() => {
-		if (!audioContext) {
+		if (!ctxAndGain) {
 			return;
 		}
 
@@ -341,12 +360,13 @@ export const SharedAudioContextProvider: React.FC<{
 		}
 
 		audioContextIsPlayingEventually.current = false;
-		audioContext.suspend();
-	}, [audioContext]);
+		ctxAndGain.audioContext.suspend();
+	}, [ctxAndGain]);
 
 	const audioContextValue: SharedAudioContextValue = useMemo(() => {
 		return {
-			audioContext,
+			audioContext: ctxAndGain?.audioContext ?? null,
+			gainNode: ctxAndGain?.gainNode ?? null,
 			audioSyncAnchor,
 			audioSyncAnchorEmitter,
 			scheduleAudioNode,
@@ -356,7 +376,7 @@ export const SharedAudioContextProvider: React.FC<{
 			unscheduleAudioNode,
 		};
 	}, [
-		audioContext,
+		ctxAndGain,
 		audioSyncAnchor,
 		audioSyncAnchorEmitter,
 		scheduleAudioNode,

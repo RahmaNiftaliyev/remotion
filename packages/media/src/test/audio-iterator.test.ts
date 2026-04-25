@@ -34,6 +34,7 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 		}),
 		sharedAudioContext: {
 			audioContext,
+			gainNode: audioContext.createGain(),
 			audioSyncAnchor: {value: 0},
 			scheduleAudioNode: scheduleSharedAudioNode,
 			unscheduleAudioNode,
@@ -265,6 +266,7 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 		}),
 		sharedAudioContext: {
 			audioContext,
+			gainNode: audioContext.createGain(),
 			audioSyncAnchor: {value: 0},
 			scheduleAudioNode: () => ({
 				type: 'started',

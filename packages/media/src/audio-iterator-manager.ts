@@ -90,7 +90,7 @@ export const audioIteratorManager = ({
 	);
 
 	const gainNode = sharedAudioContext.audioContext.createGain();
-	gainNode.connect(sharedAudioContext.audioContext.destination);
+	gainNode.connect(sharedAudioContext.gainNode);
 
 	const audioSink = new AudioBufferSink(audioTrack);
 	let audioBufferIterator: AudioIterator | null = null;

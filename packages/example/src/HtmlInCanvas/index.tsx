@@ -316,11 +316,6 @@ export const HtmlInCanvasDemo: React.FC = () => {
 		);
 	}
 
-	const outputOpacity = interpolate(frame, [10, 30], [0, 1], {
-		extrapolateLeft: 'clamp',
-		extrapolateRight: 'clamp',
-	});
-
 	return (
 		<AbsoluteFill style={{backgroundColor: 'black'}}>
 			{/*
@@ -362,7 +357,6 @@ export const HtmlInCanvasDemo: React.FC = () => {
 					inset: 0,
 					width,
 					height,
-					opacity: outputOpacity,
 				}}
 			/>
 		</AbsoluteFill>

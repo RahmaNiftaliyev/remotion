@@ -1,6 +1,6 @@
 import {Audio} from '@remotion/media';
 import React from 'react';
-import {Composition, Sequence} from 'remotion';
+import {Composition} from 'remotion';
 
 const src = 'https://remotion.media/dialogue.wav';
 

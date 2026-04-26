@@ -213,10 +213,15 @@ const AudioForPreviewAssertedShowing: React.FC<
 
 		const {
 			audioContext,
+			gainNode,
 			audioSyncAnchor,
 			scheduleAudioNode,
 			unscheduleAudioNode,
 		} = sharedAudioContext;
+
+		if (!gainNode) {
+			return;
+		}
 
 		try {
 			const player = new MediaPlayer({
@@ -224,6 +229,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 				logLevel,
 				sharedAudioContext: {
 					audioContext,
+					gainNode,
 					audioSyncAnchor,
 					scheduleAudioNode,
 					unscheduleAudioNode,

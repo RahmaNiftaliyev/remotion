@@ -40,7 +40,7 @@ export const usePlayback = ({
 	// In that case, we use setTimeout() instead.
 	const isBackgroundedRef = useIsBackgrounded();
 
-	const lastTimeUpdateEvent = useRef<number | null>(null);
+	const lastTimeUpdateTimestamp = useRef<number>(0);
 
 	const context = useContext(Internals.BufferingContextReact);
 	if (!context) {
@@ -267,17 +267,22 @@ export const usePlayback = ({
 	]);
 
 	useEffect(() => {
-		const interval = setInterval(() => {
-			if (lastTimeUpdateEvent.current === getCurrentFrame()) {
-				return;
-			}
+		const now = performance.now();
+		const timeSinceLastUpdate = now - lastTimeUpdateTimestamp.current;
 
-			emitter.dispatchTimeUpdate({frame: getCurrentFrame()});
-			lastTimeUpdateEvent.current = getCurrentFrame();
-		}, 250);
+		if (timeSinceLastUpdate >= 250) {
+			emitter.dispatchTimeUpdate({frame});
+			lastTimeUpdateTimestamp.current = now;
+			return;
+		}
 
-		return () => clearInterval(interval);
-	}, [emitter, getCurrentFrame]);
+		const timeoutId = setTimeout(() => {
+			emitter.dispatchTimeUpdate({frame});
+			lastTimeUpdateTimestamp.current = performance.now();
+		}, 250 - timeSinceLastUpdate);
+
+		return () => clearTimeout(timeoutId);
+	}, [emitter, frame]);
 
 	useEffect(() => {
 		emitter.dispatchFrameUpdate({frame});

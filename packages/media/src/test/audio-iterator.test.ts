@@ -4,8 +4,18 @@ import {expect, test} from 'vitest';
 import {audioIteratorManager} from '../audio-iterator-manager';
 import {makeNonceManager} from '../nonce-manager';
 
-const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
-	const {fps = 30, playbackRate = 1} = options ?? {};
+const prepare = async (options?: {
+	fps?: number;
+	playbackRate?: number;
+	mediaEndTimestamp?: number;
+	sequenceEndTimestamp?: number;
+}) => {
+	const {
+		fps = 30,
+		playbackRate = 1,
+		mediaEndTimestamp = Infinity,
+		sequenceEndTimestamp = Infinity,
+	} = options ?? {};
 	const input = new Input({
 		source: new UrlSource('https://remotion.media/video.mp4'),
 		formats: ALL_FORMATS,
@@ -17,6 +27,10 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 
 	const audioContext = new AudioContext();
 
+	const audioContextCurrentTime = {
+		current: 0,
+	};
+
 	const scheduleSharedAudioNode = (): ScheduleAudioNodeResult => {
 		return {
 			type: 'started',
@@ -25,6 +39,7 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 	};
 
 	const unscheduleAudioNode = () => {};
+	const audioSyncAnchor = {value: 0};
 
 	const manager = audioIteratorManager({
 		audioTrack,
@@ -34,18 +49,17 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 		}),
 		sharedAudioContext: {
 			audioContext,
-			audioSyncAnchor: {value: 0},
+			gainNode: audioContext.createGain(),
+			audioSyncAnchor,
 			scheduleAudioNode: scheduleSharedAudioNode,
 			unscheduleAudioNode,
 		},
-		getIsLooping: () => false,
-		getMediaEndTimestamp: () => Infinity,
-		getSequenceEndTimestamp: () => Infinity,
+		getMediaEndTimestamp: () => mediaEndTimestamp,
+		getSequenceEndTimestamp: () => sequenceEndTimestamp,
 		getSequenceDurationInSeconds: () => 10,
 		getStartTime: () => 0,
 		initialMuted: false,
 		drawDebugOverlay: () => {},
-		initialTime: 0,
 		initialPlaybackRate: 1,
 		initialTrimBefore: undefined,
 		initialTrimAfter: undefined,
@@ -90,6 +104,8 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 			sequenceOffset: 0,
 			sequenceDurationInFrames: 10,
 			fps,
+			getAudioContextCurrentTimeMockedInTest: () =>
+				audioContextCurrentTime.current,
 		});
 	};
 
@@ -98,13 +114,16 @@ const prepare = async (options?: {fps?: number; playbackRate?: number}) => {
 		fps,
 		scheduledChunks,
 		seek,
+		audioContextCurrentTime,
 	};
 };
 
 test('media player should work', async () => {
-	const {manager, scheduledChunks, seek} = await prepare();
+	const {manager, scheduledChunks, seek, audioContextCurrentTime} =
+		await prepare();
 
-	await seek({
+	audioContextCurrentTime.current = 9.96;
+	seek({
 		time: 9.96,
 	});
 
@@ -114,9 +133,10 @@ test('media player should work', async () => {
 	]);
 
 	scheduledChunks.length = 0;
-	await seek({
+	seek({
 		time: 0,
 	});
+
 	await manager.waitForNScheduledNodes(3);
 
 	expect(scheduledChunks).toEqual([
@@ -124,7 +144,7 @@ test('media player should work', async () => {
 	]);
 	scheduledChunks.length = 0;
 
-	await seek({
+	seek({
 		time: 0.04,
 	});
 
@@ -140,14 +160,16 @@ test('media player should work', async () => {
 });
 
 test('should not create too many iterators when the audio ends', async () => {
-	const {manager, seek, scheduledChunks} = await prepare();
+	const {manager, seek, scheduledChunks, audioContextCurrentTime} =
+		await prepare();
 
-	await seek({
+	audioContextCurrentTime.current = 9.97;
+	seek({
 		time: 9.97,
 	});
 	await manager.waitForNScheduledNodes(0);
 
-	await seek({
+	seek({
 		time: 9.98,
 	});
 	await manager.waitForNScheduledNodes(2);
@@ -159,14 +181,16 @@ test('should not create too many iterators when the audio ends', async () => {
 });
 
 test('should not create too many iterators when the audio ends (variant)', async () => {
-	const {manager, seek, scheduledChunks} = await prepare();
+	const {manager, seek, scheduledChunks, audioContextCurrentTime} =
+		await prepare();
 
-	await seek({
+	audioContextCurrentTime.current = 9.97;
+	seek({
 		time: 9.97,
 	});
 	await manager.waitForNScheduledNodes(2);
 
-	await seek({
+	seek({
 		time: 9.98,
 	});
 	await manager.waitForNScheduledNodes(0);
@@ -178,9 +202,10 @@ test('should not create too many iterators when the audio ends (variant)', async
 });
 
 test('should create more iterators when seeking ', async () => {
-	const {manager, seek, scheduledChunks} = await prepare();
+	const {manager, seek, scheduledChunks, audioContextCurrentTime} =
+		await prepare();
 
-	await seek({
+	seek({
 		time: 0,
 	});
 	await manager.waitForNScheduledNodes(6);
@@ -189,7 +214,8 @@ test('should create more iterators when seeking ', async () => {
 		0.10666666666666667,
 	]);
 	scheduledChunks.length = 0;
-	await seek({
+	audioContextCurrentTime.current = 2;
+	seek({
 		time: 2,
 	});
 	await manager.waitForNScheduledNodes(6);
@@ -231,7 +257,7 @@ test('should not schedule duplicate chunks with playbackRate=0.5', async () => {
 	for (let frame = 0; frame < 30; frame++) {
 		const mediaTime = frame * (1 / fps) * playbackRate;
 
-		await seek({
+		seek({
 			time: mediaTime,
 		});
 		await manager.waitForNScheduledNodes(1);
@@ -246,92 +272,27 @@ test('should not decode + schedule audio chunks beyond the end time', async () =
 	const endTime = 0.5;
 	const fps = 30;
 
-	const input = new Input({
-		source: new UrlSource('https://remotion.media/video.mp4'),
-		formats: ALL_FORMATS,
-	});
-	const audioTrack = await input.getPrimaryAudioTrack();
-	if (!audioTrack) {
-		throw new Error('No audio track found');
-	}
-
-	const audioContext = new AudioContext();
-
-	const manager = audioIteratorManager({
-		audioTrack,
-		delayPlaybackHandleIfNotPremounting: () => ({
-			unblock: () => {},
-			[Symbol.dispose]: () => {},
-		}),
-		sharedAudioContext: {
-			audioContext,
-			audioSyncAnchor: {value: 0},
-			scheduleAudioNode: () => ({
-				type: 'started',
-				scheduledTime: 0,
-			}),
-			unscheduleAudioNode: () => {},
-		},
-		getIsLooping: () => false,
-		getMediaEndTimestamp: () => endTime,
-		getSequenceEndTimestamp: () => endTime,
-		getSequenceDurationInSeconds: () => 10,
-		getStartTime: () => 0,
-		initialMuted: false,
-		drawDebugOverlay: () => {},
-		initialTime: 0,
-		initialPlaybackRate: 1,
-		initialTrimBefore: undefined,
-		initialTrimAfter: undefined,
-		initialSequenceOffset: 0,
-		initialSequenceDurationInFrames: 10,
-		initialLoop: false,
-		initialFps: 30,
-	});
-
-	const scheduledChunks: {
-		timestamp: number;
-	}[] = [];
-	const scheduleAudioNode = (
-		_node: AudioBufferSourceNode,
-		mediaTimestamp: number,
-	): ScheduleAudioNodeResult => {
-		scheduledChunks.push({
-			timestamp: mediaTimestamp,
+	const {seek, manager, scheduledChunks, audioContextCurrentTime} =
+		await prepare({
+			fps,
+			mediaEndTimestamp: endTime,
+			sequenceEndTimestamp: endTime,
 		});
-		return {
-			type: 'started',
-			scheduledTime: mediaTimestamp,
-		};
-	};
 
-	const prom = manager.waitForNScheduledNodes(24);
+	const prom = manager.waitForNScheduledNodes(23);
 
 	// Simulate playback frame by frame, seeking past the end time
 	for (let frame = 0; frame < 30; frame++) {
 		const mediaTime = frame / fps;
-
-		manager.seek({
-			newTime: mediaTime,
-			scheduleAudioNode,
-			nonce: makeNonceManager().createAsyncOperation(),
-			playbackRate: 1,
-			getTargetTime: (mediaTimestamp: number) => mediaTimestamp,
-			logLevel: 'info',
-			loop: false,
-			trimBefore: undefined,
-			trimAfter: undefined,
-			sequenceOffset: 0,
-			sequenceDurationInFrames: 10,
-			fps,
-		});
+		audioContextCurrentTime.current = mediaTime;
+		seek({time: mediaTime});
 	}
 
 	await prom;
 
-	for (const chunk of scheduledChunks) {
-		expect(chunk.timestamp).toBeLessThanOrEqual(endTime);
+	for (const timestamp of scheduledChunks) {
+		expect(timestamp).toBeLessThanOrEqual(endTime);
 	}
 
-	expect(scheduledChunks.length).toBe(24);
+	expect(scheduledChunks.length).toBe(23);
 });

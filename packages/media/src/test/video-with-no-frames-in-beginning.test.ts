@@ -89,23 +89,25 @@ test('same goes for audio', async () => {
 			unblock: () => {},
 			[Symbol.dispose]: () => {},
 		}),
-		sharedAudioContext: {
-			audioContext: new AudioContext(),
-			audioSyncAnchor: {value: 0},
-			scheduleAudioNode: () => ({
-				type: 'started',
-				scheduledTime: 0,
-			}),
-			unscheduleAudioNode: () => {},
-		},
-		getIsLooping: () => false,
+		sharedAudioContext: (() => {
+			const audioContext = new AudioContext();
+			return {
+				audioContext,
+				gainNode: audioContext.createGain(),
+				audioSyncAnchor: {value: 0},
+				scheduleAudioNode: () => ({
+					type: 'started',
+					scheduledTime: 0,
+				}),
+				unscheduleAudioNode: () => {},
+			};
+		})(),
 		getMediaEndTimestamp: () => Infinity,
 		getSequenceEndTimestamp: () => Infinity,
 		getSequenceDurationInSeconds: () => 10,
 		getStartTime: () => 0,
 		initialMuted: false,
 		drawDebugOverlay: () => {},
-		initialTime: 0,
 		initialPlaybackRate: 1,
 		initialTrimBefore: undefined,
 		initialTrimAfter: undefined,
@@ -129,6 +131,7 @@ test('same goes for audio', async () => {
 		logLevel: 'info',
 		loop: false,
 		unscheduleAudioNode: () => {},
+		getAudioContextCurrentTimeMockedInTest: () => 0,
 	});
 
 	await manager.waitForNScheduledNodes(2);
@@ -148,6 +151,7 @@ test('same goes for audio', async () => {
 		sequenceOffset: 0,
 		sequenceDurationInFrames: 10,
 		fps: 30,
+		getAudioContextCurrentTimeMockedInTest: () => 0,
 	});
 
 	const iterators = manager.getAudioIteratorsCreated();

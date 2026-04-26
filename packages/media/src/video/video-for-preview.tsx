@@ -264,10 +264,15 @@ const VideoForPreviewAssertedShowing: React.FC<
 
 		const {
 			audioContext,
+			gainNode,
 			audioSyncAnchor,
 			scheduleAudioNode,
 			unscheduleAudioNode,
 		} = sharedAudioContext;
+
+		if (!gainNode) {
+			return;
+		}
 
 		try {
 			const player = new MediaPlayer({
@@ -276,6 +281,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 				logLevel,
 				sharedAudioContext: {
 					audioContext,
+					gainNode,
 					audioSyncAnchor,
 					scheduleAudioNode,
 					unscheduleAudioNode,

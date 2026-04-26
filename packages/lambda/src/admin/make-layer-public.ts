@@ -53,6 +53,21 @@ const parseRegionFlag = (): AwsRegion | null => {
 	return arg.split('=')[1] as AwsRegion;
 };
 
+const parseSkipFlag = (): AwsRegion[] => {
+	const arg = process.argv
+		.slice(2)
+		.find((a) => a.startsWith('--skip=') || a === '--skip');
+	if (!arg) return [];
+	const value =
+		arg === '--skip'
+			? (process.argv[process.argv.indexOf('--skip') + 1] ?? '')
+			: arg.split('=')[1];
+	return value
+		.split(',')
+		.map((s) => s.trim())
+		.filter(Boolean) as AwsRegion[];
+};
+
 const makeLayerPublic = async () => {
 	const runtimes: Runtime[] = ['nodejs24.x'];
 
@@ -65,9 +80,16 @@ const makeLayerPublic = async () => {
 	] as const;
 
 	const onlyRegion = parseRegionFlag();
-	const regions = onlyRegion ? [onlyRegion] : getRegions();
+	const skipRegions = parseSkipFlag();
+	const regions = onlyRegion
+		? [onlyRegion]
+		: getRegions().filter((r) => !skipRegions.includes(r));
 	if (onlyRegion) {
 		console.log(`Filtering to region: ${onlyRegion}`);
+	}
+
+	if (skipRegions.length > 0) {
+		console.log(`Skipping regions: ${skipRegions.join(', ')}`);
 	}
 
 	for (const region of regions) {
@@ -81,7 +103,7 @@ const makeLayerPublic = async () => {
 				new PublishLayerVersionCommand({
 					Content: {
 						S3Bucket: getBucketName(region),
-						S3Key: `remotion-layer-${layer}-v16-arm64.zip`,
+						S3Key: `remotion-layer-${layer}-v17-arm64.zip`,
 					},
 					LayerName: layerName,
 					LicenseInfo:

@@ -4,6 +4,13 @@ bun build-browser-downloader.ts
 cp ensure-browser.mjs ../dockerfiles/ensure-browser.mjs
 cd ../dockerfiles
 
+# Pack the local @remotion/cli + transitive workspace deps into ./tarballs/
+# and emit ./local-cli-package.json so each Docker image installs the local
+# build (e.g. flag changes in @remotion/renderer) instead of the published
+# version from npm.
+echo "Packing local @remotion/cli and transitive deps..."
+bun pack-cli.ts
+
 # Build the browser-test bundle from packages/example
 echo "Building browser-test bundle..."
 cd ../example

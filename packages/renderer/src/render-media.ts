@@ -505,20 +505,24 @@ const internalRenderMediaRaw = ({
 		`Rendering frames ${realFrameRange.join('-')}`,
 	);
 
-	const callUpdate = () => {
-		const encoded = Math.round(0.8 * encodedFrames + 0.2 * muxedFrames);
-		onProgress?.({
-			encodedDoneIn,
-			encodedFrames: encoded,
-			renderedDoneIn,
-			renderedFrames,
-			renderEstimatedTime,
-			stitchStage,
-			progress:
-				Math.round((70 * renderedFrames + 30 * encoded) / totalFramesToRender) /
-				100,
-		});
-	};
+
+const callUpdate = () => {
+	const encoded = Math.round(0.8 * encodedFrames + 0.2 * muxedFrames);
+	onProgress?.({
+		encodedDoneIn,
+		encodedFrames: encoded,
+		renderedDoneIn,
+		renderedFrames,
+		renderEstimatedTime,
+		stitchStage,
+		progress:
+			totalFramesToRender === 0
+				? 1
+				: Math.round(
+						(70 * renderedFrames + 30 * encoded) / totalFramesToRender,
+					) / 100,
+	});
+};
 
 	const cancelRenderFrames = makeCancelSignal();
 	const cancelPrestitcher = makeCancelSignal();

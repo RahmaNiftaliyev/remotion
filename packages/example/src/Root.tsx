@@ -16,7 +16,6 @@ import {NativeBufferStateForImage} from './BufferState/Image';
 import {NativeBufferState} from './BufferState/Simple';
 import {NativeBufferStateForVideo} from './BufferState/Video';
 import {CancelRender} from './CancelRender';
-import {SolidEffectsDemo} from './CanvasEffects/SolidDemo';
 import {ClassSerialization} from './ClassSerialization';
 import {ColorInterpolation} from './ColorInterpolation';
 import {ComplexSounds} from './ComplexSounds';
@@ -838,14 +837,6 @@ export const Index: React.FC = () => {
 				<Composition
 					id="html-in-canvas"
 					component={HtmlInCanvasDemo}
-					fps={30}
-					height={1080}
-					width={1920}
-					durationInFrames={120}
-				/>
-				<Composition
-					id="solid-effects"
-					component={SolidEffectsDemo}
 					fps={30}
 					height={1080}
 					width={1920}

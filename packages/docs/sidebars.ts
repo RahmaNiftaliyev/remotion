@@ -231,22 +231,6 @@ const sidebars: SidebarsConfig = {
 		},
 		{
 			type: 'category',
-			label: 'Canvas effects',
-			link: {
-				type: 'doc',
-				id: 'canvas-effects/index',
-			},
-			items: [
-				'solid',
-				'canvas-effects/html-in-canvas',
-				'canvas-effects/define-effect',
-				'canvas-effects/wave',
-				'canvas-effects/tint',
-				'canvas-effects/blur',
-			],
-		},
-		{
-			type: 'category',
 			label: '@remotion/cloudrun',
 			link: {
 				type: 'doc',

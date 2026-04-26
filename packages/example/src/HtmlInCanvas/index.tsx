@@ -1,8 +1,9 @@
-import {wave} from '@remotion/canvas-effects';
+import {blur, tint, wave} from '@remotion/canvas-effects';
 import React from 'react';
 import {
 	AbsoluteFill,
 	Experimental,
+	interpolate,
 	useCurrentFrame,
 	useVideoConfig,
 } from 'remotion';
@@ -40,14 +41,29 @@ const Scene: React.FC = () => {
 };
 
 export const HtmlInCanvasDemo: React.FC = () => {
-	const {width, height} = useVideoConfig();
+	const frame = useCurrentFrame();
+	const {width, height, durationInFrames} = useVideoConfig();
+
+	const blurRadius = interpolate(frame, [0, durationInFrames - 1], [0, 24], {
+		extrapolateLeft: 'clamp',
+		extrapolateRight: 'clamp',
+	});
+
+	const tintAmount = interpolate(frame, [0, durationInFrames - 1], [0, 0.4], {
+		extrapolateLeft: 'clamp',
+		extrapolateRight: 'clamp',
+	});
 
 	return (
 		<AbsoluteFill style={{backgroundColor: 'black'}}>
 			<Experimental.HtmlInCanvas
 				width={width}
 				height={height}
-				effects={[wave({amplitude: 60, wavelength: 240})]}
+				effects={[
+					wave({amplitude: 40, wavelength: 240}),
+					blur({radius: blurRadius}),
+					tint({color: 'cyan', amount: tintAmount}),
+				]}
 			>
 				<Scene />
 			</Experimental.HtmlInCanvas>

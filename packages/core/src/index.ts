@@ -130,6 +130,19 @@ export type BundleState =
 checkMultipleRemotionVersions();
 export * from './AbsoluteFill.js';
 export * from './animated-image/index.js';
+export {
+	Backend,
+	createDescriptor,
+	defineEffect,
+	EffectApplyParams,
+	EffectDefinition,
+	EffectDescriptor,
+	EffectsProp,
+	Solid,
+	SolidProps,
+} from './canvas-effects/index.js';
+import {HtmlInCanvas} from './canvas-effects/index.js';
+export type {HtmlInCanvasProps} from './canvas-effects/index.js';
 export type {AnyZodObject} from './any-zod-type.js';
 export {Artifact} from './Artifact.js';
 export {Audio, Html5Audio, RemotionAudioProps} from './audio/index.js';
@@ -221,6 +234,11 @@ export const Experimental = {
 	 * @see [Documentation](https://www.remotion.dev/docs/null)
 	 */
 	Null,
+	/**
+	 * @description Rasterizes its DOM children into a canvas using the WICG html-in-canvas proposal, then runs the result through a canvas-effect chain. Requires Chrome Canary with chrome://flags/#canvas-draw-element enabled.
+	 * @see [Documentation](https://www.remotion.dev/docs/canvas-effects/html-in-canvas)
+	 */
+	HtmlInCanvas,
 	useIsPlayer,
 };
 

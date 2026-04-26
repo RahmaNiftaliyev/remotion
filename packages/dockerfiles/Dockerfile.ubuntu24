@@ -30,3 +30,4 @@ COPY bundle/ /usr/app/bundle/
 
 RUN npx remotion compositions /usr/app/bundle
 RUN npx remotion render /usr/app/bundle browser-test /usr/app/out.mp4 --log=verbose
+RUN npx remotion render /usr/app/bundle html-in-canvas /usr/app/out-html-in-canvas.mp4 --log=verbose

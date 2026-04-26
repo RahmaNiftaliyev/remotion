@@ -1,10 +1,9 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
 	AbsoluteFill,
 	cancelRender,
 	continueRender,
 	delayRender,
-	interpolate,
 	useCurrentFrame,
 	useVideoConfig,
 } from 'remotion';
@@ -12,10 +11,8 @@ import {
 // Type augmentation for the WICG html-in-canvas proposal:
 // https://github.com/WICG/html-in-canvas
 //
-// In Chrome, requires enabling chrome://flags/#canvas-draw-element.
-// canvas.requestPaint() is currently only available in Chrome Canary; on
-// regular Chrome we fall back to a double-requestAnimationFrame to give the
-// browser a chance to lay out and paint after React commits.
+// Requires Chrome Canary with chrome://flags/#canvas-draw-element enabled, so
+// that both drawElementImage() and canvas.requestPaint() are available.
 //
 // The current Chromium implementation requires the element passed to
 // drawElementImage() to be an immediate child of the canvas, and the canvas
@@ -33,7 +30,7 @@ type Canvas2DWithDrawElement = CanvasRenderingContext2D & {
 
 type HTMLCanvasWithLayoutSubtree = HTMLCanvasElement & {
 	layoutSubtree?: boolean;
-	requestPaint?: () => void;
+	requestPaint: () => void;
 };
 
 const isHtmlInCanvasSupported = () => {
@@ -41,10 +38,14 @@ const isHtmlInCanvasSupported = () => {
 		return false;
 	}
 
-	const ctx = document
-		.createElement('canvas')
-		.getContext('2d') as Canvas2DWithDrawElement | null;
-	return typeof ctx?.drawElementImage === 'function';
+	const canvas = document.createElement(
+		'canvas',
+	) as HTMLCanvasWithLayoutSubtree;
+	const ctx = canvas.getContext('2d') as Canvas2DWithDrawElement | null;
+	return (
+		typeof ctx?.drawElementImage === 'function' &&
+		typeof canvas.requestPaint === 'function'
+	);
 };
 
 const Scene: React.FC = () => {
@@ -173,17 +174,16 @@ export const HtmlInCanvasDemo: React.FC = () => {
 	const sceneRef = useRef<HTMLDivElement | null>(null);
 	const outputCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-	const [supported, setSupported] = useState<boolean | null>(null);
-
-	useEffect(() => {
-		setSupported(isHtmlInCanvasSupported());
-	}, []);
-
 	// Mark the source canvas as a layoutSubtree root once on mount so its
 	// child <div ref={sceneRef}> participates in layout/paint and can be
 	// captured via drawElementImage().
 	useEffect(() => {
-		if (!supported) {
+		if (!isHtmlInCanvasSupported()) {
+			cancelRender(
+				new Error(
+					'HTML in Canvas is not supported. Open this page in Chrome Canary with chrome://flags/#canvas-draw-element enabled.',
+				),
+			);
 			return;
 		}
 
@@ -194,13 +194,9 @@ export const HtmlInCanvasDemo: React.FC = () => {
 		}
 
 		sourceCanvas.layoutSubtree = true;
-	}, [supported]);
+	}, []);
 
 	useEffect(() => {
-		if (!supported) {
-			return;
-		}
-
 		const sourceCanvas =
 			sourceCanvasRef.current as HTMLCanvasWithLayoutSubtree | null;
 		const sceneEl = sceneRef.current;
@@ -210,7 +206,7 @@ export const HtmlInCanvasDemo: React.FC = () => {
 		}
 
 		const ctx = sourceCanvas.getContext('2d') as Canvas2DWithDrawElement | null;
-		if (!ctx || typeof ctx.drawElementImage !== 'function') {
+		if (!ctx) {
 			return;
 		}
 
@@ -243,90 +239,25 @@ export const HtmlInCanvasDemo: React.FC = () => {
 			}
 		};
 
-		if (typeof sourceCanvas.requestPaint === 'function') {
-			const onPaint = () => {
-				sourceCanvas.removeEventListener('paint', onPaint);
-				capture();
-			};
+		const onPaint = () => {
+			sourceCanvas.removeEventListener('paint', onPaint);
+			capture();
+		};
 
-			sourceCanvas.addEventListener('paint', onPaint);
-			sourceCanvas.requestPaint();
-
-			return () => {
-				cancelled = true;
-				sourceCanvas.removeEventListener('paint', onPaint);
-				if (!resolved) {
-					continueRender(handle);
-				}
-			};
-		}
-
-		const rafIds: number[] = [];
-		rafIds.push(
-			requestAnimationFrame(() => {
-				rafIds.push(requestAnimationFrame(capture));
-			}),
-		);
+		sourceCanvas.addEventListener('paint', onPaint);
+		sourceCanvas.requestPaint();
 
 		return () => {
 			cancelled = true;
-			for (const id of rafIds) {
-				cancelAnimationFrame(id);
-			}
-
+			sourceCanvas.removeEventListener('paint', onPaint);
 			if (!resolved) {
 				continueRender(handle);
 			}
 		};
-	}, [frame, width, height, supported]);
-
-	if (supported === false) {
-		return (
-			<AbsoluteFill
-				style={{
-					backgroundColor: '#111',
-					color: 'white',
-					alignItems: 'center',
-					justifyContent: 'center',
-					padding: 80,
-					fontFamily:
-						'-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif',
-					textAlign: 'center',
-				}}
-			>
-				<div style={{fontSize: 64, fontWeight: 800, marginBottom: 24}}>
-					HTML in Canvas not supported
-				</div>
-				<div
-					style={{
-						fontSize: 32,
-						lineHeight: 1.4,
-						maxWidth: 1200,
-						opacity: 0.85,
-					}}
-				>
-					This demo uses the experimental{' '}
-					<code>CanvasRenderingContext2D.drawElementImage()</code> API
-					(WICG/html-in-canvas). Enable{' '}
-					<code>chrome://flags/#canvas-draw-element</code> in Chrome (or Chrome
-					Canary for full support including <code>canvas.requestPaint()</code>)
-					and reload to view it.
-				</div>
-			</AbsoluteFill>
-		);
-	}
+	}, [frame, width, height]);
 
 	return (
 		<AbsoluteFill style={{backgroundColor: 'black'}}>
-			{/*
-			 * The source canvas hosts the scene as an immediate child. Its
-			 * `layoutSubtree` property (set imperatively after mount) tells
-			 * Chromium to lay out and paint the children. We then capture them
-			 * via drawElementImage() and draw the result as the canvas's bitmap.
-			 *
-			 * Note: drawElementImage() currently requires the element to be an
-			 * immediate child of the canvas being drawn onto.
-			 */}
 			<canvas
 				ref={sourceCanvasRef}
 				width={width}

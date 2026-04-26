@@ -50,7 +50,6 @@ type NewAudioForPreviewProps = {
 	readonly toneFrequency: number | undefined;
 	readonly audioStreamIndex: number | undefined;
 	readonly fallbackHtml5AudioProps: FallbackHtml5AudioProps | undefined;
-	readonly debugAudioScheduling: boolean;
 	readonly onError: MediaOnError | undefined;
 	readonly credentials: RequestCredentials | undefined;
 };
@@ -78,7 +77,6 @@ const AudioForPreviewAssertedShowing: React.FC<
 	toneFrequency,
 	audioStreamIndex,
 	fallbackHtml5AudioProps,
-	debugAudioScheduling,
 	onError,
 	credentials,
 	controls,
@@ -201,13 +199,11 @@ const AudioForPreviewAssertedShowing: React.FC<
 		fps: videoConfig.fps,
 		sequenceOffset,
 		loop,
-		debugAudioScheduling,
 		durationInFrames: videoConfig.durationInFrames,
 		isPremounting,
 		isPostmounting,
 		currentTime,
 		logLevel,
-		sharedAudioContext,
 		label: 'AudioForPreview',
 	});
 
@@ -215,14 +211,29 @@ const AudioForPreviewAssertedShowing: React.FC<
 		if (!sharedAudioContext) return;
 		if (!sharedAudioContext.audioContext) return;
 
-		const {audioContext, audioSyncAnchor, scheduleAudioNode} =
-			sharedAudioContext;
+		const {
+			audioContext,
+			gainNode,
+			audioSyncAnchor,
+			scheduleAudioNode,
+			unscheduleAudioNode,
+		} = sharedAudioContext;
+
+		if (!gainNode) {
+			return;
+		}
 
 		try {
 			const player = new MediaPlayer({
 				src: preloadedSrc,
 				logLevel,
-				sharedAudioContext: {audioContext, audioSyncAnchor, scheduleAudioNode},
+				sharedAudioContext: {
+					audioContext,
+					gainNode,
+					audioSyncAnchor,
+					scheduleAudioNode,
+					unscheduleAudioNode,
+				},
 				loop,
 				trimAfter: initialTrimAfterRef.current,
 				trimBefore: initialTrimBeforeRef.current,
@@ -231,7 +242,6 @@ const AudioForPreviewAssertedShowing: React.FC<
 				playbackRate: initialPlaybackRate.current,
 				audioStreamIndex: audioStreamIndex ?? 0,
 				debugOverlay: false,
-				debugAudioScheduling,
 				bufferState: buffer,
 				isPostmounting: initialIsPostmounting.current,
 				isPremounting: initialIsPremounting.current,
@@ -373,7 +383,6 @@ const AudioForPreviewAssertedShowing: React.FC<
 		videoConfig.fps,
 		audioStreamIndex,
 		disallowFallbackToHtml5Audio,
-		debugAudioScheduling,
 		buffer,
 		onError,
 		credentials,
@@ -429,7 +438,6 @@ type InnerAudioProps = {
 	readonly toneFrequency?: number;
 	readonly audioStreamIndex?: number;
 	readonly fallbackHtml5AudioProps?: FallbackHtml5AudioProps;
-	readonly debugAudioScheduling?: boolean;
 	readonly onError?: MediaOnError;
 	readonly credentials?: RequestCredentials;
 };
@@ -455,7 +463,6 @@ export const AudioForPreview: React.FC<
 	toneFrequency,
 	audioStreamIndex,
 	fallbackHtml5AudioProps,
-	debugAudioScheduling,
 	onError,
 	credentials,
 	controls,
@@ -512,7 +519,6 @@ export const AudioForPreview: React.FC<
 			stack={stack}
 			disallowFallbackToHtml5Audio={disallowFallbackToHtml5Audio ?? false}
 			toneFrequency={toneFrequency}
-			debugAudioScheduling={debugAudioScheduling ?? false}
 			onError={onError}
 			credentials={credentials}
 			fallbackHtml5AudioProps={fallbackHtml5AudioProps}

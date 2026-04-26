@@ -5,6 +5,8 @@ import type {ScheduleAudioNodeResult} from './audio/shared-audio-tags.js';
 import {
 	SharedAudioContext,
 	SharedAudioContextProvider,
+	SharedAudioTagsContext,
+	SharedAudioTagsContextProvider,
 	type ScheduleAudioNodeOptions,
 } from './audio/shared-audio-tags.js';
 import {
@@ -216,6 +218,8 @@ export const Internals = {
 	getRemotionEnvironment,
 	SharedAudioContext,
 	SharedAudioContextProvider,
+	SharedAudioTagsContext,
+	SharedAudioTagsContextProvider,
 	invalidCompositionErrorMessage,
 	calculateMediaDuration,
 	isCompositionIdValid,

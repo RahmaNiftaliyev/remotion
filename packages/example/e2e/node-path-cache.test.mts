@@ -67,8 +67,8 @@ test.describe('node-path cache for stale source maps', () => {
 		// 2. Simulate prettier wrapping the return in parentheses,
 		//    shifting <Video> down by one line.
 		const editedContent = content.replace(
-			'return <Video src={src} />;',
-			'return (\n\t\t<Video src={src} />\n\t);',
+			'return <Video src={src} debugOverlay />;',
+			'return (\n\t\t<Video src={src} debugOverlay />\n\t);',
 		);
 		expect(editedContent).not.toBe(content);
 		fs.writeFileSync(newVideoFile, editedContent);

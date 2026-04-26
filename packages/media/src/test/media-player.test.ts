@@ -25,11 +25,13 @@ test('dispose should immediately unblock playback delays', async () => {
 	const audioContext = new AudioContext();
 	const sharedAudioContext: SharedAudioContextForMediaPlayer = {
 		audioContext,
+		gainNode: audioContext.createGain(),
 		audioSyncAnchor: {value: 0},
 		scheduleAudioNode: () => ({
 			type: 'started',
 			scheduledTime: 0,
 		}),
+		unscheduleAudioNode: () => {},
 	};
 
 	const player = new MediaPlayer({
@@ -45,7 +47,6 @@ test('dispose should immediately unblock playback delays', async () => {
 		audioStreamIndex: 0,
 		fps: 30,
 		debugOverlay: false,
-		debugAudioScheduling: false,
 		bufferState,
 		isPremounting: false,
 		isPostmounting: false,
@@ -63,6 +64,7 @@ test('dispose should immediately unblock playback delays', async () => {
 	});
 
 	const seekPromise = player.seekTo(9);
+
 	await seekDelayPromise;
 
 	expect(activeBlocks).toBeGreaterThan(0);

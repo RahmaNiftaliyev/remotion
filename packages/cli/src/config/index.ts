@@ -476,7 +476,7 @@ declare global {
 		/**
 		 * Set the audio latency hint that the Studio will
 		 * use when playing back audio
-		 * Default: 'interactive'
+		 * Default: 'playback'
 		 */
 		readonly setAudioLatencyHint: (
 			audioLatencyHint: AudioContextLatencyCategory | null,

@@ -81,7 +81,6 @@ export const PlayRangesMediaVideo: React.FC<PlayRangesMediaVideoProps> = ({
 								src={url}
 								trimBefore={section.trimBefore}
 								trimAfter={section.trimAfter}
-								debugAudioScheduling
 							/>
 						</div>
 					</Series.Sequence>

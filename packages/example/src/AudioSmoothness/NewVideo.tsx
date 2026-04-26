@@ -1,7 +1,7 @@
 import {Video} from '@remotion/media';
+import React from 'react';
 import {CalculateMetadataFunction, Composition} from 'remotion';
-// https://www.remotion.dev/docs/mediabunny/metadata
-import {getMediaMetadata} from './get-media-metadata';
+import {getMediaMetadata} from '../get-media-metadata';
 
 const src = 'https://remotion.media/video.mp4';
 
@@ -18,19 +18,16 @@ export const calculateMetadataFn: CalculateMetadataFunction<
 	};
 };
 
-export const Component = () => {
-	return <Video src={src} debugOverlay />;
+const Component: React.FC = () => {
+	return <Video src={src} debugOverlay logLevel="verbose" />;
 };
 
-export const NewVideoComp = () => {
+export const AudioSmoothnessNewVideoComp: React.FC = () => {
 	return (
 		<Composition
 			component={Component}
-			id="NewVideo"
+			id="audio-smoothness-new-video"
 			calculateMetadata={calculateMetadataFn}
 		/>
 	);
 };
-
-// In Root.tsx:
-// <NewVideoComp />

@@ -33,14 +33,12 @@ export const audioIteratorManager = ({
 	audioTrack,
 	delayPlaybackHandleIfNotPremounting,
 	sharedAudioContext,
-	getIsLooping,
 	getSequenceEndTimestamp,
 	getSequenceDurationInSeconds,
 	getMediaEndTimestamp,
 	getStartTime,
 	initialMuted,
 	drawDebugOverlay,
-	initialTime,
 	initialPlaybackRate,
 	initialTrimBefore,
 	initialTrimAfter,
@@ -52,14 +50,12 @@ export const audioIteratorManager = ({
 	audioTrack: InputAudioTrack;
 	delayPlaybackHandleIfNotPremounting: () => DelayPlaybackIfNotPremounting;
 	sharedAudioContext: SharedAudioContextForMediaPlayer;
-	getIsLooping: () => boolean;
 	getSequenceEndTimestamp: () => number;
 	getSequenceDurationInSeconds: () => number;
 	getMediaEndTimestamp: () => number;
 	getStartTime: () => number;
 	initialMuted: boolean;
 	drawDebugOverlay: () => void;
-	initialTime: number;
 	initialPlaybackRate: number;
 	initialTrimBefore: number | undefined;
 	initialTrimAfter: number | undefined;
@@ -71,7 +67,8 @@ export const audioIteratorManager = ({
 	let muted = initialMuted;
 	let currentVolume = 1;
 	let currentSeek = {
-		time: initialTime,
+		// do not prevent first seek
+		time: -1,
 		playbackRate: initialPlaybackRate,
 		trimBefore: initialTrimBefore,
 		trimAfter: initialTrimAfter,
@@ -80,14 +77,6 @@ export const audioIteratorManager = ({
 		loop: initialLoop,
 		fps: initialFps,
 	};
-
-	// TODO: do something with looping
-	const _looping = getIsLooping();
-	Internals.Log.trace(
-		{logLevel: 'info', tag: 'audio-iterator-manager'},
-		'looping: %s',
-		_looping,
-	);
 
 	const gainNode = sharedAudioContext.audioContext.createGain();
 	gainNode.connect(sharedAudioContext.gainNode);
@@ -242,6 +231,7 @@ export const audioIteratorManager = ({
 		onDone,
 		logLevel,
 		currentTime,
+		getAudioContextCurrentTimeMockedInTest,
 	}: {
 		iterator: AudioIterator;
 		nonce: Nonce;
@@ -256,6 +246,7 @@ export const audioIteratorManager = ({
 		onDestroyed: () => void;
 		logLevel: LogLevel;
 		currentTime: number;
+		getAudioContextCurrentTimeMockedInTest: () => number;
 	}) => {
 		waitForTurn({
 			getPriority: () => {
@@ -277,7 +268,7 @@ export const audioIteratorManager = ({
 					sequenceStartTime: getStartTime(),
 				});
 
-				return scheduledTime - sharedAudioContext.audioContext.currentTime;
+				return scheduledTime - getAudioContextCurrentTimeMockedInTest();
 			},
 			fn: () => iterator.getNextFn(),
 			onDone: (result, next) => {
@@ -317,6 +308,7 @@ export const audioIteratorManager = ({
 					onDone,
 					logLevel,
 					currentTime,
+					getAudioContextCurrentTimeMockedInTest,
 				});
 				next();
 			},
@@ -346,6 +338,7 @@ export const audioIteratorManager = ({
 		logLevel,
 		loop,
 		unscheduleAudioNode,
+		getAudioContextCurrentTimeMockedInTest,
 	}: {
 		startFromSecond: number;
 		nonce: Nonce;
@@ -358,6 +351,7 @@ export const audioIteratorManager = ({
 		logLevel: LogLevel;
 		loop: boolean;
 		unscheduleAudioNode: (node: AudioBufferSourceNode) => void;
+		getAudioContextCurrentTimeMockedInTest: () => number;
 	}) => {
 		if (muted) {
 			return;
@@ -402,6 +396,7 @@ export const audioIteratorManager = ({
 			},
 			logLevel,
 			currentTime: sharedAudioContext.audioContext.currentTime,
+			getAudioContextCurrentTimeMockedInTest,
 		});
 	};
 
@@ -418,6 +413,7 @@ export const audioIteratorManager = ({
 		sequenceOffset,
 		sequenceDurationInFrames,
 		fps,
+		getAudioContextCurrentTimeMockedInTest,
 	}: {
 		newTime: number;
 		nonce: Nonce;
@@ -434,6 +430,7 @@ export const audioIteratorManager = ({
 		sequenceOffset: number;
 		sequenceDurationInFrames: number;
 		fps: number;
+		getAudioContextCurrentTimeMockedInTest: () => number;
 	}) => {
 		if (
 			currentSeek.time === newTime &&
@@ -507,6 +504,7 @@ export const audioIteratorManager = ({
 			logLevel,
 			loop,
 			unscheduleAudioNode: sharedAudioContext.unscheduleAudioNode,
+			getAudioContextCurrentTimeMockedInTest,
 		});
 
 		// Not further scheduling, initial iterator is already running

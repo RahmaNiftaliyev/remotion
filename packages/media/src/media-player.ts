@@ -311,13 +311,11 @@ export class MediaPlayer {
 					delayPlaybackHandleIfNotPremounting:
 						this.delayPlaybackHandleIfNotPremounting,
 					sharedAudioContext: this.sharedAudioContext,
-					getIsLooping: () => this.loop,
 					getMediaEndTimestamp: () => this.getMediaEndTimestamp(),
 					getSequenceEndTimestamp: () => this.getSequenceEndTimestamp(),
 					getStartTime: () => this.getStartTime(),
 					initialMuted,
 					drawDebugOverlay: this.drawDebugOverlay,
-					initialTime: startTime,
 					initialPlaybackRate: this.playbackRate * this.globalPlaybackRate,
 					getSequenceDurationInSeconds: () =>
 						this.getSequenceDurationInSeconds(),
@@ -345,6 +343,8 @@ export class MediaPlayer {
 								loop: this.loop,
 								unscheduleAudioNode:
 									this.sharedAudioContext!.unscheduleAudioNode,
+								getAudioContextCurrentTimeMockedInTest: () =>
+									this.sharedAudioContext!.audioContext.currentTime,
 							})
 						: Promise.resolve(),
 					this.videoIteratorManager
@@ -430,6 +430,8 @@ export class MediaPlayer {
 					sequenceDurationInFrames: this.sequenceDurationInFrames,
 					fps: this.fps,
 					scheduleAudioNode: this.scheduleAudioNode,
+					getAudioContextCurrentTimeMockedInTest: () =>
+						this.sharedAudioContext!.audioContext.currentTime,
 				}),
 			]);
 		} catch (error) {

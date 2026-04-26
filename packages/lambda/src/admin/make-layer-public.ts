@@ -40,6 +40,19 @@ const getBucketName = (region: AwsRegion) => {
 	return `remotionlambda-binaries-${region}`;
 };
 
+const parseRegionFlag = (): AwsRegion | null => {
+	const arg = process.argv
+		.slice(2)
+		.find((a) => a.startsWith('--region=') || a === '--region');
+	if (!arg) return null;
+	if (arg === '--region') {
+		const idx = process.argv.indexOf('--region');
+		return (process.argv[idx + 1] ?? null) as AwsRegion | null;
+	}
+
+	return arg.split('=')[1] as AwsRegion;
+};
+
 const makeLayerPublic = async () => {
 	const runtimes: Runtime[] = ['nodejs24.x'];
 
@@ -50,7 +63,14 @@ const makeLayerPublic = async () => {
 		'emoji-google',
 		'cjk',
 	] as const;
-	for (const region of getRegions()) {
+
+	const onlyRegion = parseRegionFlag();
+	const regions = onlyRegion ? [onlyRegion] : getRegions();
+	if (onlyRegion) {
+		console.log(`Filtering to region: ${onlyRegion}`);
+	}
+
+	for (const region of regions) {
 		for (const layer of layers) {
 			const layerName = `remotion-binaries-${layer}-arm64`;
 			const {Version, LayerArn} = await LambdaClientInternals.getLambdaClient(

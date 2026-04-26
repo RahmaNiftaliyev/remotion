@@ -124,27 +124,27 @@ export const hostedLayers: HostedLayers = {
 		{
 			layerArn:
 				'arn:aws:lambda:eu-central-1:678892195805:layer:remotion-binaries-fonts-arm64',
-			version: 60,
+			version: 61,
 		},
 		{
 			layerArn:
 				'arn:aws:lambda:eu-central-1:678892195805:layer:remotion-binaries-chromium-arm64',
-			version: 60,
+			version: 61,
 		},
 		{
 			layerArn:
 				'arn:aws:lambda:eu-central-1:678892195805:layer:remotion-binaries-emoji-apple-arm64',
-			version: 22,
+			version: 23,
 		},
 		{
 			layerArn:
 				'arn:aws:lambda:eu-central-1:678892195805:layer:remotion-binaries-emoji-google-arm64',
-			version: 22,
+			version: 23,
 		},
 		{
 			layerArn:
 				'arn:aws:lambda:eu-central-1:678892195805:layer:remotion-binaries-cjk-arm64',
-			version: 22,
+			version: 23,
 		},
 	],
 	'eu-west-1': [

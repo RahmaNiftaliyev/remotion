@@ -22,7 +22,6 @@ export const validateRuntimePreference = (option: unknown) => {
 };
 
 export const getLayers = ({
-	option,
 	region,
 }: {
 	option: RuntimePreference;
@@ -31,15 +30,15 @@ export const getLayers = ({
 	const layers = hostedLayers[region];
 	return layers.filter((layer) => {
 		if (layer.layerArn.includes('emoji-apple')) {
-			return option === 'apple-emojis';
+			return false;
 		}
 
 		if (layer.layerArn.includes('emoji-google')) {
-			return option !== 'apple-emojis';
+			return false;
 		}
 
 		if (layer.layerArn.includes('cjk')) {
-			return option !== 'apple-emojis';
+			return false;
 		}
 
 		if (layer.layerArn.includes('chromium')) {

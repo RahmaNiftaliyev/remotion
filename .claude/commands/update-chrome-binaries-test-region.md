@@ -1,0 +1,7 @@
+- Confirm the AWS CLI is logged into account `678892195805` by running `aws sts get-caller-identity`. If not, ask the user to log in.
+- Export AWS credentials into the shell by running `eval "$(aws configure export-credentials --format env)"` (the lambda-client checks for `AWS_ACCESS_KEY_ID` and does not pick up SSO/Identity Center credentials on its own).
+- From `packages/lambda`, run `bun src/admin/make-layer-public.ts --region=eu-central-1` to publish all 5 layers (fonts, chromium, emoji-apple, emoji-google, cjk) to a single test region.
+- The `eval` and the `bun` command must run in the same shell invocation (chain with `&&`), since the env vars do not persist across `Bash` tool calls.
+- Verify the output prints a `LayerArn` and `Version` for each of the 5 layers and a final JSON dump with `eu-central-1` populated.
+- Update `packages/lambda/src/shared/hosted-layers.ts` with the new versions for `eu-central-1` only (fonts, chromium, emoji-apple, emoji-google, cjk). The other regions are intentionally left on their old versions during the test phase.
+- Do not proceed to publishing all regions until the test region has been verified end-to-end.

@@ -12,7 +12,7 @@ This will:
 
 1. Build the browser-test bundle from `packages/example` (using `src/browser-test-entry.ts`)
 2. Build Docker images for each platform (ubuntu24, ubuntu22, debian, nix)
-3. Each Docker build runs `npx remotion compositions` and renders **two** compositions: `browser-test` and `html-in-canvas`
+3. Each Docker build runs `remotion compositions` and renders **two** compositions: `browser-test` and `html-in-canvas`
 4. Extract the rendered videos to `out/` directory
 
 Output videos (per platform — `<platform>.mp4` and `<platform>-html-in-canvas.mp4`):
@@ -32,6 +32,6 @@ Located in `packages/example/src/BrowserTest/index.tsx`, it tests:
 
 ## html-in-canvas composition
 
-Located in `packages/example/src/HtmlInCanvas/index.tsx`, it tests the experimental [WICG html-in-canvas](https://github.com/WICG/html-in-canvas) `CanvasRenderingContext2D.drawElementImage()` API. If the API is unavailable in the bundled Chrome (e.g. without `chrome://flags/#canvas-draw-element` or Chrome Canary), the composition renders a fallback "not supported" frame instead of failing.
+Located in `packages/example/src/HtmlInCanvas/index.tsx`, it tests the experimental [WICG html-in-canvas](https://github.com/WICG/html-in-canvas) `CanvasRenderingContext2D.drawElementImage()` API. If the API is unavailable in the bundled Chrome (e.g. without `chrome://flags/#canvas-draw-element` or Chrome Canary), the composition fails the render with an error.
 
 The bundle is built from `packages/example` and copied into each Docker container during build.

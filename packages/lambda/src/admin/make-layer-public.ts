@@ -103,7 +103,7 @@ const makeLayerPublic = async () => {
 				new PublishLayerVersionCommand({
 					Content: {
 						S3Bucket: getBucketName(region),
-						S3Key: `remotion-layer-${layer}-v17-arm64.zip`,
+						S3Key: `remotion-layer-${layer}-v18-arm64.zip`,
 					},
 					LayerName: layerName,
 					LicenseInfo:

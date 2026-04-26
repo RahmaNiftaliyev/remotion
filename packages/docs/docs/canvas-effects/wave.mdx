@@ -1,0 +1,51 @@
+---
+image: /generated/articles-docs-canvas-effects-wave.png
+title: wave()
+crumb: '@remotion/canvas-effects'
+---
+
+# wave()<AvailableFrom v="4.0.452" />
+
+A 2D [canvas effect](/docs/canvas-effects) that shifts vertical slices of the source up and down with an animated sine wave.
+
+```tsx twoslash title="src/WaveDemo.tsx"
+import {wave} from '@remotion/canvas-effects';
+import {Solid} from 'remotion';
+
+export const WaveDemo = () => (
+	<Solid
+		color="white"
+		width={1920}
+		height={1080}
+		effects={[wave({amplitude: 60, wavelength: 240})]}
+	/>
+);
+```
+
+## Parameters
+
+### amplitude?
+
+Maximum vertical displacement in pixels. Default `60`.
+
+### wavelength?
+
+Horizontal period of the wave, in pixels. Default `240`.
+
+### speed?
+
+Per-frame phase increment, in radians. Default `1 / 6` (≈9.5° per frame).
+
+### sliceWidth?
+
+Width of each vertical slice, in pixels. Smaller values produce smoother curves at the cost of more draw calls. Default `4`.
+
+### background?
+
+CSS color for the background fill drawn before the slices. Default `'transparent'` (no fill).
+
+## See also
+
+- [Canvas effects overview](/docs/canvas-effects)
+- [`tint()`](/docs/canvas-effects/tint)
+- [`blur()`](/docs/canvas-effects/blur)

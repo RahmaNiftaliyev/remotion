@@ -1,0 +1,39 @@
+---
+image: /generated/articles-docs-canvas-effects-blur.png
+title: blur()
+crumb: '@remotion/canvas-effects'
+---
+
+# blur()<AvailableFrom v="4.0.452" />
+
+A WebGL2 [canvas effect](/docs/canvas-effects) that applies a separable Gaussian blur to the source. Returns a tuple of `[horizontal, vertical]` passes; the chain runtime flattens the array automatically.
+
+```tsx twoslash title="src/BlurDemo.tsx"
+import {blur} from '@remotion/canvas-effects';
+import {Solid} from 'remotion';
+
+export const BlurDemo = () => (
+	<Solid color="hotpink" width={1920} height={1080} effects={[blur({radius: 24})]} />
+);
+```
+
+The blur uses a 9-tap Gaussian kernel. Sample stride scales with `radius` so the kernel always spans approximately ±`radius` pixels; sigma is set to `radius / 3`.
+
+## Parameters
+
+### radius
+
+Blur radius in pixels. Higher values produce a softer image. The same radius is used for both passes.
+
+## Single-axis variants
+
+If you only need a one-dimensional blur, the individual passes are exported separately:
+
+- `blurHorizontal({radius})`
+- `blurVertical({radius})`
+
+## See also
+
+- [Canvas effects overview](/docs/canvas-effects)
+- [`wave()`](/docs/canvas-effects/wave)
+- [`tint()`](/docs/canvas-effects/tint)

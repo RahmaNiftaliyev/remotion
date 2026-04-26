@@ -1,0 +1,27 @@
+import {createDescriptor, defineEffect} from 'remotion';
+import {
+	applyBlur,
+	cleanupBlur,
+	setupBlur,
+	type BlurState,
+} from './blur-runtime.js';
+import {BLUR_FS_VERTICAL} from './blur-shaders.js';
+
+export type BlurVerticalParams = {
+	readonly radius: number;
+};
+
+const blurVerticalDef = defineEffect<BlurVerticalParams, BlurState>({
+	type: 'remotion/blur-vertical',
+	backend: 'webgl2',
+	setup: (target) => setupBlur(target, BLUR_FS_VERTICAL),
+	apply: ({source, width, height, params, state}) => {
+		applyBlur(state, source, width, height, params.radius);
+	},
+	cleanup: (state) => cleanupBlur(state),
+});
+
+// Single vertical pass of the separable Gaussian blur. Most callers should
+// use [`blur`](./index.ts) which composes both horizontal and vertical passes.
+export const blurVertical = (params: BlurVerticalParams) =>
+	createDescriptor(blurVerticalDef, params);

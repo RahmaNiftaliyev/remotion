@@ -1,0 +1,56 @@
+---
+image: /generated/articles-docs-solid.png
+title: <Solid>
+crumb: 'Canvas effects'
+---
+
+# &lt;Solid&gt;<AvailableFrom v="4.0.452" />
+
+A flat-color [canvas-effect source](/docs/canvas-effects). Useful as a procedural input to a chain of [effects](/docs/canvas-effects/define-effect).
+
+```tsx twoslash title="src/SolidDemo.tsx"
+import {blur} from '@remotion/canvas-effects';
+import {Solid} from 'remotion';
+
+export const SolidDemo = () => (
+	<Solid color="hotpink" width={1920} height={1080} effects={[blur({radius: 24})]} />
+);
+```
+
+## Props
+
+### color
+
+A CSS color string used to fill the source canvas. Any value the 2D context accepts is allowed.
+
+### width
+
+Width of the visible output canvas, in pixels.
+
+### height
+
+Height of the visible output canvas, in pixels.
+
+### effects?
+
+An array of [`EffectDescriptor`](/docs/canvas-effects/define-effect) values. Adjacent same-backend effects are grouped and ping-ponged between scratch canvases. Defaults to `[]`, in which case the source color is drawn directly into the output.
+
+You may also pass nested arrays — e.g. `[blur({radius: 12})]` returns a `[horizontal, vertical]` pair. The runtime calls `.flat()` once before processing.
+
+### className?
+
+Forwarded to the underlying `<canvas>`.
+
+### style?
+
+Forwarded to the underlying `<canvas>`.
+
+### pixelRatio?
+
+Forwarded to effects as `pixelRatio` in `EffectApplyParams`. Default `1`.
+
+## See also
+
+- [Canvas effects overview](/docs/canvas-effects)
+- [`defineEffect()`](/docs/canvas-effects/define-effect)
+- [`<Experimental.HtmlInCanvas>`](/docs/canvas-effects/html-in-canvas)

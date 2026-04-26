@@ -1,0 +1,88 @@
+---
+image: /generated/articles-docs-canvas-effects-html-in-canvas.png
+title: <Experimental.HtmlInCanvas>
+crumb: 'Canvas effects'
+---
+
+# &lt;Experimental.HtmlInCanvas&gt;<AvailableFrom v="4.0.452" />
+
+<ExperimentalBadge>
+<p>
+This component depends on the experimental{' '}
+<a href="https://github.com/WICG/html-in-canvas">WICG html-in-canvas</a> proposal,
+which currently requires Chrome Canary with{' '}
+<code>chrome://flags/#canvas-draw-element</code> enabled. Composition rendering
+will fail with a clear error in any other environment.
+</p>
+</ExperimentalBadge>
+
+A [canvas-effect source](/docs/canvas-effects) that rasterizes its DOM children into a canvas using the WICG `html-in-canvas` proposal. The captured DOM image then flows through an [effect chain](/docs/canvas-effects).
+
+```tsx twoslash title="src/HtmlInCanvasDemo.tsx"
+import {wave} from '@remotion/canvas-effects';
+import {AbsoluteFill, Experimental, useVideoConfig} from 'remotion';
+
+export const HtmlInCanvasDemo = () => {
+	const {width, height} = useVideoConfig();
+
+	return (
+		<AbsoluteFill style={{backgroundColor: 'black'}}>
+			<Experimental.HtmlInCanvas
+				width={width}
+				height={height}
+				effects={[wave({amplitude: 60, wavelength: 240})]}
+			>
+				<div
+					style={{
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						width: '100%',
+						height: '100%',
+						color: 'white',
+						fontSize: 96,
+					}}
+				>
+					Hello!
+				</div>
+			</Experimental.HtmlInCanvas>
+		</AbsoluteFill>
+	);
+};
+```
+
+## Props
+
+### width
+
+Width of the output canvas, in pixels.
+
+### height
+
+Height of the output canvas, in pixels.
+
+### children
+
+The DOM subtree to rasterize. Rendered inside a wrapper `<div>` sized to `width`/`height` so children can use `width: 100%`/`height: 100%`. The wrapper is itself a child of the source `<canvas>`, whose `layoutSubtree` flag is set so children participate in layout and paint.
+
+### effects?
+
+An array of [`EffectDescriptor`](/docs/canvas-effects/define-effect) values. See [`<Solid>`](/docs/solid) for details on the `effects` prop.
+
+### className?
+
+Forwarded to the visible output `<canvas>`.
+
+### style?
+
+Forwarded to the visible output `<canvas>`.
+
+### pixelRatio?
+
+Forwarded to effects as `pixelRatio` in `EffectApplyParams`. Default `1`.
+
+## See also
+
+- [Canvas effects overview](/docs/canvas-effects)
+- [`<Solid>`](/docs/solid)
+- [`defineEffect()`](/docs/canvas-effects/define-effect)

@@ -1,0 +1,53 @@
+{
+	"repository": {
+		"url": "https://github.com/remotion-dev/remotion/tree/main/packages/canvas-effects"
+	},
+	"name": "@remotion/canvas-effects",
+	"version": "4.0.451",
+	"description": "Sample effects for the Remotion canvas-effect chain",
+	"main": "dist/index.js",
+	"sideEffects": false,
+	"scripts": {
+		"formatting": "oxfmt src --check",
+		"format": "oxfmt src",
+		"lint": "eslint src",
+		"make": "tsgo -d && bun --env-file=../.env.bundle bundle.ts"
+	},
+	"types": "dist/index.d.ts",
+	"module": "dist/esm/index.mjs",
+	"author": "Jonny Burger <jonny@remotion.dev>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/remotion-dev/remotion/issues"
+	},
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"types": "./dist/index.d.ts",
+			"module": "./dist/esm/index.mjs",
+			"import": "./dist/esm/index.mjs",
+			"require": "./dist/index.js"
+		}
+	},
+	"devDependencies": {
+		"react": "catalog:",
+		"@remotion/eslint-config-internal": "workspace:*",
+		"eslint": "catalog:",
+		"@typescript/native-preview": "catalog:"
+	},
+	"keywords": [
+		"canvas",
+		"effects",
+		"webgl",
+		"remotion"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"peerDependencies": {
+		"react": ">=16.8.0",
+		"remotion": "workspace:*"
+	},
+	"dependencies": {},
+	"homepage": "https://www.remotion.dev/docs/canvas-effects"
+}

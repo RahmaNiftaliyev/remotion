@@ -1,7 +1,11 @@
+import {wave} from '@remotion/canvas-effects';
 import React from 'react';
-import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
-import {applyWaveEffect} from './apply-wave-effect';
-import {HtmlInCanvas} from './html-in-canvas';
+import {
+	AbsoluteFill,
+	Experimental,
+	useCurrentFrame,
+	useVideoConfig,
+} from 'remotion';
 
 const Scene: React.FC = () => {
 	const frame = useCurrentFrame();
@@ -40,9 +44,13 @@ export const HtmlInCanvasDemo: React.FC = () => {
 
 	return (
 		<AbsoluteFill style={{backgroundColor: 'black'}}>
-			<HtmlInCanvas width={width} height={height} applyEffect={applyWaveEffect}>
+			<Experimental.HtmlInCanvas
+				width={width}
+				height={height}
+				effects={[wave({amplitude: 60, wavelength: 240})]}
+			>
 				<Scene />
-			</HtmlInCanvas>
+			</Experimental.HtmlInCanvas>
 		</AbsoluteFill>
 	);
 };

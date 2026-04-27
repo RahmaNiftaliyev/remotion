@@ -302,6 +302,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 				playing: initialPlaying.current,
 				sequenceOffset: initialSequenceOffset.current,
 				credentials,
+				tagType: 'video',
 			});
 
 			mediaPlayerRef.current = player;

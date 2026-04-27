@@ -30,6 +30,7 @@ export type MediaPlayerInitResult =
 	| {type: 'disposed'};
 
 export class MediaPlayer {
+	private tagType: 'audio' | 'video';
 	private canvas: HTMLCanvasElement | OffscreenCanvas | null;
 	private context:
 		| OffscreenCanvasRenderingContext2D
@@ -94,6 +95,7 @@ export class MediaPlayer {
 		playing,
 		sequenceOffset,
 		credentials,
+		tagType,
 	}: {
 		canvas: HTMLCanvasElement | OffscreenCanvas | null;
 		src: string;
@@ -115,6 +117,7 @@ export class MediaPlayer {
 		playing: boolean;
 		sequenceOffset: number;
 		credentials: RequestCredentials | undefined;
+		tagType: 'audio' | 'video';
 	}) {
 		this.canvas = canvas ?? null;
 		this.src = src;
@@ -147,6 +150,7 @@ export class MediaPlayer {
 			),
 			formats: ALL_FORMATS,
 		});
+		this.tagType = tagType;
 
 		if (canvas) {
 			const context = canvas.getContext('2d', {
@@ -263,7 +267,7 @@ export class MediaPlayer {
 				return {type: 'no-tracks'};
 			}
 
-			if (videoTrack) {
+			if (videoTrack && this.tagType === 'video') {
 				const canDecode = await videoTrack.canDecode();
 
 				if (!canDecode) {

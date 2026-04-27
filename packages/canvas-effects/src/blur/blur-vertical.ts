@@ -19,6 +19,7 @@ const blurVerticalDef = defineEffect<BlurVerticalParams, BlurState>({
 		applyBlur(state, source, width, height, params.radius);
 	},
 	cleanup: (state) => cleanupBlur(state),
+	schema: null,
 });
 
 // Single vertical pass of the separable Gaussian blur. Most callers should

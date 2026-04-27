@@ -365,6 +365,7 @@ const halftoneDef = defineEffect<HalftoneParams, HalftoneState>({
 		gl.deleteVertexArray(vao);
 		gl.deleteTexture(texture);
 	},
+	schema: null,
 });
 
 // Halftone effect (WebGL2). Converts luminance into a grid of dots, squares,

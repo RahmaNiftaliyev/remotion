@@ -18,6 +18,7 @@ const makeDef = (
 	setup: () => null,
 	apply: () => undefined,
 	cleanup: () => undefined,
+	schema: null,
 });
 
 const makeDesc = (

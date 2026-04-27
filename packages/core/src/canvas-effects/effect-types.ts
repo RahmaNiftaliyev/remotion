@@ -9,6 +9,8 @@
 // sRGB-encoded. Effects that perform color math in linear space are responsible
 // for converting to/from sRGB themselves.
 
+import type {SequenceSchema} from '../internals';
+
 export type Backend = '2d' | 'webgl2' | 'webgpu';
 
 // `GPUDevice` is left as `unknown` to avoid pulling `@webgpu/types` into core.
@@ -34,6 +36,7 @@ export type EffectDefinition<P, S = unknown> = {
 	readonly setup: (target: HTMLCanvasElement) => S | Promise<S>;
 	readonly apply: (params: EffectApplyParams<P, S>) => void | Promise<void>;
 	readonly cleanup: (state: S) => void;
+	readonly schema: SequenceSchema | null;
 };
 
 export type EffectDescriptor<P = unknown> = {

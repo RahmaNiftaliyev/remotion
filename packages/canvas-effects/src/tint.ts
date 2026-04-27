@@ -1,4 +1,16 @@
+import type {SequenceSchema} from 'remotion';
 import {createDescriptor, defineEffect} from 'remotion';
+
+export const tintSchema = {
+	amount: {
+		type: 'number',
+		min: 0,
+		max: 1,
+		step: 0.01,
+		default: 0.5,
+		description: 'Amount',
+	},
+} as const satisfies SequenceSchema;
 
 export type TintParams = {
 	readonly color: string;
@@ -35,6 +47,7 @@ const tintDef = defineEffect<TintParams, null>({
 		ctx.globalCompositeOperation = 'source-over';
 	},
 	cleanup: () => undefined,
+	schema: tintSchema,
 });
 
 // Tints the source with a flat color. `amount` controls the blend strength

@@ -19,6 +19,7 @@ const blurHorizontalDef = defineEffect<BlurHorizontalParams, BlurState>({
 		applyBlur(state, source, width, height, params.radius);
 	},
 	cleanup: (state) => cleanupBlur(state),
+	schema: null,
 });
 
 // Single horizontal pass of the separable Gaussian blur. Most callers should

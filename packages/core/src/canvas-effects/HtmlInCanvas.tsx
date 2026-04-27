@@ -1,13 +1,19 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
+import type {SequenceControls} from '../CompositionManager.js';
+import {addSequenceStackTraces} from '../enable-sequence-stack-traces.js';
+import type {SequenceSchema} from '../sequence-field-schema.js';
+import {Sequence} from '../Sequence.js';
 import {useCurrentFrame} from '../use-current-frame.js';
 import {useDelayRender} from '../use-delay-render.js';
+import {useVideoConfig} from '../use-video-config.js';
+import {wrapInSchema} from '../wrap-in-schema.js';
 import type {EffectsProp} from './effect-types.js';
+import type {EffectChainState} from './run-effect-chain.js';
 import {
 	cleanupEffectChainState,
 	createEffectChainState,
 	runEffectChain,
 } from './run-effect-chain.js';
-import type {EffectChainState} from './run-effect-chain.js';
 
 type Canvas2DWithDrawElement = CanvasRenderingContext2D & {
 	drawElementImage: (
@@ -49,7 +55,42 @@ export type HtmlInCanvasProps = {
 	readonly pixelRatio?: number;
 };
 
-export const HtmlInCanvas: React.FC<HtmlInCanvasProps> = ({
+const htmlInCanvasSchema = {
+	'style.translate': {
+		type: 'translate',
+		step: 1,
+		default: '0px 0px',
+		description: 'Position',
+	},
+	'style.scale': {
+		type: 'number',
+		min: 0.05,
+		max: 100,
+		step: 0.01,
+		default: 1,
+		description: 'Scale',
+	},
+	'style.rotate': {
+		type: 'rotation',
+		step: 1,
+		default: '0deg',
+		description: 'Rotation',
+	},
+	'style.opacity': {
+		type: 'number',
+		min: 0,
+		max: 1,
+		step: 0.01,
+		default: 1,
+		description: 'Opacity',
+	},
+} as const satisfies SequenceSchema;
+
+const HtmlInCanvasInner: React.FC<
+	HtmlInCanvasProps & {
+		readonly controls: SequenceControls | undefined;
+	}
+> = ({
 	width,
 	height,
 	effects = [],
@@ -57,6 +98,7 @@ export const HtmlInCanvas: React.FC<HtmlInCanvasProps> = ({
 	className,
 	style,
 	pixelRatio = 1,
+	controls,
 }) => {
 	const frame = useCurrentFrame();
 	const {delayRender, continueRender, cancelRender} = useDelayRender();
@@ -209,8 +251,14 @@ export const HtmlInCanvas: React.FC<HtmlInCanvasProps> = ({
 		};
 	}, []);
 
+	const {durationInFrames} = useVideoConfig();
+
 	return (
-		<>
+		<Sequence
+			durationInFrames={durationInFrames}
+			name="<HtmlInCanvas>"
+			controls={controls}
+		>
 			<canvas
 				ref={sourceCanvasRef}
 				width={width}
@@ -220,6 +268,7 @@ export const HtmlInCanvas: React.FC<HtmlInCanvasProps> = ({
 					inset: 0,
 					width,
 					height,
+					visibility: 'visible',
 				}}
 			>
 				<div
@@ -245,6 +294,12 @@ export const HtmlInCanvas: React.FC<HtmlInCanvasProps> = ({
 					...style,
 				}}
 			/>
-		</>
+		</Sequence>
 	);
 };
+
+export const HtmlInCanvas = wrapInSchema(HtmlInCanvasInner, htmlInCanvasSchema);
+
+HtmlInCanvas.displayName = 'HtmlInCanvas';
+
+addSequenceStackTraces(HtmlInCanvas);

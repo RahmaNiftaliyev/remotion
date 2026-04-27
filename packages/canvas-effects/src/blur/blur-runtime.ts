@@ -9,6 +9,7 @@ export type BlurState = {
 	gl: WebGL2RenderingContext;
 	program: WebGLProgram;
 	vao: WebGLVertexArrayObject;
+	vbo: WebGLBuffer;
 	texture: WebGLTexture;
 	uRadius: WebGLUniformLocation | null;
 	uTexelSize: WebGLUniformLocation | null;
@@ -125,11 +126,12 @@ export const setupBlur = (
 	const uTexelSize = gl.getUniformLocation(program, 'uTexelSize');
 	const uSource = gl.getUniformLocation(program, 'uSource');
 
-	return {gl, program, vao, texture, uRadius, uTexelSize, uSource};
+	return {gl, program, vao, vbo, texture, uRadius, uTexelSize, uSource};
 };
 
 export const cleanupBlur = (state: BlurState): void => {
-	const {gl, program, vao, texture} = state;
+	const {gl, program, vao, vbo, texture} = state;
+	gl.deleteBuffer(vbo);
 	gl.deleteProgram(program);
 	gl.deleteVertexArray(vao);
 	gl.deleteTexture(texture);

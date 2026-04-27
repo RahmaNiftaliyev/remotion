@@ -1164,7 +1164,7 @@
     },
     "packages/player-a11y": {
       "name": "@remotion/player-a11y",
-      "version": "4.0.448",
+      "version": "4.0.452",
       "dependencies": {
         "@remotion/player": "workspace:*",
         "remotion": "workspace:*",

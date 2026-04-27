@@ -1,14 +1,17 @@
-import type {CanvasSink, WrappedCanvas} from 'mediabunny';
+import type {CanvasSink} from 'mediabunny';
+import type {CanvasAheadOfTimeIterator} from './canvas-ahead-of-time';
+import {canvasesAheadOfTime} from './canvas-ahead-of-time';
 
 export const makePrewarmedVideoIteratorCache = (videoSink: CanvasSink) => {
-	const prewarmedVideoIterators: Map<
-		number,
-		AsyncGenerator<WrappedCanvas, void, unknown>
-	> = new Map();
+	const prewarmedVideoIterators: Map<number, CanvasAheadOfTimeIterator> =
+		new Map();
 
 	const prewarmIteratorForLooping = ({timeToSeek}: {timeToSeek: number}) => {
 		if (!prewarmedVideoIterators.has(timeToSeek)) {
-			prewarmedVideoIterators.set(timeToSeek, videoSink.canvases(timeToSeek));
+			prewarmedVideoIterators.set(
+				timeToSeek,
+				canvasesAheadOfTime(videoSink, timeToSeek),
+			);
 		}
 	};
 
@@ -19,13 +22,12 @@ export const makePrewarmedVideoIteratorCache = (videoSink: CanvasSink) => {
 			return prewarmedIterator;
 		}
 
-		const iterator = videoSink.canvases(timeToSeek);
-		return iterator;
+		return canvasesAheadOfTime(videoSink, timeToSeek);
 	};
 
 	const destroy = () => {
 		for (const iterator of prewarmedVideoIterators.values()) {
-			iterator.return();
+			iterator.closeIterator();
 		}
 
 		prewarmedVideoIterators.clear();

@@ -1,6 +1,13 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {useCurrentFrame} from '../use-current-frame.js';
+import {useDelayRender} from '../use-delay-render.js';
 import type {EffectsProp} from './effect-types.js';
-import {useEffectChain} from './use-effect-chain.js';
+import {
+	cleanupEffectChainState,
+	createEffectChainState,
+	runEffectChain,
+} from './run-effect-chain.js';
+import type {EffectChainState} from './run-effect-chain.js';
 
 export type SolidProps = {
 	readonly color: string;
@@ -12,14 +19,6 @@ export type SolidProps = {
 	readonly pixelRatio?: number;
 };
 
-// `<Solid>` is the simplest source component: it produces a flat-color image
-// to feed into the canvas-effect chain. Combined with an effect chain it can
-// generate procedural content (gradients, blurs, noise patches, ...) without
-// needing to mount a DOM source.
-//
-// Internally the source is a 1x1 canvas filled with `color`; the chain runtime
-// scales it to the chain's `width`/`height` when the next stage samples it,
-// which is correct because every pixel is the same color.
 export const Solid: React.FC<SolidProps> = ({
 	color,
 	width,
@@ -27,8 +26,11 @@ export const Solid: React.FC<SolidProps> = ({
 	effects = [],
 	className,
 	style,
-	pixelRatio,
+	pixelRatio = 1,
 }) => {
+	const frame = useCurrentFrame();
+	const {delayRender, continueRender, cancelRender} = useDelayRender();
+
 	const [outputCanvas, setOutputCanvas] = useState<HTMLCanvasElement | null>(
 		null,
 	);
@@ -44,30 +46,86 @@ export const Solid: React.FC<SolidProps> = ({
 		return canvas;
 	}, []);
 
-	const source = useCallback(() => {
-		if (!sourceCanvas) {
-			return null;
+	const chainStateRef = useRef<EffectChainState | null>(null);
+	const sizeRef = useRef<{width: number; height: number} | null>(null);
+
+	if (
+		!sizeRef.current ||
+		sizeRef.current.width !== width ||
+		sizeRef.current.height !== height
+	) {
+		if (chainStateRef.current) {
+			cleanupEffectChainState(chainStateRef.current);
 		}
+
+		chainStateRef.current = createEffectChainState(width, height);
+		sizeRef.current = {width, height};
+	}
+
+	// Fill source and run effect chain on every frame / color change.
+	useEffect(() => {
+		if (!outputCanvas || !sourceCanvas || !chainStateRef.current) {
+			return;
+		}
+
+		const handle = delayRender(`Solid effect chain (frame ${frame})`);
 
 		const ctx = sourceCanvas.getContext('2d', {colorSpace: 'srgb'});
 		if (!ctx) {
-			throw new Error('Failed to acquire 2D context for <Solid> source');
+			cancelRender(
+				new Error('Failed to acquire 2D context for <Solid> source'),
+			);
+			return;
 		}
 
 		ctx.fillStyle = color;
 		ctx.fillRect(0, 0, 1, 1);
-		return sourceCanvas;
-	}, [color, sourceCanvas]);
 
-	useEffectChain({
-		source,
+		runEffectChain({
+			state: chainStateRef.current,
+			source: sourceCanvas,
+			effects,
+			output: outputCanvas,
+			frame,
+			width,
+			height,
+			pixelRatio,
+		})
+			.then((completed) => {
+				if (completed) {
+					continueRender(handle);
+				}
+			})
+			.catch((err) => {
+				cancelRender(err);
+			});
+
+		return () => {
+			continueRender(handle);
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		frame,
+		color,
 		effects,
+		outputCanvas,
+		sourceCanvas,
 		width,
 		height,
 		pixelRatio,
-		output: outputCanvas,
-		sourceDeps: [color],
-	});
+		delayRender,
+		continueRender,
+		cancelRender,
+	]);
+
+	// Cleanup chain state on unmount.
+	useEffect(() => {
+		return () => {
+			if (chainStateRef.current) {
+				cleanupEffectChainState(chainStateRef.current);
+			}
+		};
+	}, []);
 
 	return (
 		<canvas

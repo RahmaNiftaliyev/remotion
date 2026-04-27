@@ -1,18 +1,14 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {cancelRender} from '../cancel-render.js';
+import {useCurrentFrame} from '../use-current-frame.js';
+import {useDelayRender} from '../use-delay-render.js';
 import type {EffectsProp} from './effect-types.js';
-import {useEffectChain} from './use-effect-chain.js';
+import {
+	cleanupEffectChainState,
+	createEffectChainState,
+	runEffectChain,
+} from './run-effect-chain.js';
+import type {EffectChainState} from './run-effect-chain.js';
 
-// Type augmentation for the WICG html-in-canvas proposal:
-// https://github.com/WICG/html-in-canvas
-//
-// Requires Chrome Canary with chrome://flags/#canvas-draw-element enabled, so
-// that both drawElementImage() and canvas.requestPaint() are available.
-//
-// The current Chromium implementation requires the element passed to
-// drawElementImage() to be an immediate child of the canvas, and the canvas
-// must have its `layoutSubtree` property set to true so the children are
-// actually laid out (instead of being treated as fallback content).
 type Canvas2DWithDrawElement = CanvasRenderingContext2D & {
 	drawElementImage: (
 		element: Element,
@@ -53,12 +49,6 @@ export type HtmlInCanvasProps = {
 	readonly pixelRatio?: number;
 };
 
-// `<HtmlInCanvas>` rasterizes its DOM children into a canvas using the WICG
-// html-in-canvas proposal, then runs the resulting image through an
-// effect chain. The captured DOM image is the source for the chain; effects
-// then transform it just like with any other source component.
-//
-// Requires Chrome Canary with `chrome://flags/#canvas-draw-element` enabled.
 export const HtmlInCanvas: React.FC<HtmlInCanvasProps> = ({
 	width,
 	height,
@@ -66,14 +56,104 @@ export const HtmlInCanvas: React.FC<HtmlInCanvasProps> = ({
 	children,
 	className,
 	style,
-	pixelRatio,
+	pixelRatio = 1,
 }) => {
+	const frame = useCurrentFrame();
+	const {delayRender, continueRender, cancelRender} = useDelayRender();
+
 	const sourceCanvasRef = useRef<HTMLCanvasElement | null>(null);
 	const sceneRef = useRef<HTMLDivElement | null>(null);
 	const [outputCanvas, setOutputCanvas] = useState<HTMLCanvasElement | null>(
 		null,
 	);
 
+	const chainStateRef = useRef<EffectChainState | null>(null);
+	const sizeRef = useRef<{width: number; height: number} | null>(null);
+
+	if (
+		!sizeRef.current ||
+		sizeRef.current.width !== width ||
+		sizeRef.current.height !== height
+	) {
+		if (chainStateRef.current) {
+			cleanupEffectChainState(chainStateRef.current);
+		}
+
+		chainStateRef.current = createEffectChainState(width, height);
+		sizeRef.current = {width, height};
+	}
+
+	// Refs so the paint handler always reads fresh values.
+	const effectsRef = useRef(effects);
+	effectsRef.current = effects;
+	const frameRef = useRef(frame);
+	frameRef.current = frame;
+	const pixelRatioRef = useRef(pixelRatio);
+	pixelRatioRef.current = pixelRatio;
+	const widthRef = useRef(width);
+	widthRef.current = width;
+	const heightRef = useRef(height);
+	heightRef.current = height;
+
+	// Track the current delayRender handle so the paint handler can settle it.
+	const pendingHandleRef = useRef<number | null>(null);
+
+	const onPaint = useCallback(() => {
+		const sourceCanvas =
+			sourceCanvasRef.current as HTMLCanvasWithLayoutSubtree | null;
+		const sceneEl = sceneRef.current;
+		const chainState = chainStateRef.current;
+		const output = outputCanvas;
+		const handle = pendingHandleRef.current;
+
+		if (
+			!sourceCanvas ||
+			!sceneEl ||
+			!chainState ||
+			!output ||
+			handle === null
+		) {
+			return;
+		}
+
+		const ctx = sourceCanvas.getContext('2d') as Canvas2DWithDrawElement | null;
+		if (!ctx) {
+			cancelRender(
+				new Error('Failed to acquire 2D context for <HtmlInCanvas> source'),
+			);
+			return;
+		}
+
+		const w = widthRef.current;
+		const h = heightRef.current;
+
+		ctx.reset();
+		ctx.drawElementImage(sceneEl, 0, 0, w, h);
+
+		const capturedHandle = handle;
+		pendingHandleRef.current = null;
+
+		runEffectChain({
+			state: chainState,
+			source: sourceCanvas,
+			effects: effectsRef.current,
+			output,
+			frame: frameRef.current,
+			width: w,
+			height: h,
+			pixelRatio: pixelRatioRef.current,
+		})
+			.then((completed) => {
+				if (completed) {
+					continueRender(capturedHandle);
+				}
+			})
+			.catch((err) => {
+				cancelRender(err);
+			});
+	}, [outputCanvas, continueRender, cancelRender]);
+
+	// Set up layoutSubtree and persistent paint listener.
 	useEffect(() => {
 		if (!isHtmlInCanvasSupported()) {
 			cancelRender(
@@ -91,47 +171,43 @@ export const HtmlInCanvas: React.FC<HtmlInCanvasProps> = ({
 		}
 
 		sourceCanvas.layoutSubtree = true;
-	}, []);
+		sourceCanvas.addEventListener('paint', onPaint);
+		return () => {
+			sourceCanvas.removeEventListener('paint', onPaint);
+		};
+	}, [onPaint, cancelRender]);
 
-	const source = useCallback(() => {
+	// On each frame change: block the renderer and request a paint.
+	useEffect(() => {
+		const handle = delayRender(`HtmlInCanvas (frame ${frame})`);
+
+		// Continue a stale handle from a previous frame that never got a paint.
+		if (pendingHandleRef.current !== null) {
+			continueRender(pendingHandleRef.current);
+		}
+
+		pendingHandleRef.current = handle;
+
 		const sourceCanvas =
 			sourceCanvasRef.current as HTMLCanvasWithLayoutSubtree | null;
-		const sceneEl = sceneRef.current;
-		if (!sourceCanvas || !sceneEl) {
-			return null;
-		}
+		sourceCanvas?.requestPaint();
 
-		const ctx = sourceCanvas.getContext('2d') as Canvas2DWithDrawElement | null;
-		if (!ctx) {
-			throw new Error('Failed to acquire 2D context for <HtmlInCanvas> source');
-		}
+		return () => {
+			if (pendingHandleRef.current === handle) {
+				continueRender(handle);
+				pendingHandleRef.current = null;
+			}
+		};
+	}, [frame, delayRender, continueRender]);
 
-		return new Promise<CanvasImageSource>((resolve, reject) => {
-			const onPaint = () => {
-				sourceCanvas.removeEventListener('paint', onPaint);
-				try {
-					ctx.reset();
-					ctx.drawElementImage(sceneEl, 0, 0, width, height);
-					resolve(sourceCanvas);
-				} catch (err) {
-					reject(err instanceof Error ? err : new Error(String(err)));
-				}
-			};
-
-			sourceCanvas.addEventListener('paint', onPaint);
-			sourceCanvas.requestPaint();
-		});
-	}, [width, height]);
-
-	useEffectChain({
-		source,
-		effects,
-		width,
-		height,
-		pixelRatio,
-		output: outputCanvas,
-		sourceDeps: [],
-	});
+	// Cleanup chain state on unmount.
+	useEffect(() => {
+		return () => {
+			if (chainStateRef.current) {
+				cleanupEffectChainState(chainStateRef.current);
+			}
+		};
+	}, []);
 
 	return (
 		<>

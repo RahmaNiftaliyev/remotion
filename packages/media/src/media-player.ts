@@ -42,7 +42,7 @@ export class MediaPlayer {
 	private logLevel: LogLevel;
 	private playbackRate: number;
 	private globalPlaybackRate: number;
-	private audioStreamIndex: number;
+	private audioStreamIndex: number | null;
 
 	private sharedAudioContext: SharedAudioContextForMediaPlayer | null;
 
@@ -107,7 +107,7 @@ export class MediaPlayer {
 		trimAfter: number | undefined;
 		playbackRate: number;
 		globalPlaybackRate: number;
-		audioStreamIndex: number;
+		audioStreamIndex: number | null;
 		fps: number;
 		debugOverlay: boolean;
 		bufferState: ReturnType<typeof useBufferState>;
@@ -129,7 +129,7 @@ export class MediaPlayer {
 		this.loop = loop;
 		this.trimBefore = trimBefore;
 		this.trimAfter = trimAfter;
-		this.audioStreamIndex = audioStreamIndex ?? 0;
+		this.audioStreamIndex = audioStreamIndex;
 		this.fps = fps;
 		this.debugOverlay = debugOverlay;
 		this.bufferState = bufferState;
@@ -262,7 +262,9 @@ export class MediaPlayer {
 
 			this.totalDuration = durationInSeconds;
 
-			const audioTrack = audioTracks[this.audioStreamIndex] ?? null;
+			const audioTrack = await (this.audioStreamIndex === null
+				? videoTrack?.getPrimaryPairableAudioTrack()
+				: (audioTracks[this.audioStreamIndex] ?? null));
 
 			if (!videoTrack && !audioTrack) {
 				return {type: 'no-tracks'};

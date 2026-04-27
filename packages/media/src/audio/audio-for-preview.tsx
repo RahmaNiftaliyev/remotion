@@ -146,6 +146,10 @@ const AudioForPreviewAssertedShowing: React.FC<
 		trimBefore,
 	});
 
+	const effects = useMemo(() => {
+		return [];
+	}, []);
+
 	useMediaInTimeline({
 		volume,
 		mediaVolume,
@@ -161,6 +165,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 		trimAfter,
 		trimBefore,
 		controls,
+		effects,
 	});
 
 	const bufferingContext = useContext(Internals.BufferingContextReact);

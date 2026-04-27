@@ -39,10 +39,13 @@ export type EffectDefinition<P, S = unknown> = {
 	readonly schema: SequenceSchema | null;
 };
 
-export type EffectDescriptor<P = unknown> = {
+export type EffectDefinitionAndStack<P = unknown> = {
 	readonly definition: EffectDefinition<P, unknown>;
-	readonly params: P;
 	readonly stack: string;
+};
+
+export type EffectDescriptor<P = unknown> = EffectDefinitionAndStack<P> & {
+	readonly params: P;
 };
 
 // Public prop type for `effects`: callers may interleave single descriptors

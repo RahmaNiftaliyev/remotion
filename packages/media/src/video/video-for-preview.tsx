@@ -191,6 +191,8 @@ const VideoForPreviewAssertedShowing: React.FC<
 		trimAfter,
 		trimBefore,
 		controls,
+		// TODO: Pass actual value
+		effects: [],
 	});
 
 	const isSequenceHidden = hidden[timelineId] ?? false;

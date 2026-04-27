@@ -10,18 +10,22 @@ export const HtmlInCanvasReactSvg: React.FC<{
 	const {width, height} = useVideoConfig();
 
 	return (
-		<HtmlInCanvas
-			width={width}
-			height={height}
-			effects={[
-				halftone({
-					dotSize: 40,
-					dotSpacing: 20,
-				}),
-				tint({color: 'red', amount: 1}),
-			]}
-		>
-			<ReactSvg transparent={transparent} />
-		</HtmlInCanvas>
+		<>
+			(
+			<HtmlInCanvas
+				width={width}
+				height={height}
+				effects={[
+					halftone({
+						dotSize: 40,
+						dotSpacing: 20,
+					}),
+					tint({color: 'red', amount: 1}),
+				]}
+			>
+				<ReactSvg transparent={transparent} />
+			</HtmlInCanvas>
+			)( )
+		</>
 	);
 };

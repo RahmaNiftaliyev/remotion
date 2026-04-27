@@ -1,6 +1,7 @@
 import type {ComponentType, LazyExoticComponent} from 'react';
 import React from 'react';
 import type {AnyZodObject} from './any-zod-type.js';
+import type {EffectDescriptor} from './canvas-effects/effect-types.js';
 import type {CalculateMetadataFunction} from './Composition.js';
 import type {DownloadBehavior} from './download-behavior.js';
 import type {NonceHistory} from './nonce.js';
@@ -114,6 +115,7 @@ export type TSequence = {
 	premountDisplay: number | null;
 	postmountDisplay: number | null;
 	controls: SequenceControls | null;
+	effects: EffectDescriptor<unknown>[];
 } & EnhancedTSequenceData;
 
 export type AudioOrVideoAsset = {

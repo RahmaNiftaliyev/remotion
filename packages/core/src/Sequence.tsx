@@ -7,6 +7,7 @@ import React, {
 	useState,
 } from 'react';
 import {AbsoluteFill} from './AbsoluteFill.js';
+import type {EffectDescriptor} from './canvas-effects/effect-types.js';
 import type {LoopDisplay, SequenceControls} from './CompositionManager.js';
 import {Freeze} from './freeze.js';
 import {useNonce} from './nonce.js';
@@ -50,6 +51,7 @@ export type SequencePropsWithoutDuration = {
 	readonly name?: string;
 	readonly showInTimeline?: boolean;
 	readonly controls?: SequenceControls;
+	readonly effects?: EffectDescriptor<unknown>[];
 	/**
 	 * @deprecated For internal use only.
 	 */
@@ -93,6 +95,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 		width,
 		showInTimeline = true,
 		controls,
+		effects,
 		_remotionInternalLoopDisplay: loopDisplay,
 		_remotionInternalStack: stack,
 		_remotionInternalPremountDisplay: premountDisplay,
@@ -231,6 +234,8 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 			premountDisplay: premountDisplay ?? null,
 			postmountDisplay: postmountDisplay ?? null,
 			controls: controls ?? null,
+			// TODO: This might not be memoized properly
+			effects: effects ?? [],
 		});
 		return () => {
 			unregisterSequence(id);
@@ -255,6 +260,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 		env.isStudio,
 		inheritedStack,
 		controls,
+		effects,
 	]);
 
 	// Ceil to support floats

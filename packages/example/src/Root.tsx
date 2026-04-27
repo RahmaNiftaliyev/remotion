@@ -41,6 +41,7 @@ import {HlsDemo} from './Hls/HlsDemo';
 import {HugeImage} from './HugeImage';
 import {HugePayload, hugePayloadSchema} from './HugePayload';
 import {Layers} from './Layers';
+import {LongAudio} from './LongAudio';
 import {ManyAudio} from './ManyAudio';
 import {HandleAudioRenderError} from './MediaErrorHandling/HandleAudioRenderError';
 import {InfiniteAudio} from './MediaErrorHandling/InfiniteAudio';
@@ -711,6 +712,14 @@ export const Index: React.FC = () => {
 				/>
 			</Folder>
 			<Folder name="new-media-tags">
+				<Composition
+					id="long-audio"
+					component={LongAudio}
+					width={1280}
+					height={720}
+					fps={30}
+					durationInFrames={60 * 60 * 30}
+				/>
 				<Composition
 					id="new-audio"
 					component={NewAudioExample}

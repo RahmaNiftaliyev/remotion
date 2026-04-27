@@ -31,7 +31,9 @@ const waveDef = defineEffect<WaveParams, null>({
 	apply: ({source, target, frame, width, height, params}) => {
 		const ctx = target.getContext('2d');
 		if (!ctx) {
-			return;
+			throw new Error(
+				'Failed to acquire 2D context for wave effect. The canvas may have been assigned a different context type.',
+			);
 		}
 
 		const r = resolve(params);

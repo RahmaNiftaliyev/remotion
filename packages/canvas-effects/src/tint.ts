@@ -12,7 +12,9 @@ const tintDef = defineEffect<TintParams, null>({
 	apply: ({source, target, width, height, params}) => {
 		const ctx = target.getContext('2d');
 		if (!ctx) {
-			return;
+			throw new Error(
+				'Failed to acquire 2D context for tint effect. The canvas may have been assigned a different context type.',
+			);
 		}
 
 		const amount = Math.max(0, Math.min(1, params.amount ?? 0.5));

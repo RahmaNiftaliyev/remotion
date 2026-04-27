@@ -185,6 +185,10 @@ export const useEffectChain = ({
 							return;
 						}
 
+						if (run.backend === 'webgl2') {
+							state.pool.assertContextNotLost(dst);
+						}
+
 						currentImage = dst;
 						dst = dst === a ? b : a;
 					}

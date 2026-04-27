@@ -14,6 +14,7 @@ export class CanvasPool {
 	private readonly width: number;
 	private readonly height: number;
 	private readonly pairs: Map<Backend, CanvasPair> = new Map();
+	private readonly lostContexts: Set<HTMLCanvasElement> = new Set();
 
 	public constructor(width: number, height: number) {
 		this.width = width;
@@ -32,6 +33,16 @@ export class CanvasPool {
 		] as const;
 		this.pairs.set(backend, pair);
 		return pair;
+	}
+
+	public assertContextNotLost(canvas: HTMLCanvasElement): void {
+		if (this.lostContexts.has(canvas)) {
+			throw new Error(
+				'WebGL context was lost during canvas effect rendering. ' +
+					'This typically happens in headless or memory-constrained environments (e.g. Remotion Lambda). ' +
+					'Try reducing concurrency or increasing the Lambda function memory.',
+			);
+		}
 	}
 
 	private allocateCanvas(backend: Backend): HTMLCanvasElement {
@@ -60,6 +71,14 @@ export class CanvasPool {
 				if (!ctx) {
 					throw new Error('Failed to acquire WebGL2 context for canvas effect');
 				}
+
+				canvas.addEventListener('webglcontextlost', (e) => {
+					e.preventDefault();
+					this.lostContexts.add(canvas);
+				});
+				canvas.addEventListener('webglcontextrestored', () => {
+					this.lostContexts.delete(canvas);
+				});
 
 				ctx.pixelStorei(ctx.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 				return canvas;

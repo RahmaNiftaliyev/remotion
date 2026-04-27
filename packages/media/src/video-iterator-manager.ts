@@ -45,6 +45,7 @@ export const videoIteratorManager = ({
 	let videoFrameIterator: VideoIterator | null = null;
 	let framesRendered = 0;
 	let currentDelayHandle: {unblock: () => void} | null = null;
+	let lastDrawnFrame: WrappedCanvas | null = null;
 
 	if (canvas) {
 		if (
@@ -66,6 +67,7 @@ export const videoIteratorManager = ({
 		makePrewarmedVideoIteratorCache(canvasSink);
 
 	const drawFrame = async (frame: WrappedCanvas): Promise<void> => {
+		lastDrawnFrame = frame;
 		if (context && canvas) {
 			const effects = getEffects();
 			const chainState = getEffectChainState();
@@ -186,11 +188,17 @@ export const videoIteratorManager = ({
 				currentDelayHandle = null;
 			}
 
+			lastDrawnFrame = null;
 			videoFrameIterator = null;
 		},
 		getVideoFrameIterator: () => videoFrameIterator,
 		drawFrame,
 		getFramesRendered: () => framesRendered,
+		redrawLastFrame: async () => {
+			if (lastDrawnFrame) {
+				await drawFrame(lastDrawnFrame);
+			}
+		},
 	};
 };
 

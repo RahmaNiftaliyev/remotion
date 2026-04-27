@@ -1,3 +1,4 @@
+import {halftone, tint} from '@remotion/canvas-effects';
 import {Video} from '@remotion/media';
 import {CalculateMetadataFunction, Composition} from 'remotion';
 // https://www.remotion.dev/docs/mediabunny/metadata
@@ -19,7 +20,13 @@ export const calculateMetadataFn: CalculateMetadataFunction<
 };
 
 export const Component = () => {
-	return <Video src={src} debugOverlay />;
+	return (
+		<Video
+			src={src}
+			debugOverlay
+			effects={[halftone(), tint({color: 'green', amount: 0.1})]}
+		/>
+	);
 };
 
 export const NewVideoComp = () => {

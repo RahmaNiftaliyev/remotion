@@ -54,6 +54,20 @@ export async function extractFrames({
 			throw new Error('No video track found in the input');
 		}
 
+		if (await videoTrack.isLive()) {
+			throw new Error(
+				'Live streams are not currently supported by Remotion. Sorry! Source: ' +
+					src,
+			);
+		}
+
+		if (await videoTrack.isRelativeToUnixEpoch()) {
+			throw new Error(
+				'Streams with UNIX timestamps are not currently supported by Remotion. Sorry! Source: ' +
+					src,
+			);
+		}
+
 		const timestamps =
 			typeof timestampsInSeconds === 'function'
 				? await timestampsInSeconds({

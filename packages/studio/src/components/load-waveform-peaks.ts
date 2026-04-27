@@ -24,6 +24,20 @@ export async function loadWaveformPeaks(
 			return new Float32Array(0);
 		}
 
+		if (await audioTrack.isLive()) {
+			throw new Error(
+				'Live streams are not currently supported by Remotion. Sorry! Source: ' +
+					url,
+			);
+		}
+
+		if (await audioTrack.isRelativeToUnixEpoch()) {
+			throw new Error(
+				'Streams with UNIX timestamps are not currently supported by Remotion. Sorry! Source: ' +
+					url,
+			);
+		}
+
 		const sampleRate = await audioTrack.getSampleRate();
 		const durationInSeconds =
 			(await audioTrack.getDurationFromMetadata({skipLiveWait: true})) ??

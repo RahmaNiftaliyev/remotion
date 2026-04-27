@@ -269,6 +269,20 @@ export class MediaPlayer {
 			}
 
 			if (videoTrack && this.tagType === 'video') {
+				if (await videoTrack.isLive()) {
+					throw new Error(
+						'Live streams are not currently supported by Remotion. Sorry! Source: ' +
+							this.src,
+					);
+				}
+
+				if (await videoTrack.isRelativeToUnixEpoch()) {
+					throw new Error(
+						'Streams with UNIX timestamps are not currently supported by Remotion. Sorry! Source: ' +
+							this.src,
+					);
+				}
+
 				const canDecode = await videoTrack.canDecode();
 
 				if (!canDecode) {
@@ -302,6 +316,20 @@ export class MediaPlayer {
 			}
 
 			if (audioTrack && this.sharedAudioContext) {
+				if (await audioTrack.isLive()) {
+					throw new Error(
+						'Live streams are not currently supported by Remotion. Sorry! Source: ' +
+							this.src,
+					);
+				}
+
+				if (await audioTrack.isRelativeToUnixEpoch()) {
+					throw new Error(
+						'Streams with UNIX timestamps are not currently supported by Remotion. Sorry! Source: ' +
+							this.src,
+					);
+				}
+
 				const canDecode = await audioTrack.canDecode();
 				if (!canDecode) {
 					return {type: 'cannot-decode'};

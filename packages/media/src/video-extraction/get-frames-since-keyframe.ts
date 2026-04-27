@@ -83,6 +83,20 @@ export const getSinks = async (
 			return 'no-video-track';
 		}
 
+		if (await videoTrack.isLive()) {
+			throw new Error(
+				'Live streams are not currently supported by Remotion. Sorry! Source: ' +
+					src,
+			);
+		}
+
+		if (await videoTrack.isRelativeToUnixEpoch()) {
+			throw new Error(
+				'Streams with UNIX timestamps are not currently supported by Remotion. Sorry! Source: ' +
+					src,
+			);
+		}
+
 		const canDecode = await videoTrack.canDecode();
 
 		if (!canDecode) {

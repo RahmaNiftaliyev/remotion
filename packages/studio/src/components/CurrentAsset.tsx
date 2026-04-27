@@ -100,6 +100,20 @@ export const CurrentAsset: React.FC = () => {
 			input.getPrimaryVideoTrack(),
 		])
 			.then(async ([duration, format, videoTrack]) => {
+				if (videoTrack && (await videoTrack.isLive())) {
+					throw new Error(
+						'Live streams are not currently supported by Remotion. Sorry! Source: ' +
+							url,
+					);
+				}
+
+				if (videoTrack && (await videoTrack.isRelativeToUnixEpoch())) {
+					throw new Error(
+						'Streams with UNIX timestamps are not currently supported by Remotion. Sorry! Source: ' +
+							url,
+					);
+				}
+
 				setMediaMetadata({
 					duration,
 					format: format.name,

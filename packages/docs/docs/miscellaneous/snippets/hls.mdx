@@ -1,14 +1,14 @@
 ---
 image: /generated/articles-docs-miscellaneous-snippets-hls.png
 title: 'HLS support (HTTP Live Streaming)'
-sidebar_label: 'HTTP Live Streaming'
+sidebar_label: 'HLS'
 id: hls
 crumb: 'Video'
 ---
 
-## Using `<Video>` from `@remotion/media`<AvailableFrom v="4.0.TBD" />
+# HLS support<AvailableFrom v="4.0.TBD" />
 
-[`<Video>`](/docs/media/video) from [`@remotion/media`](/docs/media) supports HLS / HTTP Live Streaming / `.m3u8` files natively via [Mediabunny](https://mediabunny.dev).
+[`<Video>`](/docs/media/video) from [`@remotion/media`](/docs/media) supports HLS / `.m3u8` files natively via [Mediabunny](https://mediabunny.dev).
 
 Simply pass an `.m3u8` URL as the `src` prop:
 
@@ -28,78 +28,23 @@ export const HlsExample = () => {
 This works across all browsers and during rendering.
 When a master playlist with multiple quality variants is used, Remotion will automatically select the highest-quality video track and its accompanying audio.
 
+## Track selection
+
+Is currently not implemented by Remotion.  
+Currently, the highest-quality video track and its accompanying audio are selected automatically.
+
+## Live streams
+
+Are not supported by Remotion.  
+Any live HLS videos will be rejected.
+See: [Can Remotion be used for live streaming?](/docs/miscellaneous/live-streaming).
+
 :::note
 Only VOD (Video on Demand) HLS playlists are supported.
 Live HLS streams are not supported.
 :::
 
-## Legacy approaches
-
-The following approaches are still available but are no longer recommended now that native HLS support is available.
-
-### Using hls.js to play HLS videos during Preview
-
-You can play HLS videos during preview in the [`<Player>`](/docs/player) and in the Remotion Studio.
-
-Note the following caveats:
-
-<Step>1</Step> This code only shows how to connect the video tag to the HLS stream, it has not been tested on a real project. <br />
-<Step>2</Step> Audio will not work when rendering a video to an MP4 using this code. Use an alternative source during rendering.
-<br /> See [ Using a different tag in preview and rendering](/docs/video-tags#using-a-different-tag-in-preview-and-rendering) and [`useRemotionEnvironment()`](/docs/use-remotion-environment) for how to use different components based on whether you are rendering or previewing.
-<br />
-
-```tsx twoslash title="HlsDemo.tsx"
-import Hls from 'hls.js';
-import React, {useEffect, useRef} from 'react';
-import {AbsoluteFill, RemotionVideoProps, Html5Video} from 'remotion';
-
-const HlsVideo: React.FC<RemotionVideoProps> = ({src}) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    if (!src) {
-      throw new Error('src is required');
-    }
-
-    const startFrom = 0;
-
-    const hls = new Hls({
-      startLevel: 4,
-      maxBufferLength: 5,
-      maxMaxBufferLength: 5,
-    });
-
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      hls.startLoad(startFrom);
-    });
-
-    hls.loadSource(src);
-    hls.attachMedia(videoRef.current!);
-
-    return () => {
-      hls.destroy();
-    };
-  }, [src]);
-
-  return <Html5Video ref={videoRef} src={src} />;
-};
-
-export const HlsDemo: React.FC = () => {
-  return (
-    <AbsoluteFill>
-      <HlsVideo src="https://stream.mux.com/nqGuji1CJuoPoU3iprRRhiy3HXiQN0201HLyliOg44HOU.m3u8" />
-    </AbsoluteFill>
-  );
-};
-```
-
-## Native support in Chrome v142+
-
-As of Chrome v142 (October 2025), Chrome supports native HLS playback.  
-This means [`<OffthreadVideo />`](/docs/offthreadvideo) can play HLS / HTTP Live streaming / `.m3u8` files natively during preview (not rendering) without any additional setup in Chrome browsers.
-
 ## See also
 
 - [`<Video>` from `@remotion/media`](/docs/media/video)
 - [Mediabunny HLS reading guide](https://mediabunny.dev/guide/reading-hls)
-- [GitHub issue for this feature request](https://github.com/remotion-dev/remotion/issues/2930)

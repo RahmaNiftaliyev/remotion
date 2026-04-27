@@ -57,15 +57,8 @@ export const getResolveConfig = () => ({
 			'esm',
 			'worker.mjs',
 		),
-		// Resolve to the ESM build so `new Worker(new URL(..., import.meta.url))`
-		// patterns inside Studio are recognised by rspack/webpack.
 		// test visual controls before removing this
-		'@remotion/studio': path.resolve(
-			require.resolve('@remotion/studio'),
-			'..',
-			'esm',
-			'index.mjs',
-		),
+		'@remotion/studio': require.resolve('@remotion/studio'),
 		'react-dom/client': shouldUseReactDomClient
 			? require.resolve('react-dom/client')
 			: require.resolve('react-dom'),

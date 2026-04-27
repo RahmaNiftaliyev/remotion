@@ -278,7 +278,7 @@ export class MediaPlayer {
 					return {type: 'disposed'};
 				}
 
-				this.videoIteratorManager = videoIteratorManager({
+				this.videoIteratorManager = await videoIteratorManager({
 					videoTrack,
 					delayPlaybackHandleIfNotPremounting:
 						this.delayPlaybackHandleIfNotPremounting,

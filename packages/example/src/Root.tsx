@@ -38,7 +38,16 @@ import {FreezeExample} from './Freeze/FreezeExample';
 import {FreezePortion} from './FreezePortion/FreezePortion';
 import {Green} from './Green';
 import {HlsDemo} from './Hls/HlsDemo';
-import {HtmlInCanvasDemo} from './HtmlInCanvas';
+import {
+	HtmlInCanvasComposeAsyncBitmap,
+	HtmlInCanvasComposeBlit,
+	HtmlInCanvasComposeRotate,
+	HtmlInCanvasComposeThenEffects,
+	HtmlInCanvasComposeWebGL,
+	HtmlInCanvasComposeZoomPan,
+	HtmlInCanvasDemo,
+	HtmlInCanvasReactSvg,
+} from './HtmlInCanvas';
 import {HugeImage} from './HugeImage';
 import {HugePayload, hugePayloadSchema} from './HugePayload';
 import {Layers} from './Layers';
@@ -848,14 +857,75 @@ export const Index: React.FC = () => {
 					width={1080}
 					durationInFrames={100}
 				/>
-				<Composition
-					id="html-in-canvas"
-					component={HtmlInCanvasDemo}
-					fps={30}
-					height={1080}
-					width={1920}
-					durationInFrames={120}
-				/>
+				<Folder name="html-in-canvas">
+					<Composition
+						id="html-in-canvas"
+						component={HtmlInCanvasDemo}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-blit"
+						component={HtmlInCanvasComposeBlit}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-rotate"
+						component={HtmlInCanvasComposeRotate}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-zoom-pan"
+						component={HtmlInCanvasComposeZoomPan}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-async-bitmap"
+						component={HtmlInCanvasComposeAsyncBitmap}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-webgl"
+						component={HtmlInCanvasComposeWebGL}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-then-effects"
+						component={HtmlInCanvasComposeThenEffects}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-react-svg"
+						component={HtmlInCanvasReactSvg}
+						width={1920}
+						height={1080}
+						fps={60}
+						durationInFrames={300}
+						defaultProps={{
+							transparent: true,
+						}}
+					/>
+				</Folder>
 				<Composition
 					id="video-testing-webm"
 					component={VideoTesting}

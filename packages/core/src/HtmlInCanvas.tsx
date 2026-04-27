@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import type {EffectsProp} from './canvas-effects/effect-types.js';
 import {runEffectChain} from './canvas-effects/run-effect-chain.js';
 import {useEffectChainState} from './canvas-effects/use-effect-chain-state.js';
@@ -31,6 +31,15 @@ type HTMLCanvasWithLayoutSubtree = HTMLCanvasElement & {
 	requestPaint: () => void;
 };
 
+export type HtmlInCanvasComposeParams = {
+	readonly source: CanvasImageSource;
+	readonly target: HTMLCanvasElement;
+	readonly frame: number;
+	readonly width: number;
+	readonly height: number;
+	readonly pixelRatio: number;
+};
+
 export const isHtmlInCanvasSupported = (): boolean => {
 	if (typeof document === 'undefined') {
 		return false;
@@ -57,6 +66,9 @@ export type HtmlInCanvasProps = Omit<
 		readonly effects?: EffectsProp;
 		readonly children: React.ReactNode;
 		readonly pixelRatio?: number;
+		readonly onCompose?: (
+			params: HtmlInCanvasComposeParams,
+		) => void | Promise<void>;
 	};
 
 const htmlInCanvasSchema = {
@@ -101,6 +113,7 @@ const HtmlInCanvasInner: React.FC<
 	children,
 	style,
 	pixelRatio = 1,
+	onCompose,
 	controls,
 	durationInFrames,
 	...sequenceProps
@@ -110,11 +123,8 @@ const HtmlInCanvasInner: React.FC<
 	const frame = useCurrentFrame();
 	const {delayRender, continueRender, cancelRender} = useDelayRender();
 
-	const sourceCanvasRef = useRef<HTMLCanvasElement | null>(null);
+	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const sceneRef = useRef<HTMLDivElement | null>(null);
-	const [outputCanvas, setOutputCanvas] = useState<HTMLCanvasElement | null>(
-		null,
-	);
 
 	const chainState = useEffectChainState(width, height);
 
@@ -134,58 +144,54 @@ const HtmlInCanvasInner: React.FC<
 	const pendingHandleRef = useRef<number | null>(null);
 
 	const onPaint = useCallback(() => {
-		const sourceCanvas =
-			sourceCanvasRef.current as HTMLCanvasWithLayoutSubtree | null;
+		const canvas = canvasRef.current as HTMLCanvasWithLayoutSubtree | null;
 		const sceneEl = sceneRef.current;
-		const output = outputCanvas;
 		const handle = pendingHandleRef.current;
 
-		if (
-			!sourceCanvas ||
-			!sceneEl ||
-			!chainState ||
-			!output ||
-			handle === null
-		) {
+		if (!canvas || !sceneEl || !chainState || handle === null) {
 			return;
 		}
 
-		const ctx = sourceCanvas.getContext('2d') as Canvas2DWithDrawElement | null;
-		if (!ctx) {
-			cancelRender(
-				new Error('Failed to acquire 2D context for <HtmlInCanvas> source'),
-			);
-			return;
-		}
+		try {
+			const ctx = canvas.getContext('2d') as Canvas2DWithDrawElement | null;
+			if (!ctx) {
+				throw new Error(
+					'Failed to acquire 2D context for <HtmlInCanvas> canvas',
+				);
+			}
 
-		const w = widthRef.current;
-		const h = heightRef.current;
+			const w = widthRef.current;
+			const h = heightRef.current;
 
-		ctx.reset();
-		ctx.drawElementImage(sceneEl, 0, 0, w, h);
+			// Layout-subtree children are not shown on-screen until rasterized here;
+			// effects then read from and write back to this same surface (via pool).
+			ctx.reset();
+			ctx.drawElementImage(sceneEl, 0, 0, w, h);
 
-		const capturedHandle = handle;
-		pendingHandleRef.current = null;
-
-		runEffectChain({
-			state: chainState,
-			source: sourceCanvas,
-			effects: effectsRef.current,
-			output,
-			frame: frameRef.current,
-			width: w,
-			height: h,
-			pixelRatio: pixelRatioRef.current,
-		})
-			.then((completed) => {
-				if (completed) {
-					continueRender(capturedHandle);
-				}
+			const capturedHandle = handle;
+			pendingHandleRef.current = null;
+			runEffectChain({
+				state: chainState,
+				source: canvas,
+				effects: effectsRef.current,
+				output: canvas,
+				frame: frameRef.current,
+				width: w,
+				height: h,
+				pixelRatio: pixelRatioRef.current,
 			})
-			.catch((err) => {
-				cancelRender(err);
-			});
-	}, [outputCanvas, chainState, continueRender, cancelRender]);
+				.then((completed) => {
+					if (completed) {
+						continueRender(capturedHandle);
+					}
+				})
+				.catch((err) => {
+					cancelRender(err);
+				});
+		} catch (error) {
+			cancelRender(error);
+		}
+	}, [chainState, continueRender, cancelRender]);
 
 	// Set up layoutSubtree and persistent paint listener.
 	useEffect(() => {
@@ -198,16 +204,15 @@ const HtmlInCanvasInner: React.FC<
 			return;
 		}
 
-		const sourceCanvas =
-			sourceCanvasRef.current as HTMLCanvasWithLayoutSubtree | null;
-		if (!sourceCanvas) {
+		const canvas = canvasRef.current as HTMLCanvasWithLayoutSubtree | null;
+		if (!canvas) {
 			return;
 		}
 
-		sourceCanvas.layoutSubtree = true;
-		sourceCanvas.addEventListener('paint', onPaint);
+		canvas.layoutSubtree = true;
+		canvas.addEventListener('paint', onPaint);
 		return () => {
-			sourceCanvas.removeEventListener('paint', onPaint);
+			canvas.removeEventListener('paint', onPaint);
 		};
 	}, [onPaint, cancelRender]);
 
@@ -222,9 +227,8 @@ const HtmlInCanvasInner: React.FC<
 
 		pendingHandleRef.current = handle;
 
-		const sourceCanvas =
-			sourceCanvasRef.current as HTMLCanvasWithLayoutSubtree | null;
-		sourceCanvas?.requestPaint();
+		const canvas = canvasRef.current as HTMLCanvasWithLayoutSubtree | null;
+		canvas?.requestPaint();
 
 		return () => {
 			if (pendingHandleRef.current === handle) {
@@ -243,7 +247,7 @@ const HtmlInCanvasInner: React.FC<
 			style={style}
 		>
 			<canvas
-				ref={sourceCanvasRef}
+				ref={canvasRef}
 				width={width}
 				height={height}
 				style={{
@@ -251,7 +255,6 @@ const HtmlInCanvasInner: React.FC<
 					inset: 0,
 					width,
 					height,
-					visibility: 'visible',
 				}}
 			>
 				<div
@@ -264,17 +267,6 @@ const HtmlInCanvasInner: React.FC<
 					{children}
 				</div>
 			</canvas>
-			<canvas
-				ref={setOutputCanvas}
-				width={width}
-				height={height}
-				style={{
-					position: 'absolute',
-					inset: 0,
-					width,
-					height,
-				}}
-			/>
 		</Sequence>
 	);
 };

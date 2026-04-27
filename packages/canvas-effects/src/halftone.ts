@@ -3,6 +3,9 @@ import {createDescriptor, defineEffect} from 'remotion';
 export type HalftoneShape = 'circle' | 'square' | 'line';
 export type HalftoneSampling = 'bilinear' | 'nearest';
 
+/** Where halftone dots are pronounced: dark areas (classic ink), bright areas, or both (two-pass, like directional halftone shaders). */
+export type HalftoneRegion = 'shadows' | 'highlights' | 'both';
+
 export type HalftoneParams = {
 	readonly shape?: HalftoneShape;
 	readonly dotSize?: number;
@@ -12,6 +15,14 @@ export type HalftoneParams = {
 	readonly sampling?: HalftoneSampling;
 	readonly foreground?: string;
 	readonly background?: string;
+	/**
+	 * Which luminance regions get dots. `shadows` matches classic halftone (larger dots in darker pixels).
+	 * `highlights` inverts that (larger dots where the image is brighter). `both` draws shadow dots then
+	 * highlight dots—use `foreground` / `highlightForeground` for the two inks.
+	 */
+	readonly region?: HalftoneRegion;
+	/** Dot color for the highlight pass; used when `region` is `highlights` or `both`. Defaults to white. */
+	readonly highlightForeground?: string;
 };
 
 type HalftoneResolved = {
@@ -23,6 +34,8 @@ type HalftoneResolved = {
 	sampling: HalftoneSampling;
 	foreground: string;
 	background: string;
+	region: HalftoneRegion;
+	highlightForeground: string;
 };
 
 const resolve = (p: HalftoneParams): HalftoneResolved => ({
@@ -34,6 +47,8 @@ const resolve = (p: HalftoneParams): HalftoneResolved => ({
 	sampling: p.sampling ?? 'bilinear',
 	foreground: p.foreground ?? 'black',
 	background: p.background ?? 'white',
+	region: p.region ?? 'shadows',
+	highlightForeground: p.highlightForeground ?? '#ffffff',
 });
 
 type SampleState = {
@@ -50,19 +65,28 @@ type SampleOpts = {
 	sampling: HalftoneSampling;
 };
 
-const sampleLuminance = ({
+type LuminanceAlpha = {lum: number; alpha: number};
+
+const rgbToLum = (i: number, data: Uint8ClampedArray): number =>
+	(data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114) / 255;
+
+/** Samples linear RGB luminance and alpha [0–1]. Alpha is used so transparent pixels are not treated as black. */
+const sampleLuminanceAlpha = ({
 	data,
 	sw,
 	sh,
 	x,
 	y,
 	sampling,
-}: SampleOpts): number => {
+}: SampleOpts): LuminanceAlpha => {
 	if (sampling === 'nearest') {
 		const px = Math.min(Math.max(Math.round(x), 0), sw - 1);
 		const py = Math.min(Math.max(Math.round(y), 0), sh - 1);
 		const i = (py * sw + px) * 4;
-		return (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114) / 255;
+		return {
+			lum: rgbToLum(i, data),
+			alpha: data[i + 3] / 255,
+		};
 	}
 
 	const x0 = Math.floor(x);
@@ -80,18 +104,25 @@ const sampleLuminance = ({
 	const i01 = (y1 * sw + cx0) * 4;
 	const i11 = (y1 * sw + x1) * 4;
 
-	const l00 =
-		(data[i00] * 0.299 + data[i00 + 1] * 0.587 + data[i00 + 2] * 0.114) / 255;
-	const l10 =
-		(data[i10] * 0.299 + data[i10 + 1] * 0.587 + data[i10 + 2] * 0.114) / 255;
-	const l01 =
-		(data[i01] * 0.299 + data[i01 + 1] * 0.587 + data[i01 + 2] * 0.114) / 255;
-	const l11 =
-		(data[i11] * 0.299 + data[i11 + 1] * 0.587 + data[i11 + 2] * 0.114) / 255;
+	const l00 = rgbToLum(i00, data);
+	const l10 = rgbToLum(i10, data);
+	const l01 = rgbToLum(i01, data);
+	const l11 = rgbToLum(i11, data);
+
+	const a00 = data[i00 + 3] / 255;
+	const a10 = data[i10 + 3] / 255;
+	const a01 = data[i01 + 3] / 255;
+	const a11 = data[i11 + 3] / 255;
 
 	const top = l00 + (l10 - l00) * fx;
 	const bottom = l01 + (l11 - l01) * fx;
-	return top + (bottom - top) * fy;
+	const lum = top + (bottom - top) * fy;
+
+	const topA = a00 + (a10 - a00) * fx;
+	const bottomA = a01 + (a11 - a01) * fx;
+	const alpha = topA + (bottomA - topA) * fy;
+
+	return {lum, alpha};
 };
 
 const halftoneDef = defineEffect<HalftoneParams, SampleState>({
@@ -134,7 +165,6 @@ const halftoneDef = defineEffect<HalftoneParams, SampleState>({
 		ctx.clearRect(0, 0, width, height);
 		ctx.fillStyle = r.background;
 		ctx.fillRect(0, 0, width, height);
-		ctx.fillStyle = r.foreground;
 
 		const rad = (r.rotation * Math.PI) / 180;
 		const cosR = Math.cos(rad);
@@ -192,7 +222,7 @@ const halftoneDef = defineEffect<HalftoneParams, SampleState>({
 					continue;
 				}
 
-				const lum = sampleLuminance({
+				const {lum, alpha} = sampleLuminanceAlpha({
 					data,
 					sw: width,
 					sh: height,
@@ -201,35 +231,49 @@ const halftoneDef = defineEffect<HalftoneParams, SampleState>({
 					sampling: r.sampling,
 				});
 
-				// Darker pixels → larger dots (1 - luminance)
-				const dotScale = 1 - lum;
-				if (dotScale <= 0.01) {
-					continue;
-				}
+				// Composite onto implicit paper (white): transparent → no ink for shadows,
+				// no ink for highlights. Avoids (0,0,0,0) reading as luminance 0.
+				const lumShadow = lum * alpha + (1 - alpha);
+				const lumHighlight = lum * alpha;
 
 				const dotX = cx + gridX * cosR - gridY * sinR;
 				const dotY = cy + gridX * sinR + gridY * cosR;
 
-				if (r.shape === 'circle') {
-					const radius = halfSize * dotScale;
-					ctx.beginPath();
-					ctx.arc(dotX, dotY, radius, 0, Math.PI * 2);
-					ctx.fill();
-				} else if (r.shape === 'square') {
-					const s = size * dotScale;
-					ctx.save();
-					ctx.translate(dotX, dotY);
-					ctx.rotate(-rad);
-					ctx.fillRect(-s / 2, -s / 2, s, s);
-					ctx.restore();
-				} else {
-					// 'line': horizontal stripe in grid space, height scales with luminance
-					const lineHeight = size * dotScale;
-					ctx.save();
-					ctx.translate(dotX, dotY);
-					ctx.rotate(-rad);
-					ctx.fillRect(-halfSize, -lineHeight / 2, size, lineHeight);
-					ctx.restore();
+				const drawDot = (dotScale: number, fillStyle: string) => {
+					if (dotScale <= 0.01) {
+						return;
+					}
+
+					ctx.fillStyle = fillStyle;
+
+					if (r.shape === 'circle') {
+						const radius = halfSize * dotScale;
+						ctx.beginPath();
+						ctx.arc(dotX, dotY, radius, 0, Math.PI * 2);
+						ctx.fill();
+					} else if (r.shape === 'square') {
+						const s = size * dotScale;
+						ctx.save();
+						ctx.translate(dotX, dotY);
+						ctx.rotate(-rad);
+						ctx.fillRect(-s / 2, -s / 2, s, s);
+						ctx.restore();
+					} else {
+						const lineHeight = size * dotScale;
+						ctx.save();
+						ctx.translate(dotX, dotY);
+						ctx.rotate(-rad);
+						ctx.fillRect(-halfSize, -lineHeight / 2, size, lineHeight);
+						ctx.restore();
+					}
+				};
+
+				if (r.region === 'shadows' || r.region === 'both') {
+					drawDot(1 - lumShadow, r.foreground);
+				}
+
+				if (r.region === 'highlights' || r.region === 'both') {
+					drawDot(lumHighlight, r.highlightForeground);
 				}
 			}
 		}
@@ -238,6 +282,9 @@ const halftoneDef = defineEffect<HalftoneParams, SampleState>({
 
 // Halftone effect inspired by m's Halftone for After Effects. Converts
 // luminance into a grid of dots, squares, or lines. `sampling` controls
-// interpolation when reading luminance between pixel centres.
+// interpolation when reading luminance between pixel centres. `region` chooses
+// whether dots follow dark areas, bright areas, or both (two inks), approximating
+// dual-pass halftone shading without mesh normals. Alpha is blended against white
+// so transparent pixels are not interpreted as black RGB.
 export const halftone = (params: HalftoneParams = {}) =>
 	createDescriptor(halftoneDef, params);

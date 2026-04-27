@@ -83,6 +83,12 @@ export const runEffectChain = async ({
 	let lastTarget: HTMLCanvasElement | null = null;
 
 	if (runs.length === 0) {
+		// In-place pipeline (e.g. <HtmlInCanvas>: drawElementImage into the same
+		// surface, no further effects) — the bitmap is already on `output`.
+		if (source === output) {
+			return true;
+		}
+
 		const ctx = output.getContext('2d');
 		if (!ctx) {
 			throw new Error('Failed to acquire 2D context for output canvas');

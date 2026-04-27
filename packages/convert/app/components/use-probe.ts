@@ -59,6 +59,19 @@ export const useProbe = ({src}: {src: Source}) => {
 			input.getMetadataTags().then((tags) => setMetadata(tags));
 
 			const trx = await input.getTracks();
+			trx.forEach(async (track) => {
+				if (await track.isLive()) {
+					throw new Error(
+						'Live streams are not currently supported by Remotion. Sorry!',
+					);
+				}
+
+				if (await track.isRelativeToUnixEpoch()) {
+					throw new Error(
+						'Streams with UNIX timestamps are not currently supported by Remotion. Sorry!',
+					);
+				}
+			});
 			setTracks(trx);
 			let hasAudioTrack = false;
 			let hasVideoTrack = false;

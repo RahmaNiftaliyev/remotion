@@ -23,6 +23,16 @@ function exponentialBackoff(errorCount: number): number {
 	return 1000 * 2 ** (errorCount - 1);
 }
 
+// Data URLs like the ones from canvas.toDataURL() can be many megabytes, which makes the delayRender() label
+// unreadable and bloats log output
+export function truncateSrcForLabel(src: string): string {
+	if (src.startsWith('data:') && src.length > 100) {
+		return src.slice(0, 60) + '...[' + src.length + ' chars total]';
+	}
+
+	return src;
+}
+
 type NativeImgProps = Omit<
 	React.DetailedHTMLProps<
 		React.ImgHTMLAttributes<HTMLImageElement>,
@@ -183,9 +193,9 @@ const ImgInner: React.FC<
 				);
 				// eslint-disable-next-line no-console
 				console.warn(
-					`Could not load image with source ${
-						imageRef.current?.src as string
-					}, retrying again in ${backoff}ms`,
+					`Could not load image with source ${truncateSrcForLabel(
+						imageRef.current?.src as string,
+					)}, retrying again in ${backoff}ms`,
 				);
 
 				retryIn(backoff);
@@ -194,7 +204,8 @@ const ImgInner: React.FC<
 
 			try {
 				cancelRender(
-					'Error loading image with src: ' + (imageRef.current?.src as string),
+					'Error loading image with src: ' +
+						truncateSrcForLabel(imageRef.current?.src as string),
 				);
 			} catch {
 				// cancelRender() intentionally throws after storing the error in scope.
@@ -222,10 +233,13 @@ const ImgInner: React.FC<
 				return;
 			}
 
-			const newHandle = delayRender('Loading <Img> with src=' + actualSrc, {
-				retries: delayRenderRetries ?? undefined,
-				timeoutInMilliseconds: delayRenderTimeoutInMilliseconds ?? undefined,
-			});
+			const newHandle = delayRender(
+				'Loading <Img> with src=' + truncateSrcForLabel(actualSrc),
+				{
+					retries: delayRenderRetries ?? undefined,
+					timeoutInMilliseconds: delayRenderTimeoutInMilliseconds ?? undefined,
+				},
+			);
 			const unblock =
 				pauseWhenLoading && !isPremounting && !isPostmounting
 					? delayPlayback().unblock
@@ -244,9 +258,9 @@ const ImgInner: React.FC<
 					delete errors.current[imageRef.current?.src as string];
 					// eslint-disable-next-line no-console
 					console.info(
-						`Retry successful - ${
-							imageRef.current?.src as string
-						} is now loaded`,
+						`Retry successful - ${truncateSrcForLabel(
+							imageRef.current?.src as string,
+						)} is now loaded`,
 					);
 				}
 

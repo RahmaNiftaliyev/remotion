@@ -18,7 +18,7 @@ export const videoIteratorManager = ({
 	logLevel,
 	getOnVideoFrameCallback,
 	videoTrack,
-	getEndTime,
+	getLoopSegmentMediaEndTimestamp,
 	getStartTime,
 	getIsLooping,
 }: {
@@ -29,7 +29,7 @@ export const videoIteratorManager = ({
 	getOnVideoFrameCallback: () => null | ((frame: CanvasImageSource) => void);
 	logLevel: LogLevel;
 	drawDebugOverlay: () => void;
-	getEndTime: () => number;
+	getLoopSegmentMediaEndTimestamp: () => number;
 	getStartTime: () => number;
 	getIsLooping: () => boolean;
 }) => {
@@ -119,7 +119,7 @@ export const videoIteratorManager = ({
 
 		if (getIsLooping()) {
 			// If less than 1 second from the end away, we pre-warm a new iterator
-			if (getEndTime() - newTime < 1) {
+			if (getLoopSegmentMediaEndTimestamp() - newTime < 1) {
 				prewarmedVideoIteratorCache.prewarmIteratorForLooping({
 					timeToSeek: getStartTime(),
 				});

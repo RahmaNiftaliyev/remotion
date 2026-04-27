@@ -18,7 +18,7 @@ import {DurationsContext} from '../video/duration-state.js';
 import {AudioForPreview} from './AudioForPreview.js';
 import {AudioForRendering} from './AudioForRendering.js';
 import type {RemotionAudioProps, RemotionMainAudioProps} from './props.js';
-import {SharedAudioContext} from './shared-audio-tags.js';
+import {SharedAudioTagsContext} from './shared-audio-tags.js';
 
 const AudioRefForwardingFunction: React.ForwardRefRenderFunction<
 	HTMLAudioElement,
@@ -30,7 +30,7 @@ const AudioRefForwardingFunction: React.ForwardRefRenderFunction<
 			readonly stack?: string;
 		}
 > = (props, ref) => {
-	const audioContext = useContext(SharedAudioContext);
+	const audioTagsContext = useContext(SharedAudioTagsContext);
 	const {
 		startFrom,
 		endAt,
@@ -187,7 +187,7 @@ const AudioRefForwardingFunction: React.ForwardRefRenderFunction<
 			}
 			_remotionInternalStack={stack ?? null}
 			shouldPreMountAudioTags={
-				audioContext !== null && audioContext.numberOfAudioTags > 0
+				audioTagsContext !== null && audioTagsContext.numberOfAudioTags > 0
 			}
 			{...props}
 			ref={ref}

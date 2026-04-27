@@ -165,7 +165,7 @@ const PlayerFn = <
 		logLevel = 'info',
 		noSuspense,
 		acknowledgeRemotionLicense,
-		audioLatencyHint = 'interactive',
+		audioLatencyHint = 'playback',
 		volumePersistenceKey,
 		...componentProps
 	}: PlayerProps<Schema, Props>,

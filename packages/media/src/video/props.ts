@@ -62,7 +62,6 @@ type OptionalVideoProps = {
 	toneFrequency: number;
 	showInTimeline: boolean;
 	debugOverlay: boolean;
-	debugAudioScheduling: boolean;
 	headless: boolean;
 	onError: MediaOnError | undefined;
 	credentials: RequestCredentials | undefined;

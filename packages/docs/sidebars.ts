@@ -1296,7 +1296,6 @@ const sidebars: SidebarsConfig = {
 				'miscellaneous/typescript-aliases',
 				'testing',
 				'figma',
-				'spline',
 				'after-effects',
 			],
 		},

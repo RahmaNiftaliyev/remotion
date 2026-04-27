@@ -1,3 +1,4 @@
+import path from 'node:path';
 import type {LogLevel} from '@remotion/renderer';
 import {BrowserSafeApis} from '@remotion/renderer/client';
 import {StudioServerInternals} from '@remotion/studio-server';
@@ -160,7 +161,12 @@ export const studioCommand = async (
 	}
 
 	const result = await StudioServerInternals.startStudio({
-		previewEntry: require.resolve('@remotion/studio/previewEntry'),
+		previewEntry: path.join(
+			require.resolve('@remotion/studio/previewEntry'),
+			'..',
+			'esm',
+			'previewEntry.mjs',
+		),
 		browserArgs: parsedCli['browser-args'],
 		browserFlag: browserOption.getValue({commandLine: parsedCli}).value ?? '',
 		logLevel,

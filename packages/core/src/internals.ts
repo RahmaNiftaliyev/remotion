@@ -25,6 +25,7 @@ import {
 } from './CanUseRemotionHooks.js';
 import {runEffectChain} from './canvas-effects/run-effect-chain.js';
 import {useEffectChainState} from './canvas-effects/use-effect-chain-state.js';
+import {useMemoizedEffects} from './canvas-effects/use-memoized-effects.js';
 import {CompositionRenderErrorContext} from './composition-render-error-context.js';
 import {type CompProps} from './Composition.js';
 import type {
@@ -288,6 +289,7 @@ export const Internals = {
 	CompositionRenderErrorContext,
 	useEffectChainState,
 	runEffectChain,
+	useMemoizedEffects,
 } as const;
 
 export type {

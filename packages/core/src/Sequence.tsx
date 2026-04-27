@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import {AbsoluteFill} from './AbsoluteFill.js';
 import type {EffectDescriptor} from './canvas-effects/effect-types.js';
+import {useMemoizedEffects} from './canvas-effects/use-memoized-effects.js';
 import type {LoopDisplay, SequenceControls} from './CompositionManager.js';
 import {Freeze} from './freeze.js';
 import {useNonce} from './nonce.js';
@@ -214,6 +215,8 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 
 	const inheritedStack = (other as any)?.stack ?? null;
 
+	const memoizedEffects = useMemoizedEffects(effects ?? []);
+
 	useEffect(() => {
 		if (!env.isStudio) {
 			return;
@@ -234,8 +237,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 			premountDisplay: premountDisplay ?? null,
 			postmountDisplay: postmountDisplay ?? null,
 			controls: controls ?? null,
-			// TODO: This might not be memoized properly
-			effects: effects ?? [],
+			effects: memoizedEffects,
 		});
 		return () => {
 			unregisterSequence(id);
@@ -260,7 +262,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 		env.isStudio,
 		inheritedStack,
 		controls,
-		effects,
+		memoizedEffects,
 	]);
 
 	// Ceil to support floats

@@ -764,8 +764,4 @@ export class MediaPlayer {
 
 		this.audioIteratorManager.destroyIterator();
 	};
-
-	public async redrawLastFrame(): Promise<void> {
-		await this.videoIteratorManager?.redrawLastFrame();
-	}
 }

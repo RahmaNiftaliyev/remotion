@@ -43,6 +43,7 @@ const {
 	SequenceContext,
 	SequenceVisibilityToggleContext,
 	useEffectChainState,
+	useMemoizedEffects,
 } = Internals;
 
 type VideoForPreviewProps = {
@@ -155,6 +156,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 	);
 	const effectsRef = useRef(effects);
 	effectsRef.current = effects;
+	const memoizedEffects = useMemoizedEffects(effects.flat());
 	const effectChainStateRef = useRef(effectChainState);
 	effectChainStateRef.current = effectChainState;
 	const frameRef = useRef(frame);
@@ -191,8 +193,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 		trimAfter,
 		trimBefore,
 		controls,
-		// TODO: Pass actual value
-		effects: [],
+		effects: memoizedEffects,
 	});
 
 	const isSequenceHidden = hidden[timelineId] ?? false;
@@ -507,15 +508,6 @@ const VideoForPreviewAssertedShowing: React.FC<
 
 		mediaPlayer.setVideoFrameCallback(onVideoFrame ?? null);
 	}, [onVideoFrame, mediaPlayerReady]);
-
-	useLayoutEffect(() => {
-		const mediaPlayer = mediaPlayerRef.current;
-		if (!mediaPlayer || !mediaPlayerReady) {
-			return;
-		}
-
-		mediaPlayer.redrawLastFrame();
-	}, [effects, mediaPlayerReady]);
 
 	const actualStyle: React.CSSProperties = useMemo(() => {
 		return {

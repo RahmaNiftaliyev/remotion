@@ -3,6 +3,7 @@ export type {
 	Backend,
 	EffectApplyParams,
 	EffectDefinition,
+	EffectDefinitionAndStack,
 	EffectDescriptor,
 	EffectsProp,
 } from './effect-types.js';

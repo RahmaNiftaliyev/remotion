@@ -136,6 +136,7 @@ export {
 	defineEffect,
 	EffectApplyParams,
 	EffectDefinition,
+	EffectDefinitionAndStack,
 	EffectDescriptor,
 	EffectsProp,
 	Solid,

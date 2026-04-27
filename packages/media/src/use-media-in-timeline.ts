@@ -1,5 +1,9 @@
 import {useContext, useState, useEffect} from 'react';
-import type {EffectDescriptor, LoopDisplay, SequenceControls} from 'remotion';
+import type {
+	EffectDefinitionAndStack,
+	LoopDisplay,
+	SequenceControls,
+} from 'remotion';
 import {Internals, useCurrentFrame, type VolumeProp} from 'remotion';
 
 export const useMediaInTimeline = ({
@@ -33,7 +37,7 @@ export const useMediaInTimeline = ({
 	trimBefore: number | undefined;
 	trimAfter: number | undefined;
 	controls: SequenceControls | undefined;
-	effects: EffectDescriptor<unknown>[];
+	effects: EffectDefinitionAndStack<unknown>[];
 }) => {
 	const parentSequence = useContext(Internals.SequenceContext);
 	const startsAt = Internals.useMediaStartsAt();

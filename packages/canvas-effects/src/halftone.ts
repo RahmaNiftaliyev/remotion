@@ -1,6 +1,5 @@
 import {createDescriptor, defineEffect} from 'remotion';
 
-/** Dot diameter scale [0–1] for uniform screen tone in transparent regions (`shadeOutside`). */
 const SHADE_OUTSIDE_DOT_SCALE = 0.5;
 
 export type HalftoneShape = 'circle' | 'square' | 'line';
@@ -53,241 +52,326 @@ const resolve = (p: HalftoneParams): HalftoneResolved => ({
 	shadeOutside: p.shadeOutside ?? false,
 });
 
-type SampleState = {
-	sourceCanvas: HTMLCanvasElement;
-	sourceCtx: CanvasRenderingContext2D;
-};
+const HALFTONE_VS = /* glsl */ `#version 300 es
+in vec2 aPos;
+in vec2 aUv;
+out vec2 vUv;
+void main() {
+	vUv = aUv;
+	gl_Position = vec4(aPos, 0.0, 1.0);
+}
+`;
 
-type SampleOpts = {
-	data: Uint8ClampedArray;
-	sw: number;
-	sh: number;
-	x: number;
-	y: number;
-	sampling: HalftoneSampling;
-};
+const HALFTONE_FS = /* glsl */ `#version 300 es
+precision highp float;
 
-type LuminanceAlpha = {lum: number; alpha: number};
+in vec2 vUv;
+out vec4 fragColor;
 
-const rgbToLum = (i: number, data: Uint8ClampedArray): number =>
-	(data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114) / 255;
+uniform sampler2D uSource;
+uniform vec2 uResolution;
+uniform float uDotSize;
+uniform float uDotSpacing;
+uniform float uRotation;
+uniform vec2 uOffset;
+uniform vec4 uColor;
+uniform int uShape;
+uniform bool uShadeOutside;
 
-/** Samples linear RGB luminance and alpha [0–1]. Alpha is used so transparent pixels are not treated as black. */
-const sampleLuminanceAlpha = ({
-	data,
-	sw,
-	sh,
-	x,
-	y,
-	sampling,
-}: SampleOpts): LuminanceAlpha => {
-	if (sampling === 'nearest') {
-		const px = Math.min(Math.max(Math.round(x), 0), sw - 1);
-		const py = Math.min(Math.max(Math.round(y), 0), sh - 1);
-		const i = (py * sw + px) * 4;
-		return {
-			lum: rgbToLum(i, data),
-			alpha: data[i + 3] / 255,
-		};
+const float SHADE_OUTSIDE_SCALE = ${SHADE_OUTSIDE_DOT_SCALE.toFixed(1)};
+
+void main() {
+	vec2 fragPos = vUv * uResolution;
+	vec2 center = uResolution * 0.5;
+
+	vec2 d = fragPos - center;
+	float cosR = cos(uRotation);
+	float sinR = sin(uRotation);
+
+	vec2 gridPos = vec2(
+		d.x * cosR + d.y * sinR,
+		-d.x * sinR + d.y * cosR
+	);
+
+	float spacing = max(uDotSpacing, 0.001);
+	vec2 cellIndex = floor((gridPos + uOffset) / spacing + 0.5);
+	vec2 gridCenter = cellIndex * spacing - uOffset;
+
+	vec2 canvasPos = center + vec2(
+		gridCenter.x * cosR - gridCenter.y * sinR,
+		gridCenter.x * sinR + gridCenter.y * cosR
+	);
+
+	vec2 sampleUv = clamp(canvasPos / uResolution, vec2(0.0), vec2(1.0));
+	vec4 texColor = texture(uSource, sampleUv);
+
+	float alpha = texColor.a;
+	vec3 rgb = alpha > 0.001 ? texColor.rgb / alpha : vec3(0.0);
+	float lum = dot(rgb, vec3(0.299, 0.587, 0.114));
+
+	float lumDefault = lum * alpha + (1.0 - alpha);
+	float dotScale = uShadeOutside
+		? (1.0 - alpha) * SHADE_OUTSIDE_SCALE
+		: 1.0 - lumDefault;
+
+	if (dotScale <= 0.01) {
+		fragColor = vec4(0.0);
+		return;
 	}
 
-	const x0 = Math.floor(x);
-	const y0 = Math.floor(y);
-	const x1 = Math.min(x0 + 1, sw - 1);
-	const y1 = Math.min(y0 + 1, sh - 1);
-	const fx = x - x0;
-	const fy = y - y0;
+	vec2 diff = gridPos - gridCenter;
+	float halfSize = uDotSize * 0.5;
+	float coverage = 0.0;
 
-	const cx0 = Math.max(x0, 0);
-	const cy0 = Math.max(y0, 0);
+	if (uShape == 0) {
+		float radius = halfSize * dotScale;
+		float dist = length(diff);
+		coverage = 1.0 - smoothstep(radius - 0.75, radius + 0.75, dist);
+	} else if (uShape == 1) {
+		float s = uDotSize * dotScale * 0.5;
+		coverage = (1.0 - smoothstep(s - 0.5, s + 0.5, abs(diff.x)))
+				 * (1.0 - smoothstep(s - 0.5, s + 0.5, abs(diff.y)));
+	} else {
+		float lineHalf = uDotSize * dotScale * 0.5;
+		coverage = (1.0 - smoothstep(halfSize - 0.5, halfSize + 0.5, abs(diff.x)))
+				 * (1.0 - smoothstep(lineHalf - 0.5, lineHalf + 0.5, abs(diff.y)));
+	}
 
-	const i00 = (cy0 * sw + cx0) * 4;
-	const i10 = (cy0 * sw + x1) * 4;
-	const i01 = (y1 * sw + cx0) * 4;
-	const i11 = (y1 * sw + x1) * 4;
+	fragColor = uColor * coverage;
+}
+`;
 
-	const l00 = rgbToLum(i00, data);
-	const l10 = rgbToLum(i10, data);
-	const l01 = rgbToLum(i01, data);
-	const l11 = rgbToLum(i11, data);
-
-	const a00 = data[i00 + 3] / 255;
-	const a10 = data[i10 + 3] / 255;
-	const a01 = data[i01 + 3] / 255;
-	const a11 = data[i11 + 3] / 255;
-
-	const top = l00 + (l10 - l00) * fx;
-	const bottom = l01 + (l11 - l01) * fx;
-	const lum = top + (bottom - top) * fy;
-
-	const topA = a00 + (a10 - a00) * fx;
-	const bottomA = a01 + (a11 - a01) * fx;
-	const alpha = topA + (bottomA - topA) * fy;
-
-	return {lum, alpha};
+type HalftoneState = {
+	gl: WebGL2RenderingContext;
+	program: WebGLProgram;
+	vao: WebGLVertexArrayObject;
+	vbo: WebGLBuffer;
+	texture: WebGLTexture;
+	uSource: WebGLUniformLocation | null;
+	uResolution: WebGLUniformLocation | null;
+	uDotSize: WebGLUniformLocation | null;
+	uDotSpacing: WebGLUniformLocation | null;
+	uRotation: WebGLUniformLocation | null;
+	uOffset: WebGLUniformLocation | null;
+	uColor: WebGLUniformLocation | null;
+	uShape: WebGLUniformLocation | null;
+	uShadeOutside: WebGLUniformLocation | null;
+	colorCtx: CanvasRenderingContext2D;
+	cachedColorStr: string;
+	cachedColorRgba: [number, number, number, number];
 };
 
-const halftoneDef = defineEffect<HalftoneParams, SampleState>({
+const SHAPE_INDEX: Record<HalftoneShape, number> = {
+	circle: 0,
+	square: 1,
+	line: 2,
+};
+
+const compileShader = (
+	gl: WebGL2RenderingContext,
+	type: number,
+	source: string,
+): WebGLShader => {
+	const shader = gl.createShader(type);
+	if (!shader) {
+		throw new Error('Failed to create WebGL shader');
+	}
+
+	gl.shaderSource(shader, source);
+	gl.compileShader(shader);
+	if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+		const log = gl.getShaderInfoLog(shader);
+		gl.deleteShader(shader);
+		throw new Error(`Halftone shader compile failed: ${log ?? '(no log)'}`);
+	}
+
+	return shader;
+};
+
+const linkProgram = (
+	gl: WebGL2RenderingContext,
+	vs: WebGLShader,
+	fs: WebGLShader,
+): WebGLProgram => {
+	const program = gl.createProgram();
+	if (!program) {
+		throw new Error('Failed to create WebGL program');
+	}
+
+	gl.attachShader(program, vs);
+	gl.attachShader(program, fs);
+	gl.linkProgram(program);
+	if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+		const log = gl.getProgramInfoLog(program);
+		gl.deleteProgram(program);
+		throw new Error(`Halftone program link failed: ${log ?? '(no log)'}`);
+	}
+
+	return program;
+};
+
+const parseColorRgba = (
+	ctx: CanvasRenderingContext2D,
+	color: string,
+): [number, number, number, number] => {
+	ctx.clearRect(0, 0, 1, 1);
+	ctx.fillStyle = color;
+	ctx.fillRect(0, 0, 1, 1);
+	const {data} = ctx.getImageData(0, 0, 1, 1);
+	return [data[0] / 255, data[1] / 255, data[2] / 255, data[3] / 255];
+};
+
+const halftoneDef = defineEffect<HalftoneParams, HalftoneState>({
 	type: 'remotion/halftone',
-	backend: '2d',
-	setup: () => {
-		const sourceCanvas = document.createElement('canvas');
-		const sourceCtx = sourceCanvas.getContext('2d', {
-			willReadFrequently: true,
-			colorSpace: 'srgb',
+	backend: 'webgl2',
+	setup: (target) => {
+		const gl = target.getContext('webgl2', {
+			premultipliedAlpha: true,
+			alpha: true,
+			preserveDrawingBuffer: true,
 		});
-		if (!sourceCtx) {
-			throw new Error(
-				'Failed to acquire 2D context for halftone sampling canvas.',
-			);
+		if (!gl) {
+			throw new Error('Failed to acquire WebGL2 context for halftone effect');
 		}
 
-		return {sourceCanvas, sourceCtx};
+		gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+
+		const vs = compileShader(gl, gl.VERTEX_SHADER, HALFTONE_VS);
+		const fs = compileShader(gl, gl.FRAGMENT_SHADER, HALFTONE_FS);
+		const program = linkProgram(gl, vs, fs);
+		gl.deleteShader(vs);
+		gl.deleteShader(fs);
+
+		const vao = gl.createVertexArray();
+		if (!vao) {
+			throw new Error('Failed to create WebGL vertex array');
+		}
+
+		gl.bindVertexArray(vao);
+
+		const data = new Float32Array([
+			-1, -1, 0, 0, 1, -1, 1, 0, -1, 1, 0, 1, 1, 1, 1, 1,
+		]);
+
+		const vbo = gl.createBuffer();
+		if (!vbo) {
+			throw new Error('Failed to create WebGL buffer');
+		}
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+		gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+
+		const aPos = gl.getAttribLocation(program, 'aPos');
+		const aUv = gl.getAttribLocation(program, 'aUv');
+		gl.enableVertexAttribArray(aPos);
+		gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 16, 0);
+		gl.enableVertexAttribArray(aUv);
+		gl.vertexAttribPointer(aUv, 2, gl.FLOAT, false, 16, 8);
+
+		gl.bindVertexArray(null);
+
+		const texture = gl.createTexture();
+		if (!texture) {
+			throw new Error('Failed to create WebGL texture');
+		}
+
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+
+		const colorCanvas = document.createElement('canvas');
+		colorCanvas.width = 1;
+		colorCanvas.height = 1;
+		const colorCtx = colorCanvas.getContext('2d', {willReadFrequently: true});
+		if (!colorCtx) {
+			throw new Error('Failed to acquire 2D context for color parsing');
+		}
+
+		return {
+			gl,
+			program,
+			vao,
+			vbo,
+			texture,
+			uSource: gl.getUniformLocation(program, 'uSource'),
+			uResolution: gl.getUniformLocation(program, 'uResolution'),
+			uDotSize: gl.getUniformLocation(program, 'uDotSize'),
+			uDotSpacing: gl.getUniformLocation(program, 'uDotSpacing'),
+			uRotation: gl.getUniformLocation(program, 'uRotation'),
+			uOffset: gl.getUniformLocation(program, 'uOffset'),
+			uColor: gl.getUniformLocation(program, 'uColor'),
+			uShape: gl.getUniformLocation(program, 'uShape'),
+			uShadeOutside: gl.getUniformLocation(program, 'uShadeOutside'),
+			colorCtx,
+			cachedColorStr: '',
+			cachedColorRgba: [0, 0, 0, 1] as [number, number, number, number],
+		};
 	},
-	apply: ({source, target, width, height, params, state}) => {
-		const ctx = target.getContext('2d');
-		if (!ctx) {
-			throw new Error(
-				'Failed to acquire 2D context for halftone effect. The canvas may have been assigned a different context type.',
-			);
-		}
-
+	apply: ({source, width, height, params, state}) => {
 		const r = resolve(params);
+		const {gl, program, vao, texture} = state;
 
-		const {sourceCanvas, sourceCtx} = state;
-		if (sourceCanvas.width !== width || sourceCanvas.height !== height) {
-			sourceCanvas.width = width;
-			sourceCanvas.height = height;
+		if (state.cachedColorStr !== r.color) {
+			state.cachedColorStr = r.color;
+			state.cachedColorRgba = parseColorRgba(state.colorCtx, r.color);
 		}
 
-		sourceCtx.clearRect(0, 0, width, height);
-		sourceCtx.drawImage(source, 0, 0, width, height);
-		const {data} = sourceCtx.getImageData(0, 0, width, height);
+		const [cr, cg, cb, ca] = state.cachedColorRgba;
 
-		ctx.clearRect(0, 0, width, height);
+		const filter = r.sampling === 'nearest' ? gl.NEAREST : gl.LINEAR;
 
-		const rad = (r.rotation * Math.PI) / 180;
-		const cosR = Math.cos(rad);
-		const sinR = Math.sin(rad);
+		gl.viewport(0, 0, width, height);
+		gl.clearColor(0, 0, 0, 0);
+		gl.clear(gl.COLOR_BUFFER_BIT);
 
-		const spacing = r.dotSpacing;
-		const size = r.dotSize;
-		const halfSize = size / 2;
+		gl.useProgram(program);
+		gl.bindVertexArray(vao);
 
-		// Compute grid bounds: rotate the four canvas corners into grid space,
-		// then iterate over the bounding box of those rotated corners so every
-		// visible cell is covered regardless of rotation angle.
-		const cx = width / 2;
-		const cy = height / 2;
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
+		gl.texImage2D(
+			gl.TEXTURE_2D,
+			0,
+			gl.RGBA,
+			gl.RGBA,
+			gl.UNSIGNED_BYTE,
+			source as TexImageSource,
+		);
 
-		const corners = [
-			[0, 0],
-			[width, 0],
-			[0, height],
-			[width, height],
-		];
-		let minGx = Infinity;
-		let maxGx = -Infinity;
-		let minGy = Infinity;
-		let maxGy = -Infinity;
-		for (const [px, py] of corners) {
-			const dx = px - cx;
-			const dy = py - cy;
-			const gx = dx * cosR + dy * sinR;
-			const gy = -dx * sinR + dy * cosR;
-			minGx = Math.min(minGx, gx);
-			maxGx = Math.max(maxGx, gx);
-			minGy = Math.min(minGy, gy);
-			maxGy = Math.max(maxGy, gy);
-		}
+		if (state.uSource) gl.uniform1i(state.uSource, 0);
+		if (state.uResolution) gl.uniform2f(state.uResolution, width, height);
+		if (state.uDotSize) gl.uniform1f(state.uDotSize, r.dotSize);
+		if (state.uDotSpacing) gl.uniform1f(state.uDotSpacing, r.dotSpacing);
+		if (state.uRotation)
+			gl.uniform1f(state.uRotation, (r.rotation * Math.PI) / 180);
+		if (state.uOffset) gl.uniform2f(state.uOffset, r.offsetX, r.offsetY);
+		if (state.uColor) gl.uniform4f(state.uColor, cr * ca, cg * ca, cb * ca, ca);
+		if (state.uShape) gl.uniform1i(state.uShape, SHAPE_INDEX[r.shape]);
+		if (state.uShadeOutside)
+			gl.uniform1i(state.uShadeOutside, r.shadeOutside ? 1 : 0);
 
-		// Include an extra ring of cells past the axis-aligned grid-space bounds so
-		// float error, max dot extent, and rotation never clip the last row/column.
-		const gridPadBefore = 2;
-		const gridPadAfter = 2;
-		const startCol = Math.floor((minGx + r.offsetX) / spacing) - gridPadBefore;
-		const endCol = Math.ceil((maxGx + r.offsetX) / spacing) + gridPadAfter;
-		const startRow = Math.floor((minGy + r.offsetY) / spacing) - gridPadBefore;
-		const endRow = Math.ceil((maxGy + r.offsetY) / spacing) + gridPadAfter;
+		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-		for (let row = startRow; row <= endRow; row++) {
-			for (let col = startCol; col <= endCol; col++) {
-				const gridX = col * spacing - r.offsetX;
-				const gridY = row * spacing - r.offsetY;
-
-				const sampleX = cx + gridX * cosR - gridY * sinR;
-				const sampleY = cy + gridX * sinR + gridY * cosR;
-
-				// Margin must cover full dot extent (rotated square corners are √2·halfSize
-				// from center). Small px slack avoids float gaps at canvas edges.
-				const cullR = halfSize * Math.SQRT2 + 2;
-				if (
-					sampleX < -cullR ||
-					sampleX > width + cullR ||
-					sampleY < -cullR ||
-					sampleY > height + cullR
-				) {
-					continue;
-				}
-
-				const {lum, alpha} = sampleLuminanceAlpha({
-					data,
-					sw: width,
-					sh: height,
-					x: sampleX,
-					y: sampleY,
-					sampling: r.sampling,
-				});
-
-				// Composite onto implicit paper (white): transparent reads as white for
-				// luminance so opaque pixels alone drive classic halftone.
-				const lumDefault = lum * alpha + (1 - alpha);
-
-				const dotScale = r.shadeOutside
-					? (1 - alpha) * SHADE_OUTSIDE_DOT_SCALE
-					: 1 - lumDefault;
-
-				if (dotScale <= 0.01) {
-					continue;
-				}
-
-				const dotX = cx + gridX * cosR - gridY * sinR;
-				const dotY = cy + gridX * sinR + gridY * cosR;
-
-				ctx.fillStyle = r.color;
-
-				if (r.shape === 'circle') {
-					const radius = halfSize * dotScale;
-					ctx.beginPath();
-					ctx.arc(dotX, dotY, radius, 0, Math.PI * 2);
-					ctx.fill();
-				} else if (r.shape === 'square') {
-					const s = size * dotScale;
-					ctx.save();
-					ctx.translate(dotX, dotY);
-					ctx.rotate(-rad);
-					ctx.fillRect(-s / 2, -s / 2, s, s);
-					ctx.restore();
-				} else {
-					const lineHeight = size * dotScale;
-					ctx.save();
-					ctx.translate(dotX, dotY);
-					ctx.rotate(-rad);
-					ctx.fillRect(-halfSize, -lineHeight / 2, size, lineHeight);
-					ctx.restore();
-				}
-			}
-		}
+		gl.bindVertexArray(null);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+		gl.useProgram(null);
 	},
-	cleanup: () => undefined,
+	cleanup: ({gl, program, vao, vbo, texture}) => {
+		gl.deleteBuffer(vbo);
+		gl.deleteProgram(program);
+		gl.deleteVertexArray(vao);
+		gl.deleteTexture(texture);
+	},
 });
 
-// Halftone effect inspired by m's Halftone for After Effects. Converts
-// luminance into a grid of dots, squares, or lines. `dotSpacing` sets the grid
-// pitch (defaults to `dotSize`). `sampling` controls interpolation when reading
-// luminance between pixel centres. `shadeOutside` fills transparent areas with a
-// screen tone instead of luminance-driven ink on opaque pixels alone.
-// Alpha is blended against white so transparent pixels are not interpreted as
-// black RGB.
+// Halftone effect (WebGL2). Converts luminance into a grid of dots, squares,
+// or lines. Each fragment determines its nearest grid cell and whether it falls
+// inside a dot, so edge dots are never culled. `dotSpacing` sets the grid pitch
+// (defaults to `dotSize`). `sampling` controls texture interpolation when
+// reading luminance at grid centres. `shadeOutside` fills transparent areas
+// with a screen tone instead of luminance-driven ink on opaque pixels alone.
 export const halftone = (params: HalftoneParams = {}) =>
 	createDescriptor(halftoneDef, params);

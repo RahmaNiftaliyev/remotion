@@ -108,6 +108,11 @@ export const config: VercelConfig = {
 		),
 		routes.redirect('/support', '/docs/support', {permanent: true}),
 		routes.redirect('/webcodecs', '/docs/webcodecs', {permanent: true}),
+		routes.redirect(
+			'/docs/miscellaneous/snippets/hls',
+			'/docs/hls',
+			{permanent: true},
+		),
 		routes.redirect('/docs/player/api', '/docs/player/player', {
 			permanent: true,
 		}),

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef} from 'react';
 import type {EffectsProp} from './canvas-effects/effect-types.js';
 import {runEffectChain} from './canvas-effects/run-effect-chain.js';
 import {useEffectChainState} from './canvas-effects/use-effect-chain-state.js';
@@ -238,6 +238,22 @@ const HtmlInCanvasInner: React.FC<
 		};
 	}, [frame, delayRender, continueRender]);
 
+	const outerStyle = useMemo(() => {
+		return {
+			position: 'absolute' as const,
+			inset: 0,
+			width: width + 'px',
+			height: height + 'px',
+		} as React.CSSProperties;
+	}, [width, height]);
+
+	const innerStyle = useMemo(() => {
+		return {
+			width,
+			height,
+		};
+	}, [width, height]);
+
 	return (
 		<Sequence
 			durationInFrames={resolvedDuration}
@@ -246,24 +262,8 @@ const HtmlInCanvasInner: React.FC<
 			{...sequenceProps}
 			style={style}
 		>
-			<canvas
-				ref={canvasRef}
-				width={width}
-				height={height}
-				style={{
-					position: 'absolute',
-					inset: 0,
-					width,
-					height,
-				}}
-			>
-				<div
-					ref={sceneRef}
-					style={{
-						width,
-						height,
-					}}
-				>
+			<canvas ref={canvasRef} width={width} height={height} style={outerStyle}>
+				<div ref={sceneRef} style={innerStyle}>
 					{children}
 				</div>
 			</canvas>

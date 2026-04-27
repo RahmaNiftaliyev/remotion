@@ -31,7 +31,7 @@ type HTMLCanvasWithLayoutSubtree = HTMLCanvasElement & {
 	requestPaint: () => void;
 };
 
-const isHtmlInCanvasSupported = () => {
+export const isHtmlInCanvasSupported = (): boolean => {
 	if (typeof document === 'undefined') {
 		return false;
 	}
@@ -279,7 +279,13 @@ const HtmlInCanvasInner: React.FC<
 	);
 };
 
-export const HtmlInCanvas = wrapInSchema(HtmlInCanvasInner, htmlInCanvasSchema);
+const HtmlInCanvasWrapped = wrapInSchema(HtmlInCanvasInner, htmlInCanvasSchema);
+
+export const HtmlInCanvas = Object.assign(HtmlInCanvasWrapped, {
+	isHtmlInCanvasSupported,
+}) as typeof HtmlInCanvasWrapped & {
+	readonly isHtmlInCanvasSupported: typeof isHtmlInCanvasSupported;
+};
 
 HtmlInCanvas.displayName = 'HtmlInCanvas';
 

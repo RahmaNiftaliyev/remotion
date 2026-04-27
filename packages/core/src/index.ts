@@ -141,7 +141,7 @@ export {
 	Solid,
 	SolidProps,
 } from './canvas-effects/index.js';
-export {HtmlInCanvas} from './HtmlInCanvas.js';
+export {HtmlInCanvas, isHtmlInCanvasSupported} from './HtmlInCanvas.js';
 export type {HtmlInCanvasProps} from './HtmlInCanvas.js';
 export type {AnyZodObject} from './any-zod-type.js';
 export {Artifact} from './Artifact.js';

@@ -126,8 +126,7 @@ export const videoIteratorManager = ({
 			}
 		}
 
-		const videoSatisfyResult =
-			await videoFrameIterator.tryToSatisfySeek(newTime);
+		const videoSatisfyResult = videoFrameIterator.tryToSatisfySeek(newTime);
 
 		// Doing this before the staleness check, because
 		// frame might be better than what we currently have

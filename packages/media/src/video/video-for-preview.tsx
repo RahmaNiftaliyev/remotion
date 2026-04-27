@@ -7,6 +7,7 @@ import React, {
 	useState,
 } from 'react';
 import type {
+	EffectsProp,
 	LogLevel,
 	LoopVolumeCurveBehavior,
 	SequenceControls,
@@ -41,6 +42,7 @@ const {
 	usePreload,
 	SequenceContext,
 	SequenceVisibilityToggleContext,
+	useEffectChainState,
 } = Internals;
 
 type VideoForPreviewProps = {
@@ -68,6 +70,7 @@ type VideoForPreviewProps = {
 	readonly credentials: RequestCredentials | undefined;
 	readonly objectFit: VideoObjectFit;
 	readonly _experimentalInitiallyDrawCachedFrame: boolean;
+	readonly effects: EffectsProp;
 };
 
 type VideoForPreviewAssertedShowingProps = VideoForPreviewProps & {
@@ -102,6 +105,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 	controls,
 	objectFit: objectFitProp,
 	_experimentalInitiallyDrawCachedFrame,
+	effects,
 }) => {
 	const src = usePreload(unpreloadedSrc);
 
@@ -144,6 +148,17 @@ const VideoForPreviewAssertedShowing: React.FC<
 	}
 
 	warnAboutTooHighVolume(userPreferredVolume);
+
+	const effectChainState = useEffectChainState(
+		videoConfig.width,
+		videoConfig.height,
+	);
+	const effectsRef = useRef(effects);
+	effectsRef.current = effects;
+	const effectChainStateRef = useRef(effectChainState);
+	effectChainStateRef.current = effectChainState;
+	const frameRef = useRef(frame);
+	frameRef.current = frame;
 
 	const parentSequence = useContext(SequenceContext);
 	const isPremounting = Boolean(parentSequence?.premounting);
@@ -303,6 +318,9 @@ const VideoForPreviewAssertedShowing: React.FC<
 				sequenceOffset: initialSequenceOffset.current,
 				credentials,
 				tagType: 'video',
+				getEffects: () => effectsRef.current,
+				getEffectChainState: () => effectChainStateRef.current,
+				getCurrentFrame: () => frameRef.current,
 			});
 
 			mediaPlayerRef.current = player;

@@ -56,6 +56,9 @@ test('dispose should immediately unblock playback delays', async () => {
 		sequenceOffset: 0,
 		credentials: undefined,
 		tagType: 'video',
+		getEffects: () => [],
+		getEffectChainState: () => null,
+		getCurrentFrame: () => 0,
 	});
 
 	await player.initialize(0, false);

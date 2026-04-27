@@ -2,7 +2,7 @@ import {blur, tint, wave} from '@remotion/canvas-effects';
 import React from 'react';
 import {
 	AbsoluteFill,
-	Experimental,
+	HtmlInCanvas,
 	interpolate,
 	useCurrentFrame,
 	useVideoConfig,
@@ -56,7 +56,7 @@ export const HtmlInCanvasDemo: React.FC = () => {
 
 	return (
 		<AbsoluteFill style={{backgroundColor: 'black'}}>
-			<Experimental.HtmlInCanvas
+			<HtmlInCanvas
 				width={width}
 				height={height}
 				effects={[
@@ -66,7 +66,7 @@ export const HtmlInCanvasDemo: React.FC = () => {
 				]}
 			>
 				<Scene />
-			</Experimental.HtmlInCanvas>
+			</HtmlInCanvas>
 		</AbsoluteFill>
 	);
 };

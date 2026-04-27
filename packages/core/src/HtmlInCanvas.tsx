@@ -1,11 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import type {EffectsProp} from './canvas-effects/effect-types.js';
-import type {EffectChainState} from './canvas-effects/run-effect-chain.js';
-import {
-	cleanupEffectChainState,
-	createEffectChainState,
-	runEffectChain,
-} from './canvas-effects/run-effect-chain.js';
+import {runEffectChain} from './canvas-effects/run-effect-chain.js';
+import {useEffectChainState} from './canvas-effects/use-effect-chain-state.js';
 import type {SequenceControls} from './CompositionManager.js';
 import {addSequenceStackTraces} from './enable-sequence-stack-traces.js';
 import type {SequenceSchema} from './sequence-field-schema.js';
@@ -120,21 +116,7 @@ const HtmlInCanvasInner: React.FC<
 		null,
 	);
 
-	const chainStateRef = useRef<EffectChainState | null>(null);
-	const sizeRef = useRef<{width: number; height: number} | null>(null);
-
-	if (
-		!sizeRef.current ||
-		sizeRef.current.width !== width ||
-		sizeRef.current.height !== height
-	) {
-		if (chainStateRef.current) {
-			cleanupEffectChainState(chainStateRef.current);
-		}
-
-		chainStateRef.current = createEffectChainState(width, height);
-		sizeRef.current = {width, height};
-	}
+	const chainState = useEffectChainState(width, height);
 
 	// Refs so the paint handler always reads fresh values.
 	const effectsRef = useRef(effects);
@@ -155,7 +137,6 @@ const HtmlInCanvasInner: React.FC<
 		const sourceCanvas =
 			sourceCanvasRef.current as HTMLCanvasWithLayoutSubtree | null;
 		const sceneEl = sceneRef.current;
-		const chainState = chainStateRef.current;
 		const output = outputCanvas;
 		const handle = pendingHandleRef.current;
 
@@ -204,7 +185,7 @@ const HtmlInCanvasInner: React.FC<
 			.catch((err) => {
 				cancelRender(err);
 			});
-	}, [outputCanvas, continueRender, cancelRender]);
+	}, [outputCanvas, chainState, continueRender, cancelRender]);
 
 	// Set up layoutSubtree and persistent paint listener.
 	useEffect(() => {
@@ -252,15 +233,6 @@ const HtmlInCanvasInner: React.FC<
 			}
 		};
 	}, [frame, delayRender, continueRender]);
-
-	// Cleanup chain state on unmount.
-	useEffect(() => {
-		return () => {
-			if (chainStateRef.current) {
-				cleanupEffectChainState(chainStateRef.current);
-			}
-		};
-	}, []);
 
 	return (
 		<Sequence

@@ -141,7 +141,7 @@ export {
 	Solid,
 	SolidProps,
 } from './canvas-effects/index.js';
-import {HtmlInCanvas} from './HtmlInCanvas.js';
+export {HtmlInCanvas} from './HtmlInCanvas.js';
 export type {HtmlInCanvasProps} from './HtmlInCanvas.js';
 export type {AnyZodObject} from './any-zod-type.js';
 export {Artifact} from './Artifact.js';
@@ -234,11 +234,6 @@ export const Experimental = {
 	 * @see [Documentation](https://www.remotion.dev/docs/null)
 	 */
 	Null,
-	/**
-	 * @description Rasterizes its DOM children into a canvas using the WICG html-in-canvas proposal, then runs the result through a canvas-effect chain. Requires Chrome Canary with chrome://flags/#canvas-draw-element enabled.
-	 * @see [Documentation](https://www.remotion.dev/docs/canvas-effects/html-in-canvas)
-	 */
-	HtmlInCanvas,
 	useIsPlayer,
 };
 

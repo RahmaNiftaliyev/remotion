@@ -1,13 +1,9 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useCurrentFrame} from '../use-current-frame.js';
 import {useDelayRender} from '../use-delay-render.js';
 import type {EffectsProp} from './effect-types.js';
-import {
-	cleanupEffectChainState,
-	createEffectChainState,
-	runEffectChain,
-} from './run-effect-chain.js';
-import type {EffectChainState} from './run-effect-chain.js';
+import {runEffectChain} from './run-effect-chain.js';
+import {useEffectChainState} from './use-effect-chain-state.js';
 
 export type SolidProps = {
 	readonly color: string;
@@ -46,25 +42,11 @@ export const Solid: React.FC<SolidProps> = ({
 		return canvas;
 	}, []);
 
-	const chainStateRef = useRef<EffectChainState | null>(null);
-	const sizeRef = useRef<{width: number; height: number} | null>(null);
-
-	if (
-		!sizeRef.current ||
-		sizeRef.current.width !== width ||
-		sizeRef.current.height !== height
-	) {
-		if (chainStateRef.current) {
-			cleanupEffectChainState(chainStateRef.current);
-		}
-
-		chainStateRef.current = createEffectChainState(width, height);
-		sizeRef.current = {width, height};
-	}
+	const chainState = useEffectChainState(width, height);
 
 	// Fill source and run effect chain on every frame / color change.
 	useEffect(() => {
-		if (!outputCanvas || !sourceCanvas || !chainStateRef.current) {
+		if (!outputCanvas || !sourceCanvas || !chainState) {
 			return;
 		}
 
@@ -82,7 +64,7 @@ export const Solid: React.FC<SolidProps> = ({
 		ctx.fillRect(0, 0, 1, 1);
 
 		runEffectChain({
-			state: chainStateRef.current,
+			state: chainState,
 			source: sourceCanvas,
 			effects,
 			output: outputCanvas,
@@ -103,13 +85,13 @@ export const Solid: React.FC<SolidProps> = ({
 		return () => {
 			continueRender(handle);
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		frame,
 		color,
 		effects,
 		outputCanvas,
 		sourceCanvas,
+		chainState,
 		width,
 		height,
 		pixelRatio,
@@ -117,15 +99,6 @@ export const Solid: React.FC<SolidProps> = ({
 		continueRender,
 		cancelRender,
 	]);
-
-	// Cleanup chain state on unmount.
-	useEffect(() => {
-		return () => {
-			if (chainStateRef.current) {
-				cleanupEffectChainState(chainStateRef.current);
-			}
-		};
-	}, []);
 
 	return (
 		<canvas

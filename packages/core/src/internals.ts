@@ -23,6 +23,8 @@ import {
 	CanUseRemotionHooks,
 	CanUseRemotionHooksProvider,
 } from './CanUseRemotionHooks.js';
+import {runEffectChain} from './canvas-effects/run-effect-chain.js';
+import {useEffectChainState} from './canvas-effects/use-effect-chain-state.js';
 import {CompositionRenderErrorContext} from './composition-render-error-context.js';
 import {type CompProps} from './Composition.js';
 import type {
@@ -166,6 +168,7 @@ import {
 	RemotionContextProvider,
 	useRemotionContexts,
 } from './wrap-remotion-context.js';
+export type {EffectChainState} from './canvas-effects/run-effect-chain.js';
 
 // needs to be in core package so gets deduplicated in studio
 const compositionSelectorRef = createRef<{
@@ -283,6 +286,8 @@ export const Internals = {
 	RenderAssetManagerProvider,
 	getEffectiveVisualModeValue,
 	CompositionRenderErrorContext,
+	useEffectChainState,
+	runEffectChain,
 } as const;
 
 export type {

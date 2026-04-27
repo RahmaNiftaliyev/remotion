@@ -252,6 +252,9 @@ const AudioForPreviewAssertedShowing: React.FC<
 				sequenceOffset: initialSequenceOffset.current,
 				credentials,
 				tagType: 'audio',
+				getEffects: () => [],
+				getEffectChainState: () => null,
+				getCurrentFrame: () => 0,
 			});
 
 			mediaPlayerRef.current = player;

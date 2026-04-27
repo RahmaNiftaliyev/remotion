@@ -4,6 +4,7 @@ import type {
 	OnVideoFrame,
 	VolumeProp,
 } from 'remotion';
+import type {EffectsProp} from 'remotion';
 import type {MediaOnError} from '../on-error';
 
 export type MediaErrorEvent = {
@@ -67,6 +68,7 @@ type OptionalVideoProps = {
 	credentials: RequestCredentials | undefined;
 	objectFit: VideoObjectFit;
 	_experimentalInitiallyDrawCachedFrame: boolean;
+	effects: EffectsProp;
 };
 
 export type InnerVideoProps = MandatoryVideoProps &

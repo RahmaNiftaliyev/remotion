@@ -251,6 +251,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 				playing: initialPlaying.current,
 				sequenceOffset: initialSequenceOffset.current,
 				credentials,
+				tagType: 'audio',
 			});
 
 			mediaPlayerRef.current = player;

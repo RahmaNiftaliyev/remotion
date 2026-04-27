@@ -1,12 +1,12 @@
 import {Video} from '@remotion/media';
 import React from 'react';
-import {Sequence, useVideoConfig} from 'remotion';
+import {Composition, Sequence, useVideoConfig} from 'remotion';
 
-const SLICE_DURATION_FRAMES = 3; // 0.1sec at 30fps
+const SLICE_DURATION_FRAMES = 6; // 0.1sec at 30fps
 const NUM_SLICES = 100;
 const PREMOUNT_SEC = 0.5;
 
-export const SlicedVideo: React.FC = () => {
+const SlicedVideo: React.FC = () => {
 	const src = 'https://remotion.media/video.mp4';
 	const {fps} = useVideoConfig();
 
@@ -21,15 +21,23 @@ export const SlicedVideo: React.FC = () => {
 						durationInFrames={SLICE_DURATION_FRAMES}
 						premountFor={PREMOUNT_SEC * fps}
 					>
-						<Video
-							src={src}
-							trimBefore={from}
-							debugAudioScheduling
-							_experimentalInitiallyDrawCachedFrame
-						/>
+						<Video src={src} trimBefore={from} debugOverlay />
 					</Sequence>
 				);
 			})}
 		</Sequence>
+	);
+};
+
+export const AudioSmoothnessSlicedVideoComp: React.FC = () => {
+	return (
+		<Composition
+			id="audio-smoothness-sliced-video"
+			component={SlicedVideo}
+			fps={30}
+			height={1080}
+			durationInFrames={300}
+			width={1920}
+		/>
 	);
 };

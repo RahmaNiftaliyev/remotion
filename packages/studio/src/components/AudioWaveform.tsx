@@ -2,8 +2,34 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Internals} from 'remotion';
 import {LIGHT_TRANSPARENT} from '../helpers/colors';
 import {TIMELINE_BORDER} from '../helpers/timeline-layout';
+import {makeAudioWaveformWorker} from '../make-audio-waveform-worker';
+import type {
+	AudioWaveformWorkerOutgoingMessage,
+	AudioWaveformWorkerRenderMessage,
+} from './audio-waveform-worker-types';
 import {drawBars} from './draw-peaks';
-import {loadWaveformPeaks, TARGET_SAMPLE_RATE} from './load-waveform-peaks';
+import {loadWaveformPeaks} from './load-waveform-peaks';
+import {sliceWaveformPeaks} from './slice-waveform-peaks';
+
+const EMPTY_PEAKS = new Float32Array(0);
+
+// Recreate the canvas after Fast Refresh because an already transferred canvas
+// cannot be handed to OffscreenCanvas again.
+const canRetryCanvasTransfer = (err: unknown) => {
+	return err instanceof DOMException && err.name === 'InvalidStateError';
+};
+
+const canUseAudioWaveformWorker = () => {
+	if (
+		typeof Worker === 'undefined' ||
+		typeof OffscreenCanvas === 'undefined' ||
+		typeof HTMLCanvasElement === 'undefined'
+	) {
+		return false;
+	}
+
+	return 'transferControlToOffscreen' in HTMLCanvasElement.prototype;
+};
 
 const container: React.CSSProperties = {
 	display: 'flex',
@@ -26,6 +52,8 @@ const errorMessage: React.CSSProperties = {
 
 const waveformCanvasStyle: React.CSSProperties = {
 	pointerEvents: 'none',
+	width: '100%',
+	height: '100%',
 };
 
 const volumeCanvasStyle: React.CSSProperties = {
@@ -51,6 +79,8 @@ export const AudioWaveform: React.FC<{
 }) => {
 	const [peaks, setPeaks] = useState<Float32Array | null>(null);
 	const [error, setError] = useState<Error | null>(null);
+	const [waveformCanvasKey, setWaveformCanvasKey] = useState(0);
+	const canUseWorkerPath = useMemo(() => canUseAudioWaveformWorker(), []);
 	const vidConf = Internals.useUnsafeVideoConfig();
 	if (vidConf === null) {
 		throw new Error('Expected video config');
@@ -59,10 +89,18 @@ export const AudioWaveform: React.FC<{
 	const containerRef = useRef<HTMLDivElement>(null);
 	const waveformCanvas = useRef<HTMLCanvasElement>(null);
 	const volumeCanvas = useRef<HTMLCanvasElement>(null);
+	const waveformWorker = useRef<Worker | null>(null);
+	const hasTransferredCanvas = useRef(false);
+	const latestRequestId = useRef(0);
 
 	useEffect(() => {
+		if (canUseWorkerPath) {
+			return;
+		}
+
 		const controller = new AbortController();
 
+		setPeaks(null);
 		setError(null);
 		loadWaveformPeaks(src, controller.signal)
 			.then((p) => {
@@ -77,47 +115,136 @@ export const AudioWaveform: React.FC<{
 			});
 
 		return () => controller.abort();
-	}, [src]);
+	}, [canUseWorkerPath, src]);
+
+	useEffect(() => {
+		if (!canUseWorkerPath) {
+			return;
+		}
+
+		const canvasElement = waveformCanvas.current;
+		if (!canvasElement || hasTransferredCanvas.current) {
+			return;
+		}
+
+		const worker = makeAudioWaveformWorker();
+		waveformWorker.current = worker;
+		worker.addEventListener(
+			'message',
+			(event: MessageEvent<AudioWaveformWorkerOutgoingMessage>) => {
+				if (event.data.type === 'error') {
+					if (event.data.requestId !== latestRequestId.current) {
+						return;
+					}
+
+					setError(new Error(event.data.message));
+				}
+			},
+		);
+
+		let offscreen: OffscreenCanvas;
+		try {
+			offscreen = canvasElement.transferControlToOffscreen();
+		} catch (err) {
+			worker.terminate();
+			waveformWorker.current = null;
+			if (canRetryCanvasTransfer(err)) {
+				setWaveformCanvasKey((key) => key + 1);
+				return;
+			}
+
+			throw err;
+		}
+
+		hasTransferredCanvas.current = true;
+		worker.postMessage({type: 'init', canvas: offscreen}, [offscreen]);
+
+		return () => {
+			worker.postMessage({type: 'dispose'});
+			worker.terminate();
+			waveformWorker.current = null;
+			hasTransferredCanvas.current = false;
+		};
+	}, [canUseWorkerPath, waveformCanvasKey]);
 
 	const portionPeaks = useMemo(() => {
-		if (!peaks || peaks.length === 0) {
+		if (canUseWorkerPath || !peaks) {
 			return null;
 		}
 
-		const startTimeInSeconds = startFrom / vidConf.fps;
-		const durationInSeconds = (durationInFrames / vidConf.fps) * playbackRate;
-
-		const startPeakIndex = Math.floor(startTimeInSeconds * TARGET_SAMPLE_RATE);
-		const endPeakIndex = Math.ceil(
-			(startTimeInSeconds + durationInSeconds) * TARGET_SAMPLE_RATE,
-		);
-
-		return peaks.slice(
-			Math.max(0, startPeakIndex),
-			Math.min(peaks.length, endPeakIndex),
-		);
-	}, [peaks, startFrom, durationInFrames, vidConf.fps, playbackRate]);
+		return sliceWaveformPeaks({
+			durationInFrames,
+			fps: vidConf.fps,
+			peaks,
+			playbackRate,
+			startFrom,
+		});
+	}, [
+		canUseWorkerPath,
+		durationInFrames,
+		peaks,
+		playbackRate,
+		startFrom,
+		vidConf.fps,
+	]);
 
 	useEffect(() => {
 		const {current: canvasElement} = waveformCanvas;
 		const {current: containerElement} = containerRef;
-		if (
-			!canvasElement ||
-			!containerElement ||
-			!portionPeaks ||
-			portionPeaks.length === 0
-		) {
+		if (!canvasElement || !containerElement) {
 			return;
 		}
 
 		const h = containerElement.clientHeight;
 		const w = Math.ceil(visualizationWidth);
+
+		const vol = typeof volume === 'number' ? volume : 1;
+		if (canUseWorkerPath) {
+			const worker = waveformWorker.current;
+			if (!worker || !hasTransferredCanvas.current) {
+				return;
+			}
+
+			latestRequestId.current += 1;
+			setError(null);
+			const message: AudioWaveformWorkerRenderMessage = {
+				type: 'render',
+				requestId: latestRequestId.current,
+				src,
+				width: w,
+				height: h,
+				volume: vol,
+				startFrom,
+				durationInFrames,
+				fps: vidConf.fps,
+				playbackRate,
+			};
+			worker.postMessage(message);
+			return;
+		}
+
 		canvasElement.width = w;
 		canvasElement.height = h;
 
-		const vol = typeof volume === 'number' ? volume : 1;
-		drawBars(canvasElement, portionPeaks, 'rgba(255, 255, 255, 0.6)', vol, w);
-	}, [portionPeaks, visualizationWidth, volume]);
+		drawBars(
+			canvasElement,
+			portionPeaks ?? EMPTY_PEAKS,
+			'rgba(255, 255, 255, 0.6)',
+			vol,
+			w,
+		);
+	}, [
+		canUseWorkerPath,
+		durationInFrames,
+		playbackRate,
+		portionPeaks,
+		src,
+		startFrom,
+		vidConf.fps,
+		visualizationWidth,
+		volume,
+		waveformCanvasKey,
+	]);
 
 	useEffect(() => {
 		const {current: volumeCanvasElement} = volumeCanvas;
@@ -166,13 +293,17 @@ export const AudioWaveform: React.FC<{
 		);
 	}
 
-	if (!peaks) {
+	if (!canUseWorkerPath && !peaks) {
 		return null;
 	}
 
 	return (
 		<div ref={containerRef} style={container}>
-			<canvas ref={waveformCanvas} style={waveformCanvasStyle} />
+			<canvas
+				key={waveformCanvasKey}
+				ref={waveformCanvas}
+				style={waveformCanvasStyle}
+			/>
 			<canvas ref={volumeCanvas} style={volumeCanvasStyle} />
 		</div>
 	);

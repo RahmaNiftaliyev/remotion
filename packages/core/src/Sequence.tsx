@@ -366,32 +366,20 @@ const PremountedPostmountedSequenceRefForwardingFunction: React.ForwardRefRender
 		styleWhilePostmounted,
 	]);
 
-	const {playing} = useTimelineContext();
-	const premountFramesRemaining = premountingActive ? from - frame : 0;
-
-	const premountContextValue = useMemo(() => {
-		return {
-			premountFramesRemaining,
-			playing: parentPremountContext.playing || playing,
-		};
-	}, [premountFramesRemaining, parentPremountContext.playing, playing]);
-
 	return (
-		<PremountContext.Provider value={premountContextValue}>
-			<Freeze frame={freezeFrame} active={isFreezingActive}>
-				<Sequence
-					ref={ref}
-					from={from}
-					durationInFrames={durationInFrames}
-					style={style}
-					_remotionInternalPremountDisplay={premountFor}
-					_remotionInternalPostmountDisplay={postmountFor}
-					_remotionInternalIsPremounting={premountingActive}
-					_remotionInternalIsPostmounting={postmountingActive}
-					{...otherProps}
-				/>
-			</Freeze>
-		</PremountContext.Provider>
+		<Freeze frame={freezeFrame} active={isFreezingActive}>
+			<Sequence
+				ref={ref}
+				from={from}
+				durationInFrames={durationInFrames}
+				style={style}
+				_remotionInternalPremountDisplay={premountFor}
+				_remotionInternalPostmountDisplay={postmountFor}
+				_remotionInternalIsPremounting={premountingActive}
+				_remotionInternalIsPostmounting={postmountingActive}
+				{...otherProps}
+			/>
+		</Freeze>
 	);
 };
 

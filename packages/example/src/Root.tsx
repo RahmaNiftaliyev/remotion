@@ -42,6 +42,7 @@ import {HtmlInCanvasDemo} from './HtmlInCanvas';
 import {HugeImage} from './HugeImage';
 import {HugePayload, hugePayloadSchema} from './HugePayload';
 import {Layers} from './Layers';
+import {LongAudio} from './LongAudio';
 import {ManyAudio} from './ManyAudio';
 import {HandleAudioRenderError} from './MediaErrorHandling/HandleAudioRenderError';
 import {InfiniteAudio} from './MediaErrorHandling/InfiniteAudio';
@@ -73,7 +74,6 @@ import StarTest from './Shapes/StarTest';
 import TriangleTest from './Shapes/TriangleTest';
 import {SimpleImg} from './SimpleImg';
 import {SkipZeroFrame} from './SkipZeroFrame';
-import {SlicedVideo} from './SlicedVideo';
 import {BaseSpring, SpringWithDuration} from './Spring/base-spring';
 import {SeriesTesting} from './StaggerTesting';
 import {StaticDemo} from './StaticServer';
@@ -125,6 +125,12 @@ import {ThreeDCheck} from './3DCheck';
 import {ThreeDContext} from './3DContext';
 import {ThreeDSvgContent} from './3DSvgContent';
 import {AnimatedImages} from './AnimatedImage/Avif';
+import {AudioSmoothnessBufferInterruptionComp} from './AudioSmoothness/BufferInterruption';
+import {AudioSmoothnessLoopedAudioComp} from './AudioSmoothness/LoopedAudio';
+import {AudioSmoothnessNewVideoComp} from './AudioSmoothness/NewVideo';
+import {AudioSmoothnessSlicedVideoComp} from './AudioSmoothness/SlicedVideo';
+import {AudioSmoothnessTrimAfterLoopComp} from './AudioSmoothness/TrimAfterLoop';
+import {AudioSmoothnessTrimButtonComp} from './AudioSmoothness/TrimButton';
 import Amplify from './AudioTesting/Amplify';
 import {BrowserTest} from './BrowserTest';
 import {EdgeBlur} from './EdgeBlur/EdgeBlur';
@@ -712,6 +718,14 @@ export const Index: React.FC = () => {
 				/>
 			</Folder>
 			<Folder name="new-media-tags">
+				<Composition
+					id="long-audio"
+					component={LongAudio}
+					width={1280}
+					height={720}
+					fps={30}
+					durationInFrames={60 * 60 * 30}
+				/>
 				<Composition
 					id="new-audio"
 					component={NewAudioExample}
@@ -1462,14 +1476,14 @@ export const Index: React.FC = () => {
 					durationInFrames={300}
 					width={1080}
 				/>
-				<Composition
-					id="sliced-video"
-					component={SlicedVideo}
-					fps={30}
-					height={1080}
-					durationInFrames={300}
-					width={1920}
-				/>
+			</Folder>
+			<Folder name="AudioSmoothness">
+				<AudioSmoothnessNewVideoComp />
+				<AudioSmoothnessSlicedVideoComp />
+				<AudioSmoothnessBufferInterruptionComp />
+				<AudioSmoothnessTrimButtonComp />
+				<AudioSmoothnessTrimAfterLoopComp />
+				<AudioSmoothnessLoopedAudioComp />
 			</Folder>
 			<Folder name="Postmount">
 				<Composition

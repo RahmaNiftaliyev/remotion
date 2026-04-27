@@ -63,7 +63,6 @@ type VideoForPreviewProps = {
 	readonly fallbackOffthreadVideoProps: FallbackOffthreadVideoProps;
 	readonly audioStreamIndex: number;
 	readonly debugOverlay: boolean;
-	readonly debugAudioScheduling: boolean;
 	readonly headless: boolean;
 	readonly onError: MediaOnError | undefined;
 	readonly credentials: RequestCredentials | undefined;
@@ -97,7 +96,6 @@ const VideoForPreviewAssertedShowing: React.FC<
 	fallbackOffthreadVideoProps,
 	audioStreamIndex,
 	debugOverlay,
-	debugAudioScheduling,
 	headless,
 	onError,
 	credentials,
@@ -206,7 +204,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 	const initialGlobalPlaybackRate = useRef(globalPlaybackRate);
 	const initialPlaybackRate = useRef(playbackRate);
 	const initialMuted = useRef(effectiveMuted);
-	const initialDurationInFrames = useRef(videoConfig.durationInFrames);
+	const initialSequenceDuration = useRef(videoConfig.durationInFrames);
 	const initialSequenceOffset = useRef(sequenceOffset);
 	const hasDrawnRealFrameRef = useRef(false);
 	const isPremountingRef = useRef(isPremounting);
@@ -264,15 +262,30 @@ const VideoForPreviewAssertedShowing: React.FC<
 		if (!sharedAudioContext) return;
 		if (!sharedAudioContext.audioContext) return;
 
-		const {audioContext, audioSyncAnchor, scheduleAudioNode} =
-			sharedAudioContext;
+		const {
+			audioContext,
+			gainNode,
+			audioSyncAnchor,
+			scheduleAudioNode,
+			unscheduleAudioNode,
+		} = sharedAudioContext;
+
+		if (!gainNode) {
+			return;
+		}
 
 		try {
 			const player = new MediaPlayer({
 				canvas: canvasRef.current,
 				src: preloadedSrc,
 				logLevel,
-				sharedAudioContext: {audioContext, audioSyncAnchor, scheduleAudioNode},
+				sharedAudioContext: {
+					audioContext,
+					gainNode,
+					audioSyncAnchor,
+					scheduleAudioNode,
+					unscheduleAudioNode,
+				},
 				loop,
 				trimAfter: initialTrimAfterRef.current,
 				trimBefore: initialTrimBeforeRef.current,
@@ -280,16 +293,16 @@ const VideoForPreviewAssertedShowing: React.FC<
 				playbackRate: initialPlaybackRate.current,
 				audioStreamIndex,
 				debugOverlay,
-				debugAudioScheduling,
 				bufferState: buffer,
 				isPremounting: initialIsPremounting.current,
 				isPostmounting: initialIsPostmounting.current,
 				globalPlaybackRate: initialGlobalPlaybackRate.current,
-				durationInFrames: initialDurationInFrames.current,
+				durationInFrames: initialSequenceDuration.current,
 				onVideoFrameCallback: initialOnVideoFrameRef.current ?? null,
 				playing: initialPlaying.current,
 				sequenceOffset: initialSequenceOffset.current,
 				credentials,
+				tagType: 'video',
 			});
 
 			mediaPlayerRef.current = player;
@@ -415,7 +428,6 @@ const VideoForPreviewAssertedShowing: React.FC<
 		audioStreamIndex,
 		buffer,
 		debugOverlay,
-		debugAudioScheduling,
 		disallowFallbackToOffthreadVideo,
 		logLevel,
 		loop,
@@ -450,13 +462,11 @@ const VideoForPreviewAssertedShowing: React.FC<
 		fps: videoConfig.fps,
 		sequenceOffset,
 		loop,
-		debugAudioScheduling,
 		durationInFrames: videoConfig.durationInFrames,
 		isPremounting,
 		isPostmounting,
 		currentTime,
 		logLevel,
-		sharedAudioContext,
 		label: 'VideoForPreview',
 	});
 

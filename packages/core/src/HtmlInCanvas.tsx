@@ -9,6 +9,11 @@ import {
 import type {SequenceControls} from './CompositionManager.js';
 import {addSequenceStackTraces} from './enable-sequence-stack-traces.js';
 import type {SequenceSchema} from './sequence-field-schema.js';
+import type {
+	AbsoluteFillLayout,
+	LayoutAndStyle,
+	SequenceProps,
+} from './Sequence.js';
 import {Sequence} from './Sequence.js';
 import {useCurrentFrame} from './use-current-frame.js';
 import {useDelayRender} from './use-delay-render.js';
@@ -45,15 +50,18 @@ const isHtmlInCanvasSupported = () => {
 	);
 };
 
-export type HtmlInCanvasProps = {
-	readonly width: number;
-	readonly height: number;
-	readonly effects?: EffectsProp;
-	readonly children: React.ReactNode;
-	readonly className?: string;
-	readonly style?: React.CSSProperties;
-	readonly pixelRatio?: number;
-};
+export type HtmlInCanvasProps = Omit<
+	SequenceProps,
+	'children' | 'durationInFrames' | keyof LayoutAndStyle
+> &
+	Omit<AbsoluteFillLayout, 'layout'> & {
+		readonly durationInFrames?: number;
+		readonly width: number;
+		readonly height: number;
+		readonly effects?: EffectsProp;
+		readonly children: React.ReactNode;
+		readonly pixelRatio?: number;
+	};
 
 const htmlInCanvasSchema = {
 	'style.translate': {
@@ -95,11 +103,14 @@ const HtmlInCanvasInner: React.FC<
 	height,
 	effects = [],
 	children,
-	className,
 	style,
 	pixelRatio = 1,
 	controls,
+	durationInFrames,
+	...sequenceProps
 }) => {
+	const {durationInFrames: videoDuration} = useVideoConfig();
+	const resolvedDuration = durationInFrames ?? videoDuration;
 	const frame = useCurrentFrame();
 	const {delayRender, continueRender, cancelRender} = useDelayRender();
 
@@ -251,13 +262,13 @@ const HtmlInCanvasInner: React.FC<
 		};
 	}, []);
 
-	const {durationInFrames} = useVideoConfig();
-
 	return (
 		<Sequence
-			durationInFrames={durationInFrames}
+			durationInFrames={resolvedDuration}
 			name="<HtmlInCanvas>"
 			controls={controls}
+			{...sequenceProps}
+			style={style}
 		>
 			<canvas
 				ref={sourceCanvasRef}
@@ -285,13 +296,11 @@ const HtmlInCanvasInner: React.FC<
 				ref={setOutputCanvas}
 				width={width}
 				height={height}
-				className={className}
 				style={{
 					position: 'absolute',
 					inset: 0,
 					width,
 					height,
-					...style,
 				}}
 			/>
 		</Sequence>

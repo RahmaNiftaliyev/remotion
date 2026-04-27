@@ -3,6 +3,7 @@ import {ALL_FORMATS, Input, UrlSource} from 'mediabunny';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {Internals, staticFile} from 'remotion';
 import {BACKGROUND, BORDER_COLOR} from '../helpers/colors';
+import {getDurationOrCompute} from '../helpers/get-duration-or-compute';
 import {useStaticFiles} from './use-static-files';
 
 export const CURRENT_ASSET_HEIGHT = 80;
@@ -94,7 +95,7 @@ export const CurrentAsset: React.FC = () => {
 		});
 
 		Promise.all([
-			input.computeDuration(),
+			getDurationOrCompute(input),
 			input.getFormat(),
 			input.getPrimaryVideoTrack(),
 		])

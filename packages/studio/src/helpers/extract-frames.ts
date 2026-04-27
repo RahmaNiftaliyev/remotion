@@ -6,6 +6,7 @@ import {
 	UrlSource,
 	VideoSampleSink,
 } from 'mediabunny';
+import {getDurationOrCompute} from './get-duration-or-compute';
 
 type Options = {
 	track: {width: number; height: number};
@@ -45,7 +46,7 @@ export async function extractFrames({
 
 	try {
 		const [durationInSeconds, format, videoTrack] = await Promise.all([
-			input.computeDuration(),
+			getDurationOrCompute(input),
 			input.getFormat(),
 			input.getPrimaryVideoTrack(),
 		]);

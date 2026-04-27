@@ -25,7 +25,9 @@ export async function loadWaveformPeaks(
 		}
 
 		const sampleRate = await audioTrack.getSampleRate();
-		const durationInSeconds = await audioTrack.computeDuration();
+		const durationInSeconds =
+			(await audioTrack.getDurationFromMetadata({skipLiveWait: true})) ??
+			(await audioTrack.computeDuration({skipLiveWait: true}));
 		const totalPeaks = Math.ceil(durationInSeconds * TARGET_SAMPLE_RATE);
 		const samplesPerPeak = Math.max(
 			1,

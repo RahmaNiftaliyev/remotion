@@ -10,6 +10,7 @@ import {
 	WEBM,
 } from 'mediabunny';
 import {canBrowserUseWebGl2} from '../browser-can-use-webgl2';
+import {getDurationOrCompute} from '../get-duration-or-compute';
 import {isNetworkError} from '../is-type-of-error';
 import {rememberActualMatroskaTimestamps} from './remember-actual-matroska-timestamps';
 
@@ -166,7 +167,7 @@ export const getSinks = async (
 		actualMatroskaTimestamps: rememberActualMatroskaTimestamps(isMatroska),
 		isMatroska,
 		getDuration: () => {
-			return input.computeDuration();
+			return getDurationOrCompute(input);
 		},
 	};
 };

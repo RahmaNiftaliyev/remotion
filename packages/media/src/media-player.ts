@@ -13,6 +13,7 @@ import {
 } from './audio/get-scheduled-time';
 import {drawPreviewOverlay} from './debug-overlay/preview-overlay';
 import type {DelayPlaybackIfNotPremounting} from './delay-playback-if-not-premounting';
+import {getDurationOrCompute} from './get-duration-or-compute';
 import {calculateEndTime, getTimeInSeconds} from './get-time-in-seconds';
 import {isNetworkError} from './is-type-of-error';
 import type {Nonce, NonceManager} from './nonce-manager';
@@ -251,7 +252,7 @@ export class MediaPlayer {
 			}
 
 			const [durationInSeconds, videoTrack, audioTracks] = await Promise.all([
-				this.input.computeDuration(),
+				getDurationOrCompute(this.input),
 				this.input.getPrimaryVideoTrack(),
 				this.input.getAudioTracks(),
 			]);

@@ -52,6 +52,7 @@ export const listOfRemotionPackages = [
 	'@remotion/motion-blur',
 	'@remotion/noise',
 	'@remotion/paths',
+	'@remotion/player-a11y',
 	'@remotion/player-example',
 	'@remotion/player',
 	'@remotion/preload',

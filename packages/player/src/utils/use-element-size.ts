@@ -61,9 +61,18 @@ export const useElementSize = (
 		}
 
 		return new ResizeObserver((entries) => {
-			// The contentRect returns the width without any `scale()`'s being applied. The height is wrong
+			// `contentRect` is the element's pre-transform content box (CSS layout
+			// width/height). `getClientRects()` is the post-transform AABB. We want
+			// the layout box; we recover it by dividing each AABB axis by the
+			// per-axis ratio between AABB and content box, which cancels the
+			// parent's CSS transform whether it is uniform or not.
+			//
+			// Computing one scalar from the X-axis ratio and applying it to both
+			// dimensions only works under uniform 2D scale. Under non-uniform
+			// transforms (`scale(X, Y)` with different factors, `rotateX/Y`,
+			// `perspective`, `matrix3d`) the X- and Y-axis AABB grow at different
+			// rates and the height comes out wrong.
 			const {contentRect, target} = entries[0];
-			// The clientRect returns the size with `scale()` being applied.
 			const newSize = target.getClientRects();
 
 			if (!newSize?.[0]) {
@@ -71,17 +80,19 @@ export const useElementSize = (
 				return;
 			}
 
-			const probableCssParentScale =
+			const probableCssParentScaleX =
 				contentRect.width === 0 ? 1 : newSize[0].width / contentRect.width;
+			const probableCssParentScaleY =
+				contentRect.height === 0 ? 1 : newSize[0].height / contentRect.height;
 
 			const width =
-				options.shouldApplyCssTransforms || probableCssParentScale === 0
+				options.shouldApplyCssTransforms || probableCssParentScaleX === 0
 					? newSize[0].width
-					: newSize[0].width * (1 / probableCssParentScale);
+					: newSize[0].width * (1 / probableCssParentScaleX);
 			const height =
-				options.shouldApplyCssTransforms || probableCssParentScale === 0
+				options.shouldApplyCssTransforms || probableCssParentScaleY === 0
 					? newSize[0].height
-					: newSize[0].height * (1 / probableCssParentScale);
+					: newSize[0].height * (1 / probableCssParentScaleY);
 
 			setSize((prevState) => {
 				const isSame =

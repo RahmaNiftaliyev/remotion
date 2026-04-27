@@ -105,9 +105,9 @@ export const useMediaKeyboardShortcuts = ({
 					e.preventDefault();
 					if (player.isFullscreen()) player.exitFullscreen();
 					else player.requestFullscreen();
-					return;
+					break;
 				default:
-					return;
+					break;
 			}
 		};
 

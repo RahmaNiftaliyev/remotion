@@ -54,20 +54,25 @@ export const AccessiblePlayer = <
 		const onFrame = () => {
 			setCurrentFrame(player.getCurrentFrame());
 		};
+
 		const onPlay = () => {
 			setIsPlaying(true);
 			setStatus('Playing');
 		};
+
 		const onPause = () => {
 			setIsPlaying(false);
 			setStatus('Paused');
 		};
+
 		const onMuteChange = () => {
 			setIsMuted(player.isMuted());
 		};
+
 		const onVolumeChange = () => {
 			setVolume(player.getVolume());
 		};
+
 		const onFullscreen = () => setIsFullscreen(true);
 		const onExitFullscreen = () => setIsFullscreen(false);
 		const onEnded = () => setStatus('Ended');

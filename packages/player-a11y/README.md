@@ -1,6 +1,6 @@
 # @remotion/player-a11y
 
-Accessible wrapper around `@remotion/player` with WCAG 2.1 AA-compliant controls.
+Accessible wrapper around @remotion/player with WCAG 2.1 AA controls
 
 [![NPM Downloads](https://img.shields.io/npm/dm/@remotion/player-a11y.svg?style=flat&color=black&label=Downloads)](https://npmcharts.com/compare/@remotion/player-a11y?minimal=true)
 

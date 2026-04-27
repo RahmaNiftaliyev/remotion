@@ -17,6 +17,7 @@ const makeDef = (
 	backend,
 	setup: () => null,
 	apply: () => undefined,
+	cleanup: () => undefined,
 });
 
 const makeDesc = (
@@ -25,6 +26,7 @@ const makeDesc = (
 ): EffectDescriptor<unknown> => ({
 	definition: makeDef(type, backend),
 	params: {},
+	stack: new Error().stack!,
 });
 
 test('flattenEffects unwraps nested-array descriptors', () => {

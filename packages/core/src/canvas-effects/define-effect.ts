@@ -18,7 +18,10 @@ export const defineEffect = <P, S>(
 export const createDescriptor = <P, S>(
 	definition: EffectDefinition<P, S>,
 	params: P,
-): EffectDescriptor<P> => ({
-	definition: definition as unknown as EffectDefinition<P, unknown>,
-	params,
-});
+): EffectDescriptor<P> => {
+	return {
+		definition: definition as unknown as EffectDefinition<P, unknown>,
+		params,
+		stack: new Error().stack!,
+	};
+};

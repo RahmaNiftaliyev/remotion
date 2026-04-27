@@ -1,54 +1,56 @@
 import {createDescriptor, defineEffect} from 'remotion';
 
+/** Dot diameter scale [0–1] for uniform screen tone in transparent regions (`shadeOutside`). */
+const SHADE_OUTSIDE_DOT_SCALE = 0.5;
+
 export type HalftoneShape = 'circle' | 'square' | 'line';
 export type HalftoneSampling = 'bilinear' | 'nearest';
-
-/** Where halftone dots are pronounced: dark areas (classic ink), bright areas, or both (two-pass, like directional halftone shaders). */
-export type HalftoneRegion = 'shadows' | 'highlights' | 'both';
 
 export type HalftoneParams = {
 	readonly shape?: HalftoneShape;
 	readonly dotSize?: number;
+	/**
+	 * Distance between adjacent dot centers on the halftone grid (pitch).
+	 * When omitted, matches `dotSize` so dots can touch at full coverage (same as before).
+	 */
+	readonly dotSpacing?: number;
 	readonly rotation?: number;
 	readonly offsetX?: number;
 	readonly offsetY?: number;
 	readonly sampling?: HalftoneSampling;
-	readonly foreground?: string;
-	readonly background?: string;
+	/** Dot color. Defaults to black. */
+	readonly color?: string;
 	/**
-	 * Which luminance regions get dots. `shadows` matches classic halftone (larger dots in darker pixels).
-	 * `highlights` inverts that (larger dots where the image is brighter). `both` draws shadow dots then
-	 * highlight dots—use `foreground` / `highlightForeground` for the two inks.
+	 * When false (default), halftone follows luminance on opaque pixels (classic
+	 * halftone on your subject). When true, the same dot pattern fills transparent
+	 * and low-alpha areas instead—e.g. the canvas around a cut-out shape—while
+	 * leaving the opaque shape mostly free of those dots.
 	 */
-	readonly region?: HalftoneRegion;
-	/** Dot color for the highlight pass; used when `region` is `highlights` or `both`. Defaults to white. */
-	readonly highlightForeground?: string;
+	readonly shadeOutside?: boolean;
 };
 
 type HalftoneResolved = {
 	shape: HalftoneShape;
 	dotSize: number;
+	dotSpacing: number;
 	rotation: number;
 	offsetX: number;
 	offsetY: number;
 	sampling: HalftoneSampling;
-	foreground: string;
-	background: string;
-	region: HalftoneRegion;
-	highlightForeground: string;
+	color: string;
+	shadeOutside: boolean;
 };
 
 const resolve = (p: HalftoneParams): HalftoneResolved => ({
 	shape: p.shape ?? 'circle',
-	dotSize: p.dotSize ?? 10,
+	dotSize: p.dotSize ?? 20,
+	dotSpacing: p.dotSpacing ?? p.dotSize ?? 20,
 	rotation: p.rotation ?? 0,
 	offsetX: p.offsetX ?? 0,
 	offsetY: p.offsetY ?? 0,
 	sampling: p.sampling ?? 'bilinear',
-	foreground: p.foreground ?? 'black',
-	background: p.background ?? 'white',
-	region: p.region ?? 'shadows',
-	highlightForeground: p.highlightForeground ?? '#ffffff',
+	color: p.color ?? 'black',
+	shadeOutside: p.shadeOutside ?? false,
 });
 
 type SampleState = {
@@ -163,13 +165,12 @@ const halftoneDef = defineEffect<HalftoneParams, SampleState>({
 		const {data} = sourceCtx.getImageData(0, 0, width, height);
 
 		ctx.clearRect(0, 0, width, height);
-		ctx.fillStyle = r.background;
-		ctx.fillRect(0, 0, width, height);
 
 		const rad = (r.rotation * Math.PI) / 180;
 		const cosR = Math.cos(rad);
 		const sinR = Math.sin(rad);
 
+		const spacing = r.dotSpacing;
 		const size = r.dotSize;
 		const halfSize = size / 2;
 
@@ -200,24 +201,31 @@ const halftoneDef = defineEffect<HalftoneParams, SampleState>({
 			maxGy = Math.max(maxGy, gy);
 		}
 
-		const startCol = Math.floor((minGx + r.offsetX) / size) - 1;
-		const endCol = Math.ceil((maxGx + r.offsetX) / size) + 1;
-		const startRow = Math.floor((minGy + r.offsetY) / size) - 1;
-		const endRow = Math.ceil((maxGy + r.offsetY) / size) + 1;
+		// Include an extra ring of cells past the axis-aligned grid-space bounds so
+		// float error, max dot extent, and rotation never clip the last row/column.
+		const gridPadBefore = 2;
+		const gridPadAfter = 2;
+		const startCol = Math.floor((minGx + r.offsetX) / spacing) - gridPadBefore;
+		const endCol = Math.ceil((maxGx + r.offsetX) / spacing) + gridPadAfter;
+		const startRow = Math.floor((minGy + r.offsetY) / spacing) - gridPadBefore;
+		const endRow = Math.ceil((maxGy + r.offsetY) / spacing) + gridPadAfter;
 
 		for (let row = startRow; row <= endRow; row++) {
 			for (let col = startCol; col <= endCol; col++) {
-				const gridX = col * size - r.offsetX;
-				const gridY = row * size - r.offsetY;
+				const gridX = col * spacing - r.offsetX;
+				const gridY = row * spacing - r.offsetY;
 
 				const sampleX = cx + gridX * cosR - gridY * sinR;
 				const sampleY = cy + gridX * sinR + gridY * cosR;
 
+				// Margin must cover full dot extent (rotated square corners are √2·halfSize
+				// from center). Small px slack avoids float gaps at canvas edges.
+				const cullR = halfSize * Math.SQRT2 + 2;
 				if (
-					sampleX < -size ||
-					sampleX > width + size ||
-					sampleY < -size ||
-					sampleY > height + size
+					sampleX < -cullR ||
+					sampleX > width + cullR ||
+					sampleY < -cullR ||
+					sampleY > height + cullR
 				) {
 					continue;
 				}
@@ -231,60 +239,55 @@ const halftoneDef = defineEffect<HalftoneParams, SampleState>({
 					sampling: r.sampling,
 				});
 
-				// Composite onto implicit paper (white): transparent → no ink for shadows,
-				// no ink for highlights. Avoids (0,0,0,0) reading as luminance 0.
-				const lumShadow = lum * alpha + (1 - alpha);
-				const lumHighlight = lum * alpha;
+				// Composite onto implicit paper (white): transparent reads as white for
+				// luminance so opaque pixels alone drive classic halftone.
+				const lumDefault = lum * alpha + (1 - alpha);
+
+				const dotScale = r.shadeOutside
+					? (1 - alpha) * SHADE_OUTSIDE_DOT_SCALE
+					: 1 - lumDefault;
+
+				if (dotScale <= 0.01) {
+					continue;
+				}
 
 				const dotX = cx + gridX * cosR - gridY * sinR;
 				const dotY = cy + gridX * sinR + gridY * cosR;
 
-				const drawDot = (dotScale: number, fillStyle: string) => {
-					if (dotScale <= 0.01) {
-						return;
-					}
+				ctx.fillStyle = r.color;
 
-					ctx.fillStyle = fillStyle;
-
-					if (r.shape === 'circle') {
-						const radius = halfSize * dotScale;
-						ctx.beginPath();
-						ctx.arc(dotX, dotY, radius, 0, Math.PI * 2);
-						ctx.fill();
-					} else if (r.shape === 'square') {
-						const s = size * dotScale;
-						ctx.save();
-						ctx.translate(dotX, dotY);
-						ctx.rotate(-rad);
-						ctx.fillRect(-s / 2, -s / 2, s, s);
-						ctx.restore();
-					} else {
-						const lineHeight = size * dotScale;
-						ctx.save();
-						ctx.translate(dotX, dotY);
-						ctx.rotate(-rad);
-						ctx.fillRect(-halfSize, -lineHeight / 2, size, lineHeight);
-						ctx.restore();
-					}
-				};
-
-				if (r.region === 'shadows' || r.region === 'both') {
-					drawDot(1 - lumShadow, r.foreground);
-				}
-
-				if (r.region === 'highlights' || r.region === 'both') {
-					drawDot(lumHighlight, r.highlightForeground);
+				if (r.shape === 'circle') {
+					const radius = halfSize * dotScale;
+					ctx.beginPath();
+					ctx.arc(dotX, dotY, radius, 0, Math.PI * 2);
+					ctx.fill();
+				} else if (r.shape === 'square') {
+					const s = size * dotScale;
+					ctx.save();
+					ctx.translate(dotX, dotY);
+					ctx.rotate(-rad);
+					ctx.fillRect(-s / 2, -s / 2, s, s);
+					ctx.restore();
+				} else {
+					const lineHeight = size * dotScale;
+					ctx.save();
+					ctx.translate(dotX, dotY);
+					ctx.rotate(-rad);
+					ctx.fillRect(-halfSize, -lineHeight / 2, size, lineHeight);
+					ctx.restore();
 				}
 			}
 		}
 	},
+	cleanup: () => undefined,
 });
 
 // Halftone effect inspired by m's Halftone for After Effects. Converts
-// luminance into a grid of dots, squares, or lines. `sampling` controls
-// interpolation when reading luminance between pixel centres. `region` chooses
-// whether dots follow dark areas, bright areas, or both (two inks), approximating
-// dual-pass halftone shading without mesh normals. Alpha is blended against white
-// so transparent pixels are not interpreted as black RGB.
+// luminance into a grid of dots, squares, or lines. `dotSpacing` sets the grid
+// pitch (defaults to `dotSize`). `sampling` controls interpolation when reading
+// luminance between pixel centres. `shadeOutside` fills transparent areas with a
+// screen tone instead of luminance-driven ink on opaque pixels alone.
+// Alpha is blended against white so transparent pixels are not interpreted as
+// black RGB.
 export const halftone = (params: HalftoneParams = {}) =>
 	createDescriptor(halftoneDef, params);

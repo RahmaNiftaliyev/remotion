@@ -7,7 +7,6 @@ export type {
 export {halftone} from './halftone.js';
 export type {
 	HalftoneParams,
-	HalftoneRegion,
 	HalftoneSampling,
 	HalftoneShape,
 } from './halftone.js';

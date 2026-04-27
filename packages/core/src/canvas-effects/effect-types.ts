@@ -33,12 +33,13 @@ export type EffectDefinition<P, S = unknown> = {
 	readonly backend: Backend;
 	readonly setup: (target: HTMLCanvasElement) => S | Promise<S>;
 	readonly apply: (params: EffectApplyParams<P, S>) => void | Promise<void>;
-	readonly cleanup?: (state: S) => void;
+	readonly cleanup: (state: S) => void;
 };
 
 export type EffectDescriptor<P = unknown> = {
 	readonly definition: EffectDefinition<P, unknown>;
 	readonly params: P;
+	readonly stack: string;
 };
 
 // Public prop type for `effects`: callers may interleave single descriptors

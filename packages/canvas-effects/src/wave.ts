@@ -61,6 +61,7 @@ const waveDef = defineEffect<WaveParams, null>({
 			);
 		}
 	},
+	cleanup: () => undefined,
 });
 
 // Vertical-displacement wave effect: shifts vertical slices of the source

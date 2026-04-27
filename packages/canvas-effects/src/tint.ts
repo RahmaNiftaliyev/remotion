@@ -34,6 +34,7 @@ const tintDef = defineEffect<TintParams, null>({
 		ctx.globalAlpha = 1;
 		ctx.globalCompositeOperation = 'source-over';
 	},
+	cleanup: () => undefined,
 });
 
 // Tints the source with a flat color. `amount` controls the blend strength

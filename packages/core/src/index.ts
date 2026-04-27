@@ -141,8 +141,8 @@ export {
 	Solid,
 	SolidProps,
 } from './canvas-effects/index.js';
-import {HtmlInCanvas} from './canvas-effects/index.js';
-export type {HtmlInCanvasProps} from './canvas-effects/index.js';
+import {HtmlInCanvas} from './HtmlInCanvas.js';
+export type {HtmlInCanvasProps} from './HtmlInCanvas.js';
 export type {AnyZodObject} from './any-zod-type.js';
 export {Artifact} from './Artifact.js';
 export {Audio, Html5Audio, RemotionAudioProps} from './audio/index.js';

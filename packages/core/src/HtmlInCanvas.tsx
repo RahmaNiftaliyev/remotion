@@ -1,19 +1,19 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import type {SequenceControls} from '../CompositionManager.js';
-import {addSequenceStackTraces} from '../enable-sequence-stack-traces.js';
-import type {SequenceSchema} from '../sequence-field-schema.js';
-import {Sequence} from '../Sequence.js';
-import {useCurrentFrame} from '../use-current-frame.js';
-import {useDelayRender} from '../use-delay-render.js';
-import {useVideoConfig} from '../use-video-config.js';
-import {wrapInSchema} from '../wrap-in-schema.js';
-import type {EffectsProp} from './effect-types.js';
-import type {EffectChainState} from './run-effect-chain.js';
+import type {EffectsProp} from './canvas-effects/effect-types.js';
+import type {EffectChainState} from './canvas-effects/run-effect-chain.js';
 import {
 	cleanupEffectChainState,
 	createEffectChainState,
 	runEffectChain,
-} from './run-effect-chain.js';
+} from './canvas-effects/run-effect-chain.js';
+import type {SequenceControls} from './CompositionManager.js';
+import {addSequenceStackTraces} from './enable-sequence-stack-traces.js';
+import type {SequenceSchema} from './sequence-field-schema.js';
+import {Sequence} from './Sequence.js';
+import {useCurrentFrame} from './use-current-frame.js';
+import {useDelayRender} from './use-delay-render.js';
+import {useVideoConfig} from './use-video-config.js';
+import {wrapInSchema} from './wrap-in-schema.js';
 
 type Canvas2DWithDrawElement = CanvasRenderingContext2D & {
 	drawElementImage: (

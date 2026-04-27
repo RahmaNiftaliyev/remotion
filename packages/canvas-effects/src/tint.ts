@@ -19,6 +19,7 @@ export type TintParams = {
 
 const tintDef = defineEffect<TintParams, null>({
 	type: 'remotion/tint',
+	label: 'Tint',
 	backend: '2d',
 	setup: () => null,
 	apply: ({source, target, width, height, params}) => {

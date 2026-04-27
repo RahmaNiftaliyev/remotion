@@ -14,6 +14,7 @@ const makeDef = (
 	backend: Backend,
 ): EffectDefinition<unknown, unknown> => ({
 	type,
+	label: type,
 	backend,
 	setup: () => null,
 	apply: () => undefined,

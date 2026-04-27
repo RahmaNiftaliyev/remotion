@@ -244,6 +244,9 @@ export const TimelineListItem: React.FC<{
 		};
 	}, [isExpanded]);
 
+	const hasExpandableContent =
+		Boolean(sequence.controls) || sequence.effects.length > 0;
+
 	const trackRow = (
 		<div style={outer}>
 			<TimelineLayerEye
@@ -254,7 +257,7 @@ export const TimelineListItem: React.FC<{
 			<div style={padder} />
 			{sequence.parent && nestedDepth > 0 ? <div style={space} /> : null}
 			{visualModeActive ? (
-				sequence.controls ? (
+				hasExpandableContent ? (
 					<button
 						type="button"
 						style={arrowStyle}
@@ -290,7 +293,7 @@ export const TimelineListItem: React.FC<{
 			) : (
 				trackRow
 			)}
-			{visualModeActive && isExpanded && sequence.controls ? (
+			{visualModeActive && isExpanded && hasExpandableContent ? (
 				<TimelineExpandedSection
 					sequence={sequence}
 					originalLocation={originalLocation}

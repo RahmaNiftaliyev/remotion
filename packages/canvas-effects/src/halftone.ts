@@ -1,6 +1,46 @@
+import type {SequenceSchema} from 'remotion';
 import {createDescriptor, defineEffect} from 'remotion';
 
 const SHADE_OUTSIDE_DOT_SCALE = 0.5;
+
+export const halftoneSchema = {
+	dotSize: {
+		type: 'number',
+		min: 1,
+		max: 200,
+		step: 1,
+		default: 20,
+		description: 'Dot size',
+	},
+	dotSpacing: {
+		type: 'number',
+		min: 1,
+		max: 200,
+		step: 1,
+		default: 20,
+		description: 'Dot spacing',
+	},
+	rotation: {
+		type: 'number',
+		min: -180,
+		max: 180,
+		step: 1,
+		default: 0,
+		description: 'Rotation',
+	},
+	offsetX: {
+		type: 'number',
+		step: 1,
+		default: 0,
+		description: 'Offset X',
+	},
+	offsetY: {
+		type: 'number',
+		step: 1,
+		default: 0,
+		description: 'Offset Y',
+	},
+} as const satisfies SequenceSchema;
 
 export type HalftoneShape = 'circle' | 'square' | 'line';
 export type HalftoneSampling = 'bilinear' | 'nearest';
@@ -223,6 +263,7 @@ const parseColorRgba = (
 
 const halftoneDef = defineEffect<HalftoneParams, HalftoneState>({
 	type: 'remotion/halftone',
+	label: 'Halftone',
 	backend: 'webgl2',
 	setup: (target) => {
 		const gl = target.getContext('webgl2', {
@@ -365,7 +406,7 @@ const halftoneDef = defineEffect<HalftoneParams, HalftoneState>({
 		gl.deleteVertexArray(vao);
 		gl.deleteTexture(texture);
 	},
-	schema: null,
+	schema: halftoneSchema,
 });
 
 // Halftone effect (WebGL2). Converts luminance into a grid of dots, squares,

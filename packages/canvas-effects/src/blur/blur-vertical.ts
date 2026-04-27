@@ -13,6 +13,7 @@ export type BlurVerticalParams = {
 
 const blurVerticalDef = defineEffect<BlurVerticalParams, BlurState>({
 	type: 'remotion/blur-vertical',
+	label: 'Blur (vertical)',
 	backend: 'webgl2',
 	setup: (target) => setupBlur(target, BLUR_FS_VERTICAL),
 	apply: ({source, width, height, params, state}) => {

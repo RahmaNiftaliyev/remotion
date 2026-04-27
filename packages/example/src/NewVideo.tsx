@@ -24,7 +24,7 @@ export const Component = () => {
 		<Video
 			src={src}
 			debugOverlay
-			effects={[halftone(), tint({color: 'green', amount: 0.1})]}
+			effects={[halftone(), tint({color: 'green', amount: 1})]}
 		/>
 	);
 };

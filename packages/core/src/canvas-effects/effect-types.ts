@@ -32,6 +32,7 @@ export type EffectApplyParams<P, S> = {
 
 export type EffectDefinition<P, S = unknown> = {
 	readonly type: string;
+	readonly label: string;
 	readonly backend: Backend;
 	readonly setup: (target: HTMLCanvasElement) => S | Promise<S>;
 	readonly apply: (params: EffectApplyParams<P, S>) => void | Promise<void>;

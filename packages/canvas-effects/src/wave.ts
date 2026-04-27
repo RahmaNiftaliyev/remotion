@@ -26,6 +26,7 @@ const resolve = (p: WaveParams): WaveResolved => ({
 
 const waveDef = defineEffect<WaveParams, null>({
 	type: 'remotion/wave',
+	label: 'Wave',
 	backend: '2d',
 	setup: () => null,
 	apply: ({source, target, frame, width, height, params}) => {

@@ -2,14 +2,33 @@ import {Audio} from '@remotion/media';
 import {getStaticFiles} from '@remotion/studio';
 import {AbsoluteFill} from 'remotion';
 
-const FILE_NAME = 'long-audio.wav';
+const FILES = [
+	{
+		name: 'long-audio.wav',
+		codec: 'pcm_s16le',
+	},
+	{
+		name: 'long-audio.mp3',
+		codec: 'libmp3lame',
+	},
+	{
+		name: 'long-audio.aac',
+		codec: 'aac',
+	},
+] as const;
 
-const FFMPEG_COMMAND = `bunx remotion ffmpeg -f lavfi -i "sine=frequency=440:duration=3600" -c:a pcm_s16le public/${FILE_NAME}`;
+const ffmpegCommand = (fileName: string, codec: string) =>
+	`bunx remotion ffmpeg -f lavfi -i "sine=frequency=440:duration=3600" -c:a ${codec} public/${fileName}`;
 
 export const LongAudio: React.FC = () => {
-	const file = getStaticFiles().find((f) => f.name === FILE_NAME);
+	const staticFiles = getStaticFiles();
+	const resolved = FILES.map((f) => ({
+		...f,
+		file: staticFiles.find((s) => s.name === f.name),
+	}));
+	const missing = resolved.filter((r) => !r.file);
 
-	if (!file) {
+	if (missing.length > 0) {
 		return (
 			<AbsoluteFill
 				style={{
@@ -21,26 +40,36 @@ export const LongAudio: React.FC = () => {
 				}}
 			>
 				<div style={{fontSize: 32, marginBottom: 24}}>
-					Missing <code>public/{FILE_NAME}</code>
+					Missing {missing.length} audio file(s)
 				</div>
 				<div style={{fontSize: 20, marginBottom: 16, opacity: 0.8}}>
-					Generate a 1h test audio with:
+					Generate the missing 1h test audio file(s) with:
 				</div>
-				<pre
-					style={{
-						fontSize: 22,
-						background: '#222',
-						padding: 24,
-						borderRadius: 8,
-						whiteSpace: 'pre-wrap',
-						wordBreak: 'break-all',
-					}}
-				>
-					{FFMPEG_COMMAND}
-				</pre>
+				{missing.map((m) => (
+					<pre
+						key={m.name}
+						style={{
+							fontSize: 20,
+							background: '#222',
+							padding: 20,
+							borderRadius: 8,
+							marginBottom: 12,
+							whiteSpace: 'pre-wrap',
+							wordBreak: 'break-all',
+						}}
+					>
+						{ffmpegCommand(m.name, m.codec)}
+					</pre>
+				))}
 			</AbsoluteFill>
 		);
 	}
 
-	return <Audio src={file.src} />;
+	return (
+		<>
+			{resolved.map((r) => (
+				<Audio key={r.name} src={r.file!.src} />
+			))}
+		</>
+	);
 };

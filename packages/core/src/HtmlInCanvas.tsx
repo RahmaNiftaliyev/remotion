@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef} from 'react';
+import React, {useCallback, useLayoutEffect, useMemo, useRef} from 'react';
 import type {EffectsProp} from './canvas-effects/effect-types.js';
 import {runEffectChain} from './canvas-effects/run-effect-chain.js';
 import {useEffectChainState} from './canvas-effects/use-effect-chain-state.js';
@@ -182,6 +182,21 @@ export const isHtmlInCanvasSupported = (): boolean => {
 	);
 };
 
+export type HtmlInCanvasOnPaint = (
+	params: HtmlInCanvasComposeParams,
+) => void | Promise<void>;
+
+const defaultOnPaint: HtmlInCanvasOnPaint = ({canvas, element}) => {
+	const ctx = canvas.getContext('2d');
+	if (!ctx) {
+		throw new Error('Failed to acquire 2D context for <HtmlInCanvas> canvas');
+	}
+
+	ctx.reset();
+	const transform = ctx.drawElementImage(element, 0, 0);
+	element.style.transform = transform.toString();
+};
+
 export type HtmlInCanvasProps = Omit<
 	SequenceProps,
 	'children' | 'durationInFrames' | keyof LayoutAndStyle
@@ -192,9 +207,7 @@ export type HtmlInCanvasProps = Omit<
 		readonly height?: number;
 		readonly _experimentalEffects?: EffectsProp;
 		readonly children: React.ReactNode;
-		readonly onPaint?: (
-			params: HtmlInCanvasComposeParams,
-		) => void | Promise<void>;
+		readonly onPaint?: HtmlInCanvasOnPaint;
 	};
 
 const htmlInCanvasSchema = {
@@ -275,7 +288,8 @@ const HtmlInCanvasInner: React.FC<
 
 		try {
 			const handle = delayRender('onPaint');
-			await onPaintRef.current?.({
+			const handler = onPaintRef.current ?? defaultOnPaint;
+			await handler({
 				canvas,
 				width: canvas.width,
 				height: canvas.height,
@@ -309,8 +323,10 @@ const HtmlInCanvasInner: React.FC<
 		}
 	}, [chainState, continueRender, cancelRender]);
 
-	// Set up layoutSubtree and persistent paint listener.
-	useEffect(() => {
+	// Set up layoutSubtree and persistent paint listener. Runs as a
+	// layout effect so the listener is attached before the resize effect
+	// below dispatches its first synthetic paint.
+	useLayoutEffect(() => {
 		if (!isHtmlInCanvasSupported()) {
 			cancelRender(
 				new Error(
@@ -332,6 +348,26 @@ const HtmlInCanvasInner: React.FC<
 			canvas.removeEventListener('paint', onPaintCb);
 		};
 	}, [onPaintCb, cancelRender]);
+
+	useLayoutEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) {
+			return;
+		}
+
+		const handle = delayRender('waiting for first paint after canvas resize');
+		canvas.addEventListener(
+			'paint',
+			() => {
+				continueRender(handle);
+			},
+			{once: true},
+		);
+
+		return () => {
+			continueRender(handle);
+		};
+	}, [width, height, continueRender]);
 
 	const innerStyle = useMemo(() => {
 		return {

@@ -141,7 +141,11 @@ export {
 } from './canvas-effects/index.js';
 export type {SolidProps} from './canvas-effects/Solid.js';
 export {ENABLE_EFFECTS} from './enable-effects.js';
-export {HtmlInCanvas, isHtmlInCanvasSupported} from './HtmlInCanvas.js';
+export {
+	HtmlInCanvas,
+	isHtmlInCanvasSupported,
+	type HtmlInCanvasOnPaint,
+} from './HtmlInCanvas.js';
 export type {
 	HtmlInCanvasComposeParams,
 	HtmlInCanvasProps,

@@ -31,8 +31,8 @@ export const HtmlInCanvasComposeThenEffects: React.FC = () => {
 			<HtmlInCanvas
 				width={width}
 				height={height}
-				onPaint={({canvas: source, target, width: w, height: h}) => {
-					const ctx = target.getContext('2d');
+				onPaint={({canvas: source, width: w, height: h}) => {
+					const ctx = source.getContext('2d');
 					if (!ctx) {
 						return;
 					}

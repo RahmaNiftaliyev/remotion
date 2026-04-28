@@ -31,6 +31,7 @@ export type UseWindowedAudioDataOptions = {
 	fps: number;
 	windowInSeconds: number;
 	channelIndex?: number;
+	requestInit?: RequestInit;
 };
 
 export type UseWindowedAudioDataReturnValue = {
@@ -57,6 +58,7 @@ export const useWindowedAudioData = ({
 	fps,
 	windowInSeconds,
 	channelIndex = 0,
+	requestInit,
 }: UseWindowedAudioDataOptions): UseWindowedAudioDataReturnValue => {
 	const isMounted = useRef(true);
 	const [audioUtils, setAudioUtils] = useState<AudioUtils | null>(null);
@@ -104,7 +106,7 @@ export const useWindowedAudioData = ({
 
 			const input = new Input({
 				formats: ALL_FORMATS,
-				source: new UrlSource(src),
+				source: new UrlSource(src, requestInit ? {requestInit} : undefined),
 			});
 
 			const onAbort = () => {
@@ -166,7 +168,7 @@ export const useWindowedAudioData = ({
 				signal.removeEventListener('abort', onAbort);
 			}
 		},
-		[src, delayRender, continueRender, channelIndex],
+		[src, delayRender, continueRender, channelIndex, requestInit],
 	);
 
 	useLayoutEffect(() => {

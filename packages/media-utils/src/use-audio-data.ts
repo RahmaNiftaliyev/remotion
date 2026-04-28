@@ -3,11 +3,19 @@ import {cancelRender, useDelayRender} from 'remotion';
 import {getAudioData} from './get-audio-data';
 import type {MediaUtilsAudioData} from './types';
 
+type UseAudioDataOptions = {
+	sampleRate?: number;
+	requestInit?: RequestInit;
+};
+
 /*
  * @description Wraps the getAudioData() function into a hook and does three things: keeps the audio data in a state, wraps the function in a delayRender() / continueRender() pattern, and handles the case where the component gets unmounted while fetching is in progress to prevent React errors.
  * @see [Documentation](https://www.remotion.dev/docs/use-audio-data)
  */
-export const useAudioData = (src: string): MediaUtilsAudioData | null => {
+export const useAudioData = (
+	src: string,
+	options?: UseAudioDataOptions,
+): MediaUtilsAudioData | null => {
 	if (!src) {
 		throw new TypeError("useAudioData requires a 'src' parameter");
 	}
@@ -31,7 +39,7 @@ export const useAudioData = (src: string): MediaUtilsAudioData | null => {
 		);
 
 		try {
-			const data = await getAudioData(src);
+			const data = await getAudioData(src, options);
 			if (mountState.current.isMounted) {
 				setMetadata(data);
 			}
@@ -40,7 +48,7 @@ export const useAudioData = (src: string): MediaUtilsAudioData | null => {
 		}
 
 		continueRender(handle);
-	}, [src, delayRender, continueRender]);
+	}, [src, options, delayRender, continueRender]);
 
 	useLayoutEffect(() => {
 		fetchMetadata();

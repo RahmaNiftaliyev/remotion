@@ -111,15 +111,11 @@ const Component: React.FC = () => {
 												display: 'inline-block',
 												textAlign: 'center',
 												textShadow: 'none',
-												backgroundClip: 'text',
-												WebkitTextFillColor: 'transparent',
 												fontWeight: 900,
 												lineHeight: 0.9,
 												filter: 'drop-shadow(rgba(0, 0, 0, 0.35) 5px 5px 15px)',
 												textTransform: 'uppercase',
 												opacity: 1,
-												backgroundImage:
-													'linear-gradient(90deg, rgb(160, 216, 62) 0%, rgb(160, 216, 62) 20%, rgb(170, 220, 83) 40%, rgb(202, 233, 147) 50%, rgb(170, 220, 83) 70%, rgb(160, 216, 62) 80%, rgb(160, 216, 62) 100%)',
 												whiteSpace: 'pre',
 											}}
 										>

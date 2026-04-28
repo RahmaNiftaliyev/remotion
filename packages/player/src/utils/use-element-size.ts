@@ -61,17 +61,10 @@ export const useElementSize = (
 		}
 
 		return new ResizeObserver((entries) => {
-			// `contentRect` is the element's pre-transform content box (CSS layout
-			// width/height). `getClientRects()` is the post-transform AABB. We want
-			// the layout box; we recover it by dividing each AABB axis by the
-			// per-axis ratio between AABB and content box, which cancels the
-			// parent's CSS transform whether it is uniform or not.
-			//
-			// Computing one scalar from the X-axis ratio and applying it to both
-			// dimensions only works under uniform 2D scale. Under non-uniform
-			// transforms (`scale(X, Y)` with different factors, `rotateX/Y`,
-			// `perspective`, `matrix3d`) the X- and Y-axis AABB grow at different
-			// rates and the height comes out wrong.
+			// `contentRect` is the element's pre-transform content box.
+			// `getClientRects()` is the post-transform AABB. Dividing each AABB
+			// axis by its content-box counterpart cancels the parent CSS transform
+			// whether it is uniform or not.
 			const {contentRect, target} = entries[0];
 			const newSize = target.getClientRects();
 

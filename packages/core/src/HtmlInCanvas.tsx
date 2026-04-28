@@ -3,6 +3,7 @@ import type {EffectsProp} from './canvas-effects/effect-types.js';
 import {runEffectChain} from './canvas-effects/run-effect-chain.js';
 import {useEffectChainState} from './canvas-effects/use-effect-chain-state.js';
 import type {SequenceControls} from './CompositionManager.js';
+import {delayRender} from './delay-render.js';
 import {ENABLE_EFFECTS} from './enable-effects.js';
 import {addSequenceStackTraces} from './enable-sequence-stack-traces.js';
 import type {SequenceSchema} from './sequence-field-schema.js';
@@ -17,28 +18,156 @@ import {useDelayRender} from './use-delay-render.js';
 import {useVideoConfig} from './use-video-config.js';
 import {wrapInSchema} from './wrap-in-schema.js';
 
-type Canvas2DWithDrawElement = CanvasRenderingContext2D & {
-	drawElementImage: (
-		element: Element,
-		dx: number,
-		dy: number,
-		dwidth: number,
-		dheight: number,
-	) => DOMMatrix;
-};
+// IDL: https://github.com/WICG/html-in-canvas#idl-changes
+// WebGPU's `copyElementImageToTexture` is omitted — `GPUQueue` is not in
+// lib.dom.d.ts and would require pulling in `@webgpu/types`.
+declare global {
+	interface ElementImage {
+		readonly width: number;
+		readonly height: number;
+		close(): void;
+	}
 
-type HTMLCanvasWithLayoutSubtree = HTMLCanvasElement & {
-	layoutSubtree?: boolean;
-	requestPaint: () => void;
-};
+	interface CanvasRenderingContext2D {
+		drawElementImage(
+			element: Element | ElementImage,
+			dx: number,
+			dy: number,
+		): DOMMatrix;
+		drawElementImage(
+			element: Element | ElementImage,
+			dx: number,
+			dy: number,
+			dwidth: number,
+			dheight: number,
+		): DOMMatrix;
+		drawElementImage(
+			element: Element | ElementImage,
+			sx: number,
+			sy: number,
+			swidth: number,
+			sheight: number,
+			dx: number,
+			dy: number,
+		): DOMMatrix;
+		drawElementImage(
+			element: Element | ElementImage,
+			sx: number,
+			sy: number,
+			swidth: number,
+			sheight: number,
+			dx: number,
+			dy: number,
+			dwidth: number,
+			dheight: number,
+		): DOMMatrix;
+	}
+
+	interface OffscreenCanvasRenderingContext2D {
+		drawElementImage(
+			element: Element | ElementImage,
+			dx: number,
+			dy: number,
+		): DOMMatrix;
+		drawElementImage(
+			element: Element | ElementImage,
+			dx: number,
+			dy: number,
+			dwidth: number,
+			dheight: number,
+		): DOMMatrix;
+		drawElementImage(
+			element: Element | ElementImage,
+			sx: number,
+			sy: number,
+			swidth: number,
+			sheight: number,
+			dx: number,
+			dy: number,
+		): DOMMatrix;
+		drawElementImage(
+			element: Element | ElementImage,
+			sx: number,
+			sy: number,
+			swidth: number,
+			sheight: number,
+			dx: number,
+			dy: number,
+			dwidth: number,
+			dheight: number,
+		): DOMMatrix;
+	}
+
+	// Augmenting the base interface applies to both WebGL1 and WebGL2.
+	interface WebGLRenderingContextBase {
+		texElementImage2D(
+			target: GLenum,
+			level: GLint,
+			internalformat: GLint,
+			format: GLenum,
+			type: GLenum,
+			element: Element | ElementImage,
+		): void;
+		texElementImage2D(
+			target: GLenum,
+			level: GLint,
+			internalformat: GLint,
+			width: GLsizei,
+			height: GLsizei,
+			format: GLenum,
+			type: GLenum,
+			element: Element | ElementImage,
+		): void;
+		texElementImage2D(
+			target: GLenum,
+			level: GLint,
+			internalformat: GLint,
+			sx: GLfloat,
+			sy: GLfloat,
+			swidth: GLfloat,
+			sheight: GLfloat,
+			format: GLenum,
+			type: GLenum,
+			element: Element | ElementImage,
+		): void;
+		texElementImage2D(
+			target: GLenum,
+			level: GLint,
+			internalformat: GLint,
+			sx: GLfloat,
+			sy: GLfloat,
+			swidth: GLfloat,
+			sheight: GLfloat,
+			width: GLsizei,
+			height: GLsizei,
+			format: GLenum,
+			type: GLenum,
+			element: Element | ElementImage,
+		): void;
+	}
+
+	interface HTMLCanvasElementEventMap {
+		paint: Event;
+	}
+
+	interface HTMLCanvasElement {
+		layoutSubtree?: boolean;
+		onpaint: ((this: HTMLCanvasElement, ev: Event) => unknown) | null;
+		requestPaint?(): void;
+		captureElementImage(element: Element): ElementImage;
+		getElementTransform(
+			element: Element | ElementImage,
+			drawTransform: DOMMatrix,
+		): DOMMatrix;
+	}
+}
 
 export type HtmlInCanvasComposeParams = {
-	readonly source: CanvasImageSource;
-	readonly target: HTMLCanvasElement;
+	readonly canvas: HTMLCanvasElement;
 	readonly frame: number;
 	readonly width: number;
 	readonly height: number;
-	readonly pixelRatio: number;
+	readonly element: HTMLDivElement;
 };
 
 export const isHtmlInCanvasSupported = (): boolean => {
@@ -46,10 +175,8 @@ export const isHtmlInCanvasSupported = (): boolean => {
 		return false;
 	}
 
-	const canvas = document.createElement(
-		'canvas',
-	) as HTMLCanvasWithLayoutSubtree;
-	const ctx = canvas.getContext('2d') as Canvas2DWithDrawElement | null;
+	const canvas = document.createElement('canvas');
+	const ctx = canvas.getContext('2d');
 	return (
 		typeof ctx?.drawElementImage === 'function' &&
 		typeof canvas.requestPaint === 'function'
@@ -62,12 +189,11 @@ export type HtmlInCanvasProps = Omit<
 > &
 	Omit<AbsoluteFillLayout, 'layout'> & {
 		readonly durationInFrames?: number;
-		readonly width: number;
-		readonly height: number;
+		readonly width?: number;
+		readonly height?: number;
 		readonly _experimentalEffects?: EffectsProp;
 		readonly children: React.ReactNode;
-		readonly pixelRatio?: number;
-		readonly onCompose?: (
+		readonly onPaint?: (
 			params: HtmlInCanvasComposeParams,
 		) => void | Promise<void>;
 	};
@@ -112,8 +238,7 @@ const HtmlInCanvasInner: React.FC<
 	height,
 	_experimentalEffects: experimentalEffects = [],
 	children,
-	pixelRatio = 1,
-	onCompose,
+	onPaint,
 	controls,
 	style,
 	durationInFrames,
@@ -123,62 +248,44 @@ const HtmlInCanvasInner: React.FC<
 	const resolvedDuration = durationInFrames ?? videoDuration;
 
 	const frame = useCurrentFrame();
-	const {delayRender, continueRender, cancelRender} = useDelayRender();
+	const {continueRender, cancelRender} = useDelayRender();
 
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const sceneRef = useRef<HTMLDivElement | null>(null);
 
-	const chainState = useEffectChainState(width, height);
+	const chainState = useEffectChainState(
+		canvasRef.current?.width ?? 0,
+		canvasRef.current?.height ?? 0,
+	);
 
 	// Refs so the paint handler always reads fresh values.
 	const effectsRef = useRef(experimentalEffects);
 	effectsRef.current = experimentalEffects;
 	const frameRef = useRef(frame);
 	frameRef.current = frame;
-	const pixelRatioRef = useRef(pixelRatio);
-	pixelRatioRef.current = pixelRatio;
-	const widthRef = useRef(width);
-	widthRef.current = width;
-	const heightRef = useRef(height);
-	heightRef.current = height;
+	const onPaintRef = useRef(onPaint);
+	onPaintRef.current = onPaint;
 
-	// Track the current delayRender handle so the paint handler can settle it.
-	const pendingHandleRef = useRef<number | null>(null);
-
-	const onPaint = useCallback(() => {
-		const canvas = canvasRef.current as HTMLCanvasWithLayoutSubtree | null;
+	const onPaintCb = useCallback(async () => {
+		const canvas = canvasRef.current;
 		const sceneEl = sceneRef.current;
-		const handle = pendingHandleRef.current;
 
-		if (!canvas || !sceneEl || handle === null) {
-			return;
+		if (!canvas || !sceneEl) {
+			throw new Error('Canvas or scene element not found');
 		}
 
 		try {
-			const ctx = canvas.getContext('2d') as Canvas2DWithDrawElement | null;
-			if (!ctx) {
-				throw new Error(
-					'Failed to acquire 2D context for <HtmlInCanvas> canvas',
-				);
-			}
-
-			const w = widthRef.current;
-			const h = heightRef.current;
-
-			// Layout-subtree children are not shown on-screen until rasterized here;
-			// effects then read from and write back to this same surface (via pool).
-			ctx.reset();
-			const transform = ctx.drawElementImage(sceneEl, 0, 0, w, h);
-			// Sync DOM hit-testing, IntersectionObserver and a11y to the drawn
-			// position. Per the WICG/html-in-canvas explainer, the matrix returned
-			// from drawElementImage should be assigned to the source element.
-			sceneEl.style.transform = transform.toString();
-
-			const capturedHandle = handle;
-			pendingHandleRef.current = null;
+			const handle = delayRender('onPaint');
+			await onPaintRef.current?.({
+				frame: frameRef.current,
+				canvas,
+				width: canvas.width,
+				height: canvas.height,
+				element: sceneEl,
+			});
 
 			if (!ENABLE_EFFECTS) {
-				continueRender(capturedHandle);
+				continueRender(handle);
 				return;
 			}
 
@@ -186,24 +293,19 @@ const HtmlInCanvasInner: React.FC<
 				return;
 			}
 
-			runEffectChain({
+			const completed = await runEffectChain({
 				state: chainState,
 				source: canvas,
 				effects: effectsRef.current,
 				output: canvas,
 				frame: frameRef.current,
-				width: w,
-				height: h,
-				pixelRatio: pixelRatioRef.current,
-			})
-				.then((completed) => {
-					if (completed) {
-						continueRender(capturedHandle);
-					}
-				})
-				.catch((err) => {
-					cancelRender(err);
-				});
+				width: canvas.width,
+				height: canvas.height,
+			});
+
+			if (completed) {
+				continueRender(handle);
+			}
 		} catch (error) {
 			cancelRender(error);
 		}
@@ -220,48 +322,17 @@ const HtmlInCanvasInner: React.FC<
 			return;
 		}
 
-		const canvas = canvasRef.current as HTMLCanvasWithLayoutSubtree | null;
+		const canvas = canvasRef.current;
 		if (!canvas) {
-			return;
+			throw new Error('Canvas not found');
 		}
 
 		canvas.layoutSubtree = true;
-		canvas.addEventListener('paint', onPaint);
+		canvas.addEventListener('paint', onPaintCb);
 		return () => {
-			canvas.removeEventListener('paint', onPaint);
+			canvas.removeEventListener('paint', onPaintCb);
 		};
-	}, [onPaint, cancelRender]);
-
-	// On each frame change: block the renderer and request a paint.
-	useEffect(() => {
-		const handle = delayRender(`HtmlInCanvas (frame ${frame})`);
-
-		// Continue a stale handle from a previous frame that never got a paint.
-		if (pendingHandleRef.current !== null) {
-			continueRender(pendingHandleRef.current);
-		}
-
-		pendingHandleRef.current = handle;
-
-		const canvas = canvasRef.current as HTMLCanvasWithLayoutSubtree | null;
-		canvas?.requestPaint();
-
-		return () => {
-			if (pendingHandleRef.current === handle) {
-				continueRender(handle);
-				pendingHandleRef.current = null;
-			}
-		};
-	}, [frame, delayRender, continueRender]);
-
-	const outerStyle = useMemo(() => {
-		return {
-			position: 'absolute' as const,
-			inset: 0,
-			width,
-			height,
-		} as React.CSSProperties;
-	}, [width, height]);
+	}, [onPaintCb, cancelRender]);
 
 	const innerStyle = useMemo(() => {
 		return {
@@ -275,10 +346,11 @@ const HtmlInCanvasInner: React.FC<
 			durationInFrames={resolvedDuration}
 			name="<HtmlInCanvas>"
 			controls={controls}
+			width={width}
+			height={height}
 			{...sequenceProps}
-			style={style}
 		>
-			<canvas ref={canvasRef} width={width} height={height} style={outerStyle}>
+			<canvas ref={canvasRef} width={width} height={height} style={style}>
 				<div ref={sceneRef} style={innerStyle}>
 					{children}
 				</div>

@@ -26,7 +26,6 @@ export type EffectApplyParams<P, S> = {
 	readonly frame: number;
 	readonly width: number;
 	readonly height: number;
-	readonly pixelRatio: number;
 	readonly gpuDevice: AnyGpuDevice | null;
 };
 

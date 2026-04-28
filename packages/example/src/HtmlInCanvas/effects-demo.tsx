@@ -1,38 +1,45 @@
-import {blur, tint, wave} from '@remotion/canvas-effects';
 import React from 'react';
 import {
 	AbsoluteFill,
 	HtmlInCanvas,
-	interpolate,
+	spring,
 	useCurrentFrame,
 	useVideoConfig,
 } from 'remotion';
 import {HtmlInCanvasScene} from './scene';
 
 export const HtmlInCanvasEffectsDemo: React.FC = () => {
-	const frame = useCurrentFrame();
-	const {width, height, durationInFrames} = useVideoConfig();
+	const {width, height} = useVideoConfig();
 
-	const blurRadius = interpolate(frame, [0, durationInFrames - 1], [0, 24], {
-		extrapolateLeft: 'clamp',
-		extrapolateRight: 'clamp',
-	});
-
-	const tintAmount = interpolate(frame, [0, durationInFrames - 1], [0, 0.4], {
-		extrapolateLeft: 'clamp',
-		extrapolateRight: 'clamp',
+	const scale = spring({
+		frame: useCurrentFrame(),
+		fps: useVideoConfig().fps,
+		config: {
+			damping: 10,
+			stiffness: 100,
+		},
 	});
 
 	return (
-		<AbsoluteFill style={{backgroundColor: 'black'}}>
+		<AbsoluteFill>
 			<HtmlInCanvas
 				width={width}
 				height={height}
-				_experimentalEffects={[
-					wave({amplitude: 40, wavelength: 240}),
-					blur({radius: blurRadius}),
-					tint({color: 'cyan', amount: tintAmount}),
-				]}
+				style={{scale}}
+				onPaint={({canvas, element}) => {
+					const ctx = canvas.getContext('2d');
+					if (!ctx) {
+						throw new Error(
+							'Failed to acquire 2D context for <HtmlInCanvas> canvas',
+						);
+					}
+
+					ctx.reset();
+					ctx.rotate((15 * Math.PI) / 180);
+					ctx.translate(80 * devicePixelRatio, -20 * devicePixelRatio);
+					const transform = ctx.drawElementImage(element, 0, 0);
+					element.style.transform = transform.toString();
+				}}
 			>
 				<HtmlInCanvasScene />
 			</HtmlInCanvas>

@@ -28,7 +28,7 @@ export const HtmlInCanvasComposeRotate: React.FC = () => {
 			<HtmlInCanvas
 				width={width}
 				height={height}
-				onCompose={({source, target, width: w, height: h}) => {
+				onPaint={({canvas: source, target, width: w, height: h}) => {
 					const ctx = target.getContext('2d');
 					if (!ctx) {
 						return;

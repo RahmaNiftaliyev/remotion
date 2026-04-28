@@ -96,7 +96,6 @@ export const Solid: React.FC<SolidProps> = ({
 			frame,
 			width,
 			height,
-			pixelRatio,
 		})
 			.then((completed) => {
 				if (completed) {

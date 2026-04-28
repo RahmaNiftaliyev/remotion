@@ -54,7 +54,6 @@ export type RunEffectChainOptions = {
 	readonly frame: number;
 	readonly width: number;
 	readonly height: number;
-	readonly pixelRatio: number;
 };
 
 // Runs the effect pipeline imperatively. Returns `true` if the pipeline
@@ -68,7 +67,6 @@ export const runEffectChain = async ({
 	frame,
 	width,
 	height,
-	pixelRatio,
 }: RunEffectChainOptions): Promise<boolean> => {
 	const runId = ++state.currentRunId;
 	const isCancelled = () => state.currentRunId !== runId;
@@ -126,7 +124,6 @@ export const runEffectChain = async ({
 				frame,
 				width,
 				height,
-				pixelRatio,
 				gpuDevice,
 			});
 

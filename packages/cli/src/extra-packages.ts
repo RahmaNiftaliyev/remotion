@@ -1,9 +1,9 @@
 export const EXTRA_PACKAGES: Record<string, string> = {
-	mediabunny: '1.42.0-beta.9',
-	'@mediabunny/ac3': '1.42.0-beta.9',
-	'@mediabunny/mp3-encoder': '1.42.0-beta.9',
-	'@mediabunny/aac-encoder': '1.42.0-beta.9',
-	'@mediabunny/flac-encoder': '1.42.0-beta.9',
+	mediabunny: '1.42.0-beta.10',
+	'@mediabunny/ac3': '1.42.0-beta.10',
+	'@mediabunny/mp3-encoder': '1.42.0-beta.10',
+	'@mediabunny/aac-encoder': '1.42.0-beta.10',
+	'@mediabunny/flac-encoder': '1.42.0-beta.10',
 	zod: '4.3.6',
 };
 

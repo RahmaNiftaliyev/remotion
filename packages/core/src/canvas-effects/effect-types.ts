@@ -34,8 +34,8 @@ export type EffectDefinition<P, S = unknown> = {
 	readonly type: string;
 	readonly label: string;
 	readonly backend: Backend;
-	readonly setup: (target: HTMLCanvasElement) => S | Promise<S>;
-	readonly apply: (params: EffectApplyParams<P, S>) => void | Promise<void>;
+	readonly setup: (target: HTMLCanvasElement) => S;
+	readonly apply: (params: EffectApplyParams<P, S>) => void;
 	readonly cleanup: (state: S) => void;
 	readonly schema: SequenceSchema | null;
 };

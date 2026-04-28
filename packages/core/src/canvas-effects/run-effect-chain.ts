@@ -5,10 +5,10 @@ import {getGpuDevice} from './gpu-device.js';
 
 export type EffectChainState = {
 	pool: CanvasPool;
-	setupCache: WeakMap<EffectDefinition<unknown, unknown>, Promise<unknown>>;
+	setupCache: WeakMap<EffectDefinition<unknown, unknown>, unknown>;
 	cleanupRegistry: Array<{
 		definition: EffectDefinition<unknown, unknown>;
-		statePromise: Promise<unknown>;
+		statePromise: unknown;
 	}>;
 	currentRunId: number;
 };
@@ -26,27 +26,24 @@ export const createEffectChainState = (
 export const cleanupEffectChainState = (state: EffectChainState): void => {
 	state.currentRunId++;
 	for (const entry of state.cleanupRegistry) {
-		entry.statePromise.then(
-			(s) => entry.definition.cleanup?.(s),
-			() => undefined,
-		);
+		entry.definition.cleanup(entry.statePromise);
 	}
 };
 
-const ensureSetup = (
+const ensureSetup = <S>(
 	state: EffectChainState,
-	def: EffectDefinition<unknown, unknown>,
+	def: EffectDefinition<unknown, S>,
 	target: HTMLCanvasElement,
-): Promise<unknown> => {
-	const cached = state.setupCache.get(def);
-	if (cached) {
-		return cached;
+): S => {
+	const widened = def as EffectDefinition<unknown, unknown>;
+	if (state.setupCache.has(widened)) {
+		return state.setupCache.get(widened) as S;
 	}
 
-	const promise = Promise.resolve(def.setup(target));
-	state.setupCache.set(def, promise);
-	state.cleanupRegistry.push({definition: def, statePromise: promise});
-	return promise;
+	const setupState = def.setup(target);
+	state.setupCache.set(widened, setupState);
+	state.cleanupRegistry.push({definition: widened, statePromise: setupState});
+	return setupState;
 };
 
 export type RunEffectChainOptions = {
@@ -119,12 +116,9 @@ export const runEffectChain = async ({
 
 		for (const eff of run.effects) {
 			const def = eff.definition as EffectDefinition<unknown, unknown>;
-			const setupState = await ensureSetup(state, def, dst);
-			if (isCancelled()) {
-				return false;
-			}
+			const setupState = ensureSetup(state, def, dst);
 
-			await def.apply({
+			def.apply({
 				source: currentImage,
 				target: dst,
 				state: setupState,

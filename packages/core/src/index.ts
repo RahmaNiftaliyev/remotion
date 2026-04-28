@@ -144,6 +144,7 @@ export {ENABLE_EFFECTS} from './enable-effects.js';
 export {
 	HtmlInCanvas,
 	isHtmlInCanvasSupported,
+	type HtmlInCanvasOnInit,
 	type HtmlInCanvasOnPaint,
 } from './HtmlInCanvas.js';
 export type {

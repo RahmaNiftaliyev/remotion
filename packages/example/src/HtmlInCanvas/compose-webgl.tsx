@@ -36,7 +36,7 @@ uniform sampler2D u_tex;
 in vec2 v_uv;
 out vec4 o;
 void main() {
-  o = texture(u_tex, vec2(v_uv.x, 1.0 - v_uv.y));
+  o = texture(u_tex, v_uv);
 }`;
 
 function compileGlsl(gl: WebGL2RenderingContext, vs: string, fs: string) {
@@ -59,50 +59,6 @@ const QUAD = new Float32Array([
 	-1, -1, 0, 0, 1, -1, 1, 0, -1, 1, 0, 1, 1, -1, 1, 0, -1, 1, 0, 1, 1, 1, 1, 1,
 ]);
 
-function ensureGpu(
-	target: HTMLCanvasElement,
-	ref: React.MutableRefObject<GpuState | null>,
-): GpuState | null {
-	if (ref.current) {
-		return ref.current;
-	}
-
-	const gl = target.getContext('webgl2', {
-		alpha: true,
-		premultipliedAlpha: true,
-		antialias: false,
-	});
-	if (!gl) {
-		return null;
-	}
-
-	const program = compileGlsl(gl, VS, FS);
-	const uMatrix = gl.getUniformLocation(program, 'u_matrix');
-	const uTex = gl.getUniformLocation(program, 'u_tex');
-	const texture = gl.createTexture()!;
-	gl.bindTexture(gl.TEXTURE_2D, texture);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-	const buffer = gl.createBuffer()!;
-	gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-	gl.bufferData(gl.ARRAY_BUFFER, QUAD, gl.STATIC_DRAW);
-
-	const vao = gl.createVertexArray()!;
-	gl.bindVertexArray(vao);
-	const locPos = gl.getAttribLocation(program, 'a_pos');
-	const locUv = gl.getAttribLocation(program, 'a_uv');
-	gl.enableVertexAttribArray(locPos);
-	gl.vertexAttribPointer(locPos, 2, gl.FLOAT, false, 16, 0);
-	gl.enableVertexAttribArray(locUv);
-	gl.vertexAttribPointer(locUv, 2, gl.FLOAT, false, 16, 8);
-
-	ref.current = {gl, program, uMatrix, uTex, texture, vao, buffer};
-	return ref.current;
-}
-
 function disposeGpu(ref: React.MutableRefObject<GpuState | null>) {
 	const g = ref.current;
 	if (!g) {
@@ -117,7 +73,6 @@ function disposeGpu(ref: React.MutableRefObject<GpuState | null>) {
 	ref.current = null;
 }
 
-/** WebGL2 full-screen quad; shaders and textures memoized on a ref (see plan). Falls back to 2D blit when WebGL2 is unavailable. */
 export const HtmlInCanvasComposeWebGL: React.FC = () => {
 	const frame = useCurrentFrame();
 	const {width, height, durationInFrames} = useVideoConfig();
@@ -135,56 +90,101 @@ export const HtmlInCanvasComposeWebGL: React.FC = () => {
 
 	useEffect(() => () => disposeGpu(gpuRef), []);
 
+	const onInit = useCallback(({canvas}: HtmlInCanvasComposeParams) => {
+		const gl = canvas.getContext('webgl2', {
+			alpha: true,
+			premultipliedAlpha: true,
+			antialias: false,
+		});
+		if (!gl) {
+			throw new Error('WebGL2 unavailable');
+		}
+
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
+		const program = compileGlsl(gl, VS, FS);
+		const uMatrix = gl.getUniformLocation(program, 'u_matrix');
+		const uTex = gl.getUniformLocation(program, 'u_tex');
+
+		const texture = gl.createTexture()!;
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+		const buffer = gl.createBuffer()!;
+		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+		gl.bufferData(gl.ARRAY_BUFFER, QUAD, gl.STATIC_DRAW);
+
+		const vao = gl.createVertexArray()!;
+		gl.bindVertexArray(vao);
+		const locPos = gl.getAttribLocation(program, 'a_pos');
+		const locUv = gl.getAttribLocation(program, 'a_uv');
+		gl.enableVertexAttribArray(locPos);
+		gl.vertexAttribPointer(locPos, 2, gl.FLOAT, false, 16, 0);
+		gl.enableVertexAttribArray(locUv);
+		gl.vertexAttribPointer(locUv, 2, gl.FLOAT, false, 16, 8);
+
+		gpuRef.current = {gl, program, uMatrix, uTex, texture, vao, buffer};
+	}, []);
+
 	const onPaint = useCallback(
-		({canvas}: HtmlInCanvasComposeParams) => {
+		({element}: HtmlInCanvasComposeParams) => {
+			const gpu = gpuRef.current;
+			if (!gpu) {
+				return;
+			}
+
 			const c = Math.cos(rotation);
 			const s = Math.sin(rotation);
 			const mat = new Float32Array([c, -s, 0, s, c, 0, 0, 0, 1]);
 
-			const gpu = ensureGpu(canvas, gpuRef);
-			if (!gpu) {
-				const ctx = canvas.getContext('2d');
-				if (!ctx) {
-					return;
+			requestAnimationFrame(() => {
+				const {gl} = gpu;
+				gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+				gl.useProgram(gpu.program);
+
+				gl.activeTexture(gl.TEXTURE0);
+				gl.bindTexture(gl.TEXTURE_2D, gpu.texture);
+				gl.texElementImage2D(
+					gl.TEXTURE_2D,
+					0,
+					gl.RGBA,
+					gl.RGBA,
+					gl.UNSIGNED_BYTE,
+					element,
+				);
+
+				if (gpu.uTex) {
+					gl.uniform1i(gpu.uTex, 0);
 				}
 
-				ctx.clearRect(0, 0, width, height);
-				ctx.drawImage(canvas, 0, 0, width, height);
-				return;
-			}
+				if (gpu.uMatrix) {
+					gl.uniformMatrix3fv(gpu.uMatrix, false, mat);
+				}
 
-			const {gl} = gpu;
-			gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-			gl.useProgram(gpu.program);
-
-			gl.activeTexture(gl.TEXTURE0);
-			gl.bindTexture(gl.TEXTURE_2D, gpu.texture);
-			gl.texImage2D(
-				gl.TEXTURE_2D,
-				0,
-				gl.RGBA,
-				gl.RGBA,
-				gl.UNSIGNED_BYTE,
-				canvas as TexImageSource,
-			);
-
-			if (gpu.uTex) {
-				gl.uniform1i(gpu.uTex, 0);
-			}
-
-			if (gpu.uMatrix) {
-				gl.uniformMatrix3fv(gpu.uMatrix, false, mat);
-			}
-
-			gl.bindVertexArray(gpu.vao);
-			gl.drawArrays(gl.TRIANGLES, 0, 6);
+				gl.bindVertexArray(gpu.vao);
+				gl.drawArrays(gl.TRIANGLES, 0, 6);
+			});
 		},
 		[rotation],
 	);
 
 	return (
-		<AbsoluteFill style={{backgroundColor: 'black'}}>
-			<HtmlInCanvas width={width} height={height} onPaint={onPaint}>
+		<AbsoluteFill
+			style={{
+				backgroundColor: 'red',
+				justifyContent: 'center',
+				alignItems: 'center',
+			}}
+		>
+			<HtmlInCanvas
+				width={width}
+				height={height}
+				onInit={onInit}
+				onPaint={onPaint}
+			>
 				<HtmlInCanvasScene />
 			</HtmlInCanvas>
 		</AbsoluteFill>

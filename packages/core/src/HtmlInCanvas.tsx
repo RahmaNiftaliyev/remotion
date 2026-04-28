@@ -184,6 +184,10 @@ export type HtmlInCanvasOnPaint = (
 	params: HtmlInCanvasComposeParams,
 ) => void | Promise<void>;
 
+export type HtmlInCanvasOnInit = (
+	params: HtmlInCanvasComposeParams,
+) => void | Promise<void>;
+
 const defaultOnPaint: HtmlInCanvasOnPaint = ({canvas, element}) => {
 	const ctx = canvas.getContext('2d');
 	if (!ctx) {
@@ -206,6 +210,7 @@ export type HtmlInCanvasProps = Omit<
 		readonly _experimentalEffects?: EffectsProp;
 		readonly children: React.ReactNode;
 		readonly onPaint?: HtmlInCanvasOnPaint;
+		readonly onInit?: HtmlInCanvasOnInit;
 	};
 
 const htmlInCanvasSchema = {
@@ -249,6 +254,7 @@ const HtmlInCanvasInner: React.FC<
 	_experimentalEffects: experimentalEffects = [],
 	children,
 	onPaint,
+	onInit,
 	controls,
 	style,
 	durationInFrames,
@@ -275,6 +281,9 @@ const HtmlInCanvasInner: React.FC<
 	frameRef.current = frame;
 	const onPaintRef = useRef(onPaint);
 	onPaintRef.current = onPaint;
+	const onInitRef = useRef(onInit);
+	onInitRef.current = onInit;
+	const initializedRef = useRef(false);
 
 	const onPaintCb = useCallback(async () => {
 		const canvas = canvasRef.current;
@@ -286,11 +295,14 @@ const HtmlInCanvasInner: React.FC<
 
 		try {
 			const handle = delayRender('onPaint');
+			if (!initializedRef.current) {
+				initializedRef.current = true;
+				await onInitRef.current?.({canvas, element});
+			}
+
 			const handler = onPaintRef.current ?? defaultOnPaint;
-			await handler({
-				canvas,
-				element,
-			});
+
+			await handler({canvas, element});
 
 			if (!ENABLE_EFFECTS) {
 				continueRender(handle);

@@ -179,8 +179,8 @@ export const processNode = async ({
 				drawable.height - rectAfterTransforms.height,
 				rectAfterTransforms.width,
 				rectAfterTransforms.height,
-				rectAfterTransforms.left - parentRect.x,
-				rectAfterTransforms.top - parentRect.y,
+				rectAfterTransforms.left - parentRect.x * scale,
+				rectAfterTransforms.top - parentRect.y * scale,
 				rectAfterTransforms.width,
 				rectAfterTransforms.height,
 			);

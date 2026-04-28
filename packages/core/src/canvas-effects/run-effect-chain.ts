@@ -8,7 +8,7 @@ export type EffectChainState = {
 	setupCache: WeakMap<EffectDefinition<unknown, unknown>, unknown>;
 	cleanupRegistry: Array<{
 		definition: EffectDefinition<unknown, unknown>;
-		statePromise: unknown;
+		state: unknown;
 	}>;
 	currentRunId: number;
 };
@@ -26,7 +26,7 @@ export const createEffectChainState = (
 export const cleanupEffectChainState = (state: EffectChainState): void => {
 	state.currentRunId++;
 	for (const entry of state.cleanupRegistry) {
-		entry.definition.cleanup(entry.statePromise);
+		entry.definition.cleanup(entry.state);
 	}
 };
 
@@ -42,7 +42,7 @@ const ensureSetup = <S>(
 
 	const setupState = def.setup(target);
 	state.setupCache.set(widened, setupState);
-	state.cleanupRegistry.push({definition: widened, statePromise: setupState});
+	state.cleanupRegistry.push({definition: widened, state: setupState});
 	return setupState;
 };
 
@@ -129,9 +129,6 @@ export const runEffectChain = async ({
 				pixelRatio,
 				gpuDevice,
 			});
-			if (isCancelled()) {
-				return false;
-			}
 
 			if (run.backend === 'webgl2') {
 				state.pool.assertContextNotLost(dst);

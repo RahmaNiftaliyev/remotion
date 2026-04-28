@@ -1,4 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
+import type {LoopDisplay} from 'remotion';
 import {useVideoConfig} from 'remotion';
 import {extractFrames} from '../../helpers/extract-frames';
 import type {FrameDatabaseKey} from '../../helpers/frame-database';
@@ -17,6 +18,10 @@ import {
 	TIMELINE_LAYER_HEIGHT_IMAGE,
 } from '../../helpers/timeline-layout';
 import {AudioWaveform} from '../AudioWaveform';
+import {
+	getLoopDisplayWidth,
+	shouldTileLoopDisplay,
+} from '../looped-media-timeline';
 
 const FILMSTRIP_HEIGHT = TIMELINE_LAYER_HEIGHT_IMAGE - 2;
 
@@ -287,6 +292,7 @@ export const TimelineVideoInfo: React.FC<{
 	readonly doesVolumeChange: boolean;
 	readonly premountWidth: number;
 	readonly postmountWidth: number;
+	readonly loopDisplay: LoopDisplay | undefined;
 }> = ({
 	src,
 	visualizationWidth,
@@ -298,6 +304,7 @@ export const TimelineVideoInfo: React.FC<{
 	doesVolumeChange,
 	premountWidth,
 	postmountWidth,
+	loopDisplay,
 }) => {
 	const {fps} = useVideoConfig();
 	const ref = useRef<HTMLDivElement>(null);
@@ -327,31 +334,74 @@ export const TimelineVideoInfo: React.FC<{
 
 		current.appendChild(canvas);
 
+		const loopWidth = getLoopDisplayWidth({
+			visualizationWidth: naturalWidth,
+			loopDisplay,
+		});
+		const shouldRepeatVideo = shouldTileLoopDisplay(loopDisplay);
+		const targetCanvas = shouldRepeatVideo
+			? document.createElement('canvas')
+			: canvas;
+		targetCanvas.width = shouldRepeatVideo
+			? Math.max(1, Math.ceil(loopWidth))
+			: canvas.width;
+		targetCanvas.height = canvas.height;
+		const targetCtx = shouldRepeatVideo ? targetCanvas.getContext('2d') : ctx;
+		if (!targetCtx) {
+			current.removeChild(canvas);
+			return;
+		}
+
+		const repeatTarget = () => {
+			if (!shouldRepeatVideo) {
+				return;
+			}
+
+			const pattern = ctx.createPattern(targetCanvas, 'repeat-x');
+			if (!pattern) {
+				return;
+			}
+
+			pattern.setTransform(
+				new DOMMatrix().scaleSelf(loopWidth / targetCanvas.width, 1),
+			);
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.fillStyle = pattern;
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+		};
+
 		// desired-timestamp -> filled-timestamp
 		const filledSlots = new Map<number, number | undefined>();
 
 		const fromSeconds = trimBefore / fps;
+		const visibleDurationInFrames =
+			shouldRepeatVideo && loopDisplay
+				? loopDisplay.durationInFrames
+				: durationInFrames;
 		// Trim is applied first, then playbackRate. Each composition frame
 		// advances the source video by `playbackRate` source frames.
-		const toSeconds = fromSeconds + (durationInFrames * playbackRate) / fps;
+		const toSeconds =
+			fromSeconds + (visibleDurationInFrames * playbackRate) / fps;
+		const targetWidth = shouldRepeatVideo ? targetCanvas.width : naturalWidth;
 
 		if (aspectRatio.current !== null) {
 			ensureSlots({
 				filledSlots,
-				naturalWidth,
+				naturalWidth: targetWidth,
 				fromSeconds,
 				toSeconds,
 				aspectRatio: aspectRatio.current,
 			});
 
 			fillWithCachedFrames({
-				ctx,
-				naturalWidth,
+				ctx: targetCtx,
+				naturalWidth: targetWidth,
 				filledSlots,
 				src,
 				segmentDuration: toSeconds - fromSeconds,
 				fromSeconds,
 			});
+			repeatTarget();
 
 			const unfilled = Array.from(filledSlots.keys()).filter(
 				(timestamp) => !filledSlots.get(timestamp),
@@ -378,7 +428,7 @@ export const TimelineVideoInfo: React.FC<{
 					filledSlots,
 					fromSeconds,
 					toSeconds,
-					naturalWidth,
+					naturalWidth: targetWidth,
 					aspectRatio: aspectRatio.current,
 				});
 
@@ -416,17 +466,18 @@ export const TimelineVideoInfo: React.FC<{
 						filledSlots,
 						fromSeconds,
 						toSeconds,
-						naturalWidth,
+						naturalWidth: targetWidth,
 						aspectRatio: aspectRatio.current,
 					});
 					fillFrameWhereItFits({
-						ctx,
+						ctx: targetCtx,
 						filledSlots,
-						visualizationWidth: naturalWidth,
+						visualizationWidth: targetWidth,
 						frame: transformed,
 						segmentDuration: toSeconds - fromSeconds,
 						fromSeconds,
 					});
+					repeatTarget();
 				} catch (e) {
 					if (frame) {
 						frame.close();
@@ -445,13 +496,14 @@ export const TimelineVideoInfo: React.FC<{
 				}
 
 				fillWithCachedFrames({
-					ctx,
-					naturalWidth,
+					ctx: targetCtx,
+					naturalWidth: targetWidth,
 					filledSlots,
 					src,
 					segmentDuration: toSeconds - fromSeconds,
 					fromSeconds,
 				});
+				repeatTarget();
 			})
 			.catch((e: unknown) => {
 				setError(e as Error);
@@ -465,6 +517,7 @@ export const TimelineVideoInfo: React.FC<{
 		durationInFrames,
 		error,
 		fps,
+		loopDisplay,
 		naturalWidth,
 		playbackRate,
 		src,
@@ -495,6 +548,7 @@ export const TimelineVideoInfo: React.FC<{
 					volume={volume}
 					doesVolumeChange={doesVolumeChange}
 					playbackRate={playbackRate}
+					loopDisplay={loopDisplay}
 				/>
 			</div>
 		</div>

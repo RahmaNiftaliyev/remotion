@@ -19,7 +19,7 @@ export const HtmlInCanvasEffectsDemo: React.FC = () => {
 			<HtmlInCanvas
 				width={size}
 				height={size}
-				onPaint={({canvas, element, width: w, height: h}) => {
+				onPaint={({canvas, element}) => {
 					const ctx = canvas.getContext('2d', {willReadFrequently: true});
 					if (!ctx) {
 						throw new Error(
@@ -31,9 +31,20 @@ export const HtmlInCanvasEffectsDemo: React.FC = () => {
 					//    what makes the effect impossible in pure HTML/CSS — we need
 					//    actual sampled pixel data from the rendered subtree.
 					ctx.reset();
-					const transform = ctx.drawElementImage(element, 0, 0, w, h);
+					const transform = ctx.drawElementImage(
+						element,
+						0,
+						0,
+						canvas.width,
+						canvas.height,
+					);
 					element.style.transform = transform.toString();
-					const {data: pixels} = ctx.getImageData(0, 0, w, h);
+					const {data: pixels} = ctx.getImageData(
+						0,
+						0,
+						canvas.width,
+						canvas.height,
+					);
 
 					// 2. Repaint as a halftone dot grid with per-channel offsets:
 					//    each cell samples a region's average color, then draws three
@@ -44,22 +55,23 @@ export const HtmlInCanvasEffectsDemo: React.FC = () => {
 					const cell = Math.max(2, Math.round(cellSize));
 					const maxR = (cell / 2) * Math.SQRT2;
 					const offset = cell * 0.18;
+					const {width, height} = canvas;
 
 					ctx.globalCompositeOperation = 'lighter';
 
-					for (let y = 0; y < h; y += cell) {
-						for (let x = 0; x < w; x += cell) {
+					for (let y = 0; y < height; y += cell) {
+						for (let x = 0; x < width; x += cell) {
 							let r = 0;
 							let g = 0;
 							let b = 0;
 							let a = 0;
 							let count = 0;
 
-							const yEnd = Math.min(y + cell, h);
-							const xEnd = Math.min(x + cell, w);
+							const yEnd = Math.min(y + cell, height);
+							const xEnd = Math.min(x + cell, width);
 							for (let py = y; py < yEnd; py += 2) {
 								for (let px = x; px < xEnd; px += 2) {
-									const i = (py * w + px) * 4;
+									const i = (py * width + px) * 4;
 									r += pixels[i];
 									g += pixels[i + 1];
 									b += pixels[i + 2];

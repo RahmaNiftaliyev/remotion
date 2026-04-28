@@ -31,18 +31,18 @@ export const HtmlInCanvasComposeThenEffects: React.FC = () => {
 			<HtmlInCanvas
 				width={width}
 				height={height}
-				onPaint={({canvas: source, width: w, height: h}) => {
-					const ctx = source.getContext('2d');
+				onPaint={({canvas}) => {
+					const ctx = canvas.getContext('2d');
 					if (!ctx) {
 						return;
 					}
 
-					ctx.clearRect(0, 0, w, h);
+					ctx.clearRect(0, 0, width, height);
 					ctx.save();
-					ctx.translate(w / 2, h / 2);
+					ctx.translate(width / 2, height / 2);
 					ctx.scale(scale, scale);
-					ctx.translate(-w / 2, -h / 2);
-					ctx.drawImage(source, 0, 0, w, h);
+					ctx.translate(-width / 2, -height / 2);
+					ctx.drawImage(canvas, 0, 0, width, height);
 					ctx.restore();
 				}}
 				_experimentalEffects={[blur({radius: blurRadius})]}

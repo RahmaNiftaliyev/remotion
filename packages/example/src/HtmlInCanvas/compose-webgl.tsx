@@ -135,26 +135,21 @@ export const HtmlInCanvasComposeWebGL: React.FC = () => {
 
 	useEffect(() => () => disposeGpu(gpuRef), []);
 
-	const onCompose = useCallback(
-		({
-			canvas: source,
-			target,
-			width: w,
-			height: h,
-		}: HtmlInCanvasComposeParams) => {
+	const onPaint = useCallback(
+		({canvas}: HtmlInCanvasComposeParams) => {
 			const c = Math.cos(rotation);
 			const s = Math.sin(rotation);
 			const mat = new Float32Array([c, -s, 0, s, c, 0, 0, 0, 1]);
 
-			const gpu = ensureGpu(target, gpuRef);
+			const gpu = ensureGpu(canvas, gpuRef);
 			if (!gpu) {
-				const ctx = target.getContext('2d');
+				const ctx = canvas.getContext('2d');
 				if (!ctx) {
 					return;
 				}
 
-				ctx.clearRect(0, 0, w, h);
-				ctx.drawImage(source, 0, 0, w, h);
+				ctx.clearRect(0, 0, width, height);
+				ctx.drawImage(canvas, 0, 0, width, height);
 				return;
 			}
 
@@ -170,7 +165,7 @@ export const HtmlInCanvasComposeWebGL: React.FC = () => {
 				gl.RGBA,
 				gl.RGBA,
 				gl.UNSIGNED_BYTE,
-				source as TexImageSource,
+				canvas as TexImageSource,
 			);
 
 			if (gpu.uTex) {
@@ -189,7 +184,7 @@ export const HtmlInCanvasComposeWebGL: React.FC = () => {
 
 	return (
 		<AbsoluteFill style={{backgroundColor: 'black'}}>
-			<HtmlInCanvas width={width} height={height} onPaint={onCompose}>
+			<HtmlInCanvas width={width} height={height} onPaint={onPaint}>
 				<HtmlInCanvasScene />
 			</HtmlInCanvas>
 		</AbsoluteFill>

@@ -7,20 +7,21 @@ export const HtmlInCanvasComposeAsyncBitmap: React.FC = () => {
 	const {width, height} = useVideoConfig();
 
 	return (
-		<AbsoluteFill style={{backgroundColor: 'black'}}>
+		<AbsoluteFill style={{backgroundColor: 'red'}}>
 			<HtmlInCanvas
 				width={width}
 				height={height}
-				onPaint={async ({canvas: source, width: w, height: h}) => {
-					const bitmap = await createImageBitmap(source);
+				onPaint={async ({canvas, element}) => {
+					const ctx = canvas.getContext('2d');
+					if (!ctx) {
+						return;
+					}
+					ctx.reset();
+					ctx.drawElementImage(element, 0, 0);
+					const bitmap = await createImageBitmap(canvas);
 					try {
-						const ctx = source.getContext('2d');
-						if (!ctx) {
-							return;
-						}
-
-						ctx.clearRect(0, 0, w, h);
-						ctx.drawImage(bitmap, 0, 0, w, h);
+						ctx.reset();
+						ctx.drawImage(bitmap, 0, 0, width, height);
 					} finally {
 						bitmap.close();
 					}

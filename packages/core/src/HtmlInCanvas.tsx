@@ -164,8 +164,6 @@ declare global {
 
 export type HtmlInCanvasComposeParams = {
 	readonly canvas: HTMLCanvasElement;
-	readonly width: number;
-	readonly height: number;
 	readonly element: HTMLDivElement;
 };
 
@@ -291,8 +289,6 @@ const HtmlInCanvasInner: React.FC<
 			const handler = onPaintRef.current ?? defaultOnPaint;
 			await handler({
 				canvas,
-				width: canvas.width,
-				height: canvas.height,
 				element,
 			});
 

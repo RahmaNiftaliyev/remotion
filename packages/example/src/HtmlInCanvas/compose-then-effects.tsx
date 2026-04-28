@@ -45,7 +45,7 @@ export const HtmlInCanvasComposeThenEffects: React.FC = () => {
 					ctx.drawImage(source, 0, 0, w, h);
 					ctx.restore();
 				}}
-				effects={[blur({radius: blurRadius})]}
+				_experimentalEffects={[blur({radius: blurRadius})]}
 			>
 				<HtmlInCanvasScene />
 			</HtmlInCanvas>

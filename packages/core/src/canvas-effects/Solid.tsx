@@ -1,4 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
+import {ENABLE_EFFECTS} from '../enable-effects.js';
 import {useCurrentFrame} from '../use-current-frame.js';
 import {useDelayRender} from '../use-delay-render.js';
 import type {EffectsProp} from './effect-types.js';
@@ -9,7 +10,7 @@ export type SolidProps = {
 	readonly color: string;
 	readonly width: number;
 	readonly height: number;
-	readonly effects?: EffectsProp;
+	readonly _experimentalEffects?: EffectsProp;
 	readonly className?: string;
 	readonly style?: React.CSSProperties;
 	readonly pixelRatio?: number;
@@ -19,7 +20,7 @@ export const Solid: React.FC<SolidProps> = ({
 	color,
 	width,
 	height,
-	effects = [],
+	_experimentalEffects: experimentalEffects = [],
 	className,
 	style,
 	pixelRatio = 1,
@@ -46,11 +47,35 @@ export const Solid: React.FC<SolidProps> = ({
 
 	// Fill source and run effect chain on every frame / color change.
 	useEffect(() => {
-		if (!outputCanvas || !sourceCanvas || !chainState) {
+		if (!outputCanvas || !sourceCanvas) {
 			return;
 		}
 
 		const handle = delayRender(`Solid effect chain (frame ${frame})`);
+
+		if (!ENABLE_EFFECTS) {
+			const outCtx = outputCanvas.getContext('2d', {colorSpace: 'srgb'});
+			if (!outCtx) {
+				cancelRender(
+					new Error('Failed to acquire 2D context for <Solid> output'),
+				);
+				return;
+			}
+
+			outCtx.fillStyle = color;
+			outCtx.fillRect(0, 0, width, height);
+			continueRender(handle);
+			return () => {
+				continueRender(handle);
+			};
+		}
+
+		if (!chainState) {
+			continueRender(handle);
+			return () => {
+				continueRender(handle);
+			};
+		}
 
 		const ctx = sourceCanvas.getContext('2d', {colorSpace: 'srgb'});
 		if (!ctx) {
@@ -66,7 +91,7 @@ export const Solid: React.FC<SolidProps> = ({
 		runEffectChain({
 			state: chainState,
 			source: sourceCanvas,
-			effects,
+			effects: experimentalEffects,
 			output: outputCanvas,
 			frame,
 			width,
@@ -88,7 +113,7 @@ export const Solid: React.FC<SolidProps> = ({
 	}, [
 		frame,
 		color,
-		effects,
+		experimentalEffects,
 		outputCanvas,
 		sourceCanvas,
 		chainState,

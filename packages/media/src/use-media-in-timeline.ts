@@ -21,7 +21,7 @@ export const useMediaInTimeline = ({
 	trimBefore,
 	trimAfter,
 	controls,
-	effects,
+	_experimentalEffects,
 }: {
 	volume: VolumeProp | undefined;
 	mediaVolume: number;
@@ -37,7 +37,7 @@ export const useMediaInTimeline = ({
 	trimBefore: number | undefined;
 	trimAfter: number | undefined;
 	controls: SequenceControls | undefined;
-	effects: EffectDefinitionAndStack<unknown>[];
+	_experimentalEffects: EffectDefinitionAndStack<unknown>[];
 }) => {
 	const parentSequence = useContext(Internals.SequenceContext);
 	const startsAt = Internals.useMediaStartsAt();
@@ -125,7 +125,7 @@ export const useMediaInTimeline = ({
 			premountDisplay: null,
 			postmountDisplay: null,
 			controls: controls ?? null,
-			effects,
+			effects: _experimentalEffects,
 		});
 
 		return () => {
@@ -160,7 +160,7 @@ export const useMediaInTimeline = ({
 		volumes,
 		frame,
 		trimBefore,
-		effects,
+		_experimentalEffects,
 	]);
 
 	return {

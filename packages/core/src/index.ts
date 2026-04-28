@@ -1,5 +1,6 @@
 import './_check-rsc.js';
 import './asset-types.js';
+import {Solid} from './canvas-effects/Solid.js';
 import {Clipper} from './Clipper.js';
 import type {Codec} from './codec.js';
 import {Composition} from './Composition.js';
@@ -132,16 +133,14 @@ export * from './AbsoluteFill.js';
 export * from './animated-image/index.js';
 export {
 	Backend,
-	createDescriptor,
-	defineEffect,
 	EffectApplyParams,
 	EffectDefinition,
 	EffectDefinitionAndStack,
 	EffectDescriptor,
 	EffectsProp,
-	Solid,
-	SolidProps,
 } from './canvas-effects/index.js';
+export type {SolidProps} from './canvas-effects/Solid.js';
+export {ENABLE_EFFECTS} from './enable-effects.js';
 export {HtmlInCanvas, isHtmlInCanvasSupported} from './HtmlInCanvas.js';
 export type {
 	HtmlInCanvasComposeParams,
@@ -238,6 +237,7 @@ export const Experimental = {
 	 * @see [Documentation](https://www.remotion.dev/docs/null)
 	 */
 	Null,
+	Solid,
 	useIsPlayer,
 };
 

@@ -10,6 +10,7 @@ import {AbsoluteFill} from './AbsoluteFill.js';
 import type {EffectDescriptor} from './canvas-effects/effect-types.js';
 import {useMemoizedEffects} from './canvas-effects/use-memoized-effects.js';
 import type {LoopDisplay, SequenceControls} from './CompositionManager.js';
+import {ENABLE_EFFECTS} from './enable-effects.js';
 import {Freeze} from './freeze.js';
 import {useNonce} from './nonce.js';
 import {PremountContext} from './PremountContext.js';
@@ -52,7 +53,7 @@ export type SequencePropsWithoutDuration = {
 	readonly name?: string;
 	readonly showInTimeline?: boolean;
 	readonly controls?: SequenceControls;
-	readonly effects?: EffectDescriptor<unknown>[];
+	readonly _experimentalEffects?: EffectDescriptor<unknown>[];
 	/**
 	 * @deprecated For internal use only.
 	 */
@@ -96,7 +97,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 		width,
 		showInTimeline = true,
 		controls,
-		effects,
+		_experimentalEffects,
 		_remotionInternalLoopDisplay: loopDisplay,
 		_remotionInternalStack: stack,
 		_remotionInternalPremountDisplay: premountDisplay,
@@ -215,7 +216,9 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 
 	const inheritedStack = (other as any)?.stack ?? null;
 
-	const memoizedEffects = useMemoizedEffects(effects ?? []);
+	const memoizedEffects = useMemoizedEffects(
+		ENABLE_EFFECTS ? (_experimentalEffects ?? []) : [],
+	);
 
 	useEffect(() => {
 		if (!env.isStudio) {

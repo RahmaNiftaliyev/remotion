@@ -165,7 +165,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 		trimAfter,
 		trimBefore,
 		controls,
-		effects,
+		_experimentalEffects: effects,
 	});
 
 	const bufferingContext = useContext(Internals.BufferingContextReact);

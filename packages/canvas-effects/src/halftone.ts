@@ -1,5 +1,7 @@
 import type {SequenceSchema} from 'remotion';
-import {createDescriptor, defineEffect} from 'remotion';
+import {Internals} from 'remotion';
+
+const {createDescriptor, defineEffect} = Internals;
 
 const SHADE_OUTSIDE_DOT_SCALE = 0.5;
 

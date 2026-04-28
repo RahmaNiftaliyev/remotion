@@ -72,7 +72,7 @@ test('<Solid> forwards className and style', () => {
 test('<Solid> accepts an empty effects array', () => {
 	const {container} = render(
 		<WrapSequenceContext>
-			<Solid color="green" width={64} height={64} effects={[]} />
+			<Solid color="green" width={64} height={64} _experimentalEffects={[]} />
 		</WrapSequenceContext>,
 	);
 

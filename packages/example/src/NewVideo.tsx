@@ -21,11 +21,34 @@ export const calculateMetadataFn: CalculateMetadataFunction<
 
 export const Component = () => {
 	return (
-		<Video
-			src={src}
-			debugOverlay
-			effects={[halftone(), tint({color: 'green', amount: 1})]}
-		/>
+		<>
+			(
+			<Video
+				src={src}
+				debugOverlay
+				_experimentalEffects={[halftone(), tint({color: 'green', amount: 1})]}
+				style={{
+					translate: '-3px 434px',
+				}}
+			/>
+			)(
+			<Video
+				src={src}
+				debugOverlay
+				_experimentalEffects={[
+					halftone(),
+					tint({
+						color: 'green',
+						amount: 1,
+					}),
+				]}
+				style={{
+					translate: '75px -443px',
+					scale: 2.02,
+				}}
+			/>
+			)
+		</>
 	);
 };
 

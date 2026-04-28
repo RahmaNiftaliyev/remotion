@@ -11,21 +11,24 @@ export const HtmlInCanvasReactSvg: React.FC<{
 
 	return (
 		<>
-			(
 			<HtmlInCanvas
 				width={width}
 				height={height}
-				effects={[
+				_experimentalEffects={[
 					halftone({
-						dotSize: 40,
+						dotSize: 30,
 						dotSpacing: 20,
+						shape: 'line',
 					}),
-					tint({color: 'red', amount: 1}),
+					tint({color: 'green', amount: 1}),
 				]}
+				style={{
+					translate: '0px 25px',
+					scale: 0.55,
+				}}
 			>
 				<ReactSvg transparent={transparent} />
 			</HtmlInCanvas>
-			)( )
 		</>
 	);
 };

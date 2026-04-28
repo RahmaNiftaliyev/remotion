@@ -1,4 +1,3 @@
-export {createDescriptor, defineEffect} from './define-effect.js';
 export type {
 	Backend,
 	EffectApplyParams,
@@ -7,5 +6,3 @@ export type {
 	EffectDescriptor,
 	EffectsProp,
 } from './effect-types.js';
-export {Solid} from './Solid.js';
-export type {SolidProps} from './Solid.js';

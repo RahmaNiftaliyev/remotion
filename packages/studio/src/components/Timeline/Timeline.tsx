@@ -65,6 +65,7 @@ const TimelineInner: React.FC = () => {
 			sequences,
 		});
 	}, [sequences, videoConfigIsNull]);
+	console.log(timeline, sequences);
 
 	const durationInFrames = videoConfig?.durationInFrames ?? 0;
 

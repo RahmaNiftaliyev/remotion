@@ -208,6 +208,59 @@ test('volumePersistenceKey of string should be okay', () => {
 	expect(true).toBe(true);
 });
 
+test('initialVolume should be okay', () => {
+	render(
+		<Player
+			compositionWidth={500}
+			compositionHeight={400}
+			fps={30}
+			durationInFrames={500}
+			component={HelloWorld}
+			controls
+			showVolumeControls
+			initialVolume={0.75}
+		/>,
+	);
+	expect(true).toBe(true);
+});
+
+test('invalid initialVolume type should give errors', () => {
+	expect(() => {
+		render(
+			<Player
+				compositionWidth={500}
+				compositionHeight={400}
+				fps={30}
+				durationInFrames={500}
+				component={HelloWorld}
+				controls
+				showVolumeControls
+				// @ts-expect-error
+				initialVolume="loud"
+			/>,
+		);
+	}).toThrow(
+		/'initialVolume' must be a number or undefined but got 'string' instead/,
+	);
+});
+
+test('initialVolume out of range should give errors', () => {
+	expect(() => {
+		render(
+			<Player
+				compositionWidth={500}
+				compositionHeight={400}
+				fps={30}
+				durationInFrames={500}
+				component={HelloWorld}
+				controls
+				showVolumeControls
+				initialVolume={2}
+			/>,
+		);
+	}).toThrow(/'initialVolume' must be between 0 and 1 but got '2' instead/);
+});
+
 test('passing in <Composition /> instance should not be possible', () => {
 	expect(() => {
 		render(

@@ -42,6 +42,8 @@ const getTextOverflowForLineHeight = (
 	// Text can overflow by (1 - lineHeight) * fontSize split across top and bottom.
 	// We apply the full amount to each side as a conservative safety margin.
 	const overflow = (1 - lineHeightValue) * fontSize;
+
+	return {top: overflow, bottom: overflow};
 };
 
 export const getBiggestBoundingClientRect = (

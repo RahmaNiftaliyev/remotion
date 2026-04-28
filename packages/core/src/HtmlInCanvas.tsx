@@ -112,15 +112,16 @@ const HtmlInCanvasInner: React.FC<
 	height,
 	_experimentalEffects: experimentalEffects = [],
 	children,
-	style,
 	pixelRatio = 1,
 	onCompose,
 	controls,
+	style,
 	durationInFrames,
 	...sequenceProps
 }) => {
 	const {durationInFrames: videoDuration} = useVideoConfig();
 	const resolvedDuration = durationInFrames ?? videoDuration;
+
 	const frame = useCurrentFrame();
 	const {delayRender, continueRender, cancelRender} = useDelayRender();
 
@@ -167,7 +168,11 @@ const HtmlInCanvasInner: React.FC<
 			// Layout-subtree children are not shown on-screen until rasterized here;
 			// effects then read from and write back to this same surface (via pool).
 			ctx.reset();
-			ctx.drawElementImage(sceneEl, 0, 0, w, h);
+			const transform = ctx.drawElementImage(sceneEl, 0, 0, w, h);
+			// Sync DOM hit-testing, IntersectionObserver and a11y to the drawn
+			// position. Per the WICG/html-in-canvas explainer, the matrix returned
+			// from drawElementImage should be assigned to the source element.
+			sceneEl.style.transform = transform.toString();
 
 			const capturedHandle = handle;
 			pendingHandleRef.current = null;
@@ -253,8 +258,8 @@ const HtmlInCanvasInner: React.FC<
 		return {
 			position: 'absolute' as const,
 			inset: 0,
-			width: width + 'px',
-			height: height + 'px',
+			width,
+			height,
 		} as React.CSSProperties;
 	}, [width, height]);
 

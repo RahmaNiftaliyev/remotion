@@ -51,8 +51,7 @@ const Component: React.FC = () => {
 							style={{
 								display: 'flex',
 								flexDirection: 'column',
-								filter:
-									'drop-shadow(rgb(160, 216, 62) 0px 0px 100px) drop-shadow(rgba(0, 0, 0, 0.35) 5px 5px 15px)',
+								filter: 'drop-shadow(rgb(160, 216, 62) 0px 0px 100px)',
 							}}
 						>
 							{/* Second line: "ordering" with gradient */}

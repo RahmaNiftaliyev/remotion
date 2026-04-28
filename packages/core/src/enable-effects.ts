@@ -1,1 +1,1 @@
-export const ENABLE_EFFECTS = false;
+export const ENABLE_EFFECTS = true;

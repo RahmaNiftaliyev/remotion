@@ -31,23 +31,7 @@ export const Component = () => {
 					translate: '-3px 434px',
 				}}
 			/>
-			)(
-			<Video
-				src={src}
-				debugOverlay
-				_experimentalEffects={[
-					halftone(),
-					tint({
-						color: 'green',
-						amount: 1,
-					}),
-				]}
-				style={{
-					translate: '75px -443px',
-					scale: 2.02,
-				}}
-			/>
-			)
+			)( )
 		</>
 	);
 };

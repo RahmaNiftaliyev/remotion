@@ -11,16 +11,20 @@ export const defineEffect = <P, S>(
 // Factory helper for constructing per-frame descriptors from a definition.
 // Effect authors typically expose a small wrapper (e.g.
 // `export const blur = (params) => createDescriptor(blurDef, params)`) so users
-// don't reach into the internal definition object. The state type `S` is
-// erased to `unknown` in the descriptor because consumers (the chain runtime,
-// other effects in the chain) treat state as opaque; only the definition's
-// own `setup`, `apply`, and `cleanup` functions ever see the real shape.
+// don't reach into the internal definition object.
+//
+// `params` is type-checked against `P` at the call site, but the returned
+// descriptor erases both `P` and `S` to `unknown` so it can be freely
+// composed in `EffectsProp` arrays alongside descriptors of other effects.
+// Without this erasure the descriptor would be contravariant in `P` (via
+// `apply`'s argument), which would prevent assigning a concrete
+// `EffectDescriptor<MyParams>` into an `EffectDescriptor<unknown>` slot.
 export const createDescriptor = <P, S>(
 	definition: EffectDefinition<P, S>,
 	params: P,
-): EffectDescriptor<P> => {
+): EffectDescriptor<unknown> => {
 	return {
-		definition: definition as unknown as EffectDefinition<P, unknown>,
+		definition: definition as unknown as EffectDefinition<unknown, unknown>,
 		params,
 		stack: new Error().stack!,
 	};

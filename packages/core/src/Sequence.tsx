@@ -7,7 +7,8 @@ import React, {
 	useState,
 } from 'react';
 import {AbsoluteFill} from './AbsoluteFill.js';
-import type {EffectDescriptor} from './canvas-effects/effect-types.js';
+import {flattenEffects} from './canvas-effects/effect-internals.js';
+import type {EffectsProp} from './canvas-effects/effect-types.js';
 import {useMemoizedEffects} from './canvas-effects/use-memoized-effects.js';
 import type {LoopDisplay, SequenceControls} from './CompositionManager.js';
 import {ENABLE_EFFECTS} from './enable-effects.js';
@@ -53,7 +54,7 @@ export type SequencePropsWithoutDuration = {
 	readonly name?: string;
 	readonly showInTimeline?: boolean;
 	readonly controls?: SequenceControls;
-	readonly _experimentalEffects?: EffectDescriptor<unknown>[];
+	readonly _experimentalEffects?: EffectsProp;
 	/**
 	 * @deprecated For internal use only.
 	 */
@@ -217,7 +218,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 	const inheritedStack = (other as any)?.stack ?? null;
 
 	const memoizedEffects = useMemoizedEffects(
-		ENABLE_EFFECTS ? (_experimentalEffects ?? []) : [],
+		ENABLE_EFFECTS ? flattenEffects(_experimentalEffects ?? []) : [],
 	);
 
 	useEffect(() => {

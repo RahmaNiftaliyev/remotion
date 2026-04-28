@@ -54,15 +54,6 @@ export type EffectDescriptor<P = unknown> = EffectDefinitionAndStack<P> & {
 // processing, which lets a single factory call (e.g. `blur(...)`) expand into
 // multiple passes (e.g. horizontal + vertical) without leaking that detail to
 // the call site.
-//
-// The element type uses `EffectDescriptor<any>` instead of
-// `EffectDescriptor<unknown>` because TypeScript treats the `params` field of
-// `EffectApplyParams` contravariantly (it is the parameter of `apply`), which
-// would otherwise prevent a concrete `EffectDescriptor<MyParams>` from being
-// assigned into a slot typed as `EffectDescriptor<unknown>`. The chain
-// runtime handles params opaquely, so the variance loss is benign here.
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export type EffectsProp = ReadonlyArray<
-	EffectDescriptor<any> | ReadonlyArray<EffectDescriptor<any>>
+	EffectDescriptor<unknown> | ReadonlyArray<EffectDescriptor<unknown>>
 >;
-/* eslint-enable @typescript-eslint/no-explicit-any */

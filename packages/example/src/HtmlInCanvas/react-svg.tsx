@@ -22,10 +22,6 @@ export const HtmlInCanvasReactSvg: React.FC<{
 					}),
 					tint({color: 'green', amount: 1}),
 				]}
-				style={{
-					translate: '0px 25px',
-					scale: 0.55,
-				}}
 			>
 				<ReactSvg transparent={transparent} />
 			</HtmlInCanvas>

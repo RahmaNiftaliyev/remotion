@@ -142,13 +142,7 @@ export const runEffectChain = async ({
 
 		const nextRun = runs[runIndex + 1];
 		if (nextRun && nextRun.backend !== run.backend && lastTarget) {
-			const bitmap = await createImageBitmap(lastTarget);
-			if (isCancelled()) {
-				bitmap.close?.();
-				return false;
-			}
-
-			currentImage = bitmap;
+			currentImage = lastTarget;
 		}
 	}
 

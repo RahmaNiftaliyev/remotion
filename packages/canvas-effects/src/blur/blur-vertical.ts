@@ -1,4 +1,6 @@
-import {createDescriptor, defineEffect} from 'remotion';
+import {Internals} from 'remotion';
+
+const {createDescriptor, defineEffect} = Internals;
 import {
 	applyBlur,
 	cleanupBlur,

@@ -68,7 +68,7 @@ type OptionalVideoProps = {
 	credentials: RequestCredentials | undefined;
 	objectFit: VideoObjectFit;
 	_experimentalInitiallyDrawCachedFrame: boolean;
-	effects: EffectsProp;
+	_experimentalEffects: EffectsProp;
 };
 
 export type InnerVideoProps = MandatoryVideoProps &

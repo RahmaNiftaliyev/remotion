@@ -28,7 +28,7 @@ export const HtmlInCanvasEffectsDemo: React.FC = () => {
 			<HtmlInCanvas
 				width={width}
 				height={height}
-				effects={[
+				_experimentalEffects={[
 					wave({amplitude: 40, wavelength: 240}),
 					blur({radius: blurRadius}),
 					tint({color: 'cyan', amount: tintAmount}),

@@ -3,6 +3,7 @@ import type {EffectsProp} from './canvas-effects/effect-types.js';
 import {runEffectChain} from './canvas-effects/run-effect-chain.js';
 import {useEffectChainState} from './canvas-effects/use-effect-chain-state.js';
 import type {SequenceControls} from './CompositionManager.js';
+import {ENABLE_EFFECTS} from './enable-effects.js';
 import {addSequenceStackTraces} from './enable-sequence-stack-traces.js';
 import type {SequenceSchema} from './sequence-field-schema.js';
 import type {
@@ -63,7 +64,7 @@ export type HtmlInCanvasProps = Omit<
 		readonly durationInFrames?: number;
 		readonly width: number;
 		readonly height: number;
-		readonly effects?: EffectsProp;
+		readonly _experimentalEffects?: EffectsProp;
 		readonly children: React.ReactNode;
 		readonly pixelRatio?: number;
 		readonly onCompose?: (
@@ -109,7 +110,7 @@ const HtmlInCanvasInner: React.FC<
 > = ({
 	width,
 	height,
-	effects = [],
+	_experimentalEffects: experimentalEffects = [],
 	children,
 	style,
 	pixelRatio = 1,
@@ -129,8 +130,8 @@ const HtmlInCanvasInner: React.FC<
 	const chainState = useEffectChainState(width, height);
 
 	// Refs so the paint handler always reads fresh values.
-	const effectsRef = useRef(effects);
-	effectsRef.current = effects;
+	const effectsRef = useRef(experimentalEffects);
+	effectsRef.current = experimentalEffects;
 	const frameRef = useRef(frame);
 	frameRef.current = frame;
 	const pixelRatioRef = useRef(pixelRatio);
@@ -148,7 +149,7 @@ const HtmlInCanvasInner: React.FC<
 		const sceneEl = sceneRef.current;
 		const handle = pendingHandleRef.current;
 
-		if (!canvas || !sceneEl || !chainState || handle === null) {
+		if (!canvas || !sceneEl || handle === null) {
 			return;
 		}
 
@@ -170,6 +171,16 @@ const HtmlInCanvasInner: React.FC<
 
 			const capturedHandle = handle;
 			pendingHandleRef.current = null;
+
+			if (!ENABLE_EFFECTS) {
+				continueRender(capturedHandle);
+				return;
+			}
+
+			if (!chainState) {
+				return;
+			}
+
 			runEffectChain({
 				state: chainState,
 				source: canvas,

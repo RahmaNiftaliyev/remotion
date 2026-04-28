@@ -23,6 +23,10 @@ import {
 	CanUseRemotionHooks,
 	CanUseRemotionHooksProvider,
 } from './CanUseRemotionHooks.js';
+import {
+	createDescriptor,
+	defineEffect,
+} from './canvas-effects/define-effect.js';
 import {runEffectChain} from './canvas-effects/run-effect-chain.js';
 import {useEffectChainState} from './canvas-effects/use-effect-chain-state.js';
 import {useMemoizedEffects} from './canvas-effects/use-memoized-effects.js';
@@ -290,6 +294,8 @@ export const Internals = {
 	useEffectChainState,
 	runEffectChain,
 	useMemoizedEffects,
+	defineEffect,
+	createDescriptor,
 } as const;
 
 export type {

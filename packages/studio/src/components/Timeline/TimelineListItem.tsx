@@ -200,7 +200,7 @@ export const TimelineListItem: React.FC<{
 
 	const padder = useMemo((): React.CSSProperties => {
 		return {
-			width: Number(SPACING * 3) * nestedDepth,
+			width: Number(SPACING) * nestedDepth,
 			flexShrink: 0,
 		};
 	}, [nestedDepth]);

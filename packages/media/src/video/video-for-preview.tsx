@@ -14,6 +14,7 @@ import type {
 	VolumeProp,
 } from 'remotion';
 import {
+	ENABLE_EFFECTS,
 	Html5Video,
 	Internals,
 	useBufferState,
@@ -71,7 +72,7 @@ type VideoForPreviewProps = {
 	readonly credentials: RequestCredentials | undefined;
 	readonly objectFit: VideoObjectFit;
 	readonly _experimentalInitiallyDrawCachedFrame: boolean;
-	readonly effects: EffectsProp;
+	readonly _experimentalEffects: EffectsProp;
 };
 
 type VideoForPreviewAssertedShowingProps = VideoForPreviewProps & {
@@ -106,7 +107,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 	controls,
 	objectFit: objectFitProp,
 	_experimentalInitiallyDrawCachedFrame,
-	effects,
+	_experimentalEffects,
 }) => {
 	const src = usePreload(unpreloadedSrc);
 
@@ -154,9 +155,11 @@ const VideoForPreviewAssertedShowing: React.FC<
 		videoConfig.width,
 		videoConfig.height,
 	);
-	const effectsRef = useRef(effects);
-	effectsRef.current = effects;
-	const memoizedEffects = useMemoizedEffects(effects.flat());
+	const experimentalEffectsRef = useRef(_experimentalEffects);
+	experimentalEffectsRef.current = _experimentalEffects;
+	const memoizedEffects = useMemoizedEffects(
+		ENABLE_EFFECTS ? _experimentalEffects.flat() : [],
+	);
 	const effectChainStateRef = useRef(effectChainState);
 	effectChainStateRef.current = effectChainState;
 	const frameRef = useRef(frame);
@@ -193,7 +196,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 		trimAfter,
 		trimBefore,
 		controls,
-		effects: memoizedEffects,
+		_experimentalEffects: memoizedEffects,
 	});
 
 	const isSequenceHidden = hidden[timelineId] ?? false;
@@ -321,7 +324,8 @@ const VideoForPreviewAssertedShowing: React.FC<
 				sequenceOffset: initialSequenceOffset.current,
 				credentials,
 				tagType: 'video',
-				getEffects: () => effectsRef.current,
+				getEffects: () =>
+					ENABLE_EFFECTS ? experimentalEffectsRef.current : [],
 				getEffectChainState: () => effectChainStateRef.current,
 				getCurrentFrame: () => frameRef.current,
 			});

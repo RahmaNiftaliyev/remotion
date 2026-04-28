@@ -139,7 +139,20 @@ export const runEffectChain = async ({
 
 		const nextRun = runs[runIndex + 1];
 		if (nextRun && nextRun.backend !== run.backend && lastTarget) {
-			currentImage = lastTarget;
+			// Bridge between backend groups via `createImageBitmap` rather than
+			// passing the canvas straight through. A direct `drawImage(webglCanvas)`
+			// in the next backend's first effect forces an implicit GPU readback /
+			// finish on the consuming context, which empirically blows the per-frame
+			// vsync budget and halves the paint rate. `createImageBitmap` performs
+			// the same handoff but pipelines the GPU work, so the next effect reads
+			// from a ready-to-sample bitmap without stalling.
+			const bitmap = await createImageBitmap(lastTarget);
+			if (isCancelled()) {
+				bitmap.close();
+				return false;
+			}
+
+			currentImage = bitmap;
 		}
 	}
 

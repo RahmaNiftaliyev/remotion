@@ -11,122 +11,21 @@ const Component: React.FC = () => {
 		>
 			<div
 				style={{
-					position: 'absolute',
-					textAlign: 'center',
-					padding: 40,
-					userSelect: 'none',
-					touchAction: 'none',
-					border: 'none',
-					boxShadow: 'none',
-					zIndex: 10,
-					borderRadius: 4,
-					fontSize: 21,
-					overflowWrap: 'break-word',
-					wordBreak: 'break-word',
-					lineHeight: 0.9,
-					transform: 'translate3d(0, 0, 0)',
 					display: 'flex',
-					placeItems: 'center',
-					justifyContent: 'center',
+					flexDirection: 'column',
+					filter: 'drop-shadow(rgb(160, 216, 62) 0px 0px 100px)',
 				}}
 			>
-				<div
-					id="video-player-container"
+				<span
 					style={{
-						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-						pointerEvents: 'none',
+						fontFamily: 'sans-serif',
+						fontSize: 140,
+						color: 'rgb(160, 216, 62)',
+						filter: 'drop-shadow(rgba(0, 0, 0, 0.35) 5px 5px 15px)',
 					}}
 				>
-					<div
-						style={{
-							direction: 'ltr',
-							left: '50%',
-							top: '50%',
-						}}
-					>
-						<div
-							id="word-wrapper"
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-								filter: 'drop-shadow(rgb(160, 216, 62) 0px 0px 100px)',
-							}}
-						>
-							{/* Second line: "ordering" with gradient */}
-							<div
-								style={{
-									textAlign: 'center',
-									width: '100%',
-									position: 'relative',
-									overflow: 'visible',
-									marginTop: -12,
-									zIndex: 101,
-								}}
-							>
-								<div
-									data-line-id="3"
-									data-line-active="true"
-									style={{
-										display: 'block',
-										position: 'relative',
-										fontFamily: 'sans-serif',
-										fontSize: 32,
-										lineHeight: 0.9,
-										color: 'rgb(255, 255, 255)',
-										textAlign: 'center',
-										textShadow: 'rgba(0, 0, 0, 0.35) 5px 5px 15px',
-										height: 'unset',
-										opacity: 1,
-									}}
-								>
-									<span
-										style={{
-											position: 'relative',
-											display: 'inline-block',
-											whiteSpace: 'pre',
-										}}
-									>
-										<span
-											aria-hidden="true"
-											style={{
-												position: 'absolute',
-												top: '50%',
-												left: '50%',
-												width: '150%',
-												height: '100%',
-												transform: 'translate(-50%, -50%)',
-												filter: 'blur(15px)',
-												pointerEvents: 'none',
-												zIndex: 0,
-											}}
-										/>
-										<span
-											data-word-id="8"
-											style={{
-												fontFamily: 'sans-serif',
-												fontSize: 137.812,
-												color: 'rgb(160, 216, 62)',
-												display: 'inline-block',
-												textAlign: 'center',
-												textShadow: 'none',
-												fontWeight: 900,
-												lineHeight: 0.9,
-												filter: 'drop-shadow(rgba(0, 0, 0, 0.35) 5px 5px 15px)',
-												textTransform: 'uppercase',
-												opacity: 1,
-												whiteSpace: 'pre',
-											}}
-										>
-											ordering
-										</span>
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+					ordering
+				</span>
 			</div>
 		</AbsoluteFill>
 	);

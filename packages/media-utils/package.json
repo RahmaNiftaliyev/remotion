@@ -13,6 +13,8 @@
 		"lint": "eslint src",
 		"make": "tsgo -d && bun --env-file=../.env.bundle bundle.ts"
 	},
+	"types": "dist/index.d.ts",
+	"module": "dist/esm/index.mjs",
 	"author": "Jonny Burger <jonny@remotion.dev>",
 	"license": "MIT",
 	"bugs": {

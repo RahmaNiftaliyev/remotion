@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {cancelRender, useDelayRender} from 'remotion';
 import {getAudioData} from './get-audio-data';
+import {serializeRequestInit} from './serialize-request-init';
 import type {MediaUtilsAudioData} from './types';
 
 type UseAudioDataOptions = {
@@ -32,6 +33,11 @@ export const useAudioData = (
 
 	const [metadata, setMetadata] = useState<MediaUtilsAudioData | null>(null);
 	const {delayRender, continueRender} = useDelayRender();
+	const sampleRate = options?.sampleRate;
+	const requestInit = options?.requestInit;
+	const requestInitKey = serializeRequestInit(requestInit);
+	const requestInitRef = useRef(requestInit);
+	requestInitRef.current = requestInit;
 
 	const fetchMetadata = useCallback(async () => {
 		const handle = delayRender(
@@ -39,7 +45,12 @@ export const useAudioData = (
 		);
 
 		try {
-			const data = await getAudioData(src, options);
+			const data = await getAudioData(
+				src,
+				sampleRate === undefined && requestInitRef.current === undefined
+					? undefined
+					: {sampleRate, requestInit: requestInitRef.current},
+			);
 			if (mountState.current.isMounted) {
 				setMetadata(data);
 			}
@@ -48,7 +59,7 @@ export const useAudioData = (
 		}
 
 		continueRender(handle);
-	}, [src, options, delayRender, continueRender]);
+	}, [src, sampleRate, requestInitKey, delayRender, continueRender]);
 
 	useLayoutEffect(() => {
 		fetchMetadata();

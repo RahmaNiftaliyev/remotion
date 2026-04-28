@@ -44,6 +44,39 @@ Remote audio files need to support [CORS](https://developer.mozilla.org/en-US/do
 
 A string pointing to an audio asset.
 
+### `options?`<AvailableFrom v="4.0.454"/>
+
+#### `sampleRate?`<AvailableFrom v="4.0.454"/>
+
+The `sampleRate` that should be passed into the [`AudioContext`](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/AudioContext) constructor. If not provided, the default value is `48000`.
+
+#### `requestInit?`<AvailableFrom v="4.0.454"/>
+
+_`RequestInit`_
+
+Options that are passed to the [`fetch()`](https://developer.mozilla.org/en-US/docs/Web/API/fetch) call when loading the audio source.
+
+This can be used to load authenticated remote audio files:
+
+```tsx twoslash
+// ---cut---
+import {useAudioData} from '@remotion/media-utils';
+
+export const MyComponent: React.FC = () => {
+  const audioData = useAudioData('https://example.com/authenticated-audio.mp3', {
+    requestInit: {
+      credentials: 'include',
+    },
+  });
+
+  if (!audioData) {
+    return null;
+  }
+
+  return <div>This file has a {audioData.sampleRate} sampleRate.</div>;
+};
+```
+
 ## Return value
 
 `AudioData | null` - An object containing audio data (see documentation of [`getAudioData()`](/docs/get-audio-data)) or `null` if the data has not been loaded.

@@ -19,6 +19,7 @@ import {cancelRender, Internals, useDelayRender} from 'remotion';
 import {combineFloat32Arrays} from './combine-float32-arrays';
 import {getPartialAudioData} from './get-partial-audio-data';
 import {isRemoteAsset} from './is-remote-asset';
+import {serializeRequestInit} from './serialize-request-init';
 import type {MediaUtilsAudioData} from './types';
 
 type WaveformMap = Record<number, Float32Array>;
@@ -65,6 +66,9 @@ export const useWindowedAudioData = ({
 	const [waveFormMap, setWaveformMap] = useState({} as WaveformMap);
 	const requests = useRef<Record<string, AbortController | null>>({});
 	const [initialWindowInSeconds] = useState(windowInSeconds);
+	const requestInitKey = serializeRequestInit(requestInit);
+	const requestInitRef = useRef(requestInit);
+	requestInitRef.current = requestInit;
 
 	if (windowInSeconds !== initialWindowInSeconds) {
 		throw new Error('windowInSeconds cannot be changed dynamically');
@@ -106,7 +110,12 @@ export const useWindowedAudioData = ({
 
 			const input = new Input({
 				formats: ALL_FORMATS,
-				source: new UrlSource(src, requestInit ? {requestInit} : undefined),
+				source: new UrlSource(
+					src,
+					requestInitRef.current
+						? {requestInit: requestInitRef.current}
+						: undefined,
+				),
 			});
 
 			const onAbort = () => {
@@ -168,7 +177,7 @@ export const useWindowedAudioData = ({
 				signal.removeEventListener('abort', onAbort);
 			}
 		},
-		[src, delayRender, continueRender, channelIndex, requestInit],
+		[src, delayRender, continueRender, channelIndex, requestInitKey],
 	);
 
 	useLayoutEffect(() => {

@@ -40,11 +40,8 @@ import {Green} from './Green';
 import {HlsDemo} from './Hls/HlsDemo';
 import {
 	HtmlInCanvasComposeAsyncBitmap,
-	HtmlInCanvasComposeBlit,
-	HtmlInCanvasComposeRotate,
 	HtmlInCanvasComposeThenEffects,
 	HtmlInCanvasComposeWebGL,
-	HtmlInCanvasComposeZoomPan,
 	HtmlInCanvasDemo,
 	HtmlInCanvasReactSvg,
 } from './HtmlInCanvas';
@@ -861,30 +858,6 @@ export const Index: React.FC = () => {
 					<Composition
 						id="html-in-canvas"
 						component={HtmlInCanvasDemo}
-						fps={30}
-						height={1080}
-						width={1920}
-						durationInFrames={120}
-					/>
-					<Composition
-						id="html-in-canvas-compose-blit"
-						component={HtmlInCanvasComposeBlit}
-						fps={30}
-						height={1080}
-						width={1920}
-						durationInFrames={120}
-					/>
-					<Composition
-						id="html-in-canvas-compose-rotate"
-						component={HtmlInCanvasComposeRotate}
-						fps={30}
-						height={1080}
-						width={1920}
-						durationInFrames={120}
-					/>
-					<Composition
-						id="html-in-canvas-compose-zoom-pan"
-						component={HtmlInCanvasComposeZoomPan}
 						fps={30}
 						height={1080}
 						width={1920}

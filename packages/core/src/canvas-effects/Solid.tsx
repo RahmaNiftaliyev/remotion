@@ -89,7 +89,7 @@ export const Solid: React.FC<SolidProps> = ({
 		ctx.fillRect(0, 0, 1, 1);
 
 		runEffectChain({
-			state: chainState,
+			state: chainState.current!,
 			source: sourceCanvas,
 			effects: experimentalEffects,
 			output: outputCanvas,

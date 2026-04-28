@@ -326,7 +326,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 				tagType: 'video',
 				getEffects: () =>
 					ENABLE_EFFECTS ? experimentalEffectsRef.current : [],
-				getEffectChainState: () => effectChainStateRef.current,
+				getEffectChainState: () => effectChainStateRef.current?.current!,
 				getCurrentFrame: () => frameRef.current,
 			});
 

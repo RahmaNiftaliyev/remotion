@@ -1,11 +1,11 @@
 import React from 'react';
-import {AbsoluteFill, useCurrentFrame} from 'remotion';
+import {useCurrentFrame} from 'remotion';
 
 export const HtmlInCanvasScene: React.FC = () => {
 	const frame = useCurrentFrame();
 
 	return (
-		<AbsoluteFill
+		<div
 			style={{
 				flexDirection: 'column',
 				alignItems: 'center',
@@ -22,6 +22,6 @@ export const HtmlInCanvasScene: React.FC = () => {
 			}}
 		>
 			Hello World {frame}
-		</AbsoluteFill>
+		</div>
 	);
 };

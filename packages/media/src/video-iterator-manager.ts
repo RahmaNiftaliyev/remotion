@@ -83,7 +83,6 @@ export const videoIteratorManager = ({
 					frame: getCurrentFrame(),
 					width: canvas.width,
 					height: canvas.height,
-					pixelRatio: 1,
 				});
 			} else {
 				context.clearRect(0, 0, canvas.width, canvas.height);

@@ -11,10 +11,10 @@ export const HtmlInCanvasComposeAsyncBitmap: React.FC = () => {
 			<HtmlInCanvas
 				width={width}
 				height={height}
-				onPaint={async ({canvas: source, target, width: w, height: h}) => {
+				onPaint={async ({canvas: source, width: w, height: h}) => {
 					const bitmap = await createImageBitmap(source);
 					try {
-						const ctx = target.getContext('2d');
+						const ctx = source.getContext('2d');
 						if (!ctx) {
 							return;
 						}

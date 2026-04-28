@@ -1,3 +1,4 @@
+import type {RefObject} from 'react';
 import {useEffect, useRef} from 'react';
 import {ENABLE_EFFECTS} from '../enable-effects.js';
 import type {EffectChainState} from './run-effect-chain.js';
@@ -9,7 +10,7 @@ import {
 export const useEffectChainState = (
 	width: number,
 	height: number,
-): EffectChainState | null => {
+): RefObject<EffectChainState | null> | null => {
 	const chainStateRef = useRef<EffectChainState | null>(null);
 	const sizeRef = useRef<{width: number; height: number} | null>(null);
 
@@ -44,5 +45,5 @@ export const useEffectChainState = (
 		return null;
 	}
 
-	return chainStateRef.current;
+	return chainStateRef;
 };

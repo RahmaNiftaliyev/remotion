@@ -164,7 +164,6 @@ declare global {
 
 export type HtmlInCanvasComposeParams = {
 	readonly canvas: HTMLCanvasElement;
-	readonly frame: number;
 	readonly width: number;
 	readonly height: number;
 	readonly element: HTMLDivElement;
@@ -251,7 +250,7 @@ const HtmlInCanvasInner: React.FC<
 	const {continueRender, cancelRender} = useDelayRender();
 
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
-	const sceneRef = useRef<HTMLDivElement | null>(null);
+	const divRef = useRef<HTMLDivElement | null>(null);
 
 	const chainState = useEffectChainState(
 		canvasRef.current?.width ?? 0,
@@ -268,20 +267,19 @@ const HtmlInCanvasInner: React.FC<
 
 	const onPaintCb = useCallback(async () => {
 		const canvas = canvasRef.current;
-		const sceneEl = sceneRef.current;
+		const element = divRef.current;
 
-		if (!canvas || !sceneEl) {
+		if (!canvas || !element) {
 			throw new Error('Canvas or scene element not found');
 		}
 
 		try {
 			const handle = delayRender('onPaint');
 			await onPaintRef.current?.({
-				frame: frameRef.current,
 				canvas,
 				width: canvas.width,
 				height: canvas.height,
-				element: sceneEl,
+				element,
 			});
 
 			if (!ENABLE_EFFECTS) {
@@ -289,12 +287,12 @@ const HtmlInCanvasInner: React.FC<
 				return;
 			}
 
-			if (!chainState) {
-				return;
+			if (!chainState?.current) {
+				throw new Error('Effect chain state not found');
 			}
 
 			const completed = await runEffectChain({
-				state: chainState,
+				state: chainState.current!,
 				source: canvas,
 				effects: effectsRef.current,
 				output: canvas,
@@ -329,6 +327,7 @@ const HtmlInCanvasInner: React.FC<
 
 		canvas.layoutSubtree = true;
 		canvas.addEventListener('paint', onPaintCb);
+
 		return () => {
 			canvas.removeEventListener('paint', onPaintCb);
 		};
@@ -346,12 +345,11 @@ const HtmlInCanvasInner: React.FC<
 			durationInFrames={resolvedDuration}
 			name="<HtmlInCanvas>"
 			controls={controls}
-			width={width}
-			height={height}
+			layout="none"
 			{...sequenceProps}
 		>
 			<canvas ref={canvasRef} width={width} height={height} style={style}>
-				<div ref={sceneRef} style={innerStyle}>
+				<div ref={divRef} style={innerStyle}>
 					{children}
 				</div>
 			</canvas>

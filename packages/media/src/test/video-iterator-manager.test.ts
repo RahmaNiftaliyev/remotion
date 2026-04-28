@@ -22,7 +22,7 @@ test('seek should not cause overlapping block/unblock cycles', async () => {
 	let activeBlocks = 0;
 	let maxConcurrentBlocks = 0;
 
-	const manager = videoIteratorManager({
+	const manager = await videoIteratorManager({
 		videoTrack,
 		delayPlaybackHandleIfNotPremounting: () => {
 			activeBlocks++;
@@ -73,7 +73,7 @@ test('rapid sequential seeks should not cause overlapping blocks', async () => {
 	let activeBlocks = 0;
 	let maxConcurrentBlocks = 0;
 
-	const manager = videoIteratorManager({
+	const manager = await videoIteratorManager({
 		videoTrack,
 		delayPlaybackHandleIfNotPremounting: () => {
 			activeBlocks++;

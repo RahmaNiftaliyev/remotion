@@ -122,6 +122,20 @@ export const useWindowedAudioData = ({
 					throw new Error('No audio track found');
 				}
 
+				if (await audioTrack.isLive()) {
+					throw new Error(
+						'Live streams are not currently supported by Remotion. Sorry! Source: ' +
+							src,
+					);
+				}
+
+				if (await audioTrack.isRelativeToUnixEpoch()) {
+					throw new Error(
+						'Streams with UNIX timestamps are not currently supported by Remotion. Sorry! Source: ' +
+							src,
+					);
+				}
+
 				const canDecode = await audioTrack.canDecode();
 
 				if (!canDecode) {
@@ -134,7 +148,8 @@ export const useWindowedAudioData = ({
 					);
 				}
 
-				const {numberOfChannels, sampleRate} = audioTrack;
+				const numberOfChannels = await audioTrack.getNumberOfChannels();
+				const sampleRate = await audioTrack.getSampleRate();
 
 				const format = await input.getFormat();
 

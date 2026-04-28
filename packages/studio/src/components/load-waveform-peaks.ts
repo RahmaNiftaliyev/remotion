@@ -51,8 +51,24 @@ export async function loadWaveformPeaks(
 			return new Float32Array(0);
 		}
 
-		const {sampleRate} = audioTrack;
-		const durationInSeconds = await audioTrack.computeDuration();
+		if (await audioTrack.isLive()) {
+			throw new Error(
+				'Live streams are not currently supported by Remotion. Sorry! Source: ' +
+					url,
+			);
+		}
+
+		if (await audioTrack.isRelativeToUnixEpoch()) {
+			throw new Error(
+				'Streams with UNIX timestamps are not currently supported by Remotion. Sorry! Source: ' +
+					url,
+			);
+		}
+
+		const sampleRate = await audioTrack.getSampleRate();
+		const durationInSeconds =
+			(await audioTrack.getDurationFromMetadata({skipLiveWait: true})) ??
+			(await audioTrack.computeDuration({skipLiveWait: true}));
 		const totalPeaks = Math.ceil(durationInSeconds * TARGET_SAMPLE_RATE);
 		const samplesPerPeak = Math.max(
 			1,

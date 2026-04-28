@@ -2052,6 +2052,15 @@ export const articles = [
 		slug: 'hdr',
 	},
 	{
+		id: 'hls',
+		title: 'HLS support (HTTP Live Streaming)',
+		relativePath: 'docs/hls.mdx',
+		compId: 'articles-docs-hls',
+		crumb: 'Video',
+		noAi: false,
+		slug: 'hls',
+	},
+	{
 		id: 'props-resolution',
 		title: 'How props get resolved',
 		relativePath: 'docs/how-props-flow.mdx',
@@ -3960,15 +3969,6 @@ export const articles = [
 		crumb: 'Snippets',
 		noAi: false,
 		slug: 'miscellaneous/snippets/freeze-portions',
-	},
-	{
-		id: 'hls',
-		title: 'HLS support (HTTP Live Streaming)',
-		relativePath: 'docs/miscellaneous/snippets/hls.mdx',
-		compId: 'articles-docs-miscellaneous-snippets-hls',
-		crumb: 'Video',
-		noAi: false,
-		slug: 'miscellaneous/snippets/hls',
 	},
 	{
 		id: 'miscellaneous/snippets/jumpcuts',

@@ -13,6 +13,7 @@ import {
 } from './audio/get-scheduled-time';
 import {drawPreviewOverlay} from './debug-overlay/preview-overlay';
 import type {DelayPlaybackIfNotPremounting} from './delay-playback-if-not-premounting';
+import {getDurationOrCompute} from './get-duration-or-compute';
 import {calculateEndTime, getTimeInSeconds} from './get-time-in-seconds';
 import {isNetworkError} from './is-type-of-error';
 import type {Nonce, NonceManager} from './nonce-manager';
@@ -41,7 +42,7 @@ export class MediaPlayer {
 	private logLevel: LogLevel;
 	private playbackRate: number;
 	private globalPlaybackRate: number;
-	private audioStreamIndex: number;
+	private audioStreamIndex: number | null;
 
 	private sharedAudioContext: SharedAudioContextForMediaPlayer | null;
 
@@ -106,7 +107,7 @@ export class MediaPlayer {
 		trimAfter: number | undefined;
 		playbackRate: number;
 		globalPlaybackRate: number;
-		audioStreamIndex: number;
+		audioStreamIndex: number | null;
 		fps: number;
 		debugOverlay: boolean;
 		bufferState: ReturnType<typeof useBufferState>;
@@ -128,7 +129,7 @@ export class MediaPlayer {
 		this.loop = loop;
 		this.trimBefore = trimBefore;
 		this.trimAfter = trimAfter;
-		this.audioStreamIndex = audioStreamIndex ?? 0;
+		this.audioStreamIndex = audioStreamIndex;
 		this.fps = fps;
 		this.debugOverlay = debugOverlay;
 		this.bufferState = bufferState;
@@ -168,7 +169,7 @@ export class MediaPlayer {
 		}
 	}
 
-	private input: Input<UrlSource>;
+	private input: Input;
 
 	private isDisposalError(): boolean {
 		return this.input.disposed === true;
@@ -251,7 +252,7 @@ export class MediaPlayer {
 			}
 
 			const [durationInSeconds, videoTrack, audioTracks] = await Promise.all([
-				this.input.computeDuration(),
+				getDurationOrCompute(this.input),
 				this.input.getPrimaryVideoTrack(),
 				this.input.getAudioTracks(),
 			]);
@@ -261,13 +262,29 @@ export class MediaPlayer {
 
 			this.totalDuration = durationInSeconds;
 
-			const audioTrack = audioTracks[this.audioStreamIndex] ?? null;
+			const audioTrack = await (this.audioStreamIndex === null
+				? videoTrack?.getPrimaryPairableAudioTrack()
+				: (audioTracks[this.audioStreamIndex] ?? null));
 
 			if (!videoTrack && !audioTrack) {
 				return {type: 'no-tracks'};
 			}
 
 			if (videoTrack && this.tagType === 'video') {
+				if (await videoTrack.isLive()) {
+					throw new Error(
+						'Live streams are not currently supported by Remotion. Sorry! Source: ' +
+							this.src,
+					);
+				}
+
+				if (await videoTrack.isRelativeToUnixEpoch()) {
+					throw new Error(
+						'Streams with UNIX timestamps are not currently supported by Remotion. Sorry! Source: ' +
+							this.src,
+					);
+				}
+
 				const canDecode = await videoTrack.canDecode();
 
 				if (!canDecode) {
@@ -278,7 +295,7 @@ export class MediaPlayer {
 					return {type: 'disposed'};
 				}
 
-				this.videoIteratorManager = videoIteratorManager({
+				this.videoIteratorManager = await videoIteratorManager({
 					videoTrack,
 					delayPlaybackHandleIfNotPremounting:
 						this.delayPlaybackHandleIfNotPremounting,
@@ -301,6 +318,20 @@ export class MediaPlayer {
 			}
 
 			if (audioTrack && this.sharedAudioContext) {
+				if (await audioTrack.isLive()) {
+					throw new Error(
+						'Live streams are not currently supported by Remotion. Sorry! Source: ' +
+							this.src,
+					);
+				}
+
+				if (await audioTrack.isRelativeToUnixEpoch()) {
+					throw new Error(
+						'Streams with UNIX timestamps are not currently supported by Remotion. Sorry! Source: ' +
+							this.src,
+					);
+				}
+
 				const canDecode = await audioTrack.canDecode();
 				if (!canDecode) {
 					return {type: 'cannot-decode'};

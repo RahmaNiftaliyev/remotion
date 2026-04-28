@@ -38,6 +38,11 @@ import {FreezeExample} from './Freeze/FreezeExample';
 import {FreezePortion} from './FreezePortion/FreezePortion';
 import {Green} from './Green';
 import {HlsDemo} from './Hls/HlsDemo';
+import {
+	HlsMediaVideo,
+	HlsMediaVideoMuted,
+	HlsMediaVideoTrimmed,
+} from './Hls/HlsMediaVideo';
 import {HtmlInCanvasDemo} from './HtmlInCanvas';
 import {HugeImage} from './HugeImage';
 import {HugePayload, hugePayloadSchema} from './HugePayload';
@@ -806,6 +811,30 @@ export const Index: React.FC = () => {
 					width={1920}
 					height={1080}
 					durationInFrames={100}
+					fps={30}
+				/>
+				<Composition
+					id="hls-media-video"
+					component={HlsMediaVideo}
+					width={1920}
+					height={1080}
+					durationInFrames={300}
+					fps={30}
+				/>
+				<Composition
+					id="hls-media-video-trimmed"
+					component={HlsMediaVideoTrimmed}
+					width={1920}
+					height={1080}
+					durationInFrames={90}
+					fps={30}
+				/>
+				<Composition
+					id="hls-media-video-muted"
+					component={HlsMediaVideoMuted}
+					width={1920}
+					height={1080}
+					durationInFrames={150}
 					fps={30}
 				/>
 				<Composition

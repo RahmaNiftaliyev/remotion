@@ -22,7 +22,7 @@ test('in preview, should properly buffer and draw frames', async (t) => {
 		throw new Error('No video track found');
 	}
 
-	const manager = videoIteratorManager({
+	const manager = await videoIteratorManager({
 		getIsLooping: () => false,
 		getLoopSegmentMediaEndTimestamp: () => {
 			throw new Error('not implemented');

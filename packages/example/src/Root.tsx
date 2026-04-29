@@ -178,6 +178,7 @@ import {Seek} from './StudioApis/Seek';
 import {TikTokTextBoxPlayground} from './TikTokTextbox/TikTokTextBox';
 import {FitTextOnNLines, fitTextOnNLinesSchema} from './Title/FitTextOnNLines';
 import {TransitionRounding} from './TransitionRounding';
+import {WebGlTransition} from './Transitions/WebGlTransition';
 import {
 	OverlayAndTransitionMixed,
 	OverlayBasic,
@@ -1606,6 +1607,14 @@ export const Index: React.FC = () => {
 				<Composition
 					id="basic-transition"
 					component={BasicTransition}
+					fps={30}
+					height={1080}
+					durationInFrames={300}
+					width={1920}
+				/>
+				<Composition
+					id="webgl-transition"
+					component={WebGlTransition}
 					fps={30}
 					height={1080}
 					durationInFrames={300}

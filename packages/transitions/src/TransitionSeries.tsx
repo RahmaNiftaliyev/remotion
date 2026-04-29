@@ -1,5 +1,5 @@
 import type {FC, PropsWithChildren} from 'react';
-import {Children, useMemo} from 'react';
+import {Children, useCallback, useMemo} from 'react';
 import type {
 	AbsoluteFillLayout,
 	LayoutAndStyle,
@@ -76,6 +76,15 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 }) => {
 	const {fps} = useVideoConfig();
 	const frame = useCurrentFrame();
+
+	const onPreviousElementImage = useCallback((elementImage: ElementImage) => {
+		console.log('onPreviousElementImage', elementImage);
+	}, []);
+
+	const onNextElementImage = useCallback((elementImage: ElementImage) => {
+		console.log('onNextElementImage', elementImage);
+	}, []);
+
 	const childrenValue = useMemo(() => {
 		let transitionOffsets = 0;
 		let startFrame = 0;
@@ -403,6 +412,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 							presentationDurationInFrames={next.props.timing.getDurationInFrames(
 								{fps},
 							)}
+							onElementImage={onNextElementImage}
 						>
 							<WrapInExitingProgressContext presentationProgress={nextProgress}>
 								<UppercasePrevPresentation
@@ -412,6 +422,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 									presentationDurationInFrames={prev.props.timing.getDurationInFrames(
 										{fps},
 									)}
+									onElementImage={onPreviousElementImage}
 								>
 									<WrapInEnteringProgressContext
 										presentationProgress={prevProgress}
@@ -446,6 +457,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 							presentationDurationInFrames={prev.props.timing.getDurationInFrames(
 								{fps},
 							)}
+							onElementImage={onPreviousElementImage}
 						>
 							<WrapInEnteringProgressContext
 								presentationProgress={prevProgress}
@@ -478,6 +490,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 							presentationDurationInFrames={next.props.timing.getDurationInFrames(
 								{fps},
 							)}
+							onElementImage={onNextElementImage}
 						>
 							<WrapInExitingProgressContext presentationProgress={nextProgress}>
 								{child}
@@ -527,7 +540,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 		});
 
 		return [...(mainChildren || []), ...overlayElements];
-	}, [children, fps, frame]);
+	}, [children, fps, frame, onNextElementImage, onPreviousElementImage]);
 
 	// eslint-disable-next-line react/jsx-no-useless-fragment
 	return <>{childrenValue}</>;

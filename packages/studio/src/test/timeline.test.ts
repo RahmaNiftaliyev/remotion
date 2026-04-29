@@ -144,6 +144,7 @@ test('Should inherit loop display from parent for media tracks', () => {
 	const calculated = calculateTimeline({
 		sequences: [
 			{
+				effects: [],
 				displayName: 'Loop',
 				duration: 100,
 				from: 50,
@@ -183,6 +184,7 @@ test('Should inherit loop display from parent for media tracks', () => {
 				doesVolumeChange: false,
 				startMediaFrom: 0,
 				playbackRate: 1,
+				effects: [],
 			},
 		],
 	});

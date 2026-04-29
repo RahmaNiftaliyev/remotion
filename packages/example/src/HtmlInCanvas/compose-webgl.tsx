@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useCallback, useRef} from 'react';
 import {
 	AbsoluteFill,
 	HtmlInCanvas,
@@ -59,20 +59,6 @@ const QUAD = new Float32Array([
 	-1, -1, 0, 0, 1, -1, 1, 0, -1, 1, 0, 1, 1, -1, 1, 0, -1, 1, 0, 1, 1, 1, 1, 1,
 ]);
 
-function disposeGpu(ref: React.MutableRefObject<GpuState | null>) {
-	const g = ref.current;
-	if (!g) {
-		return;
-	}
-
-	const {gl} = g;
-	gl.deleteProgram(g.program);
-	gl.deleteTexture(g.texture);
-	gl.deleteVertexArray(g.vao);
-	gl.deleteBuffer(g.buffer);
-	ref.current = null;
-}
-
 export const HtmlInCanvasComposeWebGL: React.FC = () => {
 	const frame = useCurrentFrame();
 	const {width, height, durationInFrames} = useVideoConfig();
@@ -87,8 +73,6 @@ export const HtmlInCanvasComposeWebGL: React.FC = () => {
 			extrapolateRight: 'clamp',
 		},
 	);
-
-	useEffect(() => () => disposeGpu(gpuRef), []);
 
 	const onInit = useCallback(({canvas}: HtmlInCanvasComposeParams) => {
 		const gl = canvas.getContext('webgl2', {
@@ -127,20 +111,28 @@ export const HtmlInCanvasComposeWebGL: React.FC = () => {
 		gl.vertexAttribPointer(locUv, 2, gl.FLOAT, false, 16, 8);
 
 		gpuRef.current = {gl, program, uMatrix, uTex, texture, vao, buffer};
+
+		return () => {
+			gl.deleteProgram(program);
+			gl.deleteTexture(texture);
+			gl.deleteVertexArray(vao);
+			gl.deleteBuffer(buffer);
+			gpuRef.current = null;
+		};
 	}, []);
 
 	const onPaint = useCallback(
 		({element}: HtmlInCanvasComposeParams) => {
-			const gpu = gpuRef.current;
-			if (!gpu) {
-				return;
-			}
-
-			const c = Math.cos(rotation);
-			const s = Math.sin(rotation);
-			const mat = new Float32Array([c, -s, 0, s, c, 0, 0, 0, 1]);
-
 			requestAnimationFrame(() => {
+				const gpu = gpuRef.current;
+				if (!gpu) {
+					return;
+				}
+
+				const c = Math.cos(rotation);
+				const s = Math.sin(rotation);
+				const mat = new Float32Array([c, -s, 0, s, c, 0, 0, 0, 1]);
+
 				const {gl} = gpu;
 				gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 				gl.useProgram(gpu.program);
@@ -174,7 +166,6 @@ export const HtmlInCanvasComposeWebGL: React.FC = () => {
 	return (
 		<AbsoluteFill
 			style={{
-				backgroundColor: 'red',
 				justifyContent: 'center',
 				alignItems: 'center',
 			}}
@@ -185,7 +176,9 @@ export const HtmlInCanvasComposeWebGL: React.FC = () => {
 				onInit={onInit}
 				onPaint={onPaint}
 			>
-				<HtmlInCanvasScene />
+				<AbsoluteFill className="justify-center items-center text-white">
+					<h1>Hello, World!</h1>
+				</AbsoluteFill>
 			</HtmlInCanvas>
 		</AbsoluteFill>
 	);

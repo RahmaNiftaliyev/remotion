@@ -145,6 +145,7 @@ export {
 	HtmlInCanvas,
 	isHtmlInCanvasSupported,
 	type HtmlInCanvasOnInit,
+	type HtmlInCanvasOnInitCleanup,
 	type HtmlInCanvasOnPaint,
 } from './HtmlInCanvas.js';
 export type {

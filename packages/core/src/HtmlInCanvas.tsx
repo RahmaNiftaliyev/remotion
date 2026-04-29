@@ -184,9 +184,14 @@ export type HtmlInCanvasOnPaint = (
 	params: HtmlInCanvasComposeParams,
 ) => void | Promise<void>;
 
+export type HtmlInCanvasOnInitCleanup = () => void;
+
 export type HtmlInCanvasOnInit = (
 	params: HtmlInCanvasComposeParams,
-) => void | Promise<void>;
+) =>
+	| void
+	| HtmlInCanvasOnInitCleanup
+	| Promise<void | HtmlInCanvasOnInitCleanup>;
 
 const defaultOnPaint: HtmlInCanvasOnPaint = ({canvas, element}) => {
 	const ctx = canvas.getContext('2d');
@@ -284,6 +289,8 @@ const HtmlInCanvasInner: React.FC<
 	const onInitRef = useRef(onInit);
 	onInitRef.current = onInit;
 	const initializedRef = useRef(false);
+	const onInitCleanupRef = useRef<HtmlInCanvasOnInitCleanup | null>(null);
+	const unmountedRef = useRef(false);
 
 	const onPaintCb = useCallback(async () => {
 		const canvas = canvasRef.current;
@@ -297,7 +304,14 @@ const HtmlInCanvasInner: React.FC<
 			const handle = delayRender('onPaint');
 			if (!initializedRef.current) {
 				initializedRef.current = true;
-				await onInitRef.current?.({canvas, element});
+				const cleanup = await onInitRef.current?.({canvas, element});
+				if (typeof cleanup === 'function') {
+					if (unmountedRef.current) {
+						cleanup();
+					} else {
+						onInitCleanupRef.current = cleanup;
+					}
+				}
 			}
 
 			const handler = onPaintRef.current ?? defaultOnPaint;
@@ -354,6 +368,9 @@ const HtmlInCanvasInner: React.FC<
 
 		return () => {
 			canvas.removeEventListener('paint', onPaintCb);
+			unmountedRef.current = true;
+			onInitCleanupRef.current?.();
+			onInitCleanupRef.current = null;
 		};
 	}, [onPaintCb, cancelRender]);
 

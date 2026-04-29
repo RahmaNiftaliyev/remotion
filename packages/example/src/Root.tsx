@@ -50,6 +50,7 @@ import {
 	HtmlInCanvasComposeWebGLCrt,
 	HtmlInCanvasComposeWebGPU,
 	HtmlInCanvasDemo,
+	HtmlInCanvasPrivacy,
 	HtmlInCanvasReactSvg,
 } from './HtmlInCanvas';
 import {HugeImage} from './HugeImage';
@@ -932,6 +933,14 @@ export const Index: React.FC = () => {
 						fps={30}
 						height={720}
 						width={1280}
+						durationInFrames={60}
+					/>
+					<Composition
+						id="html-in-canvas-privacy"
+						component={HtmlInCanvasPrivacy}
+						fps={30}
+						height={900}
+						width={1400}
 						durationInFrames={60}
 					/>
 					<Composition

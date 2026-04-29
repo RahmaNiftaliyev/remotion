@@ -7,5 +7,6 @@ export {
 	HtmlInCanvasChangingSize,
 	HtmlInCanvasChangingSize as HtmlInCanvasDemo,
 } from './changing-size';
+export {HtmlInCanvasPrivacy} from './privacy';
 export {HtmlInCanvasReactSvg} from './react-svg';
 export {HtmlInCanvasScene} from './scene';

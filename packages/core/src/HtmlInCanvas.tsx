@@ -191,10 +191,27 @@ export type HtmlInCanvasOnInitCleanup = () => void;
 
 export type HtmlInCanvasOnInit = (
 	params: HtmlInCanvasComposeParams,
-) =>
-	| void
-	| HtmlInCanvasOnInitCleanup
-	| Promise<void | HtmlInCanvasOnInitCleanup>;
+) => HtmlInCanvasOnInitCleanup | Promise<HtmlInCanvasOnInitCleanup>;
+
+function assertHtmlInCanvasDimensions(width: unknown, height: unknown): void {
+	if (typeof width !== 'number' || typeof height !== 'number') {
+		throw new Error(
+			`HtmlInCanvas: \`width\` and \`height\` must be numbers. Received width=${String(width)}, height=${String(height)}.`,
+		);
+	}
+
+	if (!Number.isInteger(width) || width <= 0) {
+		throw new Error(
+			`HtmlInCanvas: \`width\` must be a positive integer. Received: ${String(width)}.`,
+		);
+	}
+
+	if (!Number.isInteger(height) || height <= 0) {
+		throw new Error(
+			`HtmlInCanvas: \`height\` must be a positive integer. Received: ${String(height)}.`,
+		);
+	}
+}
 
 const defaultOnPaint: HtmlInCanvasOnPaint = ({
 	canvas,
@@ -272,6 +289,8 @@ const HtmlInCanvasInner: React.FC<
 	durationInFrames,
 	...sequenceProps
 }) => {
+	assertHtmlInCanvasDimensions(width, height);
+
 	const {durationInFrames: videoDuration} = useVideoConfig();
 	const resolvedDuration = durationInFrames ?? videoDuration;
 
@@ -318,12 +337,19 @@ const HtmlInCanvasInner: React.FC<
 				// uploads (e.g. `copyElementImageToTexture`) failing with
 				// "No context found for ElementImage" on the very first paint.
 				const initImage = canvas2dRef.current?.captureElementImage(element);
-				const cleanup = await onInitRef.current?.({
-					canvas: offscreenCanvas,
-					element,
-					elementImage: initImage!,
-				});
-				if (typeof cleanup === 'function') {
+				const onInit = onInitRef.current;
+				if (onInit) {
+					const cleanup = await onInit({
+						canvas: offscreenCanvas,
+						element,
+						elementImage: initImage!,
+					});
+					if (typeof cleanup !== 'function') {
+						throw new Error(
+							'HtmlInCanvas: when `onInit` is provided, it must return a cleanup function, or a Promise that resolves to one.',
+						);
+					}
+
 					if (unmountedRef.current) {
 						cleanup();
 					} else {

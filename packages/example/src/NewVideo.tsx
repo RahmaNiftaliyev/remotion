@@ -22,9 +22,7 @@ export const calculateMetadataFn: CalculateMetadataFunction<
 export const Component = () => {
 	return (
 		<>
-			(
 			<Video src={src} debugOverlay _experimentalEffects={[halftone()]} />
-			)( )
 		</>
 	);
 };

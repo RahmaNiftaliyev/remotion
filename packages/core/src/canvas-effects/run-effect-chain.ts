@@ -165,6 +165,8 @@ export const runEffectChain = async ({
 		throw new Error('Failed to acquire 2D context for output canvas');
 	}
 
+	console.log({lastTarget: lastTarget.width, output: output.width});
+
 	outCtx.clearRect(0, 0, width, height);
 	outCtx.drawImage(lastTarget, 0, 0, width, height);
 	return true;

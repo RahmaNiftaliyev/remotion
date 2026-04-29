@@ -178,7 +178,7 @@ export const HtmlInCanvasComposeWebGLCrt: React.FC = () => {
 	}, []);
 
 	const onPaint = useCallback(
-		({element}: HtmlInCanvasComposeParams) => {
+		({elementImage}: HtmlInCanvasComposeParams) => {
 			const gpu = gpuRef.current;
 			if (!gpu) {
 				return;
@@ -196,7 +196,7 @@ export const HtmlInCanvasComposeWebGLCrt: React.FC = () => {
 				gl.RGBA,
 				gl.RGBA,
 				gl.UNSIGNED_BYTE,
-				element,
+				elementImage,
 			);
 
 			if (gpu.uTex) {
@@ -222,33 +222,24 @@ export const HtmlInCanvasComposeWebGLCrt: React.FC = () => {
 	);
 
 	return (
-		<AbsoluteFill
+		<HtmlInCanvas
+			width={width}
+			height={height}
+			onInit={onInit}
+			onPaint={onPaint}
+			_experimentalEffects={[tint({color: 'red'})]}
 			style={{
+				backgroundColor: 'white',
+				color: 'black',
 				justifyContent: 'center',
 				alignItems: 'center',
+				fontSize: 120,
+				fontFamily: 'sans-serif',
+				fontWeight: 'bold',
+				display: 'flex',
 			}}
 		>
-			<HtmlInCanvas
-				width={width}
-				height={height}
-				onInit={onInit}
-				onPaint={onPaint}
-				_experimentalEffects={[tint({color: 'red'})]}
-			>
-				<AbsoluteFill
-					style={{
-						backgroundColor: 'white',
-						color: 'black',
-						justifyContent: 'center',
-						alignItems: 'center',
-						fontSize: 120,
-						fontFamily: 'sans-serif',
-						fontWeight: 'bold',
-					}}
-				>
-					<h1>Hello, World!</h1>
-				</AbsoluteFill>
-			</HtmlInCanvas>
-		</AbsoluteFill>
+			<h1>Hello, World!</h1>
+		</HtmlInCanvas>
 	);
 };

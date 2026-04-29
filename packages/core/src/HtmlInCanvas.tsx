@@ -1,10 +1,15 @@
-import React, {useCallback, useLayoutEffect, useMemo, useRef} from 'react';
+import React, {
+	useCallback,
+	useLayoutEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 import type {EffectsProp} from './canvas-effects/effect-types.js';
 import {runEffectChain} from './canvas-effects/run-effect-chain.js';
 import {useEffectChainState} from './canvas-effects/use-effect-chain-state.js';
 import type {SequenceControls} from './CompositionManager.js';
 import {delayRender} from './delay-render.js';
-import {ENABLE_EFFECTS} from './enable-effects.js';
 import {addSequenceStackTraces} from './enable-sequence-stack-traces.js';
 import type {SequenceSchema} from './sequence-field-schema.js';
 import type {
@@ -163,10 +168,12 @@ declare global {
 }
 
 export type HtmlInCanvasComposeParams = {
-	readonly canvas: HTMLCanvasElement;
+	readonly canvas: OffscreenCanvas;
 	readonly element: HTMLDivElement;
+	readonly elementImage: ElementImage;
 };
 
+// TODO: Should be cached
 export const isHtmlInCanvasSupported = (): boolean => {
 	if (typeof document === 'undefined') {
 		return false;
@@ -193,14 +200,18 @@ export type HtmlInCanvasOnInit = (
 	| HtmlInCanvasOnInitCleanup
 	| Promise<void | HtmlInCanvasOnInitCleanup>;
 
-const defaultOnPaint: HtmlInCanvasOnPaint = ({canvas, element}) => {
+const defaultOnPaint: HtmlInCanvasOnPaint = ({
+	canvas,
+	element,
+	elementImage,
+}) => {
 	const ctx = canvas.getContext('2d');
 	if (!ctx) {
 		throw new Error('Failed to acquire 2D context for <HtmlInCanvas> canvas');
 	}
 
 	ctx.reset();
-	const transform = ctx.drawElementImage(element, 0, 0);
+	const transform = ctx.drawElementImage(elementImage, 0, 0);
 	element.style.transform = transform.toString();
 };
 
@@ -210,8 +221,8 @@ export type HtmlInCanvasProps = Omit<
 > &
 	Omit<AbsoluteFillLayout, 'layout'> & {
 		readonly durationInFrames?: number;
-		readonly width?: number;
-		readonly height?: number;
+		readonly width: number;
+		readonly height: number;
 		readonly _experimentalEffects?: EffectsProp;
 		readonly children: React.ReactNode;
 		readonly onPaint?: HtmlInCanvasOnPaint;
@@ -271,13 +282,12 @@ const HtmlInCanvasInner: React.FC<
 	const frame = useCurrentFrame();
 	const {continueRender, cancelRender} = useDelayRender();
 
-	const canvasRef = useRef<HTMLCanvasElement | null>(null);
+	const canvas2dRef = useRef<HTMLCanvasElement | null>(null);
 	const divRef = useRef<HTMLDivElement | null>(null);
+	// TODO: Handle offscreen resizes
+	const [offscreenCanvas] = useState(() => new OffscreenCanvas(width, height));
 
-	const chainState = useEffectChainState(
-		canvasRef.current?.width ?? 0,
-		canvasRef.current?.height ?? 0,
-	);
+	const chainState = useEffectChainState(width, height);
 
 	// Refs so the paint handler always reads fresh values.
 	const effectsRef = useRef(experimentalEffects);
@@ -293,18 +303,23 @@ const HtmlInCanvasInner: React.FC<
 	const unmountedRef = useRef(false);
 
 	const onPaintCb = useCallback(async () => {
-		const canvas = canvasRef.current;
 		const element = divRef.current;
 
-		if (!canvas || !element) {
+		if (!element) {
 			throw new Error('Canvas or scene element not found');
 		}
+
+		const elImage = canvas2dRef.current?.captureElementImage(element);
 
 		try {
 			const handle = delayRender('onPaint');
 			if (!initializedRef.current) {
 				initializedRef.current = true;
-				const cleanup = await onInitRef.current?.({canvas, element});
+				const cleanup = await onInitRef.current?.({
+					canvas: offscreenCanvas,
+					element,
+					elementImage: elImage!,
+				});
 				if (typeof cleanup === 'function') {
 					if (unmountedRef.current) {
 						cleanup();
@@ -316,12 +331,7 @@ const HtmlInCanvasInner: React.FC<
 
 			const handler = onPaintRef.current ?? defaultOnPaint;
 
-			await handler({canvas, element});
-
-			if (!ENABLE_EFFECTS) {
-				continueRender(handle);
-				return;
-			}
+			await handler({canvas: offscreenCanvas, element, elementImage: elImage!});
 
 			if (!chainState?.current) {
 				throw new Error('Effect chain state not found');
@@ -329,12 +339,12 @@ const HtmlInCanvasInner: React.FC<
 
 			const completed = await runEffectChain({
 				state: chainState.current!,
-				source: canvas,
+				source: offscreenCanvas,
 				effects: effectsRef.current,
-				output: canvas,
+				output: canvas2dRef.current!,
 				frame: frameRef.current,
-				width: canvas.width,
-				height: canvas.height,
+				width,
+				height,
 			});
 
 			if (completed) {
@@ -343,7 +353,14 @@ const HtmlInCanvasInner: React.FC<
 		} catch (error) {
 			cancelRender(error);
 		}
-	}, [chainState, continueRender, cancelRender]);
+	}, [
+		chainState,
+		continueRender,
+		cancelRender,
+		width,
+		height,
+		offscreenCanvas,
+	]);
 
 	// Set up layoutSubtree and persistent paint listener. Runs as a
 	// layout effect so the listener is attached before the resize effect
@@ -358,7 +375,7 @@ const HtmlInCanvasInner: React.FC<
 			return;
 		}
 
-		const canvas = canvasRef.current;
+		const canvas = canvas2dRef.current;
 		if (!canvas) {
 			throw new Error('Canvas not found');
 		}
@@ -381,7 +398,7 @@ const HtmlInCanvasInner: React.FC<
 			return;
 		}
 
-		const canvas = canvasRef.current;
+		const canvas = canvas2dRef.current;
 		if (!canvas) {
 			return;
 		}
@@ -390,7 +407,7 @@ const HtmlInCanvasInner: React.FC<
 	}, [onPaint]);
 
 	useLayoutEffect(() => {
-		const canvas = canvasRef.current;
+		const canvas = canvas2dRef.current;
 		if (!canvas) {
 			return;
 		}
@@ -413,8 +430,9 @@ const HtmlInCanvasInner: React.FC<
 		return {
 			width,
 			height,
+			...style,
 		};
-	}, [width, height]);
+	}, [width, height, style]);
 
 	return (
 		<Sequence
@@ -424,7 +442,7 @@ const HtmlInCanvasInner: React.FC<
 			layout="none"
 			{...sequenceProps}
 		>
-			<canvas ref={canvasRef} width={width} height={height} style={style}>
+			<canvas ref={canvas2dRef} width={width} height={height}>
 				<div ref={divRef} style={innerStyle}>
 					{children}
 				</div>

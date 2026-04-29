@@ -2,7 +2,8 @@ import React, {useCallback, useRef} from 'react';
 import {
 	AbsoluteFill,
 	HtmlInCanvas,
-	type HtmlInCanvasComposeParams,
+	HtmlInCanvasOnInit,
+	HtmlInCanvasOnPaint,
 	interpolate,
 	useCurrentFrame,
 	useVideoConfig,
@@ -73,7 +74,7 @@ export const HtmlInCanvasComposeWebGL: React.FC = () => {
 		},
 	);
 
-	const onInit = useCallback(({canvas}: HtmlInCanvasComposeParams) => {
+	const onInit: HtmlInCanvasOnInit = useCallback(({canvas}) => {
 		const gl = canvas.getContext('webgl2', {
 			alpha: true,
 			premultipliedAlpha: true,
@@ -120,8 +121,8 @@ export const HtmlInCanvasComposeWebGL: React.FC = () => {
 		};
 	}, []);
 
-	const onPaint = useCallback(
-		({element}: HtmlInCanvasComposeParams) => {
+	const onPaint: HtmlInCanvasOnPaint = useCallback(
+		({elementImage}) => {
 			const gpu = gpuRef.current;
 			if (!gpu) {
 				return;
@@ -143,7 +144,7 @@ export const HtmlInCanvasComposeWebGL: React.FC = () => {
 				gl.RGBA,
 				gl.RGBA,
 				gl.UNSIGNED_BYTE,
-				element,
+				elementImage,
 			);
 
 			if (gpu.uTex) {
@@ -161,25 +162,18 @@ export const HtmlInCanvasComposeWebGL: React.FC = () => {
 	);
 
 	return (
-		<AbsoluteFill
-			style={{
-				justifyContent: 'center',
-				alignItems: 'center',
-			}}
+		<HtmlInCanvas
+			width={width}
+			height={height}
+			onInit={onInit}
+			onPaint={onPaint}
 		>
-			<HtmlInCanvas
-				width={width}
-				height={height}
-				onInit={onInit}
-				onPaint={onPaint}
+			<AbsoluteFill
+				className="justify-center items-center text-white"
+				style={{fontSize: 120}}
 			>
-				<AbsoluteFill
-					className="justify-center items-center text-white"
-					style={{fontSize: 120}}
-				>
-					<h1>Hello, World!</h1>
-				</AbsoluteFill>
-			</HtmlInCanvas>
-		</AbsoluteFill>
+				<h1>Hello, World!</h1>
+			</AbsoluteFill>
+		</HtmlInCanvas>
 	);
 };

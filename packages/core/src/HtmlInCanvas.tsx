@@ -69,20 +69,16 @@ declare global {
 	}
 
 	interface OffscreenCanvasRenderingContext2D {
+		drawElementImage(element: ElementImage, dx: number, dy: number): DOMMatrix;
 		drawElementImage(
-			element: Element | ElementImage,
-			dx: number,
-			dy: number,
-		): DOMMatrix;
-		drawElementImage(
-			element: Element | ElementImage,
+			element: ElementImage,
 			dx: number,
 			dy: number,
 			dwidth: number,
 			dheight: number,
 		): DOMMatrix;
 		drawElementImage(
-			element: Element | ElementImage,
+			element: ElementImage,
 			sx: number,
 			sy: number,
 			swidth: number,
@@ -91,7 +87,7 @@ declare global {
 			dy: number,
 		): DOMMatrix;
 		drawElementImage(
-			element: Element | ElementImage,
+			element: ElementImage,
 			sx: number,
 			sy: number,
 			swidth: number,

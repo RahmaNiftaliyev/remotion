@@ -45,7 +45,6 @@ import {
 } from './Hls/HlsMediaVideo';
 import {
 	HtmlInCanvasComposeAsyncBitmap,
-	HtmlInCanvasComposeThenEffects,
 	HtmlInCanvasComposeWebGL,
 	HtmlInCanvasComposeWebGLCrt,
 	HtmlInCanvasDemo,
@@ -912,14 +911,6 @@ export const Index: React.FC = () => {
 					<Composition
 						id="html-in-canvas-compose-webgl-crt"
 						component={HtmlInCanvasComposeWebGLCrt}
-						fps={30}
-						height={1080}
-						width={1920}
-						durationInFrames={120}
-					/>
-					<Composition
-						id="html-in-canvas-compose-then-effects"
-						component={HtmlInCanvasComposeThenEffects}
 						fps={30}
 						height={1080}
 						width={1920}

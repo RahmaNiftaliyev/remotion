@@ -1,9 +1,9 @@
 import {tint} from '@remotion/canvas-effects';
 import React, {useCallback, useRef} from 'react';
 import {
-	AbsoluteFill,
 	HtmlInCanvas,
-	type HtmlInCanvasComposeParams,
+	HtmlInCanvasOnInit,
+	HtmlInCanvasOnPaint,
 	useCurrentFrame,
 	useVideoConfig,
 } from 'remotion';
@@ -120,7 +120,7 @@ export const HtmlInCanvasComposeWebGLCrt: React.FC = () => {
 
 	const time = frame / fps;
 
-	const onInit = useCallback(({canvas}: HtmlInCanvasComposeParams) => {
+	const onInit: HtmlInCanvasOnInit = useCallback(({canvas}) => {
 		const gl = canvas.getContext('webgl2', {
 			alpha: true,
 			premultipliedAlpha: true,
@@ -177,8 +177,8 @@ export const HtmlInCanvasComposeWebGLCrt: React.FC = () => {
 		};
 	}, []);
 
-	const onPaint = useCallback(
-		({elementImage}: HtmlInCanvasComposeParams) => {
+	const onPaint: HtmlInCanvasOnPaint = useCallback(
+		({elementImage}) => {
 			const gpu = gpuRef.current;
 			if (!gpu) {
 				return;

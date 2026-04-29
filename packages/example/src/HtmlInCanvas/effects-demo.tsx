@@ -19,7 +19,7 @@ export const HtmlInCanvasEffectsDemo: React.FC = () => {
 			<HtmlInCanvas
 				width={size}
 				height={size}
-				onPaint={({canvas, element}) => {
+				onPaint={({canvas, elementImage, element}) => {
 					const ctx = canvas.getContext('2d', {willReadFrequently: true});
 					if (!ctx) {
 						throw new Error(
@@ -32,7 +32,7 @@ export const HtmlInCanvasEffectsDemo: React.FC = () => {
 					//    actual sampled pixel data from the rendered subtree.
 					ctx.reset();
 					const transform = ctx.drawElementImage(
-						element,
+						elementImage,
 						0,
 						0,
 						canvas.width,

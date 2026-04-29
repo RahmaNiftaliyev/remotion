@@ -169,18 +169,26 @@ export type HtmlInCanvasComposeParams = {
 	readonly elementImage: ElementImage;
 };
 
-// TODO: Should be cached
+// Memoize the support check across the session — neither the platform
+// capability nor the chrome://flags toggle can change between calls.
+// SSR results are not cached so the check runs again once `document` exists.
+let cachedSupport: boolean | null = null;
+
 export const isHtmlInCanvasSupported = (): boolean => {
+	if (cachedSupport !== null) {
+		return cachedSupport;
+	}
+
 	if (typeof document === 'undefined') {
 		return false;
 	}
 
 	const canvas = document.createElement('canvas');
 	const ctx = canvas.getContext('2d');
-	return (
+	cachedSupport =
 		typeof ctx?.drawElementImage === 'function' &&
-		typeof canvas.requestPaint === 'function'
-	);
+		typeof canvas.requestPaint === 'function';
+	return cachedSupport;
 };
 
 export type HtmlInCanvasOnPaint = (

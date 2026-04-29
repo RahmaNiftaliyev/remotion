@@ -1,4 +1,4 @@
-import {halftone, tint} from '@remotion/canvas-effects';
+import {halftone} from '@remotion/canvas-effects';
 import {Video} from '@remotion/media';
 import {CalculateMetadataFunction, Composition} from 'remotion';
 // https://www.remotion.dev/docs/mediabunny/metadata

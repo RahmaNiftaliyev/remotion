@@ -305,16 +305,21 @@ const HtmlInCanvasInner: React.FC<
 			throw new Error('Canvas or scene element not found');
 		}
 
-		const elImage = canvas2dRef.current?.captureElementImage(element);
-
 		try {
 			const handle = delayRender('onPaint');
 			if (!initializedRef.current) {
 				initializedRef.current = true;
+				// `onInit` may be async (e.g. WebGPU `requestAdapter`/`requestDevice`).
+				// Capture an `ElementImage` here only for `onInit` consumers — do NOT
+				// reuse it for the paint handler below, because awaiting `onInit`
+				// can invalidate the capture's paint context, leaving subsequent
+				// uploads (e.g. `copyElementImageToTexture`) failing with
+				// "No context found for ElementImage" on the very first paint.
+				const initImage = canvas2dRef.current?.captureElementImage(element);
 				const cleanup = await onInitRef.current?.({
 					canvas: offscreenCanvas,
 					element,
-					elementImage: elImage!,
+					elementImage: initImage!,
 				});
 				if (typeof cleanup === 'function') {
 					if (unmountedRef.current) {
@@ -327,6 +332,7 @@ const HtmlInCanvasInner: React.FC<
 
 			const handler = onPaintRef.current ?? defaultOnPaint;
 
+			const elImage = canvas2dRef.current?.captureElementImage(element);
 			await handler({canvas: offscreenCanvas, element, elementImage: elImage!});
 
 			if (!chainState?.current) {

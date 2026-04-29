@@ -887,7 +887,7 @@ export const Index: React.FC = () => {
 				/>
 				<Folder name="html-in-canvas">
 					<Composition
-						id="html-in-canvas"
+						id="html-in-canvas-changing-size"
 						component={HtmlInCanvasDemo}
 						fps={30}
 						height={1080}

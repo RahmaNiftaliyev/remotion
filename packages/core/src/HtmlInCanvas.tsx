@@ -280,10 +280,9 @@ const HtmlInCanvasInner: React.FC<
 
 	const canvas2dRef = useRef<HTMLCanvasElement | null>(null);
 	const divRef = useRef<HTMLDivElement | null>(null);
-	// TODO: Handle offscreen resizes
-	const [offscreenCanvas] = useState(() => new OffscreenCanvas(width, height));
+	const [offscreenCanvas] = useState(() => new OffscreenCanvas(1, 1));
 
-	const chainState = useEffectChainState(width, height);
+	const chainState = useEffectChainState();
 
 	// Refs so the paint handler always reads fresh values.
 	const effectsRef = useRef(experimentalEffects);
@@ -304,6 +303,9 @@ const HtmlInCanvasInner: React.FC<
 		if (!element) {
 			throw new Error('Canvas or scene element not found');
 		}
+
+		offscreenCanvas.width = width;
+		offscreenCanvas.height = height;
 
 		try {
 			const handle = delayRender('onPaint');
@@ -335,12 +337,8 @@ const HtmlInCanvasInner: React.FC<
 			const elImage = canvas2dRef.current?.captureElementImage(element);
 			await handler({canvas: offscreenCanvas, element, elementImage: elImage!});
 
-			if (!chainState?.current) {
-				throw new Error('Effect chain state not found');
-			}
-
 			const completed = await runEffectChain({
-				state: chainState.current!,
+				state: chainState.get(width, height)!,
 				source: offscreenCanvas,
 				effects: effectsRef.current,
 				output: canvas2dRef.current!,

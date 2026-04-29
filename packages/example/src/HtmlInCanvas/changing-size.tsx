@@ -7,7 +7,7 @@ import {
 } from 'remotion';
 import {HtmlInCanvasScene} from './scene';
 
-export const HtmlInCanvasEffectsDemo: React.FC = () => {
+export const HtmlInCanvasChangingSize: React.FC = () => {
 	const frame = useCurrentFrame();
 	// Animate the halftone cell size — small dots → big dots over the comp.
 	const cellSize = 6;

@@ -13,12 +13,13 @@ import {
 } from './context.js';
 import {flattenChildren} from './flatten-children.js';
 import {slide} from './presentations/slide.js';
+import type {Methods} from './shader-overlay.js';
+import {ShaderOverlay} from './shader-overlay.js';
 import type {
 	TransitionSeriesOverlayProps,
 	TransitionSeriesTransitionProps,
 } from './types.js';
 import {validateDurationInFrames} from './validate.js';
-import {ZoomBlurOverlay} from './zoom-blur-overlay.js';
 
 const TransitionSeriesTransition = function <
 	PresentationProps extends Record<string, unknown>,
@@ -81,13 +82,25 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 	const prevImageRef = useRef<ElementImage | null>(null);
 	const nextImageRef = useRef<ElementImage | null>(null);
 
-	const onPreviousElementImage = useCallback((elementImage: ElementImage) => {
-		prevImageRef.current = elementImage;
-	}, []);
+	const refToMethods = useRef<Methods | null>(null);
 
-	const onNextElementImage = useCallback((elementImage: ElementImage) => {
-		nextImageRef.current = elementImage;
-	}, []);
+	const onPreviousElementImage = useCallback(
+		(elementImage: ElementImage, progress: number) => {
+			prevImageRef.current = elementImage;
+			refToMethods.current?.draw(prevImageRef.current, nextImageRef.current);
+			console.log('progress-prev', progress);
+		},
+		[],
+	);
+
+	const onNextElementImage = useCallback(
+		(elementImage: ElementImage, progress: number) => {
+			nextImageRef.current = elementImage;
+			refToMethods.current?.draw(prevImageRef.current, nextImageRef.current);
+			console.log('progress-next', progress);
+		},
+		[],
+	);
 
 	const childrenValue = useMemo(() => {
 		let transitionOffsets = 0;
@@ -543,19 +556,15 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 			);
 		});
 
-		const shaderOverlay = (
-			<ZoomBlurOverlay
-				key="zoom-blur-overlay"
-				prevImageRef={prevImageRef}
-				nextImageRef={nextImageRef}
-			/>
-		);
-
-		return [...(mainChildren || []), ...overlayElements, shaderOverlay];
+		return [...(mainChildren || []), ...overlayElements];
 	}, [children, fps, frame, onNextElementImage, onPreviousElementImage]);
 
-	// eslint-disable-next-line react/jsx-no-useless-fragment
-	return <>{childrenValue}</>;
+	return (
+		<>
+			{childrenValue}
+			<ShaderOverlay refToMethods={refToMethods} />
+		</>
+	);
 };
 
 /*

@@ -1,4 +1,5 @@
 import {
+	linearTiming,
 	springTiming,
 	TransitionSeries,
 	useTransitionProgress,
@@ -35,25 +36,18 @@ export const Letter: React.FC<{
 
 export const WebGlTransition: React.FC = () => {
 	return (
-		<TransitionSeries from={30}>
-			<TransitionSeries.Sequence durationInFrames={40}>
+		<TransitionSeries>
+			<TransitionSeries.Sequence durationInFrames={90}>
 				<Sequence>
 					<Letter color="orange"> A</Letter>
 				</Sequence>
 			</TransitionSeries.Sequence>
 			<TransitionSeries.Transition
-				presentation={zoomBlur({direction: 'from-bottom'})}
-				timing={springTiming()}
+				presentation={zoomBlur({})}
+				timing={linearTiming({durationInFrames: 20})}
 			/>
-			<TransitionSeries.Sequence durationInFrames={30}>
+			<TransitionSeries.Sequence durationInFrames={90}>
 				<Letter color="pink">B</Letter>
-			</TransitionSeries.Sequence>
-			<TransitionSeries.Transition
-				presentation={zoomBlur({direction: 'from-bottom'})}
-				timing={springTiming()}
-			/>
-			<TransitionSeries.Sequence durationInFrames={60}>
-				<Letter color="pink">C</Letter>
 			</TransitionSeries.Sequence>
 		</TransitionSeries>
 	);

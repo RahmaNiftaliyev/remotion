@@ -33,7 +33,7 @@ export type TransitionPresentationComponentProps<
 	presentationDirection: PresentationDirection;
 	passedProps: PresentationProps;
 	presentationDurationInFrames: number;
-	onElementImage: (elementImage: ElementImage) => void;
+	onElementImage: (elementImage: ElementImage, progress: number) => void;
 };
 
 export type TransitionSeriesOverlayProps = {

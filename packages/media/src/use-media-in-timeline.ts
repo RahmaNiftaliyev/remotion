@@ -4,7 +4,7 @@ import type {
 	LoopDisplay,
 	SequenceControls,
 } from 'remotion';
-import {Internals, useCurrentFrame, type VolumeProp} from 'remotion';
+import {Internals, type VolumeProp} from 'remotion';
 
 export const useMediaInTimeline = ({
 	volume,
@@ -77,30 +77,6 @@ export const useMediaInTimeline = ({
 
 		if (!showInTimeline) {
 			return;
-		}
-
-		const loopIteration = loopDisplay
-			? Math.floor(frame / loopDisplay.durationInFrames)
-			: 0;
-
-		if (loopDisplay) {
-			registerSequence({
-				type: 'sequence',
-				premountDisplay,
-				postmountDisplay,
-				parent: parentSequence?.id ?? null,
-				displayName: finalDisplayName,
-				rootId,
-				showInTimeline: true,
-				nonce: nonce.get(),
-				loopDisplay,
-				stack,
-				from: 0,
-				duration,
-				id: sequenceId,
-				controls: null,
-				effects: [],
-			});
 		}
 
 		registerSequence({

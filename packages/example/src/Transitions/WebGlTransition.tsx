@@ -38,6 +38,7 @@ export const WebGlTransition: React.FC = () => {
 					_experimentalEffects: [
 						tint({
 							color: 'red',
+							amount: 0.1,
 						}),
 					],
 				})}
@@ -53,6 +54,26 @@ export const WebGlTransition: React.FC = () => {
 						src={staticFile('2.jpg')}
 					></Img>
 					<Letter color="transparent">B</Letter>
+				</Sequence>
+			</TransitionSeries.Sequence>
+			<TransitionSeries.Transition
+				presentation={zoomBlur({
+					_experimentalEffects: [
+						tint({
+							color: 'red',
+							amount: 0.1,
+						}),
+					],
+				})}
+				timing={linearTiming({
+					durationInFrames: 40,
+					easing: Easing.bezier(0.36, 0.53, 0, 1),
+				})}
+			/>
+			<TransitionSeries.Sequence durationInFrames={90}>
+				<Sequence>
+					<Img className="absolute" src={staticFile('1.jpg')}></Img>
+					<Letter color="transparent">A</Letter>
 				</Sequence>
 			</TransitionSeries.Sequence>
 		</TransitionSeries>

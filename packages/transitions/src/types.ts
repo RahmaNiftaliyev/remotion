@@ -1,5 +1,7 @@
 import type {ComponentType} from 'react';
 import type React from 'react';
+import type {EffectsProp} from 'remotion';
+import type {HtmlInCanvasShader} from './presentations/zoom-blur';
 
 export type PresentationDirection = 'entering' | 'exiting';
 
@@ -26,17 +28,15 @@ export type OverlayMethods = {
 	clear: () => void;
 };
 
-export type MandatoryOverlayProps = {
-	readonly refToMethods: React.RefObject<OverlayMethods | null>;
-};
-
-export type OverlayComponentProps<
+export type MandatoryOverlayComponentProps<
 	PresentationProps extends Record<string, unknown>,
-> = Pick<
-	TransitionPresentationComponentProps<PresentationProps>,
-	'presentationProgress' | 'passedProps'
-> &
-	MandatoryOverlayProps;
+> = {
+	readonly refToMethods: React.RefObject<OverlayMethods | null>;
+	readonly passedProps: PresentationProps & {
+		_experimentalEffects?: EffectsProp;
+	};
+	readonly shader: () => HtmlInCanvasShader<PresentationProps>;
+};
 
 export type TransitionPresentation<
 	PresentationProps extends Record<string, unknown>,
@@ -45,7 +45,7 @@ export type TransitionPresentation<
 		TransitionPresentationComponentProps<PresentationProps>
 	>;
 	props: PresentationProps;
-	overlay?: LooseComponentType<OverlayComponentProps<PresentationProps>>;
+	shader?: () => HtmlInCanvasShader<PresentationProps>;
 };
 
 export type TransitionPresentationComponentProps<

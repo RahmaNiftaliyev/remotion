@@ -1,107 +1,7 @@
-import {
-	useMemo,
-	useRef,
-	useLayoutEffect,
-	useImperativeHandle,
-	useState,
-} from 'react';
-import type {RefObject} from 'react';
-import type {EffectsProp} from 'remotion';
-import {
-	AbsoluteFill,
-	Internals,
-	useCurrentFrame,
-	useVideoConfig,
-} from 'remotion';
-import type {
-	OverlayComponentProps,
-	TransitionPresentation,
-	TransitionPresentationComponentProps,
-} from '../types';
+import {makeHtmlInCanvasPresentation} from '../html-in-canvas-presentation';
 
 export type ZoomBlurProps = {
 	rotation?: number;
-	_experimentalEffects?: EffectsProp;
-};
-
-export const ZoomBlurPresentation: React.FC<
-	TransitionPresentationComponentProps<ZoomBlurProps>
-> = ({
-	children,
-	onElementImage,
-	onUnmount,
-	presentationProgress,
-	presentationDirection,
-}) => {
-	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const canvasSubtreeStyle: React.CSSProperties = useMemo(() => {
-		return {
-			width: '100%',
-			height: '100%',
-			position: 'absolute',
-			top: 0,
-			left: 0,
-			right: 0,
-			bottom: 0,
-		};
-	}, []);
-
-	const presentationProgressRef = useRef(presentationProgress);
-	presentationProgressRef.current = presentationProgress;
-
-	useLayoutEffect(() => {
-		const canvas = canvasRef.current;
-		if (!canvas) {
-			return;
-		}
-
-		canvas.layoutSubtree = true;
-
-		const onPaint = () => {
-			const firstChild = canvas.firstChild as HTMLElement;
-
-			if (!firstChild) {
-				return;
-			}
-
-			const elementImage = canvas.captureElementImage(firstChild);
-			onElementImage(elementImage, presentationProgressRef.current);
-
-			const context = canvas.getContext('2d');
-			if (!context) {
-				throw new Error('Failed to get context');
-			}
-		};
-
-		canvas.addEventListener('paint', onPaint);
-
-		return () => {
-			canvas.removeEventListener('paint', onPaint);
-		};
-	}, [onElementImage, presentationDirection]);
-
-	useLayoutEffect(() => {
-		const canvas = canvasRef.current;
-		if (!canvas) {
-			return;
-		}
-
-		canvas.requestPaint?.();
-	}, [presentationProgress]);
-
-	useLayoutEffect(() => {
-		return () => {
-			onUnmount();
-		};
-	}, [onUnmount]);
-
-	return (
-		<AbsoluteFill>
-			<canvas ref={canvasRef} style={canvasSubtreeStyle}>
-				{children}
-			</canvas>
-		</AbsoluteFill>
-	);
 };
 
 export type GLState = {
@@ -114,6 +14,20 @@ export type GLState = {
 	uNext: WebGLUniformLocation | null;
 	uAspect: WebGLUniformLocation | null;
 	uMaxAngle: WebGLUniformLocation | null;
+};
+
+export type HtmlInCanvasShader<TPassedProps> = {
+	init: (canvas: OffscreenCanvas) => void;
+	clear: () => void;
+	draw: (params: {
+		prevImage: ElementImage | null;
+		nextImage: ElementImage | null;
+		width: number;
+		height: number;
+		time: number;
+		passedProps: TPassedProps;
+	}) => void;
+	cleanup: () => void;
 };
 
 const VERTEX_SHADER = `#version 300 es
@@ -248,240 +162,160 @@ const createTexture = (gl: WebGL2RenderingContext): WebGLTexture => {
 	return tex;
 };
 
-export const init = (
-	canvas: OffscreenCanvas,
-	stateRef: RefObject<GLState | null>,
-) => {
-	const gl = canvas.getContext('webgl2', {premultipliedAlpha: true});
-	if (!gl) {
+export const zoomBlurShader = (): HtmlInCanvasShader<ZoomBlurProps> => {
+	let state: GLState | null = null;
+
+	const init: HtmlInCanvasShader<ZoomBlurProps>['init'] = (canvas) => {
+		const gl = canvas.getContext('webgl2', {premultipliedAlpha: true});
+		if (!gl) {
+			return () => {};
+		}
+
+		const program = createProgram(gl);
+		const prevTex = createTexture(gl);
+		const nextTex = createTexture(gl);
+
+		const vao = gl.createVertexArray();
+		gl.bindVertexArray(vao);
+		const buffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+		gl.bufferData(
+			gl.ARRAY_BUFFER,
+			new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+			gl.STATIC_DRAW,
+		);
+		const aPos = gl.getAttribLocation(program, 'a_pos');
+		gl.enableVertexAttribArray(aPos);
+		gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+		state = {
+			gl,
+			program,
+			prevTex,
+			nextTex,
+			uTime: gl.getUniformLocation(program, 'u_time'),
+			uPrev: gl.getUniformLocation(program, 'u_prev'),
+			uNext: gl.getUniformLocation(program, 'u_next'),
+			uAspect: gl.getUniformLocation(program, 'u_aspect'),
+			uMaxAngle: gl.getUniformLocation(program, 'u_max_angle'),
+		};
+
 		return () => {};
-	}
-
-	const program = createProgram(gl);
-	const prevTex = createTexture(gl);
-	const nextTex = createTexture(gl);
-
-	const vao = gl.createVertexArray();
-	gl.bindVertexArray(vao);
-	const buffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-	gl.bufferData(
-		gl.ARRAY_BUFFER,
-		new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
-		gl.STATIC_DRAW,
-	);
-	const aPos = gl.getAttribLocation(program, 'a_pos');
-	gl.enableVertexAttribArray(aPos);
-	gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
-
-	stateRef.current = {
-		gl,
-		program,
-		prevTex,
-		nextTex,
-		uTime: gl.getUniformLocation(program, 'u_time'),
-		uPrev: gl.getUniformLocation(program, 'u_prev'),
-		uNext: gl.getUniformLocation(program, 'u_next'),
-		uAspect: gl.getUniformLocation(program, 'u_aspect'),
-		uMaxAngle: gl.getUniformLocation(program, 'u_max_angle'),
 	};
 
-	return () => {
+	const cleanup: HtmlInCanvasShader<ZoomBlurProps>['cleanup'] = () => {
+		if (!state) {
+			throw new Error('Zoom blur state not initialized');
+		}
+
+		const {gl, program, prevTex, nextTex} = state;
 		gl.deleteProgram(program);
 		gl.deleteTexture(prevTex);
 		gl.deleteTexture(nextTex);
-		stateRef.current = null;
+		state = null;
 	};
-};
 
-export const clear = ({state}: {state: GLState}) => {
-	const {gl} = state;
-	gl.clearColor(0, 0, 0, 0);
-	gl.clear(gl.COLOR_BUFFER_BIT);
-};
+	const clear: HtmlInCanvasShader<ZoomBlurProps>['clear'] = () => {
+		if (!state) {
+			throw new Error('Zoom blur state not initialized');
+		}
 
-export const draw = ({
-	prevImage,
-	nextImage,
-	state,
-	width,
-	height,
-	time,
-	rotation,
-}: {
-	prevImage: ElementImage | null;
-	nextImage: ElementImage | null;
-	state: GLState;
-	width: number;
-	height: number;
-	time: number;
-	rotation: number;
-}) => {
-	const {
-		gl,
-		program,
-		prevTex,
-		nextTex,
-		uTime,
-		uPrev,
-		uNext,
-		uAspect,
-		uMaxAngle,
-	} = state;
-	if (!prevImage && !nextImage) {
-		return;
-	}
+		const {gl} = state;
+		gl.clearColor(0, 0, 0, 0);
+		gl.clear(gl.COLOR_BUFFER_BIT);
+	};
 
-	if (prevImage && (prevImage.width === 0 || prevImage.height === 0)) {
-		return;
-	}
+	const draw: HtmlInCanvasShader<ZoomBlurProps>['draw'] = ({
+		prevImage,
+		nextImage,
+		width,
+		height,
+		time,
+		passedProps,
+	}) => {
+		if (!state) {
+			throw new Error('Zoom blur state not initialized');
+		}
 
-	if (nextImage && (nextImage.width === 0 || nextImage.height === 0)) {
-		return;
-	}
+		const {rotation = Math.PI / 6} = passedProps;
 
-	// When one side is missing, force the mix to fully show the other.
-	// At time=0 the shader outputs nextImage (and nextAngle = 0).
-	// At time=1 the shader outputs prevImage (and prevAngle = 0).
-	const effectiveTime = !prevImage ? 0 : !nextImage ? 1 : time;
+		const {
+			gl,
+			program,
+			prevTex,
+			nextTex,
+			uTime,
+			uPrev,
+			uNext,
+			uAspect,
+			uMaxAngle,
+		} = state;
 
-	gl.viewport(0, 0, width, height);
-	gl.clearColor(0, 0, 0, 0);
-	gl.clear(gl.COLOR_BUFFER_BIT);
-	gl.useProgram(program);
+		if (!prevImage && !nextImage) {
+			return;
+		}
 
-	gl.activeTexture(gl.TEXTURE0);
-	gl.bindTexture(gl.TEXTURE_2D, prevTex);
-	if (prevImage) {
-		gl.texElementImage2D(
-			gl.TEXTURE_2D,
-			0,
-			gl.RGBA,
-			gl.RGBA,
-			gl.UNSIGNED_BYTE,
-			prevImage,
-		);
-	}
+		if (prevImage && (prevImage.width === 0 || prevImage.height === 0)) {
+			return;
+		}
 
-	gl.uniform1i(uPrev, 0);
+		if (nextImage && (nextImage.width === 0 || nextImage.height === 0)) {
+			return;
+		}
 
-	gl.activeTexture(gl.TEXTURE1);
-	gl.bindTexture(gl.TEXTURE_2D, nextTex);
-	if (nextImage) {
-		gl.texElementImage2D(
-			gl.TEXTURE_2D,
-			0,
-			gl.RGBA,
-			gl.RGBA,
-			gl.UNSIGNED_BYTE,
-			nextImage,
-		);
-	}
+		// When one side is missing, force the mix to fully show the other.
+		// At time=0 the shader outputs nextImage (and nextAngle = 0).
+		// At time=1 the shader outputs prevImage (and prevAngle = 0).
+		const effectiveTime = !prevImage ? 0 : !nextImage ? 1 : time;
 
-	gl.uniform1i(uNext, 1);
+		gl.viewport(0, 0, width, height);
+		gl.clearColor(0, 0, 0, 0);
+		gl.clear(gl.COLOR_BUFFER_BIT);
+		gl.useProgram(program);
 
-	gl.uniform1f(uTime, effectiveTime);
-	gl.uniform1f(uAspect, width / height);
-	gl.uniform1f(uMaxAngle, rotation);
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, prevTex);
+		if (prevImage) {
+			gl.texElementImage2D(
+				gl.TEXTURE_2D,
+				0,
+				gl.RGBA,
+				gl.RGBA,
+				gl.UNSIGNED_BYTE,
+				prevImage,
+			);
+		}
 
-	gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-};
+		gl.uniform1i(uPrev, 0);
 
-export const ShaderOverlay: React.FC<OverlayComponentProps<ZoomBlurProps>> = ({
-	refToMethods,
-	passedProps: {rotation = Math.PI / 6, _experimentalEffects = []},
-}) => {
-	const {width, height} = useVideoConfig();
-	const [offscreenCanvas] = useState(() => new OffscreenCanvas(width, height));
-	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const stateRef = useRef<GLState | null>(null);
-	const frame = useCurrentFrame();
-	const frameRef = useRef(frame);
-	frameRef.current = frame;
+		gl.activeTexture(gl.TEXTURE1);
+		gl.bindTexture(gl.TEXTURE_2D, nextTex);
+		if (nextImage) {
+			gl.texElementImage2D(
+				gl.TEXTURE_2D,
+				0,
+				gl.RGBA,
+				gl.RGBA,
+				gl.UNSIGNED_BYTE,
+				nextImage,
+			);
+		}
 
-	useLayoutEffect(() => {
-		const cleanup = init(offscreenCanvas, stateRef);
+		gl.uniform1i(uNext, 1);
 
-		return () => {
-			cleanup();
-		};
-	}, [offscreenCanvas]);
+		gl.uniform1f(uTime, effectiveTime);
+		gl.uniform1f(uAspect, width / height);
+		gl.uniform1f(uMaxAngle, rotation);
 
-	const chainState = Internals.useEffectChainState();
+		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+	};
 
-	useImperativeHandle(refToMethods, () => {
-		return {
-			draw: (
-				prevImage: ElementImage | null,
-				nextImage: ElementImage | null,
-				progress: number,
-			) => {
-				if (!canvasRef.current || !stateRef.current) {
-					return;
-				}
-
-				draw({
-					prevImage,
-					nextImage,
-					state: stateRef.current,
-					width,
-					height,
-					time: progress,
-					rotation,
-				});
-				offscreenCanvas.width = width;
-				offscreenCanvas.height = height;
-				Internals.runEffectChain({
-					state: chainState.get(width, height)!,
-					source: offscreenCanvas,
-					effects: _experimentalEffects,
-					frame: frameRef.current,
-					width,
-					height,
-					output: canvasRef.current,
-				});
-			},
-			clear: () => {
-				if (!stateRef.current) {
-					return;
-				}
-
-				clear({state: stateRef.current});
-			},
-		};
-	});
-
-	const outerStyle: React.CSSProperties = useMemo(() => {
-		return {
-			pointerEvents: 'none',
-		};
-	}, []);
-
-	const innerStyle: React.CSSProperties = useMemo(() => {
-		return {
-			width: '100%',
-			height: '100%',
-		};
-	}, []);
-
-	return (
-		<AbsoluteFill style={outerStyle}>
-			<canvas
-				ref={canvasRef}
-				width={width}
-				height={height}
-				style={innerStyle}
-			/>
-		</AbsoluteFill>
-	);
-};
-
-export const zoomBlur = (
-	props: ZoomBlurProps,
-): TransitionPresentation<ZoomBlurProps> => {
 	return {
-		component: ZoomBlurPresentation,
-		props: props ?? {},
-		overlay: ShaderOverlay,
+		init,
+		clear,
+		draw,
+		cleanup,
 	};
 };
+
+export const zoomBlur = makeHtmlInCanvasPresentation(zoomBlurShader);

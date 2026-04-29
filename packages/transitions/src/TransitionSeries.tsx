@@ -12,6 +12,7 @@ import {
 	WrapInExitingProgressContext,
 } from './context.js';
 import {flattenChildren} from './flatten-children.js';
+import {HtmlInCanvasOverlay} from './html-in-canvas-presentation.js';
 import {slide} from './presentations/slide.js';
 import type {
 	OverlayMethods,
@@ -436,7 +437,6 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 				const UppercaseNextPresentation = nextPresentation.component;
 				const UppercasePrevPresentation = prevPresentation.component;
 
-				const RequiresOverlay = prevPresentation.overlay;
 				return (
 					<Sequence
 						// eslint-disable-next-line react/no-array-index-key
@@ -483,10 +483,10 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								</UppercasePrevPresentation>
 							</WrapInExitingProgressContext>
 						</UppercaseNextPresentation>
-						{RequiresOverlay && (
-							<RequiresOverlay
+						{nextPresentation.shader && (
+							<HtmlInCanvasOverlay
 								refToMethods={refToMethods}
-								presentationProgress={nextProgress}
+								shader={nextPresentation.shader}
 								passedProps={nextPresentation.props ?? {}}
 							/>
 						)}
@@ -499,7 +499,6 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 
 				const UppercasePrevPresentation = prevPresentation.component;
 
-				const RequiresOverlay = prevPresentation.overlay;
 				return (
 					<Sequence
 						// eslint-disable-next-line react/no-array-index-key
@@ -529,11 +528,11 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								{child}
 							</WrapInEnteringProgressContext>
 						</UppercasePrevPresentation>
-						{RequiresOverlay && (
-							<RequiresOverlay
+						{prevPresentation.shader && (
+							<HtmlInCanvasOverlay
 								refToMethods={refToMethods}
-								presentationProgress={prevProgress}
 								passedProps={prevPresentation.props ?? {}}
+								shader={prevPresentation.shader}
 							/>
 						)}
 					</Sequence>
@@ -545,7 +544,6 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 
 				const UppercaseNextPresentation = nextPresentation.component;
 
-				const RequiresOverlay = nextPresentation.overlay;
 				return (
 					<Sequence
 						// eslint-disable-next-line react/no-array-index-key
@@ -573,11 +571,11 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								{child}
 							</WrapInExitingProgressContext>
 						</UppercaseNextPresentation>
-						{RequiresOverlay && (
-							<RequiresOverlay
+						{nextPresentation.shader && (
+							<HtmlInCanvasOverlay
 								refToMethods={refToMethods}
-								presentationProgress={nextProgress}
 								passedProps={nextPresentation.props ?? {}}
+								shader={nextPresentation.shader}
 							/>
 						)}
 					</Sequence>

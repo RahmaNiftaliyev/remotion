@@ -73,33 +73,52 @@ type TypeChild<PresentationProps extends Record<string, unknown>> =
 	| OverlayType
 	| string;
 
+type ElementImageAndProgress = {
+	elementImage: ElementImage;
+	progress: number;
+};
+
 const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 	children,
 }) => {
 	const {fps} = useVideoConfig();
 	const frame = useCurrentFrame();
 
-	const prevImageRef = useRef<ElementImage | null>(null);
-	const nextImageRef = useRef<ElementImage | null>(null);
+	const prevImageRef = useRef<ElementImageAndProgress | null>(null);
+	const nextImageRef = useRef<ElementImageAndProgress | null>(null);
 
 	const refToMethods = useRef<Methods | null>(null);
 
+	const drawIfSynced = useCallback(() => {
+		if (
+			prevImageRef.current &&
+			nextImageRef.current &&
+			prevImageRef.current.progress === nextImageRef.current.progress
+		) {
+			refToMethods.current?.draw(
+				prevImageRef.current.elementImage,
+				nextImageRef.current.elementImage,
+				prevImageRef.current.progress,
+			);
+		}
+	}, []);
+
 	const onPreviousElementImage = useCallback(
 		(elementImage: ElementImage, progress: number) => {
-			prevImageRef.current = elementImage;
-			refToMethods.current?.draw(prevImageRef.current, nextImageRef.current);
-			console.log('progress-prev', progress);
+			prevImageRef.current = {elementImage, progress};
+			// TODO: Entrance / exit effects?
+
+			drawIfSynced();
 		},
-		[],
+		[drawIfSynced],
 	);
 
 	const onNextElementImage = useCallback(
 		(elementImage: ElementImage, progress: number) => {
-			nextImageRef.current = elementImage;
-			refToMethods.current?.draw(prevImageRef.current, nextImageRef.current);
-			console.log('progress-next', progress);
+			nextImageRef.current = {elementImage, progress};
+			drawIfSynced();
 		},
-		[],
+		[drawIfSynced],
 	);
 
 	const childrenValue = useMemo(() => {

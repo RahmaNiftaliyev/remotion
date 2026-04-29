@@ -6,6 +6,7 @@ export type Methods = {
 	draw: (
 		prevImage: ElementImage | null,
 		nextImage: ElementImage | null,
+		progress: number,
 	) => void;
 };
 
@@ -17,7 +18,6 @@ export const ShaderOverlay: React.FC<Props> = ({refToMethods}) => {
 	const {width, height} = useVideoConfig();
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const stateRef = useRef<GLState | null>(null);
-	const timeRef = useRef(0);
 
 	useLayoutEffect(() => {
 		const cleanup = init(canvasRef.current!, stateRef);
@@ -32,19 +32,20 @@ export const ShaderOverlay: React.FC<Props> = ({refToMethods}) => {
 			draw: (
 				prevImage: ElementImage | null,
 				nextImage: ElementImage | null,
+				progress: number,
 			) => {
 				if (!canvasRef.current || !stateRef.current) {
 					return;
 				}
 
-				draw(
+				draw({
 					prevImage,
 					nextImage,
-					stateRef.current,
+					state: stateRef.current,
 					width,
 					height,
-					timeRef.current,
-				);
+					time: progress,
+				});
 			},
 		};
 	});

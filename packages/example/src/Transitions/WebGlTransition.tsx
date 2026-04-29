@@ -1,6 +1,5 @@
 import {
 	linearTiming,
-	springTiming,
 	TransitionSeries,
 	useTransitionProgress,
 } from '@remotion/transitions';
@@ -39,7 +38,7 @@ export const WebGlTransition: React.FC = () => {
 		<TransitionSeries>
 			<TransitionSeries.Sequence durationInFrames={90}>
 				<Sequence>
-					<Letter color="orange"> A</Letter>
+					<Letter color="orange">A</Letter>
 				</Sequence>
 			</TransitionSeries.Sequence>
 			<TransitionSeries.Transition

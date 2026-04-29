@@ -211,7 +211,6 @@ export const init = (
 		uNext: gl.getUniformLocation(program, 'u_next'),
 	};
 
-	// TODO: Cleanup
 	return () => {
 		gl.deleteProgram(program);
 		gl.deleteTexture(prevTex);
@@ -220,14 +219,21 @@ export const init = (
 	};
 };
 
-export const draw = (
-	prevImage: ElementImage | null,
-	nextImage: ElementImage | null,
-	state: GLState,
-	width: number,
-	height: number,
-	time: number,
-) => {
+export const draw = ({
+	prevImage,
+	nextImage,
+	state,
+	width,
+	height,
+	time,
+}: {
+	prevImage: ElementImage | null;
+	nextImage: ElementImage | null;
+	state: GLState;
+	width: number;
+	height: number;
+	time: number;
+}) => {
 	const {gl, program, prevTex, nextTex, uTime, uPrev, uNext} = state;
 	if (
 		!prevImage ||

@@ -11,7 +11,12 @@ export type ZoomBlurProps = {};
 
 export const ZoomBlurPresentation: React.FC<
 	TransitionPresentationComponentProps<ZoomBlurProps>
-> = ({children, onElementImage, presentationProgress}) => {
+> = ({
+	children,
+	onElementImage,
+	presentationProgress,
+	presentationDirection,
+}) => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const canvasSubtreeStyle: React.CSSProperties = useMemo(() => {
 		return {
@@ -24,6 +29,9 @@ export const ZoomBlurPresentation: React.FC<
 			bottom: 0,
 		};
 	}, []);
+
+	const presentationProgressRef = useRef(presentationProgress);
+	presentationProgressRef.current = presentationProgress;
 
 	useLayoutEffect(() => {
 		const canvas = canvasRef.current;
@@ -40,8 +48,27 @@ export const ZoomBlurPresentation: React.FC<
 				return;
 			}
 
+			const isFrontend =
+				presentationProgressRef.current < 0.5 &&
+				presentationDirection === 'exiting';
+			const isBackend =
+				presentationProgressRef.current === 1 &&
+				presentationDirection === 'entering';
+
 			const elementImage = canvas.captureElementImage(firstChild);
-			onElementImage(elementImage, presentationProgress);
+			onElementImage(elementImage, presentationProgressRef.current);
+
+			const context = canvas.getContext('2d');
+			if (!context) {
+				throw new Error('Failed to get context');
+			}
+
+			// TODO: This is stupid for transparent content
+			if (isBackend || isFrontend) {
+				context.drawElementImage(elementImage, 0, 0);
+			} else {
+				context.reset();
+			}
 		};
 
 		canvas.addEventListener('paint', onPaint);
@@ -49,7 +76,33 @@ export const ZoomBlurPresentation: React.FC<
 		return () => {
 			canvas.removeEventListener('paint', onPaint);
 		};
-	}, [onElementImage, presentationProgress]);
+	}, [onElementImage, presentationDirection]);
+
+	useLayoutEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) {
+			return;
+		}
+
+		canvas.requestPaint?.();
+	}, [presentationProgress]);
+
+	useLayoutEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) {
+			return;
+		}
+
+		// Size the canvas grid to match the device scale factor to prevent blurriness.
+		const observer = new ResizeObserver(([entry]) => {
+			canvas.width = entry.devicePixelContentBoxSize[0].inlineSize;
+			canvas.height = entry.devicePixelContentBoxSize[0].blockSize;
+		});
+		observer.observe(canvas, {box: 'device-pixel-content-box'});
+		return () => {
+			observer.disconnect();
+		};
+	}, []);
 
 	return (
 		<AbsoluteFill>
@@ -104,9 +157,9 @@ vec4 zoomBlur(sampler2D tex, vec2 uv, float strength) {
 
 void main() {
 	float mixT = clamp(u_time, 0.0, 1.0);
-	vec4 prev = zoomBlur(u_prev, v_uv, STRENGTH * mixT);
-	vec4 next = zoomBlur(u_next, v_uv, STRENGTH * (1.0 - mixT));
-	outColor = mix(prev, next, mixT);
+	vec4 prev = zoomBlur(u_prev, v_uv, STRENGTH * (1.0 - mixT));
+	vec4 next = zoomBlur(u_next, v_uv, STRENGTH * mixT);
+	outColor = mix(prev, next, (1.0 - mixT));
 }`;
 
 const compileShader = (
@@ -219,6 +272,12 @@ export const init = (
 	};
 };
 
+export const clear = ({state}: {state: GLState}) => {
+	const {gl} = state;
+	gl.clearColor(0, 0, 0, 0);
+	gl.clear(gl.COLOR_BUFFER_BIT);
+};
+
 export const draw = ({
 	prevImage,
 	nextImage,
@@ -289,5 +348,9 @@ export const draw = ({
 export const zoomBlur = (
 	props: ZoomBlurProps,
 ): TransitionPresentation<ZoomBlurProps> => {
-	return {component: ZoomBlurPresentation, props: props ?? {}};
+	return {
+		component: ZoomBlurPresentation,
+		props: props ?? {},
+		requiresOverlay: true,
+	};
 };

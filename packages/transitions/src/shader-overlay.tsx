@@ -1,6 +1,6 @@
 import React, {useImperativeHandle, useLayoutEffect, useRef} from 'react';
 import {AbsoluteFill, useVideoConfig} from 'remotion';
-import {draw, init, type GLState} from './presentations/zoom-blur';
+import {clear, draw, init, type GLState} from './presentations/zoom-blur';
 
 export type Methods = {
 	draw: (
@@ -8,6 +8,7 @@ export type Methods = {
 		nextImage: ElementImage | null,
 		progress: number,
 	) => void;
+	clear: () => void;
 };
 
 type Props = {
@@ -46,6 +47,13 @@ export const ShaderOverlay: React.FC<Props> = ({refToMethods}) => {
 					height,
 					time: progress,
 				});
+			},
+			clear: () => {
+				if (!stateRef.current) {
+					return;
+				}
+
+				clear({state: stateRef.current});
 			},
 		};
 	});

@@ -23,6 +23,7 @@ export type TransitionPresentation<
 		TransitionPresentationComponentProps<PresentationProps>
 	>;
 	props: PresentationProps;
+	requiresOverlay?: boolean;
 };
 
 export type TransitionPresentationComponentProps<

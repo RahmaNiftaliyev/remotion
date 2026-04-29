@@ -90,15 +90,21 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 	const refToMethods = useRef<Methods | null>(null);
 
 	const drawIfSynced = useCallback(() => {
-		if (
-			prevImageRef.current &&
-			nextImageRef.current &&
-			prevImageRef.current.progress === nextImageRef.current.progress
-		) {
+		const prevImage = prevImageRef.current;
+		const nextImage = nextImageRef.current;
+
+		const isEnded = prevImage && prevImage.progress === 1;
+		const hasNotBegun = nextImage && nextImage.progress === 0;
+		if (isEnded || hasNotBegun) {
+			refToMethods.current?.clear();
+			return;
+		}
+
+		if (prevImage && nextImage && prevImage.progress === nextImage.progress) {
 			refToMethods.current?.draw(
-				prevImageRef.current.elementImage,
-				nextImageRef.current.elementImage,
-				prevImageRef.current.progress,
+				prevImage.elementImage,
+				nextImage.elementImage,
+				prevImage.progress,
 			);
 		}
 	}, []);
@@ -116,6 +122,8 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 	const onNextElementImage = useCallback(
 		(elementImage: ElementImage, progress: number) => {
 			nextImageRef.current = {elementImage, progress};
+
+			// TODO: draw to right index
 			drawIfSynced();
 		},
 		[drawIfSynced],
@@ -448,7 +456,9 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 							presentationDurationInFrames={next.props.timing.getDurationInFrames(
 								{fps},
 							)}
-							onElementImage={onNextElementImage}
+							onElementImage={(elementImage, progress) =>
+								onNextElementImage(elementImage, progress)
+							}
 						>
 							<WrapInExitingProgressContext presentationProgress={nextProgress}>
 								<UppercasePrevPresentation
@@ -458,7 +468,9 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 									presentationDurationInFrames={prev.props.timing.getDurationInFrames(
 										{fps},
 									)}
-									onElementImage={onPreviousElementImage}
+									onElementImage={(elementImage, progress) =>
+										onPreviousElementImage(elementImage, progress)
+									}
 								>
 									<WrapInEnteringProgressContext
 										presentationProgress={prevProgress}
@@ -468,6 +480,9 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								</UppercasePrevPresentation>
 							</WrapInExitingProgressContext>
 						</UppercaseNextPresentation>
+						{prevPresentation.requiresOverlay && (
+							<ShaderOverlay refToMethods={refToMethods} />
+						)}
 					</Sequence>
 				);
 			}
@@ -493,7 +508,9 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 							presentationDurationInFrames={prev.props.timing.getDurationInFrames(
 								{fps},
 							)}
-							onElementImage={onPreviousElementImage}
+							onElementImage={(elementImage, progress) =>
+								onPreviousElementImage(elementImage, progress)
+							}
 						>
 							<WrapInEnteringProgressContext
 								presentationProgress={prevProgress}
@@ -501,6 +518,9 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								{child}
 							</WrapInEnteringProgressContext>
 						</UppercasePrevPresentation>
+						{prevPresentation.requiresOverlay && (
+							<ShaderOverlay refToMethods={refToMethods} />
+						)}
 					</Sequence>
 				);
 			}
@@ -526,7 +546,9 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 							presentationDurationInFrames={next.props.timing.getDurationInFrames(
 								{fps},
 							)}
-							onElementImage={onNextElementImage}
+							onElementImage={(elementImage, progress) =>
+								onNextElementImage(elementImage, progress)
+							}
 						>
 							<WrapInExitingProgressContext presentationProgress={nextProgress}>
 								{child}
@@ -578,12 +600,8 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 		return [...(mainChildren || []), ...overlayElements];
 	}, [children, fps, frame, onNextElementImage, onPreviousElementImage]);
 
-	return (
-		<>
-			{childrenValue}
-			<ShaderOverlay refToMethods={refToMethods} />
-		</>
-	);
+	// eslint-disable-next-line react/jsx-no-useless-fragment
+	return <>{childrenValue}</>;
 };
 
 /*

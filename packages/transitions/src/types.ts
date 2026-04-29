@@ -1,7 +1,7 @@
 import type {ComponentType} from 'react';
 import type React from 'react';
 import type {EffectsProp} from 'remotion';
-import type {HtmlInCanvasShader} from './presentations/zoom-blur';
+import type {HtmlInCanvasShader} from './html-in-canvas-presentation';
 
 export type PresentationDirection = 'entering' | 'exiting';
 

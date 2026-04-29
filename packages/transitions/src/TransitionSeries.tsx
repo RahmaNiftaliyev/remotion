@@ -1,5 +1,5 @@
 import type {FC, PropsWithChildren} from 'react';
-import {Children, useCallback, useMemo, useRef} from 'react';
+import React, {Children, useCallback, useMemo, useRef} from 'react';
 import type {
 	AbsoluteFillLayout,
 	LayoutAndStyle,
@@ -75,8 +75,11 @@ type TypeChild<PresentationProps extends Record<string, unknown>> =
 
 type ElementImageAndProgress = {
 	elementImage: ElementImage | null;
-	progress: number;
+	progress: number | null;
 };
+
+type ImageMap = Record<number, ElementImageAndProgress>;
+type OverlayMethodsMap = Record<number, React.RefObject<OverlayMethods | null>>;
 
 const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 	children,
@@ -84,44 +87,66 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 	const {fps} = useVideoConfig();
 	const frame = useCurrentFrame();
 
-	const prevImageRef = useRef<ElementImageAndProgress | null>(null);
-	const nextImageRef = useRef<ElementImageAndProgress | null>(null);
+	const prevImageRef = useRef<ImageMap>({});
+	const nextImageRef = useRef<ImageMap>({});
 
-	const refToMethods = useRef<OverlayMethods | null>(null);
+	const flattedChildren = useMemo(() => {
+		return flattenChildren(children);
+	}, [children]);
 
-	const drawIfSynced = useCallback(() => {
-		const prevImage = prevImageRef.current;
-		const nextImage = nextImageRef.current;
+	const refToMethods = useMemo(() => {
+		return flattedChildren.reduce<OverlayMethodsMap>((acc, _child, index) => {
+			acc[index] = React.createRef<OverlayMethods>();
+			acc[index].current = {
+				draw: () => {},
+				clear: () => {},
+			};
+			return acc;
+		}, {} as OverlayMethodsMap);
+	}, [flattedChildren]);
 
-		if (
-			(prevImage && nextImage && prevImage.progress === nextImage.progress) ||
-			!prevImage ||
-			!nextImage
-		) {
-			refToMethods.current?.draw(
-				prevImage?.elementImage ?? null,
-				nextImage?.elementImage ?? null,
-				prevImage?.progress ?? nextImage?.progress ?? 0,
-			);
-		}
-	}, []);
+	const drawIfSynced = useCallback(
+		(index: number) => {
+			const prevImage = prevImageRef?.current?.[index];
+			const nextImage = nextImageRef?.current?.[index];
+
+			if (
+				(prevImage && nextImage && prevImage.progress === nextImage.progress) ||
+				!prevImage?.elementImage ||
+				!nextImage?.elementImage
+			) {
+				refToMethods[index]?.current?.draw(
+					prevImage?.elementImage ?? null,
+					nextImage?.elementImage ?? null,
+					prevImage?.progress ?? nextImage?.progress ?? 0,
+				);
+			}
+		},
+		[refToMethods],
+	);
 
 	const onPreviousElementImage = useCallback(
-		(elementImage: ElementImage | null, progress: number) => {
-			prevImageRef.current = {elementImage, progress};
-			// TODO: Entrance / exit effects?
+		(
+			elementImage: ElementImage | null,
+			progress: number | null,
+			index: number,
+		) => {
+			prevImageRef.current[index] = {elementImage, progress};
 
-			drawIfSynced();
+			drawIfSynced(index);
 		},
 		[drawIfSynced],
 	);
 
 	const onNextElementImage = useCallback(
-		(elementImage: ElementImage | null, progress: number) => {
-			nextImageRef.current = {elementImage, progress};
+		(
+			elementImage: ElementImage | null,
+			progress: number | null,
+			index: number,
+		) => {
+			nextImageRef.current[index] = {elementImage, progress};
 
-			// TODO: draw to right index
-			drawIfSynced();
+			drawIfSynced(index);
 		},
 		[drawIfSynced],
 	);
@@ -129,7 +154,6 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 	const childrenValue = useMemo(() => {
 		let transitionOffsets = 0;
 		let startFrame = 0;
-		const flattedChildren = flattenChildren(children);
 
 		// Collect overlay render info to emit after the main loop
 		const overlayRenders: React.ReactNode[] = [];
@@ -454,10 +478,10 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								{fps},
 							)}
 							onElementImage={(elementImage, progress) =>
-								onNextElementImage(elementImage, progress)
+								onNextElementImage(elementImage, progress, i + 1)
 							}
 							onUnmount={() => {
-								onNextElementImage(null, 0);
+								onNextElementImage(null, null, i + 1);
 							}}
 						>
 							<WrapInExitingProgressContext presentationProgress={nextProgress}>
@@ -469,10 +493,10 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 										{fps},
 									)}
 									onElementImage={(elementImage, progress) =>
-										onPreviousElementImage(elementImage, progress)
+										onPreviousElementImage(elementImage, progress, i - 1)
 									}
 									onUnmount={() => {
-										onPreviousElementImage(null, 0);
+										onPreviousElementImage(null, null, i - 1);
 									}}
 								>
 									<WrapInEnteringProgressContext
@@ -483,11 +507,11 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								</UppercasePrevPresentation>
 							</WrapInExitingProgressContext>
 						</UppercaseNextPresentation>
-						{nextPresentation.shader && (
+						{prevPresentation.shader && (
 							<HtmlInCanvasOverlay
-								refToMethods={refToMethods}
-								shader={nextPresentation.shader}
-								passedProps={nextPresentation.props ?? {}}
+								refToMethods={refToMethods[i - 1]}
+								shader={prevPresentation.shader}
+								passedProps={prevPresentation.props ?? {}}
 							/>
 						)}
 					</Sequence>
@@ -516,10 +540,10 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								{fps},
 							)}
 							onElementImage={(elementImage, progress) =>
-								onPreviousElementImage(elementImage, progress)
+								onPreviousElementImage(elementImage, progress, i - 1)
 							}
 							onUnmount={() => {
-								onPreviousElementImage(null, 0);
+								onPreviousElementImage(null, null, i - 1);
 							}}
 						>
 							<WrapInEnteringProgressContext
@@ -530,7 +554,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 						</UppercasePrevPresentation>
 						{prevPresentation.shader && (
 							<HtmlInCanvasOverlay
-								refToMethods={refToMethods}
+								refToMethods={refToMethods[i - 1]}
 								passedProps={prevPresentation.props ?? {}}
 								shader={prevPresentation.shader}
 							/>
@@ -561,10 +585,10 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								{fps},
 							)}
 							onElementImage={(elementImage, progress) =>
-								onNextElementImage(elementImage, progress)
+								onNextElementImage(elementImage, progress, i + 1)
 							}
 							onUnmount={() => {
-								onNextElementImage(null, 0);
+								onNextElementImage(null, null, i + 1);
 							}}
 						>
 							<WrapInExitingProgressContext presentationProgress={nextProgress}>
@@ -573,7 +597,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 						</UppercaseNextPresentation>
 						{nextPresentation.shader && (
 							<HtmlInCanvasOverlay
-								refToMethods={refToMethods}
+								refToMethods={refToMethods[i + 1]}
 								passedProps={nextPresentation.props ?? {}}
 								shader={nextPresentation.shader}
 							/>
@@ -622,7 +646,14 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 		});
 
 		return [...(mainChildren || []), ...overlayElements];
-	}, [children, fps, frame, onNextElementImage, onPreviousElementImage]);
+	}, [
+		flattedChildren,
+		fps,
+		frame,
+		onNextElementImage,
+		onPreviousElementImage,
+		refToMethods,
+	]);
 
 	// eslint-disable-next-line react/jsx-no-useless-fragment
 	return <>{childrenValue}</>;

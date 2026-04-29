@@ -12,7 +12,6 @@ import {
 	useCurrentFrame,
 	useVideoConfig,
 } from 'remotion';
-import type {HtmlInCanvasShader} from './presentations/zoom-blur';
 import type {
 	MandatoryOverlayComponentProps,
 	TransitionPresentation,
@@ -131,6 +130,7 @@ export const HtmlInCanvasOverlay: React.FC<
 				nextImage: ElementImage | null,
 				progress: number,
 			) => {
+				console.log('draw!!');
 				if (!canvasRef.current) {
 					return;
 				}
@@ -184,6 +184,20 @@ export const HtmlInCanvasOverlay: React.FC<
 			/>
 		</AbsoluteFill>
 	);
+};
+
+export type HtmlInCanvasShader<TPassedProps> = {
+	init: (canvas: OffscreenCanvas) => void;
+	clear: () => void;
+	draw: (params: {
+		prevImage: ElementImage | null;
+		nextImage: ElementImage | null;
+		width: number;
+		height: number;
+		time: number;
+		passedProps: TPassedProps;
+	}) => void;
+	cleanup: () => void;
 };
 
 export const makeHtmlInCanvasPresentation = <

@@ -1,3 +1,4 @@
+import type {HtmlInCanvasShader} from '../html-in-canvas-presentation';
 import {makeHtmlInCanvasPresentation} from '../html-in-canvas-presentation';
 
 export type ZoomBlurProps = {
@@ -14,20 +15,6 @@ export type GLState = {
 	uNext: WebGLUniformLocation | null;
 	uAspect: WebGLUniformLocation | null;
 	uMaxAngle: WebGLUniformLocation | null;
-};
-
-export type HtmlInCanvasShader<TPassedProps> = {
-	init: (canvas: OffscreenCanvas) => void;
-	clear: () => void;
-	draw: (params: {
-		prevImage: ElementImage | null;
-		nextImage: ElementImage | null;
-		width: number;
-		height: number;
-		time: number;
-		passedProps: TPassedProps;
-	}) => void;
-	cleanup: () => void;
 };
 
 const VERTEX_SHADER = `#version 300 es

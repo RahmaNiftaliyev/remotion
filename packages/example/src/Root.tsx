@@ -44,9 +44,11 @@ import {
 	HlsMediaVideoTrimmed,
 } from './Hls/HlsMediaVideo';
 import {
+	HtmlInCanvasComplexText,
 	HtmlInCanvasComposeAsyncBitmap,
 	HtmlInCanvasComposeWebGL,
 	HtmlInCanvasComposeWebGLCrt,
+	HtmlInCanvasComposeWebGPU,
 	HtmlInCanvasDemo,
 	HtmlInCanvasReactSvg,
 } from './HtmlInCanvas';
@@ -915,6 +917,22 @@ export const Index: React.FC = () => {
 						height={1080}
 						width={1920}
 						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-webgpu"
+						component={HtmlInCanvasComposeWebGPU}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-complex-text"
+						component={HtmlInCanvasComplexText}
+						fps={30}
+						height={720}
+						width={1280}
+						durationInFrames={60}
 					/>
 					<Composition
 						id="html-in-canvas-react-svg"

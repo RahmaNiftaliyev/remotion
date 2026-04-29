@@ -23,14 +23,7 @@ export const Component = () => {
 	return (
 		<>
 			(
-			<Video
-				src={src}
-				debugOverlay
-				_experimentalEffects={[halftone(), tint({color: 'green', amount: 1})]}
-				style={{
-					translate: '-3px 434px',
-				}}
-			/>
+			<Video src={src} debugOverlay _experimentalEffects={[halftone()]} />
 			)( )
 		</>
 	);

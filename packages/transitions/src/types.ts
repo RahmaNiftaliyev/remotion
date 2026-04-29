@@ -2,6 +2,7 @@ import type {ComponentType} from 'react';
 import type React from 'react';
 import type {EffectsProp} from 'remotion';
 import type {HtmlInCanvasShader} from './html-in-canvas-presentation';
+import type {DrawFunction} from './TransitionSeries';
 
 export type PresentationDirection = 'entering' | 'exiting';
 
@@ -45,7 +46,6 @@ export type TransitionPresentation<
 		TransitionPresentationComponentProps<PresentationProps>
 	>;
 	props: PresentationProps;
-	shader?: () => HtmlInCanvasShader<PresentationProps>;
 };
 
 export type TransitionPresentationComponentProps<
@@ -56,7 +56,11 @@ export type TransitionPresentationComponentProps<
 	presentationDirection: PresentationDirection;
 	passedProps: PresentationProps;
 	presentationDurationInFrames: number;
-	onElementImage: (elementImage: ElementImage, progress: number) => void;
+	onElementImage: (
+		elementImage: ElementImage,
+		progress: number,
+		draw: DrawFunction,
+	) => void;
 	onUnmount: () => void;
 };
 

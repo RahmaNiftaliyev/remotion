@@ -38,7 +38,10 @@ export const videoIteratorManager = async ({
 	getStartTime: () => number;
 	getIsLooping: () => boolean;
 	getEffects: () => EffectsProp;
-	getEffectChainState: () => EffectChainState | null;
+	getEffectChainState: (
+		width: number,
+		height: number,
+	) => EffectChainState | null;
 	getCurrentFrame: () => number;
 }) => {
 	let videoIteratorsCreated = 0;
@@ -67,7 +70,7 @@ export const videoIteratorManager = async ({
 	const drawFrame = async (frame: WrappedCanvas): Promise<void> => {
 		if (context && canvas) {
 			const effects = getEffects();
-			const chainState = getEffectChainState();
+			const chainState = getEffectChainState(canvas.width, canvas.height);
 			if (
 				ENABLE_EFFECTS &&
 				effects.length > 0 &&

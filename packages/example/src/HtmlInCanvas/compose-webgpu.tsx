@@ -12,6 +12,7 @@ import {
 // matching the convention in `packages/core/src/canvas-effects/gpu-device.ts`.
 type Gpu = {
 	requestAdapter(): Promise<GpuAdapter | null>;
+	getPreferredCanvasFormat(): string;
 };
 type GpuAdapter = {requestDevice(): Promise<GpuDevice>};
 type GpuTextureView = unknown;
@@ -56,8 +57,6 @@ type GpuCanvasContext = {
 	}): void;
 	getCurrentTexture(): GpuTexture;
 };
-
-const PRESENTATION_FORMAT = 'rgba8unorm';
 
 const WGSL = /* wgsl */ `
 struct VsOut {
@@ -147,9 +146,13 @@ export const HtmlInCanvasComposeWebGPU: React.FC = () => {
 			throw new Error('WebGPU context unavailable on OffscreenCanvas');
 		}
 
+		// Use the device's preferred swap-chain format (typically `bgra8unorm`)
+		// to avoid an extra format-conversion copy on present.
+		const presentationFormat = gpu.getPreferredCanvasFormat();
+
 		context.configure({
 			device,
-			format: PRESENTATION_FORMAT,
+			format: presentationFormat,
 			alphaMode: 'premultiplied',
 		});
 
@@ -161,7 +164,7 @@ export const HtmlInCanvasComposeWebGPU: React.FC = () => {
 			fragment: {
 				module,
 				entryPoint: 'fs',
-				targets: [{format: PRESENTATION_FORMAT}],
+				targets: [{format: presentationFormat}],
 			},
 			primitive: {topology: 'triangle-list'},
 		});

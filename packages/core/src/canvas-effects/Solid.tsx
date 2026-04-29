@@ -43,7 +43,7 @@ export const Solid: React.FC<SolidProps> = ({
 		return canvas;
 	}, []);
 
-	const chainState = useEffectChainState(width, height);
+	const chainState = useEffectChainState();
 
 	// Fill source and run effect chain on every frame / color change.
 	useEffect(() => {
@@ -89,7 +89,7 @@ export const Solid: React.FC<SolidProps> = ({
 		ctx.fillRect(0, 0, 1, 1);
 
 		runEffectChain({
-			state: chainState.current!,
+			state: chainState.get(width, height)!,
 			source: sourceCanvas,
 			effects: experimentalEffects,
 			output: outputCanvas,

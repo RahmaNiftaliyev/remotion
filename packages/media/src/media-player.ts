@@ -70,7 +70,11 @@ export class MediaPlayer {
 		null;
 
 	private getEffects: () => EffectsProp;
-	private getEffectChainState: () => EffectChainState | null;
+	private getEffectChainState: (
+		width: number,
+		height: number,
+	) => EffectChainState | null;
+
 	private getCurrentFrame: () => number;
 
 	private initializationPromise: Promise<MediaPlayerInitResult> | null = null;
@@ -129,7 +133,10 @@ export class MediaPlayer {
 		credentials: RequestCredentials | undefined;
 		tagType: 'audio' | 'video';
 		getEffects: () => EffectsProp;
-		getEffectChainState: () => EffectChainState | null;
+		getEffectChainState: (
+			width: number,
+			height: number,
+		) => EffectChainState | null;
 		getCurrentFrame: () => number;
 	}) {
 		this.canvas = canvas ?? null;

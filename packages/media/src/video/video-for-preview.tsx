@@ -151,10 +151,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 
 	warnAboutTooHighVolume(userPreferredVolume);
 
-	const effectChainState = useEffectChainState(
-		videoConfig.width,
-		videoConfig.height,
-	);
+	const effectChainState = useEffectChainState();
 	const experimentalEffectsRef = useRef(_experimentalEffects);
 	experimentalEffectsRef.current = _experimentalEffects;
 	const memoizedEffects = useMemoizedEffects(
@@ -326,7 +323,8 @@ const VideoForPreviewAssertedShowing: React.FC<
 				tagType: 'video',
 				getEffects: () =>
 					ENABLE_EFFECTS ? experimentalEffectsRef.current : [],
-				getEffectChainState: () => effectChainStateRef.current?.current!,
+				getEffectChainState: (width, height) =>
+					effectChainStateRef.current?.get(width, height)!,
 				getCurrentFrame: () => frameRef.current,
 			});
 

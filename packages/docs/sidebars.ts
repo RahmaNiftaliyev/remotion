@@ -943,7 +943,7 @@ const sidebars: SidebarsConfig = {
 				'miscellaneous/snippets/jumpcuts',
 				'miscellaneous/snippets/freeze-portions',
 				'video-tags',
-				'miscellaneous/snippets/hls',
+				'hls',
 				'videos/as-threejs-texture',
 			],
 		},

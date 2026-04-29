@@ -245,7 +245,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 				fps: videoConfig.fps,
 				canvas: null,
 				playbackRate: initialPlaybackRate.current,
-				audioStreamIndex: audioStreamIndex ?? 0,
+				audioStreamIndex: audioStreamIndex ?? null,
 				debugOverlay: false,
 				bufferState: buffer,
 				isPostmounting: initialIsPostmounting.current,
@@ -513,7 +513,7 @@ export const AudioForPreview: React.FC<
 
 	return (
 		<AudioForPreviewAssertedShowing
-			audioStreamIndex={audioStreamIndex ?? 0}
+			audioStreamIndex={audioStreamIndex}
 			src={preloadedSrc}
 			playbackRate={playbackRate}
 			logLevel={logLevel ?? defaultLogLevel}

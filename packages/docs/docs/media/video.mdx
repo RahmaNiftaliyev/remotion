@@ -43,6 +43,23 @@ export const MyComposition = () => {
 };
 ```
 
+You can also load HLS playlists (`.m3u8`):
+
+```tsx twoslash
+import {AbsoluteFill} from 'remotion';
+import {Video} from '@remotion/media';
+// ---cut---
+export const MyComposition = () => {
+  return (
+    <AbsoluteFill>
+      <Video src="https://stream.mux.com/nqGuji1CJuoPoU3iprRRhiy3HXiQN0201HLyliOg44HOU.m3u8" />
+    </AbsoluteFill>
+  );
+};
+```
+
+For more information on HLS support, see the [HLS documentation](/docs/hls).
+
 ## Props
 
 ### `src`
@@ -425,6 +442,7 @@ Shows a debug overlay on the video. This is useful for debugging the video playb
 ## See also
 
 - [Source code for this component](https://github.com/remotion-dev/remotion/blob/main/packages/media/src/video/video.tsx)
+- [HLS support (HTTP Live Streaming)](/docs/hls)
 - [Comparison of video tags](/docs/video-tags)
 - [`<Audio>` (from `@remotion/media`)](/docs/media/audio)
 - [`<Html5Video>` (from `remotion`)](/docs/html5-video)

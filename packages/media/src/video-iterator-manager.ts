@@ -12,7 +12,7 @@ import {
 
 const {runEffectChain} = Internals;
 
-export const videoIteratorManager = ({
+export const videoIteratorManager = async ({
 	delayPlaybackHandleIfNotPremounting,
 	canvas,
 	context,
@@ -47,12 +47,11 @@ export const videoIteratorManager = ({
 	let currentDelayHandle: {unblock: () => void} | null = null;
 
 	if (canvas) {
-		if (
-			canvas.width !== videoTrack.displayWidth ||
-			canvas.height !== videoTrack.displayHeight
-		) {
-			canvas.width = videoTrack.displayWidth;
-			canvas.height = videoTrack.displayHeight;
+		const displayWidth = await videoTrack.getDisplayWidth();
+		const displayHeight = await videoTrack.getDisplayHeight();
+		if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+			canvas.width = displayWidth;
+			canvas.height = displayHeight;
 		}
 	}
 
@@ -194,4 +193,6 @@ export const videoIteratorManager = ({
 	};
 };
 
-export type VideoIteratorManager = ReturnType<typeof videoIteratorManager>;
+export type VideoIteratorManager = Awaited<
+	ReturnType<typeof videoIteratorManager>
+>;

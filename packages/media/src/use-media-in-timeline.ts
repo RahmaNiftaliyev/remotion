@@ -1,4 +1,4 @@
-import {useContext, useState, useEffect} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import type {
 	EffectDefinitionAndStack,
 	LoopDisplay,
@@ -45,9 +45,7 @@ export const useMediaInTimeline = ({
 		Internals.SequenceManager,
 	);
 
-	const [sequenceId] = useState(() => String(Math.random()));
 	const [mediaId] = useState(() => String(Math.random()));
-	const frame = useCurrentFrame();
 
 	const {
 		volumes,
@@ -109,9 +107,9 @@ export const useMediaInTimeline = ({
 			type: mediaType,
 			src,
 			id: mediaId,
-			duration: loopDisplay?.durationInFrames ?? duration,
-			from: loopDisplay ? loopIteration * loopDisplay.durationInFrames : 0,
-			parent: loopDisplay ? sequenceId : (parentSequence?.id ?? null),
+			duration,
+			from: 0,
+			parent: parentSequence?.id ?? null,
 			displayName: finalDisplayName,
 			rootId,
 			volume: volumes,
@@ -119,20 +117,16 @@ export const useMediaInTimeline = ({
 			nonce: nonce.get(),
 			startMediaFrom: 0 - startsAt + (trimBefore ?? 0),
 			doesVolumeChange,
-			loopDisplay: undefined,
+			loopDisplay,
 			playbackRate,
 			stack,
-			premountDisplay: null,
-			postmountDisplay: null,
+			premountDisplay,
+			postmountDisplay,
 			controls: controls ?? null,
 			effects: _experimentalEffects,
 		});
 
 		return () => {
-			if (loopDisplay) {
-				unregisterSequence(sequenceId);
-			}
-
 			unregisterSequence(mediaId);
 		};
 	}, [
@@ -151,14 +145,12 @@ export const useMediaInTimeline = ({
 		premountDisplay,
 		registerSequence,
 		rootId,
-		sequenceId,
 		showInTimeline,
 		src,
 		stack,
 		startsAt,
 		unregisterSequence,
 		volumes,
-		frame,
 		trimBefore,
 		_experimentalEffects,
 	]);

@@ -47,6 +47,7 @@ import {
 	HtmlInCanvasComposeAsyncBitmap,
 	HtmlInCanvasComposeThenEffects,
 	HtmlInCanvasComposeWebGL,
+	HtmlInCanvasComposeWebGLCrt,
 	HtmlInCanvasDemo,
 	HtmlInCanvasReactSvg,
 } from './HtmlInCanvas';
@@ -903,6 +904,14 @@ export const Index: React.FC = () => {
 					<Composition
 						id="html-in-canvas-compose-webgl"
 						component={HtmlInCanvasComposeWebGL}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-webgl-crt"
+						component={HtmlInCanvasComposeWebGLCrt}
 						fps={30}
 						height={1080}
 						width={1920}

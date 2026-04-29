@@ -374,6 +374,21 @@ const HtmlInCanvasInner: React.FC<
 		};
 	}, [onPaintCb, cancelRender]);
 
+	const onPaintChangedRef = useRef(false);
+	useLayoutEffect(() => {
+		if (!onPaintChangedRef.current) {
+			onPaintChangedRef.current = true;
+			return;
+		}
+
+		const canvas = canvasRef.current;
+		if (!canvas) {
+			return;
+		}
+
+		canvas.requestPaint?.();
+	}, [onPaint]);
+
 	useLayoutEffect(() => {
 		const canvas = canvasRef.current;
 		if (!canvas) {

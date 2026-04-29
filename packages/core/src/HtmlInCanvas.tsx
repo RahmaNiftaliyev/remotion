@@ -187,7 +187,8 @@ export const isHtmlInCanvasSupported = (): boolean => {
 	const ctx = canvas.getContext('2d');
 	cachedSupport =
 		typeof ctx?.drawElementImage === 'function' &&
-		typeof canvas.requestPaint === 'function';
+		typeof canvas.requestPaint === 'function' &&
+		typeof canvas.captureElementImage === 'function';
 	return cachedSupport;
 };
 
@@ -298,12 +299,20 @@ const HtmlInCanvasInner: React.FC<
 	...sequenceProps
 }) => {
 	assertHtmlInCanvasDimensions(width, height);
+	const {continueRender, cancelRender} = useDelayRender();
+
+	if (!isHtmlInCanvasSupported()) {
+		cancelRender(
+			new Error(
+				'HTML in Canvas is not supported. Open this page in Chrome Canary with chrome://flags/#canvas-draw-element enabled.',
+			),
+		);
+	}
 
 	const {durationInFrames: videoDuration} = useVideoConfig();
 	const resolvedDuration = durationInFrames ?? videoDuration;
 
 	const frame = useCurrentFrame();
-	const {continueRender, cancelRender} = useDelayRender();
 
 	const canvas2dRef = useRef<HTMLCanvasElement | null>(null);
 	const divRef = useRef<HTMLDivElement | null>(null);
@@ -345,9 +354,9 @@ const HtmlInCanvasInner: React.FC<
 				// uploads (e.g. `copyElementImageToTexture`) failing with
 				// "No context found for ElementImage" on the very first paint.
 				const initImage = canvas2dRef.current?.captureElementImage(element);
-				const onInit = onInitRef.current;
-				if (onInit) {
-					const cleanup = await onInit({
+				const currentOnInit = onInitRef.current;
+				if (currentOnInit) {
+					const cleanup = await currentOnInit({
 						canvas: offscreenCanvas,
 						element,
 						elementImage: initImage!,
@@ -400,15 +409,6 @@ const HtmlInCanvasInner: React.FC<
 	// layout effect so the listener is attached before the resize effect
 	// below dispatches its first synthetic paint.
 	useLayoutEffect(() => {
-		if (!isHtmlInCanvasSupported()) {
-			cancelRender(
-				new Error(
-					'HTML in Canvas is not supported. Open this page in Chrome Canary with chrome://flags/#canvas-draw-element enabled.',
-				),
-			);
-			return;
-		}
-
 		const canvas = canvas2dRef.current;
 		if (!canvas) {
 			throw new Error('Canvas not found');

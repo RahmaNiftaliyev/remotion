@@ -1,3 +1,4 @@
+import {tint} from '@remotion/canvas-effects';
 import React, {useCallback, useRef} from 'react';
 import {
 	AbsoluteFill,
@@ -178,7 +179,6 @@ export const HtmlInCanvasComposeWebGLCrt: React.FC = () => {
 
 	const onPaint = useCallback(
 		({element}: HtmlInCanvasComposeParams) => {
-			console.log('paint');
 			const gpu = gpuRef.current;
 			if (!gpu) {
 				return;
@@ -233,6 +233,7 @@ export const HtmlInCanvasComposeWebGLCrt: React.FC = () => {
 				height={height}
 				onInit={onInit}
 				onPaint={onPaint}
+				_experimentalEffects={[tint({color: 'red'})]}
 			>
 				<AbsoluteFill
 					style={{

@@ -45,9 +45,7 @@ export type TransitionPresentation<
 		TransitionPresentationComponentProps<PresentationProps>
 	>;
 	props: PresentationProps;
-	requiresOverlay?: LooseComponentType<
-		OverlayComponentProps<PresentationProps>
-	>;
+	overlay?: LooseComponentType<OverlayComponentProps<PresentationProps>>;
 };
 
 export type TransitionPresentationComponentProps<

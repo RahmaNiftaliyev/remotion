@@ -439,7 +439,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 				const UppercaseNextPresentation = nextPresentation.component;
 				const UppercasePrevPresentation = prevPresentation.component;
 
-				const RequiresOverlay = prevPresentation.requiresOverlay;
+				const RequiresOverlay = prevPresentation.overlay;
 				return (
 					<Sequence
 						// eslint-disable-next-line react/no-array-index-key
@@ -480,7 +480,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								</UppercasePrevPresentation>
 							</WrapInExitingProgressContext>
 						</UppercaseNextPresentation>
-						{RequiresOverlay && (
+						{RequiresOverlay && nextProgress > 0 && nextProgress < 1 && (
 							<RequiresOverlay
 								refToMethods={refToMethods}
 								presentationProgress={nextProgress}
@@ -496,7 +496,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 
 				const UppercasePrevPresentation = prevPresentation.component;
 
-				const RequiresOverlay = prevPresentation.requiresOverlay;
+				const RequiresOverlay = prevPresentation.overlay;
 				return (
 					<Sequence
 						// eslint-disable-next-line react/no-array-index-key
@@ -523,7 +523,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								{child}
 							</WrapInEnteringProgressContext>
 						</UppercasePrevPresentation>
-						{RequiresOverlay && (
+						{RequiresOverlay && prevProgress > 0 && prevProgress < 1 && (
 							<RequiresOverlay
 								refToMethods={refToMethods}
 								presentationProgress={prevProgress}

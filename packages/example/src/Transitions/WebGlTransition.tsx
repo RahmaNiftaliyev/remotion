@@ -1,22 +1,14 @@
-import {
-	linearTiming,
-	TransitionSeries,
-	useTransitionProgress,
-} from '@remotion/transitions';
+import {tint} from '@remotion/canvas-effects';
+import {linearTiming, TransitionSeries} from '@remotion/transitions';
 import {zoomBlur} from '@remotion/transitions/zoom-blur';
 import React from 'react';
-import {AbsoluteFill, Sequence} from 'remotion';
+import {Easing} from 'remotion';
+import {AbsoluteFill, Img, Sequence, staticFile} from 'remotion';
 
 export const Letter: React.FC<{
 	readonly children: React.ReactNode;
 	readonly color: string;
 }> = ({children, color}) => {
-	const {
-		entering,
-		exiting,
-		isInTransitionSeries: isInTransition,
-	} = useTransitionProgress();
-
 	return (
 		<AbsoluteFill
 			style={{
@@ -27,8 +19,7 @@ export const Letter: React.FC<{
 				color: 'white',
 			}}
 		>
-			{children} {entering.toFixed(2)} {exiting.toFixed(2)}{' '}
-			{String(isInTransition)}
+			{children}
 		</AbsoluteFill>
 	);
 };
@@ -38,15 +29,31 @@ export const WebGlTransition: React.FC = () => {
 		<TransitionSeries>
 			<TransitionSeries.Sequence durationInFrames={90}>
 				<Sequence>
-					<Letter color="orange">A</Letter>
+					<Img className="absolute" src={staticFile('1.jpg')}></Img>
+					<Letter color="transparent">A</Letter>
 				</Sequence>
 			</TransitionSeries.Sequence>
 			<TransitionSeries.Transition
-				presentation={zoomBlur({})}
-				timing={linearTiming({durationInFrames: 20})}
+				presentation={zoomBlur({
+					_experimentalEffects: [
+						tint({
+							color: 'red',
+						}),
+					],
+				})}
+				timing={linearTiming({
+					durationInFrames: 40,
+					easing: Easing.bezier(0.36, 0.53, 0, 1),
+				})}
 			/>
 			<TransitionSeries.Sequence durationInFrames={90}>
-				<Letter color="pink">B</Letter>
+				<Sequence>
+					<Img
+						className="absolute object-cover"
+						src={staticFile('2.jpg')}
+					></Img>
+					<Letter color="transparent">B</Letter>
+				</Sequence>
 			</TransitionSeries.Sequence>
 		</TransitionSeries>
 	);

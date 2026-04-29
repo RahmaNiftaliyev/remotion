@@ -1,6 +1,18 @@
-import {useMemo, useRef, useLayoutEffect, useImperativeHandle} from 'react';
+import {
+	useMemo,
+	useRef,
+	useLayoutEffect,
+	useImperativeHandle,
+	useState,
+} from 'react';
 import type {RefObject} from 'react';
-import {AbsoluteFill, useVideoConfig} from 'remotion';
+import type {EffectsProp} from 'remotion';
+import {
+	AbsoluteFill,
+	Internals,
+	useCurrentFrame,
+	useVideoConfig,
+} from 'remotion';
 import type {
 	OverlayComponentProps,
 	TransitionPresentation,
@@ -8,8 +20,8 @@ import type {
 } from '../types';
 
 export type ZoomBlurProps = {
-	scale?: number;
 	rotation?: number;
+	_experimentalEffects?: EffectsProp;
 };
 
 export const ZoomBlurPresentation: React.FC<
@@ -128,6 +140,8 @@ export type GLState = {
 	uTime: WebGLUniformLocation | null;
 	uPrev: WebGLUniformLocation | null;
 	uNext: WebGLUniformLocation | null;
+	uAspect: WebGLUniformLocation | null;
+	uMaxAngle: WebGLUniformLocation | null;
 };
 
 const VERTEX_SHADER = `#version 300 es
@@ -144,12 +158,32 @@ precision highp float;
 uniform sampler2D u_prev;
 uniform sampler2D u_next;
 uniform float u_time;
+uniform float u_aspect;
+uniform float u_max_angle;
 
 in vec2 v_uv;
 out vec4 outColor;
 
 const int SAMPLES = 16;
 const float STRENGTH = 0.35;
+
+vec2 transformUV(vec2 uv, float angle, float scale) {
+	vec2 p = uv - 0.5;
+	p.x *= u_aspect;
+	p /= scale;
+	float c = cos(-angle);
+	float s = sin(-angle);
+	p = vec2(p.x * c - p.y * s, p.x * s + p.y * c);
+	p.x /= u_aspect;
+	return p + 0.5;
+}
+
+float coverScale(float angle) {
+	float c = abs(cos(angle));
+	float s = abs(sin(angle));
+	float ar = max(u_aspect, 1.0 / u_aspect);
+	return c + ar * s;
+}
 
 vec4 zoomBlur(sampler2D tex, vec2 uv, float strength) {
 	vec2 dir = uv - 0.5;
@@ -164,8 +198,15 @@ vec4 zoomBlur(sampler2D tex, vec2 uv, float strength) {
 
 void main() {
 	float mixT = clamp(u_time, 0.0, 1.0);
-	vec4 prev = zoomBlur(u_prev, v_uv, STRENGTH * (1.0 - mixT));
-	vec4 next = zoomBlur(u_next, v_uv, STRENGTH * mixT);
+
+	float nextAngle = u_max_angle * mixT;
+	float prevAngle = -u_max_angle * (1.0 - mixT);
+
+	vec2 prevUV = transformUV(v_uv, prevAngle, coverScale(prevAngle));
+	vec2 nextUV = transformUV(v_uv, nextAngle, coverScale(nextAngle));
+
+	vec4 prev = zoomBlur(u_prev, prevUV, STRENGTH * (1.0 - mixT));
+	vec4 next = zoomBlur(u_next, nextUV, STRENGTH * mixT);
 	outColor = mix(prev, next, (1.0 - mixT));
 }`;
 
@@ -236,7 +277,7 @@ const createTexture = (gl: WebGL2RenderingContext): WebGLTexture => {
 };
 
 export const init = (
-	canvas: HTMLCanvasElement,
+	canvas: OffscreenCanvas,
 	stateRef: RefObject<GLState | null>,
 ) => {
 	const gl = canvas.getContext('webgl2', {premultipliedAlpha: true});
@@ -269,6 +310,8 @@ export const init = (
 		uTime: gl.getUniformLocation(program, 'u_time'),
 		uPrev: gl.getUniformLocation(program, 'u_prev'),
 		uNext: gl.getUniformLocation(program, 'u_next'),
+		uAspect: gl.getUniformLocation(program, 'u_aspect'),
+		uMaxAngle: gl.getUniformLocation(program, 'u_max_angle'),
 	};
 
 	return () => {
@@ -292,6 +335,7 @@ export const draw = ({
 	width,
 	height,
 	time,
+	rotation,
 }: {
 	prevImage: ElementImage | null;
 	nextImage: ElementImage | null;
@@ -299,8 +343,19 @@ export const draw = ({
 	width: number;
 	height: number;
 	time: number;
+	rotation: number;
 }) => {
-	const {gl, program, prevTex, nextTex, uTime, uPrev, uNext} = state;
+	const {
+		gl,
+		program,
+		prevTex,
+		nextTex,
+		uTime,
+		uPrev,
+		uNext,
+		uAspect,
+		uMaxAngle,
+	} = state;
 	if (
 		!prevImage ||
 		!nextImage ||
@@ -348,26 +403,33 @@ export const draw = ({
 	gl.uniform1i(uNext, 1);
 
 	gl.uniform1f(uTime, time);
+	gl.uniform1f(uAspect, width / height);
+	gl.uniform1f(uMaxAngle, rotation);
 
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 };
 
 export const ShaderOverlay: React.FC<OverlayComponentProps<ZoomBlurProps>> = ({
 	refToMethods,
-	passedProps: {scale = 3, rotation = Math.PI / 2},
-	presentationProgress,
+	passedProps: {rotation = Math.PI / 6, _experimentalEffects = []},
 }) => {
 	const {width, height} = useVideoConfig();
+	const [offscreenCanvas] = useState(() => new OffscreenCanvas(width, height));
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const stateRef = useRef<GLState | null>(null);
+	const frame = useCurrentFrame();
+	const frameRef = useRef(frame);
+	frameRef.current = frame;
 
 	useLayoutEffect(() => {
-		const cleanup = init(canvasRef.current!, stateRef);
+		const cleanup = init(offscreenCanvas, stateRef);
 
 		return () => {
 			cleanup();
 		};
-	}, []);
+	}, [offscreenCanvas]);
+
+	const chainState = Internals.useEffectChainState();
 
 	useImperativeHandle(refToMethods, () => {
 		return {
@@ -387,6 +449,18 @@ export const ShaderOverlay: React.FC<OverlayComponentProps<ZoomBlurProps>> = ({
 					width,
 					height,
 					time: progress,
+					rotation,
+				});
+				offscreenCanvas.width = width;
+				offscreenCanvas.height = height;
+				Internals.runEffectChain({
+					state: chainState.get(width, height)!,
+					source: offscreenCanvas,
+					effects: _experimentalEffects,
+					frame: frameRef.current,
+					width,
+					height,
+					output: canvasRef.current,
 				});
 			},
 			clear: () => {
@@ -399,13 +473,26 @@ export const ShaderOverlay: React.FC<OverlayComponentProps<ZoomBlurProps>> = ({
 		};
 	});
 
+	const outerStyle: React.CSSProperties = useMemo(() => {
+		return {
+			pointerEvents: 'none',
+		};
+	}, []);
+
+	const innerStyle: React.CSSProperties = useMemo(() => {
+		return {
+			width: '100%',
+			height: '100%',
+		};
+	}, []);
+
 	return (
-		<AbsoluteFill style={{pointerEvents: 'none'}}>
+		<AbsoluteFill style={outerStyle}>
 			<canvas
 				ref={canvasRef}
 				width={width}
 				height={height}
-				style={{width: '100%', height: '100%'}}
+				style={innerStyle}
 			/>
 		</AbsoluteFill>
 	);
@@ -417,6 +504,6 @@ export const zoomBlur = (
 	return {
 		component: ZoomBlurPresentation,
 		props: props ?? {},
-		requiresOverlay: ShaderOverlay,
+		overlay: ShaderOverlay,
 	};
 };

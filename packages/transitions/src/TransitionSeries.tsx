@@ -1,5 +1,5 @@
 import type {FC, PropsWithChildren} from 'react';
-import {Children, useCallback, useMemo} from 'react';
+import {Children, useCallback, useMemo, useRef} from 'react';
 import type {
 	AbsoluteFillLayout,
 	LayoutAndStyle,
@@ -18,6 +18,7 @@ import type {
 	TransitionSeriesTransitionProps,
 } from './types.js';
 import {validateDurationInFrames} from './validate.js';
+import {ZoomBlurOverlay} from './zoom-blur-overlay.js';
 
 const TransitionSeriesTransition = function <
 	PresentationProps extends Record<string, unknown>,
@@ -77,12 +78,15 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 	const {fps} = useVideoConfig();
 	const frame = useCurrentFrame();
 
+	const prevImageRef = useRef<ElementImage | null>(null);
+	const nextImageRef = useRef<ElementImage | null>(null);
+
 	const onPreviousElementImage = useCallback((elementImage: ElementImage) => {
-		console.log('onPreviousElementImage', elementImage);
+		prevImageRef.current = elementImage;
 	}, []);
 
 	const onNextElementImage = useCallback((elementImage: ElementImage) => {
-		console.log('onNextElementImage', elementImage);
+		nextImageRef.current = elementImage;
 	}, []);
 
 	const childrenValue = useMemo(() => {
@@ -539,7 +543,15 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 			);
 		});
 
-		return [...(mainChildren || []), ...overlayElements];
+		const shaderOverlay = (
+			<ZoomBlurOverlay
+				key="zoom-blur-overlay"
+				prevImageRef={prevImageRef}
+				nextImageRef={nextImageRef}
+			/>
+		);
+
+		return [...(mainChildren || []), ...overlayElements, shaderOverlay];
 	}, [children, fps, frame, onNextElementImage, onPreviousElementImage]);
 
 	// eslint-disable-next-line react/jsx-no-useless-fragment

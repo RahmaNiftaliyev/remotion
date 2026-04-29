@@ -73,6 +73,8 @@ export const setupBlur = (
 	}
 
 	gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+	// Align DOM image/video rows with texture coords used by the fullscreen quad.
+	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
 	const vs = compileShader(gl, gl.VERTEX_SHADER, BLUR_VS);
 	const fs = compileShader(gl, gl.FRAGMENT_SHADER, fragmentSource);

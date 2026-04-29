@@ -278,6 +278,9 @@ const halftoneDef = defineEffect<HalftoneParams, HalftoneState>({
 		}
 
 		gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+		// DOM sources (video, canvas) are top-left origin; GL texture space matches
+		// our quad UVs (y up in clip space) only when uploads flip vertically.
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
 		const vs = compileShader(gl, gl.VERTEX_SHADER, HALFTONE_VS);
 		const fs = compileShader(gl, gl.FRAGMENT_SHADER, HALFTONE_FS);

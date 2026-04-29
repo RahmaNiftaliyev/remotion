@@ -1,4 +1,5 @@
 import type {ComponentType} from 'react';
+import type React from 'react';
 
 export type PresentationDirection = 'entering' | 'exiting';
 
@@ -16,6 +17,27 @@ export type TransitionSeriesTransitionProps<
 
 type LooseComponentType<T> = ComponentType<T> | ((props: T) => React.ReactNode);
 
+export type OverlayMethods = {
+	draw: (
+		prevImage: ElementImage | null,
+		nextImage: ElementImage | null,
+		progress: number,
+	) => void;
+	clear: () => void;
+};
+
+export type MandatoryOverlayProps = {
+	readonly refToMethods: React.RefObject<OverlayMethods | null>;
+};
+
+export type OverlayComponentProps<
+	PresentationProps extends Record<string, unknown>,
+> = Pick<
+	TransitionPresentationComponentProps<PresentationProps>,
+	'presentationProgress' | 'passedProps'
+> &
+	MandatoryOverlayProps;
+
 export type TransitionPresentation<
 	PresentationProps extends Record<string, unknown>,
 > = {
@@ -23,7 +45,9 @@ export type TransitionPresentation<
 		TransitionPresentationComponentProps<PresentationProps>
 	>;
 	props: PresentationProps;
-	requiresOverlay?: boolean;
+	requiresOverlay?: LooseComponentType<
+		OverlayComponentProps<PresentationProps>
+	>;
 };
 
 export type TransitionPresentationComponentProps<

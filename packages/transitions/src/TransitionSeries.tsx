@@ -13,9 +13,8 @@ import {
 } from './context.js';
 import {flattenChildren} from './flatten-children.js';
 import {slide} from './presentations/slide.js';
-import type {Methods} from './shader-overlay.js';
-import {ShaderOverlay} from './shader-overlay.js';
 import type {
+	OverlayMethods,
 	TransitionSeriesOverlayProps,
 	TransitionSeriesTransitionProps,
 } from './types.js';
@@ -87,7 +86,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 	const prevImageRef = useRef<ElementImageAndProgress | null>(null);
 	const nextImageRef = useRef<ElementImageAndProgress | null>(null);
 
-	const refToMethods = useRef<Methods | null>(null);
+	const refToMethods = useRef<OverlayMethods | null>(null);
 
 	const drawIfSynced = useCallback(() => {
 		const prevImage = prevImageRef.current;
@@ -440,6 +439,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 				const UppercaseNextPresentation = nextPresentation.component;
 				const UppercasePrevPresentation = prevPresentation.component;
 
+				const RequiresOverlay = prevPresentation.requiresOverlay;
 				return (
 					<Sequence
 						// eslint-disable-next-line react/no-array-index-key
@@ -480,8 +480,12 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								</UppercasePrevPresentation>
 							</WrapInExitingProgressContext>
 						</UppercaseNextPresentation>
-						{prevPresentation.requiresOverlay && (
-							<ShaderOverlay refToMethods={refToMethods} />
+						{RequiresOverlay && (
+							<RequiresOverlay
+								refToMethods={refToMethods}
+								presentationProgress={nextProgress}
+								passedProps={nextPresentation.props ?? {}}
+							/>
 						)}
 					</Sequence>
 				);
@@ -492,6 +496,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 
 				const UppercasePrevPresentation = prevPresentation.component;
 
+				const RequiresOverlay = prevPresentation.requiresOverlay;
 				return (
 					<Sequence
 						// eslint-disable-next-line react/no-array-index-key
@@ -518,8 +523,12 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								{child}
 							</WrapInEnteringProgressContext>
 						</UppercasePrevPresentation>
-						{prevPresentation.requiresOverlay && (
-							<ShaderOverlay refToMethods={refToMethods} />
+						{RequiresOverlay && (
+							<RequiresOverlay
+								refToMethods={refToMethods}
+								presentationProgress={prevProgress}
+								passedProps={prevPresentation.props ?? {}}
+							/>
 						)}
 					</Sequence>
 				);

@@ -1,13 +1,16 @@
-import React, {useLayoutEffect, useRef} from 'react';
-import {useMemo} from 'react';
+import {useMemo, useRef, useLayoutEffect, useImperativeHandle} from 'react';
 import type {RefObject} from 'react';
-import {AbsoluteFill} from 'remotion';
+import {AbsoluteFill, useVideoConfig} from 'remotion';
 import type {
+	OverlayComponentProps,
 	TransitionPresentation,
 	TransitionPresentationComponentProps,
 } from '../types';
 
-export type ZoomBlurProps = {};
+export type ZoomBlurProps = {
+	scale?: number;
+	rotation?: number;
+};
 
 export const ZoomBlurPresentation: React.FC<
 	TransitionPresentationComponentProps<ZoomBlurProps>
@@ -49,7 +52,7 @@ export const ZoomBlurPresentation: React.FC<
 			}
 
 			const isFrontend =
-				presentationProgressRef.current < 0.5 &&
+				presentationProgressRef.current === 0 &&
 				presentationDirection === 'exiting';
 			const isBackend =
 				presentationProgressRef.current === 1 &&
@@ -63,11 +66,15 @@ export const ZoomBlurPresentation: React.FC<
 				throw new Error('Failed to get context');
 			}
 
-			// TODO: This is stupid for transparent content
 			if (isBackend || isFrontend) {
 				context.drawElementImage(elementImage, 0, 0);
 			} else {
-				context.reset();
+				// Since we also need to wait for the exit component
+				// this can be 1 frame off, so we delay resetting
+				// the canvas a bit
+				requestAnimationFrame(() => {
+					context.reset();
+				});
 			}
 		};
 
@@ -345,12 +352,71 @@ export const draw = ({
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 };
 
+export const ShaderOverlay: React.FC<OverlayComponentProps<ZoomBlurProps>> = ({
+	refToMethods,
+	passedProps: {scale = 3, rotation = Math.PI / 2},
+	presentationProgress,
+}) => {
+	const {width, height} = useVideoConfig();
+	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const stateRef = useRef<GLState | null>(null);
+
+	useLayoutEffect(() => {
+		const cleanup = init(canvasRef.current!, stateRef);
+
+		return () => {
+			cleanup();
+		};
+	}, []);
+
+	useImperativeHandle(refToMethods, () => {
+		return {
+			draw: (
+				prevImage: ElementImage | null,
+				nextImage: ElementImage | null,
+				progress: number,
+			) => {
+				if (!canvasRef.current || !stateRef.current) {
+					return;
+				}
+
+				draw({
+					prevImage,
+					nextImage,
+					state: stateRef.current,
+					width,
+					height,
+					time: progress,
+				});
+			},
+			clear: () => {
+				if (!stateRef.current) {
+					return;
+				}
+
+				clear({state: stateRef.current});
+			},
+		};
+	});
+
+	return (
+		<AbsoluteFill style={{pointerEvents: 'none'}}>
+			<canvas
+				ref={canvasRef}
+				width={width}
+				height={height}
+				style={{width: '100%', height: '100%'}}
+			/>
+		</AbsoluteFill>
+	);
+};
+
 export const zoomBlur = (
 	props: ZoomBlurProps,
 ): TransitionPresentation<ZoomBlurProps> => {
 	return {
 		component: ZoomBlurPresentation,
 		props: props ?? {},
-		requiresOverlay: true,
+		requiresOverlay: ShaderOverlay,
 	};
 };

@@ -57,6 +57,7 @@ export type TransitionPresentationComponentProps<
 	passedProps: PresentationProps;
 	presentationDurationInFrames: number;
 	onElementImage: (elementImage: ElementImage, progress: number) => void;
+	onUnmount: () => void;
 };
 
 export type TransitionSeriesOverlayProps = {

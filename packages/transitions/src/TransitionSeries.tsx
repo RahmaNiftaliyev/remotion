@@ -73,7 +73,7 @@ type TypeChild<PresentationProps extends Record<string, unknown>> =
 	| string;
 
 type ElementImageAndProgress = {
-	elementImage: ElementImage;
+	elementImage: ElementImage | null;
 	progress: number;
 };
 
@@ -92,24 +92,21 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 		const prevImage = prevImageRef.current;
 		const nextImage = nextImageRef.current;
 
-		const isEnded = prevImage && prevImage.progress === 1;
-		const hasNotBegun = nextImage && nextImage.progress === 0;
-		if (isEnded || hasNotBegun) {
-			refToMethods.current?.clear();
-			return;
-		}
-
-		if (prevImage && nextImage && prevImage.progress === nextImage.progress) {
+		if (
+			(prevImage && nextImage && prevImage.progress === nextImage.progress) ||
+			!prevImage ||
+			!nextImage
+		) {
 			refToMethods.current?.draw(
-				prevImage.elementImage,
-				nextImage.elementImage,
-				prevImage.progress,
+				prevImage?.elementImage ?? null,
+				nextImage?.elementImage ?? null,
+				prevImage?.progress ?? nextImage?.progress ?? 0,
 			);
 		}
 	}, []);
 
 	const onPreviousElementImage = useCallback(
-		(elementImage: ElementImage, progress: number) => {
+		(elementImage: ElementImage | null, progress: number) => {
 			prevImageRef.current = {elementImage, progress};
 			// TODO: Entrance / exit effects?
 
@@ -119,7 +116,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 	);
 
 	const onNextElementImage = useCallback(
-		(elementImage: ElementImage, progress: number) => {
+		(elementImage: ElementImage | null, progress: number) => {
 			nextImageRef.current = {elementImage, progress};
 
 			// TODO: draw to right index
@@ -459,6 +456,9 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 							onElementImage={(elementImage, progress) =>
 								onNextElementImage(elementImage, progress)
 							}
+							onUnmount={() => {
+								onNextElementImage(null, 0);
+							}}
 						>
 							<WrapInExitingProgressContext presentationProgress={nextProgress}>
 								<UppercasePrevPresentation
@@ -471,6 +471,9 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 									onElementImage={(elementImage, progress) =>
 										onPreviousElementImage(elementImage, progress)
 									}
+									onUnmount={() => {
+										onPreviousElementImage(null, 0);
+									}}
 								>
 									<WrapInEnteringProgressContext
 										presentationProgress={prevProgress}
@@ -480,7 +483,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								</UppercasePrevPresentation>
 							</WrapInExitingProgressContext>
 						</UppercaseNextPresentation>
-						{RequiresOverlay && nextProgress > 0 && nextProgress < 1 && (
+						{RequiresOverlay && (
 							<RequiresOverlay
 								refToMethods={refToMethods}
 								presentationProgress={nextProgress}
@@ -516,6 +519,9 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 							onElementImage={(elementImage, progress) =>
 								onPreviousElementImage(elementImage, progress)
 							}
+							onUnmount={() => {
+								onPreviousElementImage(null, 0);
+							}}
 						>
 							<WrapInEnteringProgressContext
 								presentationProgress={prevProgress}
@@ -523,7 +529,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 								{child}
 							</WrapInEnteringProgressContext>
 						</UppercasePrevPresentation>
-						{RequiresOverlay && prevProgress > 0 && prevProgress < 1 && (
+						{RequiresOverlay && (
 							<RequiresOverlay
 								refToMethods={refToMethods}
 								presentationProgress={prevProgress}
@@ -539,6 +545,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 
 				const UppercaseNextPresentation = nextPresentation.component;
 
+				const RequiresOverlay = nextPresentation.overlay;
 				return (
 					<Sequence
 						// eslint-disable-next-line react/no-array-index-key
@@ -558,11 +565,21 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 							onElementImage={(elementImage, progress) =>
 								onNextElementImage(elementImage, progress)
 							}
+							onUnmount={() => {
+								onNextElementImage(null, 0);
+							}}
 						>
 							<WrapInExitingProgressContext presentationProgress={nextProgress}>
 								{child}
 							</WrapInExitingProgressContext>
 						</UppercaseNextPresentation>
+						{RequiresOverlay && (
+							<RequiresOverlay
+								refToMethods={refToMethods}
+								presentationProgress={nextProgress}
+								passedProps={nextPresentation.props ?? {}}
+							/>
+						)}
 					</Sequence>
 				);
 			}

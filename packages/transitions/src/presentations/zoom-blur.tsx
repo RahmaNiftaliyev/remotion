@@ -29,6 +29,7 @@ export const ZoomBlurPresentation: React.FC<
 > = ({
 	children,
 	onElementImage,
+	onUnmount,
 	presentationProgress,
 	presentationDirection,
 }) => {
@@ -63,30 +64,12 @@ export const ZoomBlurPresentation: React.FC<
 				return;
 			}
 
-			const isFrontend =
-				presentationProgressRef.current === 0 &&
-				presentationDirection === 'exiting';
-			const isBackend =
-				presentationProgressRef.current === 1 &&
-				presentationDirection === 'entering';
-
 			const elementImage = canvas.captureElementImage(firstChild);
 			onElementImage(elementImage, presentationProgressRef.current);
 
 			const context = canvas.getContext('2d');
 			if (!context) {
 				throw new Error('Failed to get context');
-			}
-
-			if (isBackend || isFrontend) {
-				context.drawElementImage(elementImage, 0, 0);
-			} else {
-				// Since we also need to wait for the exit component
-				// this can be 1 frame off, so we delay resetting
-				// the canvas a bit
-				requestAnimationFrame(() => {
-					context.reset();
-				});
 			}
 		};
 
@@ -107,21 +90,10 @@ export const ZoomBlurPresentation: React.FC<
 	}, [presentationProgress]);
 
 	useLayoutEffect(() => {
-		const canvas = canvasRef.current;
-		if (!canvas) {
-			return;
-		}
-
-		// Size the canvas grid to match the device scale factor to prevent blurriness.
-		const observer = new ResizeObserver(([entry]) => {
-			canvas.width = entry.devicePixelContentBoxSize[0].inlineSize;
-			canvas.height = entry.devicePixelContentBoxSize[0].blockSize;
-		});
-		observer.observe(canvas, {box: 'device-pixel-content-box'});
 		return () => {
-			observer.disconnect();
+			onUnmount();
 		};
-	}, []);
+	}, [onUnmount]);
 
 	return (
 		<AbsoluteFill>
@@ -356,16 +328,22 @@ export const draw = ({
 		uAspect,
 		uMaxAngle,
 	} = state;
-	if (
-		!prevImage ||
-		!nextImage ||
-		prevImage.width === 0 ||
-		prevImage.height === 0 ||
-		nextImage.width === 0 ||
-		nextImage.height === 0
-	) {
+	if (!prevImage && !nextImage) {
 		return;
 	}
+
+	if (prevImage && (prevImage.width === 0 || prevImage.height === 0)) {
+		return;
+	}
+
+	if (nextImage && (nextImage.width === 0 || nextImage.height === 0)) {
+		return;
+	}
+
+	// When one side is missing, force the mix to fully show the other.
+	// At time=0 the shader outputs nextImage (and nextAngle = 0).
+	// At time=1 the shader outputs prevImage (and prevAngle = 0).
+	const effectiveTime = !prevImage ? 0 : !nextImage ? 1 : time;
 
 	gl.viewport(0, 0, width, height);
 	gl.clearColor(0, 0, 0, 0);
@@ -402,7 +380,7 @@ export const draw = ({
 
 	gl.uniform1i(uNext, 1);
 
-	gl.uniform1f(uTime, time);
+	gl.uniform1f(uTime, effectiveTime);
 	gl.uniform1f(uAspect, width / height);
 	gl.uniform1f(uMaxAngle, rotation);
 

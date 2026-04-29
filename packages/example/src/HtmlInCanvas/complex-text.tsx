@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, HtmlInCanvas, staticFile} from 'remotion';
+import {AbsoluteFill, HtmlInCanvas, Img, staticFile} from 'remotion';
 
 // Port of https://github.com/WICG/html-in-canvas/blob/main/Examples/complex-text.html —
 // demonstrates rasterizing rich text (RTL, vertical writing mode, emoji,
@@ -48,7 +48,7 @@ export const HtmlInCanvasComplexText: React.FC = () => {
 					vertical text,
 					<p style={{writingMode: 'vertical-rl'}}>这是垂直文本</p>
 					an inline image (
-					<img
+					<Img
 						width={150}
 						src={staticFile('1.jpg')}
 						alt="inline"

@@ -1,3 +1,4 @@
+import type {EffectDescriptor} from 'remotion';
 import {Internals} from 'remotion';
 
 const {createDescriptor, defineEffect} = Internals;
@@ -27,5 +28,6 @@ const blurVerticalDef = defineEffect<BlurVerticalParams, BlurState>({
 
 // Single vertical pass of the separable Gaussian blur. Most callers should
 // use [`blur`](./index.ts) which composes both horizontal and vertical passes.
-export const blurVertical = (params: BlurVerticalParams) =>
-	createDescriptor(blurVerticalDef, params);
+export const blurVertical = (
+	params: BlurVerticalParams,
+): EffectDescriptor<unknown> => createDescriptor(blurVerticalDef, params);

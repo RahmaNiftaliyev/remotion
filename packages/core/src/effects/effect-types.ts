@@ -1,4 +1,4 @@
-// Internal types for the canvas-effects system (exported via `remotion` → `./internals.js`).
+// Internal types for the effects system (exported via `remotion` → `./internals.js`).
 //
 // An effect is a description of how to transform an input image into an output
 // image, executed inside a per-frame chain runtime owned by a source component

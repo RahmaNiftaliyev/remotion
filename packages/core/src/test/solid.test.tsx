@@ -1,6 +1,6 @@
 import {afterEach, expect, test} from 'bun:test';
 import {cleanup, render} from '@testing-library/react';
-import {Solid} from '../canvas-effects/Solid.js';
+import {Solid} from '../effects/Solid.js';
 import {WrapSequenceContext} from './wrap-sequence-context.js';
 
 // happy-dom doesn't implement canvas; install a no-op stub so the chain

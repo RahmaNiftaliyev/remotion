@@ -1,13 +1,10 @@
 import {expect, test} from 'bun:test';
-import {
-	flattenEffects,
-	groupByBackend,
-} from '../canvas-effects/effect-internals.js';
+import {flattenEffects, groupByBackend} from '../effects/effect-internals.js';
 import type {
 	Backend,
 	EffectDefinition,
 	EffectDescriptor,
-} from '../canvas-effects/effect-types.js';
+} from '../effects/effect-types.js';
 
 const makeDef = (
 	type: string,

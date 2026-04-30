@@ -1,6 +1,5 @@
 import './_check-rsc.js';
 import './asset-types.js';
-import {Solid} from './canvas-effects/Solid.js';
 import {Clipper} from './Clipper.js';
 import type {Codec} from './codec.js';
 import {Composition} from './Composition.js';
@@ -13,6 +12,7 @@ import type {
 	TRenderAsset,
 } from './CompositionManager.js';
 import type {DelayRenderScope} from './delay-render.js';
+import {Solid} from './effects/Solid.js';
 import {addSequenceStackTraces} from './enable-sequence-stack-traces.js';
 import type {StaticFile} from './get-static-files.js';
 import {useIsPlayer} from './is-player.js';
@@ -133,9 +133,10 @@ export * from './AbsoluteFill.js';
 export * from './animated-image/index.js';
 export type {
 	EffectDefinitionAndStack,
+	EffectDescriptor,
 	EffectsProp,
-} from './canvas-effects/index.js';
-export type {SolidProps} from './canvas-effects/Solid.js';
+} from './effects/index.js';
+export type {SolidProps} from './effects/Solid.js';
 export {ENABLE_EFFECTS} from './enable-effects.js';
 export {
 	HtmlInCanvas,

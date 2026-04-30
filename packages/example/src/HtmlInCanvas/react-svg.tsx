@@ -1,4 +1,4 @@
-import {halftone, tint} from '@remotion/canvas-effects';
+import {halftone, tint} from '@remotion/effects';
 import React from 'react';
 import {HtmlInCanvas, useVideoConfig} from 'remotion';
 import ReactSvg from '../ReactSvg';

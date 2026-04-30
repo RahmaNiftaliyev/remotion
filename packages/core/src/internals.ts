@@ -23,13 +23,6 @@ import {
 	CanUseRemotionHooks,
 	CanUseRemotionHooksProvider,
 } from './CanUseRemotionHooks.js';
-import {
-	createDescriptor,
-	defineEffect,
-} from './canvas-effects/define-effect.js';
-import {runEffectChain} from './canvas-effects/run-effect-chain.js';
-import {useEffectChainState} from './canvas-effects/use-effect-chain-state.js';
-import {useMemoizedEffects} from './canvas-effects/use-memoized-effects.js';
 import {CompositionRenderErrorContext} from './composition-render-error-context.js';
 import {type CompProps} from './Composition.js';
 import type {
@@ -52,6 +45,10 @@ import {
 	EditorPropsProvider,
 	timeValueRef,
 } from './EditorProps.js';
+import {createDescriptor, defineEffect} from './effects/define-effect.js';
+import {runEffectChain} from './effects/run-effect-chain.js';
+import {useEffectChainState} from './effects/use-effect-chain-state.js';
+import {useMemoizedEffects} from './effects/use-memoized-effects.js';
 import {
 	addSequenceStackTraces,
 	getComponentsToAddStacksTo,
@@ -173,7 +170,7 @@ import {
 	RemotionContextProvider,
 	useRemotionContexts,
 } from './wrap-remotion-context.js';
-export type {EffectChainState} from './canvas-effects/run-effect-chain.js';
+export type {EffectChainState} from './effects/run-effect-chain.js';
 
 // needs to be in core package so gets deduplicated in studio
 const compositionSelectorRef = createRef<{

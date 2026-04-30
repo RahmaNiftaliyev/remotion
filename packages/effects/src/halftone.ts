@@ -1,4 +1,4 @@
-import type {SequenceSchema} from 'remotion';
+import type {EffectDescriptor, SequenceSchema} from 'remotion';
 import {Internals} from 'remotion';
 
 const {createDescriptor, defineEffect} = Internals;
@@ -420,5 +420,6 @@ const halftoneDef = defineEffect<HalftoneParams, HalftoneState>({
 // (defaults to `dotSize`). `sampling` controls texture interpolation when
 // reading luminance at grid centres. `shadeOutside` fills transparent areas
 // with a screen tone instead of luminance-driven ink on opaque pixels alone.
-export const halftone = (params: HalftoneParams = {}) =>
-	createDescriptor(halftoneDef, params);
+export const halftone = (
+	params: HalftoneParams = {},
+): EffectDescriptor<unknown> => createDescriptor(halftoneDef, params);

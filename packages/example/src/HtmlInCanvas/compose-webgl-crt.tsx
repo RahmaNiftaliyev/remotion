@@ -1,4 +1,4 @@
-import {tint} from '@remotion/canvas-effects';
+import {tint} from '@remotion/effects';
 import React, {useCallback, useRef} from 'react';
 import {
 	HtmlInCanvas,

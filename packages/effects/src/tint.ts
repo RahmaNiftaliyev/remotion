@@ -1,4 +1,4 @@
-import type {SequenceSchema} from 'remotion';
+import type {EffectDescriptor, SequenceSchema} from 'remotion';
 import {Internals} from 'remotion';
 
 const {createDescriptor, defineEffect} = Internals;
@@ -56,4 +56,5 @@ const tintDef = defineEffect<TintParams, null>({
 // Tints the source with a flat color. `amount` controls the blend strength
 // (0 = no tint, 1 = full color over opaque pixels). Operates on the 2D
 // backend; tinting respects the source's alpha mask.
-export const tint = (params: TintParams) => createDescriptor(tintDef, params);
+export const tint = (params: TintParams): EffectDescriptor<unknown> =>
+	createDescriptor(tintDef, params);

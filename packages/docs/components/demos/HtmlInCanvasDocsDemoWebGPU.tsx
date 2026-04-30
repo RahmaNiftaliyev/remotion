@@ -11,7 +11,7 @@ import {HtmlInCanvasDocsVideoFallback} from './HtmlInCanvasDocsVideoFallback';
 import {useHtmlInCanvasDocsDemoBranch} from './useHtmlInCanvasDocsDemoBranch';
 
 // Minimal WebGPU types — `@webgpu/types` is intentionally not a dependency,
-// matching the convention in `packages/core/src/canvas-effects/gpu-device.ts`.
+// matching the convention in `packages/core/src/effects/gpu-device.ts`.
 type Gpu = {
 	requestAdapter(): Promise<GpuAdapter | null>;
 	getPreferredCanvasFormat(): string;

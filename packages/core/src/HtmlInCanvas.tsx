@@ -6,11 +6,11 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
-import type {EffectsProp} from './canvas-effects/effect-types.js';
-import {runEffectChain} from './canvas-effects/run-effect-chain.js';
-import {useEffectChainState} from './canvas-effects/use-effect-chain-state.js';
 import type {SequenceControls} from './CompositionManager.js';
 import {delayRender} from './delay-render.js';
+import type {EffectsProp} from './effects/effect-types.js';
+import {runEffectChain} from './effects/run-effect-chain.js';
+import {useEffectChainState} from './effects/use-effect-chain-state.js';
 import {addSequenceStackTraces} from './enable-sequence-stack-traces.js';
 import type {SequenceSchema} from './sequence-field-schema.js';
 import type {

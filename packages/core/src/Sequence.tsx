@@ -7,10 +7,10 @@ import React, {
 	useState,
 } from 'react';
 import {AbsoluteFill} from './AbsoluteFill.js';
-import {flattenEffects} from './canvas-effects/effect-internals.js';
-import type {EffectsProp} from './canvas-effects/effect-types.js';
-import {useMemoizedEffects} from './canvas-effects/use-memoized-effects.js';
 import type {LoopDisplay, SequenceControls} from './CompositionManager.js';
+import {flattenEffects} from './effects/effect-internals.js';
+import type {EffectsProp} from './effects/effect-types.js';
+import {useMemoizedEffects} from './effects/use-memoized-effects.js';
 import {ENABLE_EFFECTS} from './enable-effects.js';
 import {Freeze} from './freeze.js';
 import {useNonce} from './nonce.js';

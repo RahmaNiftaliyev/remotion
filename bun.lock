@@ -153,20 +153,6 @@
         "react-dom": ">=16.8.0",
       },
     },
-    "packages/canvas-effects": {
-      "name": "@remotion/canvas-effects",
-      "version": "4.0.451",
-      "devDependencies": {
-        "@remotion/eslint-config-internal": "workspace:*",
-        "@typescript/native-preview": "catalog:",
-        "eslint": "catalog:",
-        "react": "catalog:",
-      },
-      "peerDependencies": {
-        "react": ">=16.8.0",
-        "remotion": "workspace:*",
-      },
-    },
     "packages/captions": {
       "name": "@remotion/captions",
       "version": "4.0.454",
@@ -562,6 +548,20 @@
         "eslint": "catalog:",
       },
     },
+    "packages/effects": {
+      "name": "@remotion/effects",
+      "version": "4.0.451",
+      "devDependencies": {
+        "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
+        "eslint": "catalog:",
+        "react": "catalog:",
+      },
+      "peerDependencies": {
+        "react": ">=16.8.0",
+        "remotion": "workspace:*",
+      },
+    },
     "packages/elevenlabs": {
       "name": "@remotion/elevenlabs",
       "version": "4.0.454",
@@ -675,10 +675,10 @@
         "@remotion/animation-utils": "workspace:*",
         "@remotion/babel-loader": "workspace:*",
         "@remotion/bundler": "workspace:*",
-        "@remotion/canvas-effects": "workspace:*",
         "@remotion/captions": "workspace:*",
         "@remotion/cli": "workspace:*",
         "@remotion/cloudrun": "workspace:*",
+        "@remotion/effects": "workspace:*",
         "@remotion/enable-scss": "workspace:*",
         "@remotion/eslint-config-flat": "workspace:*",
         "@remotion/eslint-plugin": "workspace:*",
@@ -3794,8 +3794,6 @@
 
     "@remotion/bundler": ["@remotion/bundler@workspace:packages/bundler"],
 
-    "@remotion/canvas-effects": ["@remotion/canvas-effects@workspace:packages/canvas-effects"],
-
     "@remotion/captions": ["@remotion/captions@workspace:packages/captions"],
 
     "@remotion/cli": ["@remotion/cli@workspace:packages/cli"],
@@ -3827,6 +3825,8 @@
     "@remotion/discord-poster": ["@remotion/discord-poster@workspace:packages/discord-poster"],
 
     "@remotion/docusaurus-plugin": ["@remotion/docusaurus-plugin@workspace:packages/docusaurus-plugin"],
+
+    "@remotion/effects": ["@remotion/effects@workspace:packages/effects"],
 
     "@remotion/elevenlabs": ["@remotion/elevenlabs@workspace:packages/elevenlabs"],
 

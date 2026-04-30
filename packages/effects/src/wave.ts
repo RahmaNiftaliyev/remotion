@@ -1,3 +1,4 @@
+import type {EffectDescriptor} from 'remotion';
 import {Internals} from 'remotion';
 
 const {createDescriptor, defineEffect} = Internals;
@@ -70,5 +71,5 @@ const waveDef = defineEffect<WaveParams, null>({
 
 // Vertical-displacement wave effect: shifts vertical slices of the source
 // up/down with a sine wave that animates over time. Operates on the 2D backend.
-export const wave = (params: WaveParams = {}) =>
+export const wave = (params: WaveParams = {}): EffectDescriptor<unknown> =>
 	createDescriptor(waveDef, params);

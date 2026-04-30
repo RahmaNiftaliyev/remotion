@@ -1,3 +1,4 @@
+import type {EffectDescriptor} from 'remotion';
 import {blurHorizontal} from './blur-horizontal.js';
 import {blurVertical} from './blur-vertical.js';
 
@@ -10,7 +11,9 @@ export type BlurParams = {
 // direction into the fragment shader at compile time. Callers spread the
 // result into the `effects` prop or pass the whole tuple thanks to the
 // runtime's automatic flattening.
-export const blur = (params: BlurParams) =>
+export const blur = (
+	params: BlurParams,
+): readonly [EffectDescriptor<unknown>, EffectDescriptor<unknown>] =>
 	[
 		blurHorizontal({radius: params.radius}),
 		blurVertical({radius: params.radius}),

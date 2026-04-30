@@ -19,6 +19,7 @@ import {
 	TREE_INDENT_PER_LEVEL,
 } from '../../helpers/timeline-layout';
 import {ExpandedTracksContext} from '../ExpandedTracksProvider';
+import {TimelineExpandArrowButton} from './TimelineExpandArrowButton';
 import {TimelineFieldRow} from './TimelineFieldRow';
 import {SPACING} from './TimelineListItem';
 
@@ -36,31 +37,11 @@ const separator: React.CSSProperties = {
 	backgroundColor: TIMELINE_TRACK_SEPARATOR,
 };
 
-const arrowButtonBase: React.CSSProperties = {
-	background: 'none',
-	border: 'none',
-	color: 'white',
-	cursor: 'pointer',
-	padding: 0,
-	display: 'flex',
-	alignItems: 'center',
-	justifyContent: 'center',
-	width: 12,
-	height: 12,
-	flexShrink: 0,
-	fontSize: 8,
-	marginRight: 6,
-	userSelect: 'none',
-	outline: 'none',
-	lineHeight: 1,
-};
-
 const groupRowBase: React.CSSProperties = {
 	height: TREE_GROUP_ROW_HEIGHT,
 	display: 'flex',
 	alignItems: 'center',
 	paddingRight: EXPANDED_SECTION_PADDING_RIGHT,
-	cursor: 'pointer',
 };
 
 const rowLabel: React.CSSProperties = {
@@ -73,22 +54,6 @@ const labelOnlyRowBase: React.CSSProperties = {
 	display: 'flex',
 	alignItems: 'center',
 	paddingRight: EXPANDED_SECTION_PADDING_RIGHT,
-};
-
-const Arrow: React.FC<{readonly isExpanded: boolean}> = ({isExpanded}) => {
-	return (
-		<svg
-			width="12"
-			height="12"
-			viewBox="0 0 8 8"
-			style={{
-				display: 'block',
-				transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
-			}}
-		>
-			<path d="M2 1L6 4L2 7Z" fill="white" />
-		</svg>
-	);
 };
 
 export const TimelineExpandedSection: React.FC<{
@@ -157,16 +122,12 @@ export const TimelineExpandedSection: React.FC<{
 			if (node.kind === 'group') {
 				const isExpanded = expandedTracks[node.id] ?? false;
 				return (
-					<div
-						role="button"
-						tabIndex={0}
-						style={{...groupRowBase, paddingLeft}}
-						onClick={() => toggleTrack(node.id)}
-						aria-expanded={isExpanded}
-					>
-						<span style={arrowButtonBase}>
-							<Arrow isExpanded={isExpanded} />
-						</span>
+					<div style={{...groupRowBase, paddingLeft}}>
+						<TimelineExpandArrowButton
+							isExpanded={isExpanded}
+							onClick={() => toggleTrack(node.id)}
+							label={node.label}
+						/>
 						<span style={rowLabel}>{node.label}</span>
 					</div>
 				);

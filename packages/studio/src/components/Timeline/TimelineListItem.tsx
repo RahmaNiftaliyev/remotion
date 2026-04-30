@@ -12,6 +12,10 @@ import {ContextMenu} from '../ContextMenu';
 import {ExpandedTracksContext} from '../ExpandedTracksProvider';
 import type {ComboboxValue} from '../NewComposition/ComboBox';
 import {showNotification} from '../Notifications/NotificationCenter';
+import {
+	TimelineExpandArrowButton,
+	TimelineExpandArrowSpacer,
+} from './TimelineExpandArrowButton';
 import {TimelineExpandedSection} from './TimelineExpandedSection';
 import {TimelineLayerEye} from './TimelineLayerEye';
 import {TimelineStack} from './TimelineStack';
@@ -23,25 +27,6 @@ export const SPACING = 5;
 const space: React.CSSProperties = {
 	width: SPACING,
 	flexShrink: 0,
-};
-
-const arrowButton: React.CSSProperties = {
-	background: 'none',
-	border: 'none',
-	color: 'white',
-	cursor: 'pointer',
-	padding: 0,
-	display: 'flex',
-	alignItems: 'center',
-	justifyContent: 'center',
-	width: 12,
-	height: 12,
-	flexShrink: 0,
-	fontSize: 8,
-	marginRight: 4,
-	userSelect: 'none',
-	outline: 'none',
-	lineHeight: 1,
 };
 
 export const TimelineListItem: React.FC<{
@@ -237,13 +222,6 @@ export const TimelineListItem: React.FC<{
 		};
 	}, [sequence.type]);
 
-	const arrowStyle: React.CSSProperties = useMemo(() => {
-		return {
-			...arrowButton,
-			transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
-		};
-	}, [isExpanded]);
-
 	const hasExpandableContent =
 		Boolean(sequence.controls) || sequence.effects.length > 0;
 
@@ -258,24 +236,13 @@ export const TimelineListItem: React.FC<{
 			{sequence.parent && nestedDepth > 0 ? <div style={space} /> : null}
 			{visualModeActive ? (
 				hasExpandableContent ? (
-					<button
-						type="button"
-						style={arrowStyle}
+					<TimelineExpandArrowButton
+						isExpanded={isExpanded}
 						onClick={onToggleExpand}
-						aria-expanded={isExpanded}
-						aria-label={`${isExpanded ? 'Collapse' : 'Expand'} track`}
-					>
-						<svg
-							width="12"
-							height="12"
-							viewBox="0 0 8 8"
-							style={{display: 'block'}}
-						>
-							<path d="M2 1L6 4L2 7Z" fill="white" />
-						</svg>
-					</button>
+						label="track"
+					/>
 				) : (
-					<div style={arrowButton} />
+					<TimelineExpandArrowSpacer />
 				)
 			) : null}
 			<TimelineStack

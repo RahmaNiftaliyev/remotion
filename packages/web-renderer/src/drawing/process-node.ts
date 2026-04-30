@@ -173,12 +173,17 @@ export const processNode = async ({
 		context.setTransform(new DOMMatrix());
 
 		const drawPrecomposedCanvas = () => {
+			// Source = full drawable (it always contains the precomposed content
+			// at its native size). Destination = `rectAfterTransforms`, so
+			// `drawImage` stretches when ancestor transforms (e.g. scale) make
+			// the destination smaller/larger than the layer canvas.
+			// See https://github.com/remotion-dev/remotion/issues/7199.
 			context.drawImage(
 				drawable,
 				0,
-				drawable.height - rectAfterTransforms.height,
-				rectAfterTransforms.width,
-				rectAfterTransforms.height,
+				0,
+				drawable.width,
+				drawable.height,
 				rectAfterTransforms.left - parentRect.x * scale,
 				rectAfterTransforms.top - parentRect.y * scale,
 				rectAfterTransforms.width,

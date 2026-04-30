@@ -15,6 +15,7 @@ import {drawPreviewOverlay} from './debug-overlay/preview-overlay';
 import type {DelayPlaybackIfNotPremounting} from './delay-playback-if-not-premounting';
 import {getDurationOrCompute} from './get-duration-or-compute';
 import {calculateEndTime, getTimeInSeconds} from './get-time-in-seconds';
+import {resolveAudioTrack} from './helpers/resolve-audio-track';
 import {isNetworkError} from './is-type-of-error';
 import type {Nonce, NonceManager} from './nonce-manager';
 import {makeNonceManager} from './nonce-manager';
@@ -262,9 +263,11 @@ export class MediaPlayer {
 
 			this.totalDuration = durationInSeconds;
 
-			const audioTrack = await (this.audioStreamIndex === null
-				? videoTrack?.getPrimaryPairableAudioTrack()
-				: (audioTracks[this.audioStreamIndex] ?? null));
+			const audioTrack = await resolveAudioTrack({
+				videoTrack,
+				audioTracks,
+				audioStreamIndex: this.audioStreamIndex,
+			});
 
 			if (!videoTrack && !audioTrack) {
 				return {type: 'no-tracks'};

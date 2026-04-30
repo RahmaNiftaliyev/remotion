@@ -352,6 +352,21 @@ const HtmlInCanvasInner: React.FC<
 		offscreenCanvas.height = height;
 
 		try {
+			const layoutCanvas = canvas2dRef.current;
+			if (!layoutCanvas) {
+				throw new Error('Canvas not found');
+			}
+
+			// `GPUQueue.copyElementImageToTexture` / related paths validate the
+			// layout canvas has a rendering context. `runEffectChain` only runs
+			// after `onPaint`, so acquire `2d` here before any capture or handler.
+			const layout2d = layoutCanvas.getContext('2d');
+			if (!layout2d) {
+				throw new Error(
+					'Failed to acquire 2D context for <HtmlInCanvas> layout canvas',
+				);
+			}
+
 			const handle = delayRender('onPaint');
 			if (!initializedRef.current) {
 				initializedRef.current = true;
@@ -361,7 +376,7 @@ const HtmlInCanvasInner: React.FC<
 				// can invalidate the capture's paint context, leaving subsequent
 				// uploads (e.g. `copyElementImageToTexture`) failing with
 				// "No context found for ElementImage" on the very first paint.
-				const initImage = canvas2dRef.current?.captureElementImage(element);
+				const initImage = layoutCanvas.captureElementImage(element);
 				const currentOnInit = onInitRef.current;
 				if (currentOnInit) {
 					const cleanup = await currentOnInit({
@@ -385,7 +400,7 @@ const HtmlInCanvasInner: React.FC<
 
 			const handler = onPaintRef.current ?? defaultOnPaint;
 
-			const elImage = canvas2dRef.current?.captureElementImage(element);
+			const elImage = layoutCanvas.captureElementImage(element);
 			await handler({canvas: offscreenCanvas, element, elementImage: elImage!});
 
 			await runEffectChain({

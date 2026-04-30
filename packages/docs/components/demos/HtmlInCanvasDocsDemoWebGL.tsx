@@ -1,16 +1,17 @@
 /**
- * Minimal WebGL2 + HtmlInCanvas sample (same code as /docs/remotion/html-in-canvas).
- * UV wave distortion in the fragment shader (not expressible as a static CSS filter).
+ * Minimal WebGL2 + HtmlInCanvas (same as packages/example minimal-docs-webgl).
  */
 import React, {useCallback, useRef} from 'react';
 import {
 	AbsoluteFill,
 	HtmlInCanvas,
-	HtmlInCanvasOnInit,
-	HtmlInCanvasOnPaint,
 	useCurrentFrame,
 	useVideoConfig,
+	type HtmlInCanvasOnInit,
+	type HtmlInCanvasOnPaint,
 } from 'remotion';
+import {HtmlInCanvasDocsVideoFallback} from './HtmlInCanvasDocsVideoFallback';
+import {useHtmlInCanvasDocsDemoBranch} from './useHtmlInCanvasDocsDemoBranch';
 
 type GlState = {
 	gl: WebGL2RenderingContext;
@@ -67,7 +68,7 @@ const QUAD = new Float32Array([
 	-1, -1, 0, 0, 1, -1, 1, 0, -1, 1, 0, 1, 1, -1, 1, 0, -1, 1, 0, 1, 1, 1, 1, 1,
 ]);
 
-export const HtmlInCanvasDocsMinimalWebGL: React.FC = () => {
+const HtmlInCanvasDocsWebGLInner: React.FC = () => {
 	const frame = useCurrentFrame();
 	const {width, height, fps} = useVideoConfig();
 	const gpuRef = useRef<GlState | null>(null);
@@ -167,11 +168,29 @@ export const HtmlInCanvasDocsMinimalWebGL: React.FC = () => {
 					justifyContent: 'center',
 					alignItems: 'center',
 					color: 'white',
+					backgroundColor: 'black',
 					fontSize: 120,
 				}}
 			>
-				<h1>Hello</h1>
+				{/* Explicit font size: Infima/Docusaurus global `h1` rules otherwise override the parent font size inside the docs Player. */}
+				<h1 style={{margin: 0, fontSize: 120}}>Hello</h1>
 			</AbsoluteFill>
 		</HtmlInCanvas>
 	);
+};
+
+export const HtmlInCanvasDocsDemoWebGL: React.FC = () => {
+	const branch = useHtmlInCanvasDocsDemoBranch();
+
+	if (branch === 'pending') {
+		return <AbsoluteFill style={{backgroundColor: '#000'}} />;
+	}
+
+	if (branch === 'fallback') {
+		return (
+			<HtmlInCanvasDocsVideoFallback relativeSrc="img/html-in-canvas-webgl.mp4" />
+		);
+	}
+
+	return <HtmlInCanvasDocsWebGLInner />;
 };

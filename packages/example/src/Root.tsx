@@ -51,6 +51,7 @@ import {
 	HtmlInCanvasComposeWebGPU,
 	HtmlInCanvasDocsMinimalWebGL,
 	HtmlInCanvasDocsMinimalWebGPU,
+	HtmlInCanvasDocsDemo2DBlur,
 	HtmlInCanvasDemo,
 	HtmlInCanvasPrivacy,
 	HtmlInCanvasReactSvg,
@@ -941,6 +942,14 @@ export const Index: React.FC = () => {
 					<Composition
 						id="html-in-canvas-docs-minimal-webgpu"
 						component={HtmlInCanvasDocsMinimalWebGPU}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-docs-demo-2d-blur"
+						component={HtmlInCanvasDocsDemo2DBlur}
 						fps={30}
 						height={1080}
 						width={1920}

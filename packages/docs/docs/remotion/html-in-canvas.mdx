@@ -1,0 +1,238 @@
+---
+image: /generated/articles-docs-remotion-html-in-canvas.png
+title: <HtmlInCanvas>
+crumb: 'API'
+---
+
+# &lt;HtmlInCanvas&gt;<AvailableFrom v="4.0.455" />
+
+This component renders its children into a `<canvas>` using the browser’s [HTML-in-canvas](https://github.com/WICG/html-in-canvas) API and allows you to draw an effect using the Canvas 2D API, WebGL or WebGPU.
+
+HTML-in-canvas is only available in Chrome 149 and later and if the `chrome://flags/#canvas-draw-element` flag is enabled.
+
+## Example
+
+TODO
+
+```tsx twoslash title="MyComp.tsx"
+import {HtmlInCanvas} from 'remotion';
+
+export const MyComp: React.FC = () => {
+  return (
+    <HtmlInCanvas width={1280} height={720}>
+      <div style={{fontSize: 80}}>Hello</div>
+    </HtmlInCanvas>
+  );
+};
+```
+
+## `HtmlInCanvas.isHtmlInCanvasSupported()`
+
+Return value: _boolean_
+
+If HTML-in-canvas is not available, the component throws a fatal error.  
+Use `HtmlInCanvas.isHtmlInCanvasSupported()` to check if HTML-in-canvas is supported.  
+Buggy implementations such as the one in Chrome 147 are not considered supported.
+
+```ts twoslash title="Check if HTML-in-canvas is supported"
+import {HtmlInCanvas} from 'remotion';
+
+if (HtmlInCanvas.isHtmlInCanvasSupported()) {
+  console.log('HTML-in-canvas is supported');
+} else {
+  console.log('HTML-in-canvas is not supported');
+}
+```
+
+## API
+
+### `width`
+
+Width of the canvas and the inner layout area, in pixels. Must be a positive integer.
+
+### `height`
+
+Height of the canvas and the inner layout area, in pixels. Must be a positive integer.
+
+### `children`
+
+Children to draw to the canvas.  
+Children will be wrapped in a `<div>` with the given `width` and `height`.
+
+### `onPaint?`
+
+Called when the children are updated and can be painted onto the canvas.  
+If this callback is omitted, the children are painted using a `2d` context with no transform.
+
+```tsx twoslash title="Simple example"
+import {HtmlInCanvasOnPaint} from 'remotion';
+
+const onPaint: HtmlInCanvasOnPaint = ({canvas, element, elementImage}) => {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    throw new Error('Failed to acquire 2D context');
+  }
+
+  ctx.reset();
+  ctx.filter = 'blur(10px)';
+  const transform = ctx.drawElementImage(elementImage, 0, 0);
+  element.style.transform = transform.toString();
+};
+```
+
+See the [examples](#onpaint-examples) below for `webgl` and `webgpu` examples.
+
+The callback receives:
+
+#### `canvas`
+
+An [`OffscreenCanvas`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) with dimensions `width` × `height`.  
+You should paint to this canvas.
+
+#### `element`
+
+The inner [`HTMLDivElement`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement) that wraps `children`.  
+You should apply the return value of `drawElementImage` to this element's `style.transform` property.
+
+#### `elementImage`
+
+An [`ElementImage`](https://github.com/WICG/html-in-canvas) handle for the current capture.  
+You should paint this image to the canvas.
+
+### `onInit?`
+
+Runs once before the first paint. Use it to create GPU contexts or other resources tied to the [`OffscreenCanvas`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas). Must return a cleanup function, or a `Promise` that resolves to one. The cleanup runs on unmount.
+
+The argument object matches [`onPaint`](#onpaint) (`canvas`, `element`, `elementImage`). The `elementImage` passed here is only for initialization — capture again inside [`onPaint`](#onpaint) for each frame.
+
+### `durationInFrames?`
+
+Inherited from [`<Sequence>`](/docs/sequence#durationinframes).
+
+### `from?`
+
+Inherited from [`<Sequence>`](/docs/sequence#from).
+
+## `onPaint` examples
+
+### 2D
+
+Call [`drawElementImage`](https://github.com/WICG/html-in-canvas) on the 2D context to draw `elementImage` into the bitmap.  
+HTML-in-canvas recommends that you use the return value and assign it to `element.style.transform`, so that the original DOM element matches the transform, so that selection still works.
+
+```tsx twoslash title="2D: filters + drawElementImage"
+import {HtmlInCanvasOnPaint} from 'remotion';
+
+const onPaint: HtmlInCanvasOnPaint = ({canvas, element, elementImage}) => {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    throw new Error('Failed to acquire 2D context');
+  }
+
+  ctx.reset();
+  ctx.filter = 'blur(10px)';
+  const transform = ctx.drawElementImage(elementImage, 0, 0);
+  element.style.transform = transform.toString();
+};
+```
+
+### WebGL
+
+Upload each frame with `texElementImage2D` (here the GL context and texture come from [`onInit`](#oninit) stored on a ref):
+
+```tsx title="WebGL2: texElementImage2D (excerpt)"
+const onPaint: HtmlInCanvasOnPaint = ({elementImage}) => {
+  const gl = gpuRef.current?.gl;
+  const texture = gpuRef.current?.texture;
+  if (!gl || !texture) {
+    return;
+  }
+
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texElementImage2D(
+    gl.TEXTURE_2D,
+    0,
+    gl.RGBA,
+    gl.RGBA,
+    gl.UNSIGNED_BYTE,
+    elementImage,
+  );
+  // ...bind program, set uniforms, draw your quad
+};
+```
+
+### WebGPU
+
+```tsx title="WebGPU: copyElementImageToTexture (excerpt)"
+const onPaint: HtmlInCanvasOnPaint = ({elementImage}) => {
+  const gpu = gpuRef.current;
+  if (!gpu) {
+    return;
+  }
+
+  gpu.device.queue.copyElementImageToTexture(
+    elementImage,
+    gpu.width,
+    gpu.height,
+    {texture: gpu.texture},
+  );
+  // ...encode render pass, submit command buffer
+};
+```
+
+### Async callbacks
+
+You can use `await` inside `onPaint` and Remotion will keep the frame open via [`delayRender()`](/docs/delay-render) until the promise settles.  
+This might be necessary if you are implementing a multi-pass effect using multiple contexts.
+
+```tsx twoslash title="Async: createImageBitmap then drawImage"
+import {HtmlInCanvasOnPaint} from 'remotion';
+
+declare const width: number;
+declare const height: number;
+
+const onPaint: HtmlInCanvasOnPaint = async ({canvas, elementImage}) => {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    return;
+  }
+
+  ctx.reset();
+  ctx.drawElementImage(elementImage, 0, 0);
+  const bitmap = await createImageBitmap(canvas);
+  try {
+    ctx.reset();
+    ctx.drawImage(bitmap, 0, 0, width, height);
+  } finally {
+    bitmap.close();
+  }
+};
+```
+
+## Other props
+
+`<HtmlInCanvas>` accepts the same props as [`<Sequence layout="none">`](/docs/sequence#layout), including [`from`](/docs/sequence#from), [`durationInFrames`](/docs/sequence#durationinframes), [`name`](/docs/sequence#name), [`showInTimeline`](/docs/sequence#showintimeline), [`premountFor`](/docs/sequence#premountfor), [`postmountFor`](/docs/sequence#postmountfor), [`styleWhilePremounted`](/docs/sequence#stylewhilepremounted), [`className`](/docs/sequence#classname), and [`style`](/docs/sequence#style). The `styleWhilePostmounted` and `controls` props are also accepted, following the same shape as on [`<Sequence>`](/docs/sequence).
+
+## Compatibility
+
+<CompatibilityTable
+  chrome
+  firefox={false}
+  safari={false}
+  nodejs=""
+  bun=""
+  serverlessFunctions=""
+  clientSideRendering
+  serverSideRendering
+  player
+  studio
+  hideServers
+/>
+
+The HTML-in-canvas feature itself depends on Chromium and enabled experimental APIs; see [HTML-in-canvas](/docs/client-side-rendering/html-in-canvas#compatibility).
+
+## See also
+
+- [HTML-in-canvas (client-side rendering)](/docs/client-side-rendering/html-in-canvas)
+- [`<Sequence>`](/docs/sequence)
+- [Source code for this component](https://github.com/remotion-dev/remotion/blob/main/packages/core/src/HtmlInCanvas.tsx)

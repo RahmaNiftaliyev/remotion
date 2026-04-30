@@ -241,7 +241,14 @@ export type HtmlInCanvasProps = Omit<
 	SequenceProps,
 	'children' | 'durationInFrames' | keyof LayoutAndStyle
 > &
-	Omit<AbsoluteFillLayout, 'layout'> & {
+	Omit<
+		AbsoluteFillLayout,
+		| 'layout'
+		| 'styleWhilePostmounted'
+		| 'postmountFor'
+		| 'premountFor'
+		| 'styleWhilePremounted'
+	> & {
 		readonly durationInFrames?: number;
 		readonly width: number;
 		readonly height: number;
@@ -296,6 +303,7 @@ const HtmlInCanvasInner: React.FC<
 	controls,
 	style,
 	durationInFrames,
+
 	...sequenceProps
 }) => {
 	assertHtmlInCanvasDimensions(width, height);

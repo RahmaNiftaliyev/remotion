@@ -155,6 +155,7 @@ const sidebars: SidebarsConfig = {
 				'getstaticfiles',
 				'html5-audio',
 				'html5-video',
+				'remotion/html-in-canvas',
 				'iframe',
 				'img',
 				'interpolate-colors',

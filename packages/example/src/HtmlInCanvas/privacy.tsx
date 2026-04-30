@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, HtmlInCanvas} from 'remotion';
+import {AbsoluteFill, HtmlInCanvas, IFrame, Img} from 'remotion';
 
 // Demonstrates the "Privacy-preserving painting" rules from
 // https://github.com/WICG/html-in-canvas#privacy-preserving-painting
@@ -53,7 +53,7 @@ const SensitiveContent: React.FC = () => (
 		<style>{VISITED_LINK_CSS}</style>
 
 		<Section title="Cross-origin <iframe> (should paint blank)">
-			<iframe
+			<IFrame
 				title="cross-origin"
 				src="https://example.com"
 				width={500}
@@ -63,7 +63,7 @@ const SensitiveContent: React.FC = () => (
 		</Section>
 
 		<Section title="Cross-origin <img> without CORS (should paint blank)">
-			<img
+			<Img
 				src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/280px-PNG_transparency_demonstration_1.png"
 				alt="cross-origin"
 				width={200}

@@ -1,8 +1,8 @@
 # @remotion/canvas-effects
 
-Sample effects for the Remotion canvas-effect chain.
+**Experimental and undocumented.** Presets for Remotion's canvas effect hooks; behavior and exports may change in any release.
 
-[![NPM Downloads](https://img.shields.io/npm/dm/@remotion/canvas-effects.svg?style=flat&color=black&label=Downloads)](https://npmcharts.com/compare/@remotion/canvas-effects?minimal=true)
+The package is published on npm (`publishConfig.access: public`) for early adopters. There is no stable documentation page; refer to the source under [`packages/canvas-effects`](https://github.com/remotion-dev/remotion/tree/main/packages/canvas-effects) in the Remotion repo.
 
 ## Installation
 
@@ -10,9 +10,4 @@ Sample effects for the Remotion canvas-effect chain.
 npm install @remotion/canvas-effects --save-exact
 ```
 
-When installing a Remotion package, make sure to align the version of all `remotion` and `@remotion/*` packages to the same version.
-Remove the `^` character from the version number to use the exact version.
-
-## Usage
-
-See the [documentation](https://www.remotion.dev/docs/canvas-effects) for more information.
+Align the version of `remotion` and all `@remotion/*` packages to the same release (pin exact versions in `package.json`).

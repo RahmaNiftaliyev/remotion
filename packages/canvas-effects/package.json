@@ -4,7 +4,8 @@
 	},
 	"name": "@remotion/canvas-effects",
 	"version": "4.0.451",
-	"description": "Sample effects for the Remotion canvas-effect chain",
+	"private": false,
+	"description": "Experimental, undocumented presets for Remotion's canvas effect hooks; APIs may change without notice.",
 	"main": "dist/index.js",
 	"sideEffects": false,
 	"scripts": {
@@ -38,6 +39,7 @@
 	"keywords": [
 		"canvas",
 		"effects",
+		"experimental",
 		"webgl",
 		"remotion"
 	],
@@ -48,6 +50,5 @@
 		"react": ">=16.8.0",
 		"remotion": "workspace:*"
 	},
-	"dependencies": {},
-	"homepage": "https://www.remotion.dev/docs/canvas-effects"
+	"dependencies": {}
 }

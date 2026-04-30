@@ -110,10 +110,11 @@ export const HtmlInCanvasPresentation = <
 		[chainState, instance, offscreenCanvas, continueRender, delayRender],
 	);
 
-	const hide = bothEnteringAndExiting && presentationDirection === 'exiting';
+	const passThrough =
+		bothEnteringAndExiting && presentationDirection === 'exiting';
 
 	useLayoutEffect(() => {
-		if (hide) {
+		if (passThrough) {
 			return;
 		}
 
@@ -140,10 +141,10 @@ export const HtmlInCanvasPresentation = <
 		return () => {
 			canvas.removeEventListener('paint', onPaint);
 		};
-	}, [onElementImage, presentationDirection, draw, hide]);
+	}, [onElementImage, presentationDirection, draw, passThrough]);
 
 	useLayoutEffect(() => {
-		if (hide) {
+		if (passThrough) {
 			return;
 		}
 
@@ -153,20 +154,20 @@ export const HtmlInCanvasPresentation = <
 		}
 
 		canvas.requestPaint?.();
-	}, [presentationProgress, hide]);
+	}, [presentationProgress, passThrough]);
 
 	useLayoutEffect(() => {
-		if (hide) {
+		if (passThrough) {
 			return;
 		}
 
 		return () => {
 			onUnmount();
 		};
-	}, [onUnmount, hide]);
+	}, [onUnmount, passThrough]);
 
 	useLayoutEffect(() => {
-		if (hide) {
+		if (passThrough) {
 			return;
 		}
 
@@ -181,9 +182,9 @@ export const HtmlInCanvasPresentation = <
 			canvas.height = entry.devicePixelContentBoxSize[0].blockSize;
 		});
 		observer.observe(canvas, {box: 'device-pixel-content-box'});
-	}, [hide]);
+	}, [passThrough]);
 
-	if (hide) {
+	if (passThrough) {
 		return children;
 	}
 

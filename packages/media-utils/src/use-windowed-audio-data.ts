@@ -177,6 +177,11 @@ export const useWindowedAudioData = ({
 				signal.removeEventListener('abort', onAbort);
 			}
 		},
+		// requestInitKey is included so the callback re-runs when the
+		// serialized requestInit changes; the value itself is read via
+		// requestInitRef.current to avoid recreating the callback on every
+		// render when an inline object is passed.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[src, delayRender, continueRender, channelIndex, requestInitKey],
 	);
 

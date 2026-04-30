@@ -13,6 +13,7 @@ const presentations = [
 	'clock-wipe',
 	'none',
 	'iris',
+	'zoom-blur',
 ];
 
 const output = await build({

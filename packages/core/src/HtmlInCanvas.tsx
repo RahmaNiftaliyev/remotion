@@ -164,7 +164,7 @@ declare global {
 	}
 }
 
-export type HtmlInCanvasComposeParams = {
+export type HtmlInCanvasOnPaintParams = {
 	readonly canvas: OffscreenCanvas;
 	readonly element: HTMLDivElement;
 	readonly elementImage: ElementImage;
@@ -194,13 +194,13 @@ export const isHtmlInCanvasSupported = (): boolean => {
 };
 
 export type HtmlInCanvasOnPaint = (
-	params: HtmlInCanvasComposeParams,
+	params: HtmlInCanvasOnPaintParams,
 ) => void | Promise<void>;
 
 export type HtmlInCanvasOnInitCleanup = () => void;
 
 export type HtmlInCanvasOnInit = (
-	params: HtmlInCanvasComposeParams,
+	params: HtmlInCanvasOnPaintParams,
 ) => HtmlInCanvasOnInitCleanup | Promise<HtmlInCanvasOnInitCleanup>;
 
 function assertHtmlInCanvasDimensions(width: unknown, height: unknown): void {

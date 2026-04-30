@@ -145,7 +145,7 @@ export {
 	type HtmlInCanvasOnPaint,
 } from './HtmlInCanvas.js';
 export type {
-	HtmlInCanvasComposeParams,
+	HtmlInCanvasOnPaintParams,
 	HtmlInCanvasProps,
 } from './HtmlInCanvas.js';
 export type {AnyZodObject} from './any-zod-type.js';

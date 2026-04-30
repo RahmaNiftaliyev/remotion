@@ -70,7 +70,7 @@ vec4 zoomBlur(sampler2D tex, vec2 uv, float strength) {
 }
 
 void main() {
-	float mixT = clamp(u_time, 0.0, 1.0);
+	float mixT = u_time;
 
 	float nextAngle = u_max_angle * mixT;
 	float prevAngle = -u_max_angle * (1.0 - mixT);

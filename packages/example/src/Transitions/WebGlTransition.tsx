@@ -1,4 +1,8 @@
-import {linearTiming, TransitionSeries} from '@remotion/transitions';
+import {
+	linearTiming,
+	springTiming,
+	TransitionSeries,
+} from '@remotion/transitions';
 import {slide} from '@remotion/transitions/slide';
 import {zoomBlur} from '@remotion/transitions/zoom-blur';
 import React from 'react';
@@ -35,10 +39,7 @@ export const WebGlTransition: React.FC = () => {
 			</TransitionSeries.Sequence>
 			<TransitionSeries.Transition
 				presentation={zoomBlur({})}
-				timing={linearTiming({
-					durationInFrames: 40,
-					easing: Easing.bezier(0.36, 0.53, 0, 1),
-				})}
+				timing={springTiming({durationInFrames: 40})}
 			/>
 			<TransitionSeries.Sequence durationInFrames={90}>
 				<Sequence>

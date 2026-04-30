@@ -11,6 +11,7 @@ import {
 } from 'mediabunny';
 import {canBrowserUseWebGl2} from '../browser-can-use-webgl2';
 import {getDurationOrCompute} from '../get-duration-or-compute';
+import {resolveAudioTrack} from '../helpers/resolve-audio-track';
 import {isNetworkError} from '../is-type-of-error';
 import {rememberActualMatroskaTimestamps} from './remember-actual-matroska-timestamps';
 
@@ -150,14 +151,16 @@ export const getSinks = async (
 			return 'network-error';
 		}
 
-		const videoTrack = await input.getPrimaryVideoTrack();
+		const [videoTrack, audioTracks] = await Promise.all([
+			input.getPrimaryVideoTrack(),
+			input.getAudioTracks(),
+		]);
 
-		const audioTrack =
-			videoTrack === null
-				? (await input.getAudioTracks())[index ?? 0]
-				: await (index === null
-						? videoTrack?.getPrimaryPairableAudioTrack()
-						: ((await input.getAudioTracks())[index] ?? null));
+		const audioTrack = await resolveAudioTrack({
+			videoTrack,
+			audioTracks,
+			audioStreamIndex: index,
+		});
 
 		if (!audioTrack) {
 			return 'no-audio-track';

@@ -1,5 +1,5 @@
 import {useLayoutEffect, useMemo, useRef, useState, useCallback} from 'react';
-import {useDelayRender, type EffectsProp} from 'remotion';
+import {HtmlInCanvas, useDelayRender, type EffectsProp} from 'remotion';
 import {AbsoluteFill, Internals, useCurrentFrame} from 'remotion';
 import type {DrawFunction} from './TransitionSeries';
 import type {
@@ -23,6 +23,12 @@ export const HtmlInCanvasPresentation = <
 	readonly shader: () => HtmlInCanvasShader<TPassedProps>;
 	readonly _experimentalEffects?: EffectsProp;
 }) => {
+	if (!HtmlInCanvas.isHtmlInCanvasSupported()) {
+		throw new Error(
+			'HTML in Canvas is not supported. Open this page in Chrome Canary with chrome://flags/#canvas-draw-element enabled.',
+		);
+	}
+
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const canvasSubtreeStyle: React.CSSProperties = useMemo(() => {
 		return {

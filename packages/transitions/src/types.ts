@@ -1,7 +1,5 @@
 import type {ComponentType} from 'react';
 import type React from 'react';
-import type {EffectsProp} from 'remotion';
-import type {HtmlInCanvasShader} from './html-in-canvas-presentation';
 import type {DrawFunction} from './TransitionSeries';
 
 export type PresentationDirection = 'entering' | 'exiting';
@@ -19,25 +17,6 @@ export type TransitionSeriesTransitionProps<
 };
 
 type LooseComponentType<T> = ComponentType<T> | ((props: T) => React.ReactNode);
-
-export type OverlayMethods = {
-	draw: (
-		prevImage: ElementImage | null,
-		nextImage: ElementImage | null,
-		progress: number,
-	) => void;
-	clear: () => void;
-};
-
-export type MandatoryOverlayComponentProps<
-	PresentationProps extends Record<string, unknown>,
-> = {
-	readonly refToMethods: React.RefObject<OverlayMethods | null>;
-	readonly passedProps: PresentationProps & {
-		_experimentalEffects?: EffectsProp;
-	};
-	readonly shader: () => HtmlInCanvasShader<PresentationProps>;
-};
 
 export type TransitionPresentation<
 	PresentationProps extends Record<string, unknown>,

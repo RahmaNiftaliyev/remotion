@@ -42,11 +42,20 @@ test.describe('undo redo sync across tabs', () => {
 		});
 
 		// 2. Click the expand arrow on the Video track
-		const expandButton = page1.locator('button[aria-label="Expand track"]');
-		await expect(expandButton).toBeVisible({timeout: 15_000});
-		await expandButton.click();
+		const expandTrackButton = page1.locator(
+			'button[aria-label="Expand track properties"]',
+		);
+		await expect(expandTrackButton).toBeVisible({timeout: 15_000});
+		await expandTrackButton.click();
 
-		// 3. Click the Playback Rate input dragger
+		// 3. Expand the Controls section to reveal the schema fields
+		const expandControlsButton = page1.locator(
+			'button[aria-label="Expand Controls section"]',
+		);
+		await expect(expandControlsButton).toBeVisible({timeout: 10_000});
+		await expandControlsButton.click();
+
+		// 4. Click the Playback Rate input dragger
 		const playbackRateLabel = page1.getByText('Playback Rate', {exact: true});
 		await expect(playbackRateLabel).toBeVisible({timeout: 10_000});
 

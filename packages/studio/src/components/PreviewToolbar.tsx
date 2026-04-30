@@ -185,6 +185,7 @@ export const PreviewToolbar: React.FC<{
 						bufferStateDelayInMilliseconds={bufferStateDelayInMilliseconds}
 						loop={loop}
 						playbackRate={playbackRate}
+						muted={mediaMuted}
 					/>
 					<Spacing x={2} />
 					<LoopToggle loop={loop} setLoop={setLoop} />

@@ -90,6 +90,7 @@ export const packages = [
 	'starburst',
 	'vercel',
 	'sfx',
+	'effects',
 ] as const;
 
 export type Pkgs = (typeof packages)[number];
@@ -220,6 +221,7 @@ export const descriptions: {[key in Pkgs]: string | null} = {
 	starburst: 'Starburst ray effect for Remotion',
 	vercel: 'Render Remotion videos on Vercel Sandbox',
 	sfx: 'Sound effect library',
+	effects: 'Experimental presets for Remotion canvas effect hooks',
 };
 export const installableMap: {[key in Pkgs]: boolean} = {
 	'svg-3d-engine': false,
@@ -313,6 +315,7 @@ export const installableMap: {[key in Pkgs]: boolean} = {
 	starburst: true,
 	vercel: true,
 	sfx: true,
+	effects: true,
 };
 
 export const apiDocs: {[key in Pkgs]: string | null} = {
@@ -410,4 +413,5 @@ export const apiDocs: {[key in Pkgs]: string | null} = {
 	starburst: 'https://www.remotion.dev/docs/starburst',
 	vercel: 'https://www.remotion.dev/docs/vercel/api',
 	sfx: 'https://www.remotion.dev/docs/sfx',
+	effects: null,
 };

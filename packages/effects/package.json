@@ -1,54 +1,51 @@
 {
+	"name": "@remotion/effects",
+	"version": "4.0.454",
+	"description": "Experimental presets for Remotion canvas effect hooks",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"module": "dist/esm/index.mjs",
 	"repository": {
 		"url": "https://github.com/remotion-dev/remotion/tree/main/packages/effects"
 	},
-	"name": "@remotion/effects",
-	"version": "4.0.451",
-	"private": false,
-	"description": "Experimental, undocumented presets for Remotion's canvas effect hooks; APIs may change without notice.",
-	"main": "dist/index.js",
 	"sideEffects": false,
+	"type": "module",
 	"scripts": {
 		"formatting": "oxfmt src --check",
 		"format": "oxfmt src",
 		"lint": "eslint src",
-		"make": "tsgo -d && bun --env-file=../.env.bundle bundle.ts"
+		"watch": "tsgo -w",
+		"make": "tsgo && bun --env-file=../.env.bundle bundle.ts"
 	},
-	"types": "dist/index.d.ts",
-	"module": "dist/esm/index.mjs",
 	"author": "Jonny Burger <jonny@remotion.dev>",
+	"contributors": [],
 	"license": "UNLICENSED",
 	"bugs": {
 		"url": "https://github.com/remotion-dev/remotion/issues"
 	},
+	"dependencies": {
+		"remotion": "workspace:*"
+	},
 	"exports": {
-		"./package.json": "./package.json",
 		".": {
 			"types": "./dist/index.d.ts",
 			"module": "./dist/esm/index.mjs",
-			"import": "./dist/esm/index.mjs",
-			"require": "./dist/index.js"
-		}
+			"import": "./dist/esm/index.mjs"
+		},
+		"./package.json": "./package.json"
 	},
 	"devDependencies": {
-		"react": "catalog:",
 		"@remotion/eslint-config-internal": "workspace:*",
 		"eslint": "catalog:",
 		"@typescript/native-preview": "catalog:"
 	},
 	"keywords": [
-		"canvas",
+		"remotion",
 		"effects",
-		"experimental",
 		"webgl",
-		"remotion"
+		"canvas"
 	],
 	"publishConfig": {
 		"access": "public"
-	},
-	"peerDependencies": {
-		"react": ">=16.8.0",
-		"remotion": "workspace:*"
-	},
-	"dependencies": {}
+	}
 }

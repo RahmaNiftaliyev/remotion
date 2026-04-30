@@ -91,4 +91,5 @@ export const listOfRemotionPackages = [
 	'@remotion/starburst',
 	'@remotion/vercel',
 	'@remotion/sfx',
+	'@remotion/effects',
 ];

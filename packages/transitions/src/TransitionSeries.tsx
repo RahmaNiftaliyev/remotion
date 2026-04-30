@@ -101,21 +101,33 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 	const drawIfSynced = useCallback((index: number) => {
 		const prevImage = prevImageRef?.current?.[index];
 		const nextImage = nextImageRef?.current?.[index];
+		if (!nextImage?.elementImage && prevImage?.elementImage) {
+			nextImage?.draw?.(null, null, 0);
+			prevImage?.draw?.(prevImage?.elementImage ?? null, null, 0);
+			return;
+		}
+
+		if (!prevImage?.elementImage && nextImage?.elementImage) {
+			prevImage?.draw?.(null, null, 0);
+			nextImage?.draw?.(null, nextImage?.elementImage ?? null, 0);
+			return;
+		}
 
 		if (
 			(prevImage && nextImage && prevImage.progress === nextImage.progress) ||
 			!prevImage?.elementImage ||
 			!nextImage?.elementImage
 		) {
-			nextImage?.draw?.(
+			prevImage?.draw?.(
 				prevImage?.elementImage ?? null,
 				nextImage?.elementImage ?? null,
 				prevImage?.progress ?? nextImage?.progress ?? 0,
 			);
+			nextImage?.draw?.(null, null, 0);
 		}
 	}, []);
 
-	const onPreviousElementImage = useCallback(
+	const onNextElementImage = useCallback(
 		(
 			elementImage: ElementImage | null,
 			progress: number | null,
@@ -129,7 +141,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 		[drawIfSynced],
 	);
 
-	const onNextElementImage = useCallback(
+	const onPrevElementImage = useCallback(
 		(
 			elementImage: ElementImage | null,
 			progress: number | null,
@@ -469,12 +481,13 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 							presentationDurationInFrames={next.props.timing.getDurationInFrames(
 								{fps},
 							)}
-							onElementImage={(elementImage, progress, draw) =>
-								onNextElementImage(elementImage, progress, draw, i + 1)
-							}
-							onUnmount={() => {
-								onNextElementImage(null, null, null, i + 1);
+							onElementImage={() => {
+								throw new Error('Should not call when exiting');
 							}}
+							onUnmount={() => {
+								throw new Error('Should not call when exiting');
+							}}
+							bothEnteringAndExiting
 						>
 							<WrapInExitingProgressContext presentationProgress={nextProgress}>
 								<UppercasePrevPresentation
@@ -484,12 +497,15 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 									presentationDurationInFrames={prev.props.timing.getDurationInFrames(
 										{fps},
 									)}
-									onElementImage={(elementImage, progress, draw) =>
-										onPreviousElementImage(elementImage, progress, draw, i - 1)
-									}
-									onUnmount={() => {
-										onPreviousElementImage(null, null, null, i - 1);
+									onElementImage={(elementImage, draw) => {
+										onPrevElementImage(elementImage, nextProgress, draw, i + 1);
+										onNextElementImage(elementImage, prevProgress, draw, i - 1);
 									}}
+									onUnmount={() => {
+										onPrevElementImage(null, null, null, i + 1);
+										onNextElementImage(null, null, null, i - 1);
+									}}
+									bothEnteringAndExiting
 								>
 									<WrapInEnteringProgressContext
 										presentationProgress={prevProgress}
@@ -524,12 +540,13 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 							presentationDurationInFrames={prev.props.timing.getDurationInFrames(
 								{fps},
 							)}
-							onElementImage={(elementImage, progress, draw) =>
-								onPreviousElementImage(elementImage, progress, draw, i - 1)
+							onElementImage={(elementImage, draw) =>
+								onNextElementImage(elementImage, prevProgress, draw, i - 1)
 							}
 							onUnmount={() => {
-								onPreviousElementImage(null, null, null, i - 1);
+								onNextElementImage(null, null, null, i - 1);
 							}}
+							bothEnteringAndExiting={false}
 						>
 							<WrapInEnteringProgressContext
 								presentationProgress={prevProgress}
@@ -562,12 +579,13 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 							presentationDurationInFrames={next.props.timing.getDurationInFrames(
 								{fps},
 							)}
-							onElementImage={(elementImage, progress, draw) =>
-								onNextElementImage(elementImage, progress, draw, i + 1)
+							onElementImage={(elementImage, draw) =>
+								onPrevElementImage(elementImage, nextProgress, draw, i + 1)
 							}
 							onUnmount={() => {
-								onNextElementImage(null, null, null, i + 1);
+								onPrevElementImage(null, null, null, i + 1);
 							}}
+							bothEnteringAndExiting={false}
 						>
 							<WrapInExitingProgressContext presentationProgress={nextProgress}>
 								{child}
@@ -617,7 +635,7 @@ const TransitionSeriesChildren: FC<{readonly children: React.ReactNode}> = ({
 		});
 
 		return [...(mainChildren || []), ...overlayElements];
-	}, [flattedChildren, fps, frame, onNextElementImage, onPreviousElementImage]);
+	}, [flattedChildren, fps, frame, onPrevElementImage, onNextElementImage]);
 
 	// eslint-disable-next-line react/jsx-no-useless-fragment
 	return <>{childrenValue}</>;

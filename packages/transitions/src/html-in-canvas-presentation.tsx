@@ -18,6 +18,7 @@ export const HtmlInCanvasPresentation = <
 	shader,
 	_experimentalEffects,
 	passedProps,
+	bothEnteringAndExiting,
 }: TransitionPresentationComponentProps<TPassedProps> & {
 	readonly shader: () => HtmlInCanvasShader<TPassedProps>;
 	readonly _experimentalEffects?: EffectsProp;
@@ -62,6 +63,11 @@ export const HtmlInCanvasPresentation = <
 	const draw: DrawFunction = useCallback(
 		(prevImage, nextImage, progress) => {
 			if (!canvasRef.current) {
+				throw new Error('Canvas not found');
+			}
+
+			if (!prevImage && !nextImage) {
+				instance.clear();
 				return;
 			}
 
@@ -69,6 +75,7 @@ export const HtmlInCanvasPresentation = <
 			const height = prevImage?.height ?? nextImage?.height ?? 0;
 
 			if (width === 0 || height === 0) {
+				instance.clear();
 				return;
 			}
 
@@ -97,15 +104,16 @@ export const HtmlInCanvasPresentation = <
 		[chainState, instance, offscreenCanvas],
 	);
 
-	// TODO: Implement clear()
-
-	const presentationProgressRef = useRef(presentationProgress);
-	presentationProgressRef.current = presentationProgress;
+	const hide = bothEnteringAndExiting && presentationDirection === 'exiting';
 
 	useLayoutEffect(() => {
+		if (hide) {
+			return;
+		}
+
 		const canvas = canvasRef.current;
 		if (!canvas) {
-			return;
+			throw new Error('Canvas not found');
 		}
 
 		canvas.layoutSubtree = true;
@@ -118,12 +126,7 @@ export const HtmlInCanvasPresentation = <
 			}
 
 			const elementImage = canvas.captureElementImage(firstChild);
-			onElementImage(elementImage, presentationProgressRef.current, draw);
-
-			const context = canvas.getContext('2d');
-			if (!context) {
-				throw new Error('Failed to get context');
-			}
+			onElementImage(elementImage, draw);
 		};
 
 		canvas.addEventListener('paint', onPaint);
@@ -131,24 +134,36 @@ export const HtmlInCanvasPresentation = <
 		return () => {
 			canvas.removeEventListener('paint', onPaint);
 		};
-	}, [onElementImage, presentationDirection, draw]);
+	}, [onElementImage, presentationDirection, draw, hide]);
 
 	useLayoutEffect(() => {
-		const canvas = canvasRef.current;
-		if (!canvas) {
+		if (hide) {
 			return;
 		}
 
+		const canvas = canvasRef.current;
+		if (!canvas) {
+			throw new Error('Canvas not found');
+		}
+
 		canvas.requestPaint?.();
-	}, [presentationProgress]);
+	}, [presentationProgress, hide]);
 
 	useLayoutEffect(() => {
+		if (hide) {
+			return;
+		}
+
 		return () => {
 			onUnmount();
 		};
-	}, [onUnmount]);
+	}, [onUnmount, hide]);
 
 	useLayoutEffect(() => {
+		if (hide) {
+			return;
+		}
+
 		const canvas = canvasRef.current;
 		if (!canvas) {
 			return;
@@ -160,7 +175,11 @@ export const HtmlInCanvasPresentation = <
 			canvas.height = entry.devicePixelContentBoxSize[0].blockSize;
 		});
 		observer.observe(canvas, {box: 'device-pixel-content-box'});
-	}, []);
+	}, [hide]);
+
+	if (hide) {
+		return children;
+	}
 
 	return (
 		<AbsoluteFill>

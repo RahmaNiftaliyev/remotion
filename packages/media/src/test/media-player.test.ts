@@ -56,6 +56,9 @@ test('audio-only file should initialize without `audioStreamIndex` (regression f
 		sequenceOffset: 0,
 		credentials: undefined,
 		tagType: 'audio',
+		getCurrentFrame: () => 0,
+		getEffects: () => [],
+		getEffectChainState: () => null,
 	});
 
 	const result = await player.initialize(0, false);

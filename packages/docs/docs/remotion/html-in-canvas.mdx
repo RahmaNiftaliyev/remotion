@@ -12,7 +12,7 @@ HTML-in-canvas is only available in Chrome 149 and later and if the `chrome://fl
 
 ## Example
 
-TODO
+`<HtmlInCanvas>` with default 2D painting (omit [`onPaint`](#onpaint)):
 
 ```tsx twoslash title="MyComp.tsx"
 import {HtmlInCanvas} from 'remotion';
@@ -138,47 +138,333 @@ const onPaint: HtmlInCanvasOnPaint = ({canvas, element, elementImage}) => {
 
 ### WebGL
 
-Upload each frame with `texElementImage2D` (here the GL context and texture come from [`onInit`](#oninit) stored on a ref):
+Create the `webgl2` context, program, VAO, and texture in [`onInit`](#oninit). Each paint uploads the capture with [`texElementImage2D`](https://github.com/WICG/html-in-canvas) and draws a fullscreen triangle pair.
 
-```tsx title="WebGL2: texElementImage2D (excerpt)"
-const onPaint: HtmlInCanvasOnPaint = ({elementImage}) => {
-  const gl = gpuRef.current?.gl;
-  const texture = gpuRef.current?.texture;
-  if (!gl || !texture) {
-    return;
-  }
+<details>
+<summary>This example is long. Expand to see it:</summary>
 
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.texElementImage2D(
-    gl.TEXTURE_2D,
-    0,
-    gl.RGBA,
-    gl.RGBA,
-    gl.UNSIGNED_BYTE,
-    elementImage,
+```tsx title="WebGL2: minimal full component"
+import React, {useCallback, useRef} from 'react';
+import {
+  AbsoluteFill,
+  HtmlInCanvas,
+  HtmlInCanvasOnInit,
+  HtmlInCanvasOnPaint,
+  useVideoConfig,
+} from 'remotion';
+
+type GlState = {
+  gl: WebGL2RenderingContext;
+  program: WebGLProgram;
+  uTex: WebGLUniformLocation | null;
+  texture: WebGLTexture;
+  vao: WebGLVertexArrayObject;
+};
+
+const VS = `#version 300 es
+in vec2 a_pos;
+in vec2 a_uv;
+out vec2 v_uv;
+void main() {
+  gl_Position = vec4(a_pos, 0.0, 1.0);
+  v_uv = a_uv;
+}`;
+
+const FS = `#version 300 es
+precision highp float;
+uniform sampler2D u_tex;
+in vec2 v_uv;
+out vec4 o;
+void main() {
+  o = texture(u_tex, v_uv);
+}`;
+
+function linkProgram(gl: WebGL2RenderingContext, vsSrc: string, fsSrc: string) {
+  const vert = gl.createShader(gl.VERTEX_SHADER)!;
+  gl.shaderSource(vert, vsSrc);
+  gl.compileShader(vert);
+  const frag = gl.createShader(gl.FRAGMENT_SHADER)!;
+  gl.shaderSource(frag, fsSrc);
+  gl.compileShader(frag);
+  const program = gl.createProgram()!;
+  gl.attachShader(program, vert);
+  gl.attachShader(program, frag);
+  gl.linkProgram(program);
+  gl.deleteShader(vert);
+  gl.deleteShader(frag);
+  return program;
+}
+
+const QUAD = new Float32Array([
+  -1, -1, 0, 0, 1, -1, 1, 0, -1, 1, 0, 1, 1, -1, 1, 0, -1, 1, 0, 1, 1, 1, 1, 1,
+]);
+
+export const WebGLExample: React.FC = () => {
+  const {width, height} = useVideoConfig();
+  const gpuRef = useRef<GlState | null>(null);
+
+  const onInit: HtmlInCanvasOnInit = useCallback(({canvas}) => {
+    const gl = canvas.getContext('webgl2', {
+      alpha: true,
+      premultipliedAlpha: true,
+      antialias: false,
+    });
+    if (!gl) {
+      throw new Error('WebGL2 unavailable');
+    }
+
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
+    const program = linkProgram(gl, VS, FS);
+    const uTex = gl.getUniformLocation(program, 'u_tex');
+
+    const texture = gl.createTexture()!;
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+    const buffer = gl.createBuffer()!;
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, QUAD, gl.STATIC_DRAW);
+
+    const vao = gl.createVertexArray()!;
+    gl.bindVertexArray(vao);
+    const locPos = gl.getAttribLocation(program, 'a_pos');
+    const locUv = gl.getAttribLocation(program, 'a_uv');
+    gl.enableVertexAttribArray(locPos);
+    gl.vertexAttribPointer(locPos, 2, gl.FLOAT, false, 16, 0);
+    gl.enableVertexAttribArray(locUv);
+    gl.vertexAttribPointer(locUv, 2, gl.FLOAT, false, 16, 8);
+
+    gpuRef.current = {gl, program, uTex, texture, vao};
+
+    return () => {
+      gl.deleteProgram(program);
+      gl.deleteTexture(texture);
+      gl.deleteVertexArray(vao);
+      gl.deleteBuffer(buffer);
+      gpuRef.current = null;
+    };
+  }, []);
+
+  const onPaint: HtmlInCanvasOnPaint = useCallback(({elementImage}) => {
+    const gpu = gpuRef.current;
+    if (!gpu) {
+      return;
+    }
+
+    const {gl} = gpu;
+    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    gl.useProgram(gpu.program);
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, gpu.texture);
+    gl.texElementImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      elementImage,
+    );
+
+    if (gpu.uTex) {
+      gl.uniform1i(gpu.uTex, 0);
+    }
+
+    gl.bindVertexArray(gpu.vao);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }, []);
+
+  return (
+    <HtmlInCanvas width={width} height={height} onInit={onInit} onPaint={onPaint}>
+      <AbsoluteFill
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          color: 'white',
+          fontSize: 120,
+        }}
+      >
+        <h1>Hello</h1>
+      </AbsoluteFill>
+    </HtmlInCanvas>
   );
-  // ...bind program, set uniforms, draw your quad
 };
 ```
+
+</details>
 
 ### WebGPU
 
-```tsx title="WebGPU: copyElementImageToTexture (excerpt)"
-const onPaint: HtmlInCanvasOnPaint = ({elementImage}) => {
-  const gpu = gpuRef.current;
-  if (!gpu) {
-    return;
-  }
+Request a device and configure the [`webgpu`](https://developer.mozilla.org/en-US/docs/Web/API/GPUCanvasContext) context in [`onInit`](#oninit). Each paint copies the element into a [`GPUTexture`](https://developer.mozilla.org/en-US/docs/Web/API/GPUTexture) with `copyElementImageToTexture`, then draws a fullscreen triangle to the swapchain.
 
-  gpu.device.queue.copyElementImageToTexture(
-    elementImage,
-    gpu.width,
-    gpu.height,
-    {texture: gpu.texture},
+<details>
+<summary>This example is long. Expand to see it:</summary>
+
+```tsx title="WebGPU: minimal full component"
+import React, {useCallback, useRef} from 'react';
+import {
+  AbsoluteFill,
+  HtmlInCanvas,
+  HtmlInCanvasOnInit,
+  HtmlInCanvasOnPaint,
+  useVideoConfig,
+} from 'remotion';
+
+const WGSL = `
+struct VsOut {
+  @builtin(position) pos: vec4f,
+  @location(0) uv: vec2f,
+}
+@vertex
+fn vs(@builtin(vertex_index) i: u32) -> VsOut {
+  var p = array(vec2f(-1.0, -3.0), vec2f(-1.0, 1.0), vec2f(3.0, 1.0));
+  var uv = array(vec2f(0.0, 2.0), vec2f(0.0, 0.0), vec2f(2.0, 0.0));
+  var o: VsOut;
+  o.pos = vec4f(p[i], 0.0, 1.0);
+  o.uv = uv[i];
+  return o;
+}
+@group(0) @binding(0) var samp: sampler;
+@group(0) @binding(1) var tex: texture_2d<f32>;
+@fragment
+fn fs(in: VsOut) -> @location(0) vec4f {
+  return textureSample(tex, samp, in.uv);
+}
+`;
+
+type GpuState = {
+  device: GPUDevice;
+  context: GPUCanvasContext;
+  pipeline: GPURenderPipeline;
+  sampler: GPUSampler;
+  texture: GPUTexture;
+  bindGroup: GPUBindGroup;
+  width: number;
+  height: number;
+};
+
+export const WebGPUExample: React.FC = () => {
+  const {width, height} = useVideoConfig();
+  const gpuRef = useRef<GpuState | null>(null);
+
+  const onInit: HtmlInCanvasOnInit = useCallback(async ({canvas}) => {
+    const gpuApi = navigator.gpu;
+    if (!gpuApi) {
+      throw new Error('WebGPU not available');
+    }
+
+    const adapter = await gpuApi.requestAdapter();
+    if (!adapter) {
+      throw new Error('No WebGPU adapter');
+    }
+
+    const device = await adapter.requestDevice();
+    const context = canvas.getContext('webgpu');
+    if (!context) {
+      throw new Error('WebGPU context unavailable on OffscreenCanvas');
+    }
+
+    const format = gpuApi.getPreferredCanvasFormat();
+    context.configure({device, format, alphaMode: 'premultiplied'});
+
+    const module = device.createShaderModule({code: WGSL});
+    const pipeline = device.createRenderPipeline({
+      layout: 'auto',
+      vertex: {module, entryPoint: 'vs'},
+      fragment: {
+        module,
+        entryPoint: 'fs',
+        targets: [{format}],
+      },
+      primitive: {topology: 'triangle-list'},
+    });
+
+    const texture = device.createTexture({
+      size: {width: canvas.width, height: canvas.height},
+      format: 'rgba8unorm',
+      usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.TEXTURE_BINDING,
+    });
+
+    const sampler = device.createSampler({
+      magFilter: 'linear',
+      minFilter: 'linear',
+    });
+
+    const bindGroup = device.createBindGroup({
+      layout: pipeline.getBindGroupLayout(0),
+      entries: [
+        {binding: 0, resource: sampler},
+        {binding: 1, resource: texture.createView()},
+      ],
+    });
+
+    gpuRef.current = {
+      device,
+      context,
+      pipeline,
+      sampler,
+      texture,
+      bindGroup,
+      width: canvas.width,
+      height: canvas.height,
+    };
+
+    return () => {
+      texture.destroy();
+      gpuRef.current = null;
+    };
+  }, []);
+
+  const onPaint: HtmlInCanvasOnPaint = useCallback(({elementImage}) => {
+    const gpu = gpuRef.current;
+    if (!gpu) {
+      return;
+    }
+
+    const {device, context, pipeline, texture, bindGroup} = gpu;
+
+    device.queue.copyElementImageToTexture(elementImage, gpu.width, gpu.height, {
+      texture,
+    });
+
+    const encoder = device.createCommandEncoder();
+    const view = context.getCurrentTexture().createView();
+    const pass = encoder.beginRenderPass({
+      colorAttachments: [
+        {
+          view,
+          clearValue: {r: 0, g: 0, b: 0, a: 0},
+          loadOp: 'clear',
+          storeOp: 'store',
+        },
+      ],
+    });
+    pass.setPipeline(pipeline);
+    pass.setBindGroup(0, bindGroup);
+    pass.draw(3);
+    pass.end();
+    device.queue.submit([encoder.finish()]);
+  }, []);
+
+  return (
+    <HtmlInCanvas width={width} height={height} onInit={onInit} onPaint={onPaint}>
+      <AbsoluteFill
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontSize: 120,
+        }}
+      >
+        <h1>Hello</h1>
+      </AbsoluteFill>
+    </HtmlInCanvas>
   );
-  // ...encode render pass, submit command buffer
 };
 ```
+
+</details>
 
 ### Async callbacks
 

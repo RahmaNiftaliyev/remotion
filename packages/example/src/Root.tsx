@@ -49,6 +49,8 @@ import {
 	HtmlInCanvasComposeWebGL,
 	HtmlInCanvasComposeWebGLCrt,
 	HtmlInCanvasComposeWebGPU,
+	HtmlInCanvasDocsMinimalWebGL,
+	HtmlInCanvasDocsMinimalWebGPU,
 	HtmlInCanvasDemo,
 	HtmlInCanvasPrivacy,
 	HtmlInCanvasReactSvg,
@@ -923,6 +925,22 @@ export const Index: React.FC = () => {
 					<Composition
 						id="html-in-canvas-compose-webgpu"
 						component={HtmlInCanvasComposeWebGPU}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-docs-minimal-webgl"
+						component={HtmlInCanvasDocsMinimalWebGL}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-docs-minimal-webgpu"
+						component={HtmlInCanvasDocsMinimalWebGPU}
 						fps={30}
 						height={1080}
 						width={1920}

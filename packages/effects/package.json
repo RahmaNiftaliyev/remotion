@@ -17,7 +17,7 @@
 	"types": "dist/index.d.ts",
 	"module": "dist/esm/index.mjs",
 	"author": "Jonny Burger <jonny@remotion.dev>",
-	"license": "MIT",
+	"license": "UNLICENSED",
 	"bugs": {
 		"url": "https://github.com/remotion-dev/remotion/issues"
 	},

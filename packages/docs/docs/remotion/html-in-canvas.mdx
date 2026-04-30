@@ -109,6 +109,28 @@ Inherited from [`<Sequence>`](/docs/sequence#durationinframes).
 
 Inherited from [`<Sequence>`](/docs/sequence#from).
 
+### `ref?`
+
+You can add a [React ref](https://react.dev/learn/manipulating-the-dom-with-refs) to `<HtmlInCanvas />`.  
+It is attached to the layout [`HTMLCanvasElement`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement) — the canvas that hosts the laid-out subtree (`layoutSubtree`).
+
+If you use TypeScript, type the ref with `HTMLCanvasElement`:
+
+```tsx twoslash title="src/Example.tsx"
+import React, {useRef} from 'react';
+import {AbsoluteFill, HtmlInCanvas} from 'remotion';
+
+export const Example: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  return (
+    <HtmlInCanvas ref={canvasRef} width={1280} height={720}>
+      <AbsoluteFill style={{fontSize: 80}}>Hello</AbsoluteFill>
+    </HtmlInCanvas>
+  );
+};
+```
+
 ## `onPaint` examples
 
 ### 2D

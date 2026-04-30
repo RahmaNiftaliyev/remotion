@@ -1,4 +1,4 @@
-// Public types for the canvas-effects system.
+// Internal types for the canvas-effects system (exported via `remotion` → `./internals.js`).
 //
 // An effect is a description of how to transform an input image into an output
 // image, executed inside a per-frame chain runtime owned by a source component
@@ -9,7 +9,7 @@
 // sRGB-encoded. Effects that perform color math in linear space are responsible
 // for converting to/from sRGB themselves.
 
-import type {SequenceSchema} from '../internals';
+import type {SequenceSchema} from '../sequence-field-schema.js';
 
 export type Backend = '2d' | 'webgl2' | 'webgpu';
 
@@ -48,7 +48,7 @@ export type EffectDescriptor<P = unknown> = EffectDefinitionAndStack<P> & {
 	readonly params: P;
 };
 
-// Public prop type for `effects`: callers may interleave single descriptors
+// Prop type for `effects`: callers may interleave single descriptors
 // with arrays of descriptors. The runtime calls `.flat()` once before
 // processing, which lets a single factory call (e.g. `blur(...)`) expand into
 // multiple passes (e.g. horizontal + vertical) without leaking that detail to

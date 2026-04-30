@@ -131,12 +131,8 @@ export type BundleState =
 checkMultipleRemotionVersions();
 export * from './AbsoluteFill.js';
 export * from './animated-image/index.js';
-export {
-	Backend,
-	EffectApplyParams,
-	EffectDefinition,
+export type {
 	EffectDefinitionAndStack,
-	EffectDescriptor,
 	EffectsProp,
 } from './canvas-effects/index.js';
 export type {SolidProps} from './canvas-effects/Solid.js';

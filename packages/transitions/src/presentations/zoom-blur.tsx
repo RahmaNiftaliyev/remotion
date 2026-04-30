@@ -5,7 +5,7 @@ export type ZoomBlurProps = {
 	rotation?: number;
 };
 
-export type GLState = {
+type GLState = {
 	gl: WebGL2RenderingContext;
 	program: WebGLProgram;
 	prevTex: WebGLTexture;

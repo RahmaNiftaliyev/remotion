@@ -1,5 +1,5 @@
 import {useLayoutEffect, useMemo, useRef, useState, useCallback} from 'react';
-import type {EffectsProp} from 'remotion';
+import {useDelayRender, type EffectsProp} from 'remotion';
 import {AbsoluteFill, Internals, useCurrentFrame} from 'remotion';
 import type {DrawFunction} from './TransitionSeries';
 import type {
@@ -59,14 +59,18 @@ export const HtmlInCanvasPresentation = <
 	}, [offscreenCanvas, instance]);
 
 	const chainState = Internals.useEffectChainState();
+	const {delayRender, continueRender} = useDelayRender();
 
 	const draw: DrawFunction = useCallback(
-		(prevImage, nextImage, progress) => {
+		async (prevImage, nextImage, progress) => {
 			if (!canvasRef.current) {
 				throw new Error('Canvas not found');
 			}
 
+			const handle = delayRender('onPaint');
+
 			if (!prevImage && !nextImage) {
+				continueRender(handle);
 				instance.clear();
 				return;
 			}
@@ -75,6 +79,7 @@ export const HtmlInCanvasPresentation = <
 			const height = prevImage?.height ?? nextImage?.height ?? 0;
 
 			if (width === 0 || height === 0) {
+				continueRender(handle);
 				instance.clear();
 				return;
 			}
@@ -91,7 +96,7 @@ export const HtmlInCanvasPresentation = <
 				passedProps: passedPropsRef.current,
 			});
 
-			Internals.runEffectChain({
+			await Internals.runEffectChain({
 				state: chainState.get(width, height)!,
 				source: offscreenCanvas,
 				effects: effectsRef.current ?? [],
@@ -100,8 +105,9 @@ export const HtmlInCanvasPresentation = <
 				height,
 				output: canvasRef.current,
 			});
+			continueRender(handle);
 		},
-		[chainState, instance, offscreenCanvas],
+		[chainState, instance, offscreenCanvas, continueRender, delayRender],
 	);
 
 	const hide = bothEnteringAndExiting && presentationDirection === 'exiting';

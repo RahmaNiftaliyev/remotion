@@ -380,7 +380,7 @@ const HtmlInCanvasInner: React.FC<
 			const elImage = canvas2dRef.current?.captureElementImage(element);
 			await handler({canvas: offscreenCanvas, element, elementImage: elImage!});
 
-			const completed = await runEffectChain({
+			await runEffectChain({
 				state: chainState.get(width, height)!,
 				source: offscreenCanvas,
 				effects: effectsRef.current,
@@ -390,9 +390,7 @@ const HtmlInCanvasInner: React.FC<
 				height,
 			});
 
-			if (completed) {
-				continueRender(handle);
-			}
+			continueRender(handle);
 		} catch (error) {
 			cancelRender(error);
 		}

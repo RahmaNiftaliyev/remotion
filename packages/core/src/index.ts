@@ -137,7 +137,6 @@ export type {
 	EffectsProp,
 } from './effects/index.js';
 export type {SolidProps} from './effects/Solid.js';
-export {ENABLE_EFFECTS} from './enable-effects.js';
 export {
 	HtmlInCanvas,
 	isHtmlInCanvasSupported,

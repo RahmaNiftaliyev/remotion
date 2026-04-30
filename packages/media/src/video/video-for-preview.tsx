@@ -14,7 +14,6 @@ import type {
 	VolumeProp,
 } from 'remotion';
 import {
-	ENABLE_EFFECTS,
 	Html5Video,
 	Internals,
 	useBufferState,
@@ -154,9 +153,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 	const effectChainState = useEffectChainState();
 	const experimentalEffectsRef = useRef(_experimentalEffects);
 	experimentalEffectsRef.current = _experimentalEffects;
-	const memoizedEffects = useMemoizedEffects(
-		ENABLE_EFFECTS ? _experimentalEffects.flat() : [],
-	);
+	const memoizedEffects = useMemoizedEffects(_experimentalEffects.flat());
 	const effectChainStateRef = useRef(effectChainState);
 	effectChainStateRef.current = effectChainState;
 	const frameRef = useRef(frame);
@@ -321,8 +318,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 				sequenceOffset: initialSequenceOffset.current,
 				credentials,
 				tagType: 'video',
-				getEffects: () =>
-					ENABLE_EFFECTS ? experimentalEffectsRef.current : [],
+				getEffects: () => experimentalEffectsRef.current,
 				getEffectChainState: (width, height) =>
 					effectChainStateRef.current?.get(width, height)!,
 				getCurrentFrame: () => frameRef.current,

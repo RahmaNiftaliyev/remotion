@@ -1,5 +1,4 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {ENABLE_EFFECTS} from '../enable-effects.js';
 import {useCurrentFrame} from '../use-current-frame.js';
 import {useDelayRender} from '../use-delay-render.js';
 import type {EffectsProp} from './effect-types.js';
@@ -52,23 +51,6 @@ export const Solid: React.FC<SolidProps> = ({
 		}
 
 		const handle = delayRender(`Solid effect chain (frame ${frame})`);
-
-		if (!ENABLE_EFFECTS) {
-			const outCtx = outputCanvas.getContext('2d', {colorSpace: 'srgb'});
-			if (!outCtx) {
-				cancelRender(
-					new Error('Failed to acquire 2D context for <Solid> output'),
-				);
-				return;
-			}
-
-			outCtx.fillStyle = color;
-			outCtx.fillRect(0, 0, width, height);
-			continueRender(handle);
-			return () => {
-				continueRender(handle);
-			};
-		}
 
 		if (!chainState) {
 			continueRender(handle);

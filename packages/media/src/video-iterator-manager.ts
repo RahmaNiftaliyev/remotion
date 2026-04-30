@@ -1,7 +1,7 @@
 import type {InputVideoTrack, WrappedCanvas} from 'mediabunny';
 import {CanvasSink} from 'mediabunny';
 import type {EffectChainState, EffectsProp, LogLevel} from 'remotion';
-import {ENABLE_EFFECTS, Internals} from 'remotion';
+import {Internals} from 'remotion';
 import type {DelayPlaybackIfNotPremounting} from './delay-playback-if-not-premounting';
 import type {Nonce} from './nonce-manager';
 import {makePrewarmedVideoIteratorCache} from './prewarm-iterator-for-looping';
@@ -72,7 +72,6 @@ export const videoIteratorManager = async ({
 			const effects = getEffects();
 			const chainState = getEffectChainState(canvas.width, canvas.height);
 			if (
-				ENABLE_EFFECTS &&
 				effects.length > 0 &&
 				chainState &&
 				canvas instanceof HTMLCanvasElement

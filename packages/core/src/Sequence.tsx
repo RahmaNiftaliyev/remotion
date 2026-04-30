@@ -11,7 +11,6 @@ import type {LoopDisplay, SequenceControls} from './CompositionManager.js';
 import {flattenEffects} from './effects/effect-internals.js';
 import type {EffectsProp} from './effects/effect-types.js';
 import {useMemoizedEffects} from './effects/use-memoized-effects.js';
-import {ENABLE_EFFECTS} from './enable-effects.js';
 import {Freeze} from './freeze.js';
 import {useNonce} from './nonce.js';
 import {PremountContext} from './PremountContext.js';
@@ -218,7 +217,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 	const inheritedStack = (other as any)?.stack ?? null;
 
 	const memoizedEffects = useMemoizedEffects(
-		ENABLE_EFFECTS ? flattenEffects(_experimentalEffects ?? []) : [],
+		flattenEffects(_experimentalEffects ?? []),
 	);
 
 	useEffect(() => {

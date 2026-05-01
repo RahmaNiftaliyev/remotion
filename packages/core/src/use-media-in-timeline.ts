@@ -89,7 +89,6 @@ export const useBasicMediaInTimeline = ({
 
 	const nonce = useNonce();
 	const {rootId} = useTimelineContext();
-	const env = useRemotionEnvironment();
 
 	return {
 		volumes,
@@ -97,7 +96,6 @@ export const useBasicMediaInTimeline = ({
 		doesVolumeChange,
 		nonce,
 		rootId,
-		isStudio: env.isStudio,
 		finalDisplayName: displayName ?? getAssetDisplayName(src),
 	};
 };
@@ -126,17 +124,18 @@ export const useImageInTimeline = ({
 	const parentSequence = useContext(SequenceContext);
 	const {registerSequence, unregisterSequence} = useContext(SequenceManager);
 
-	const {duration, nonce, rootId, isStudio, finalDisplayName} =
-		useBasicMediaInTimeline({
-			volume: undefined,
-			mediaVolume: 0,
-			mediaType: 'image',
-			src,
-			displayName,
-			trimAfter: undefined,
-			trimBefore: undefined,
-			playbackRate: 1,
-		});
+	const {duration, nonce, rootId, finalDisplayName} = useBasicMediaInTimeline({
+		volume: undefined,
+		mediaVolume: 0,
+		mediaType: 'image',
+		src,
+		displayName,
+		trimAfter: undefined,
+		trimBefore: undefined,
+		playbackRate: 1,
+	});
+
+	const {isStudio} = useRemotionEnvironment();
 
 	useEffect(() => {
 		if (!src) {
@@ -224,24 +223,19 @@ export const useMediaInTimeline = ({
 	const startsAt = useMediaStartsAt();
 	const {registerSequence, unregisterSequence} = useContext(SequenceManager);
 
-	const {
-		volumes,
-		duration,
-		doesVolumeChange,
-		nonce,
-		rootId,
-		isStudio,
-		finalDisplayName,
-	} = useBasicMediaInTimeline({
-		volume,
-		mediaVolume,
-		mediaType,
-		src,
-		displayName,
-		trimAfter: undefined,
-		trimBefore: undefined,
-		playbackRate,
-	});
+	const {volumes, duration, doesVolumeChange, nonce, rootId, finalDisplayName} =
+		useBasicMediaInTimeline({
+			volume,
+			mediaVolume,
+			mediaType,
+			src,
+			displayName,
+			trimAfter: undefined,
+			trimBefore: undefined,
+			playbackRate,
+		});
+
+	const {isStudio} = useRemotionEnvironment();
 
 	useEffect(() => {
 		if (!src) {
@@ -299,9 +293,9 @@ export const useMediaInTimeline = ({
 		showInTimeline,
 		premountDisplay,
 		postmountDisplay,
-		isStudio,
 		loopDisplay,
 		rootId,
 		finalDisplayName,
+		isStudio,
 	]);
 };

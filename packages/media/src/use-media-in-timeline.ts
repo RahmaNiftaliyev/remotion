@@ -1,8 +1,9 @@
 import {useContext, useEffect, useState} from 'react';
-import type {
-	EffectDefinitionAndStack,
-	LoopDisplay,
-	SequenceControls,
+import {
+	useRemotionEnvironment,
+	type EffectDefinitionAndStack,
+	type LoopDisplay,
+	type SequenceControls,
 } from 'remotion';
 import {Internals, type VolumeProp} from 'remotion';
 
@@ -47,24 +48,19 @@ export const useMediaInTimeline = ({
 
 	const [mediaId] = useState(() => String(Math.random()));
 
-	const {
-		volumes,
-		duration,
-		doesVolumeChange,
-		nonce,
-		rootId,
-		isStudio,
-		finalDisplayName,
-	} = Internals.useBasicMediaInTimeline({
-		volume,
-		mediaVolume,
-		mediaType,
-		src,
-		displayName,
-		trimBefore,
-		trimAfter,
-		playbackRate,
-	});
+	const {volumes, duration, doesVolumeChange, nonce, rootId, finalDisplayName} =
+		Internals.useBasicMediaInTimeline({
+			volume,
+			mediaVolume,
+			mediaType,
+			src,
+			displayName,
+			trimBefore,
+			trimAfter,
+			playbackRate,
+		});
+
+	const {isStudio} = useRemotionEnvironment();
 
 	useEffect(() => {
 		if (!src) {

@@ -3762,6 +3762,15 @@ export const articles = [
 		slug: 'mediabunny/version',
 	},
 	{
+		id: 'mediabunny/webcodecs-bugs',
+		title: 'WebCodecs Bugs',
+		relativePath: 'docs/mediabunny/webcodecs-bugs.mdx',
+		compId: 'articles-docs-mediabunny-webcodecs-bugs',
+		crumb: 'Issue Tracker',
+		noAi: false,
+		slug: 'mediabunny/webcodecs-bugs',
+	},
+	{
 		id: 'metadata',
 		title: 'Setting video metadata',
 		relativePath: 'docs/metadata.mdx',

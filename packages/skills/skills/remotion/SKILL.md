@@ -254,34 +254,82 @@ Is the recommended way to load fonts in Remotion. See [rules/google-fonts.md](ru
 
 See [rules/local-fonts.md](rules/local-fonts.md) for how to load local fonts.
 
-## Getting video and audio metadata
+## Getting audio duration
 
-See:
+See [rules/get-audio-duration.md](rules/get-audio-duration.md) for getting the duration of an audio file in seconds with Mediabunny.
 
-- [rules/get-audio-duration.md](rules/get-audio-duration.md) - Getting the duration of an audio file in seconds with Mediabunny
-- [rules/get-video-dimensions.md](rules/get-video-dimensions.md) - Getting the width and height of a video file with Mediabunny
-- [rules/get-video-duration.md](rules/get-video-duration.md) - Getting the duration of a video file in seconds with Mediabunny
+## Getting video dimensions
+
+See [rules/get-video-dimensions.md](rules/get-video-dimensions.md) for getting the width and height of a video file with Mediabunny.
+
+## Getting video duration
+
+See [rules/get-video-duration.md](rules/get-video-duration.md) for getting the duration of a video file in seconds with Mediabunny.
 
 ## GIFs
 
 See [rules/gifs.md](rules/gifs.md) for how to display GIFs synchronized with Remotion's timeline.
 
-## How to use
+## Advanced Images
 
-- [rules/images.md](rules/images.md) - Embedding images in Remotion using the Img component
-- [rules/light-leaks.md](rules/light-leaks.md) - Light leak overlay effects using @remotion/light-leaks
-- [rules/lottie.md](rules/lottie.md) - Embedding Lottie animations in Remotion
-- [rules/measuring-dom-nodes.md](rules/measuring-dom-nodes.md) - Measuring DOM element dimensions in Remotion
-- [rules/measuring-text.md](rules/measuring-text.md) - Measuring text dimensions, fitting text to containers, and checking overflow
-- [rules/sequencing.md](rules/sequencing.md) - Sequencing patterns for Remotion - delay, trim, limit duration of items
-- [rules/tailwind.md](rules/tailwind.md) - Using TailwindCSS in Remotion
-- [rules/text-animations.md](rules/text-animations.md) - Typography and text animation patterns for Remotion
-- [rules/timing.md](rules/timing.md) - Advanced timing with interpolate and Bézier easing, springs
-- [rules/transitions.md](rules/transitions.md) - Scene transition patterns for Remotion
-- [rules/transparent-videos.md](rules/transparent-videos.md) - Rendering out a video with transparency
-- [rules/trimming.md](rules/trimming.md) - Trimming patterns for Remotion - cut the beginning or end of animations
-- [rules/videos.md](rules/videos.md) - Embedding videos in Remotion - trimming, volume, speed, looping, pitch
-- [rules/parameters.md](rules/parameters.md) - Make a video parametrizable by adding a Zod schema
-- [rules/maps.md](rules/maps.md) - Add a map using Mapbox and animate it
-- [rules/silence-detection.md](rules/silence-detection.md) - Adaptive silence detection using FFmpeg loudnorm and silencedetect
-- [rules/voiceover.md](rules/voiceover.md) - Adding AI-generated voiceover to Remotion compositions using ElevenLabs TTS
+See [rules/images.md](rules/images.md) for sizing and positioning images, dynamic image paths, and getting image dimensions.
+
+## Light leaks
+
+See [rules/light-leaks.md](rules/light-leaks.md) for light leak overlay effects using `@remotion/light-leaks`.
+
+## Lottie animations
+
+See [rules/lottie.md](rules/lottie.md) for embedding Lottie animations in Remotion.
+
+## Measuring DOM nodes
+
+See [rules/measuring-dom-nodes.md](rules/measuring-dom-nodes.md) for measuring DOM element dimensions in Remotion.
+
+## Measuring text
+
+See [rules/measuring-text.md](rules/measuring-text.md) for measuring text dimensions, fitting text to containers, and checking overflow.
+
+## Advanced sequencing
+
+See [rules/sequencing.md](rules/sequencing.md) for more sequencing patterns - delay, trim, limit duration of items.
+
+## TailwindCSS
+
+See [rules/tailwind.md](rules/tailwind.md) for using TailwindCSS in Remotion.
+
+## Text animations
+
+See [rules/text-animations.md](rules/text-animations.md) for typography and text animation patterns.
+
+## Advanced timing
+
+See [rules/timing.md](rules/timing.md) for advanced timing with `interpolate` and Bézier easing, and springs.
+
+## Transitions
+
+See [rules/transitions.md](rules/transitions.md) for scene transition patterns.
+
+## Transparent videos
+
+See [rules/transparent-videos.md](rules/transparent-videos.md) for rendering out a video with transparency.
+
+## Trimming
+
+See [rules/trimming.md](rules/trimming.md) for trimming patterns - cutting the beginning or end of animations.
+
+## Advanced Videos
+
+See [rules/videos.md](rules/videos.md) for advanced knowledge about embedding videos - trimming, volume, speed, looping, pitch.
+
+## Parameterized videos
+
+See [rules/parameters.md](rules/parameters.md) for making a composition parametrizable by adding a Zod schema.
+
+## Maps
+
+See [rules/maps.md](rules/maps.md) for adding a map using Mapbox and animating it.
+
+## Voiceover
+
+See [rules/voiceover.md](rules/voiceover.md) for adding AI-generated voiceover to Remotion compositions using ElevenLabs TTS.

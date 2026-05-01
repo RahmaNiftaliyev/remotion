@@ -4,7 +4,7 @@
 	},
 	"name": "docs",
 	"private": true,
-	"version": "4.0.454",
+	"version": "4.0.455",
 	"scripts": {
 		"formatting": "oxfmt src --check",
 		"format": "oxfmt src",

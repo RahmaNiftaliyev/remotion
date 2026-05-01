@@ -4990,6 +4990,15 @@ export const articles = [
 		slug: 'remotion',
 	},
 	{
+		id: 'remotion/html-in-canvas',
+		title: '<HtmlInCanvas>',
+		relativePath: 'docs/remotion/html-in-canvas.mdx',
+		compId: 'articles-docs-remotion-html-in-canvas',
+		crumb: 'API',
+		noAi: false,
+		slug: 'remotion/html-in-canvas',
+	},
+	{
 		id: 'render-all',
 		title: 'Render all compositions',
 		relativePath: 'docs/render-all.mdx',

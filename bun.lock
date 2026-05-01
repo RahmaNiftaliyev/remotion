@@ -548,6 +548,20 @@
         "eslint": "catalog:",
       },
     },
+    "packages/effects": {
+      "name": "@remotion/effects",
+      "version": "4.0.451",
+      "devDependencies": {
+        "@remotion/eslint-config-internal": "workspace:*",
+        "@typescript/native-preview": "catalog:",
+        "eslint": "catalog:",
+        "react": "catalog:",
+      },
+      "peerDependencies": {
+        "react": ">=16.8.0",
+        "remotion": "workspace:*",
+      },
+    },
     "packages/elevenlabs": {
       "name": "@remotion/elevenlabs",
       "version": "4.0.454",
@@ -664,6 +678,7 @@
         "@remotion/captions": "workspace:*",
         "@remotion/cli": "workspace:*",
         "@remotion/cloudrun": "workspace:*",
+        "@remotion/effects": "workspace:*",
         "@remotion/enable-scss": "workspace:*",
         "@remotion/eslint-config-flat": "workspace:*",
         "@remotion/eslint-plugin": "workspace:*",
@@ -3810,6 +3825,8 @@
     "@remotion/discord-poster": ["@remotion/discord-poster@workspace:packages/discord-poster"],
 
     "@remotion/docusaurus-plugin": ["@remotion/docusaurus-plugin@workspace:packages/docusaurus-plugin"],
+
+    "@remotion/effects": ["@remotion/effects@workspace:packages/effects"],
 
     "@remotion/elevenlabs": ["@remotion/elevenlabs@workspace:packages/elevenlabs"],
 

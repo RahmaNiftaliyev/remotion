@@ -43,7 +43,19 @@ import {
 	HlsMediaVideoMuted,
 	HlsMediaVideoTrimmed,
 } from './Hls/HlsMediaVideo';
-import {HtmlInCanvasDemo} from './HtmlInCanvas';
+import {
+	HtmlInCanvasComplexText,
+	HtmlInCanvasComposeAsyncBitmap,
+	HtmlInCanvasComposeWebGL,
+	HtmlInCanvasComposeWebGLCrt,
+	HtmlInCanvasComposeWebGPU,
+	HtmlInCanvasDocsMinimalWebGL,
+	HtmlInCanvasDocsMinimalWebGPU,
+	HtmlInCanvasDocsDemo2DBlur,
+	HtmlInCanvasDemo,
+	HtmlInCanvasPrivacy,
+	HtmlInCanvasReactSvg,
+} from './HtmlInCanvas';
 import {HugeImage} from './HugeImage';
 import {HugePayload, hugePayloadSchema} from './HugePayload';
 import {Layers} from './Layers';
@@ -169,6 +181,7 @@ import {Seek} from './StudioApis/Seek';
 import {TikTokTextBoxPlayground} from './TikTokTextbox/TikTokTextBox';
 import {FitTextOnNLines, fitTextOnNLinesSchema} from './Title/FitTextOnNLines';
 import {TransitionRounding} from './TransitionRounding';
+import {WebGlTransition} from './Transitions/WebGlTransition';
 import {
 	OverlayAndTransitionMixed,
 	OverlayBasic,
@@ -877,14 +890,99 @@ export const Index: React.FC = () => {
 					width={1080}
 					durationInFrames={100}
 				/>
-				<Composition
-					id="html-in-canvas"
-					component={HtmlInCanvasDemo}
-					fps={30}
-					height={1080}
-					width={1920}
-					durationInFrames={120}
-				/>
+				<Folder name="html-in-canvas">
+					<Composition
+						id="html-in-canvas-changing-size"
+						component={HtmlInCanvasDemo}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-async-bitmap"
+						component={HtmlInCanvasComposeAsyncBitmap}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-webgl"
+						component={HtmlInCanvasComposeWebGL}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-webgl-crt"
+						component={HtmlInCanvasComposeWebGLCrt}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-webgpu"
+						component={HtmlInCanvasComposeWebGPU}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-docs-minimal-webgl"
+						component={HtmlInCanvasDocsMinimalWebGL}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-docs-minimal-webgpu"
+						component={HtmlInCanvasDocsMinimalWebGPU}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-docs-demo-2d-blur"
+						component={HtmlInCanvasDocsDemo2DBlur}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-complex-text"
+						component={HtmlInCanvasComplexText}
+						fps={30}
+						height={720}
+						width={1280}
+						durationInFrames={60}
+					/>
+					<Composition
+						id="html-in-canvas-privacy"
+						component={HtmlInCanvasPrivacy}
+						fps={30}
+						height={900}
+						width={1400}
+						durationInFrames={60}
+					/>
+					<Composition
+						id="html-in-canvas-react-svg"
+						component={HtmlInCanvasReactSvg}
+						width={1920}
+						height={1080}
+						fps={60}
+						durationInFrames={300}
+						defaultProps={{
+							transparent: true,
+						}}
+					/>
+				</Folder>
 				<Composition
 					id="video-testing-webm"
 					component={VideoTesting}
@@ -1536,6 +1634,14 @@ export const Index: React.FC = () => {
 				<Composition
 					id="basic-transition"
 					component={BasicTransition}
+					fps={30}
+					height={1080}
+					durationInFrames={300}
+					width={1920}
+				/>
+				<Composition
+					id="webgl-transition"
+					component={WebGlTransition}
 					fps={30}
 					height={1080}
 					durationInFrames={300}

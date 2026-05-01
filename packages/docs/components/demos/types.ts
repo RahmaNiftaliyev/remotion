@@ -15,6 +15,9 @@ import {ArrowDemo} from './Arrow';
 import {CircleDemo} from './Circle';
 import {EllipseDemo} from './Ellipse';
 import {HeartDemo} from './Heart';
+import {HtmlInCanvasDocsDemo2DBlur} from './HtmlInCanvasDocsDemo2DBlur';
+import {HtmlInCanvasDocsDemoWebGL} from './HtmlInCanvasDocsDemoWebGL';
+import {HtmlInCanvasDocsDemoWebGPU} from './HtmlInCanvasDocsDemoWebGPU';
 import {LightLeakDemoComp} from './LightLeakDemo';
 import {NoiseComp} from './NoiseDemo';
 import {PieDemo} from './Pie';
@@ -1196,4 +1199,40 @@ export const transitionSeriesEnterExitDemo: DemoType = {
 			optional: 'no',
 		},
 	],
+};
+
+export const htmlInCanvasDemo2DBlur: DemoType = {
+	comp: HtmlInCanvasDocsDemo2DBlur,
+	compHeight: 1080,
+	compWidth: 1920,
+	durationInFrames: 120,
+	fps: 30,
+	id: 'html-in-canvas-2d-blur',
+	autoPlay: true,
+	controls: true,
+	options: [],
+};
+
+export const htmlInCanvasDemoWebGL: DemoType = {
+	comp: HtmlInCanvasDocsDemoWebGL,
+	compHeight: 1080,
+	compWidth: 1920,
+	durationInFrames: 120,
+	fps: 30,
+	id: 'html-in-canvas-webgl',
+	autoPlay: true,
+	controls: true,
+	options: [],
+};
+
+export const htmlInCanvasDemoWebGPU: DemoType = {
+	comp: HtmlInCanvasDocsDemoWebGPU,
+	compHeight: 1080,
+	compWidth: 1920,
+	durationInFrames: 120,
+	fps: 30,
+	id: 'html-in-canvas-webgpu',
+	autoPlay: true,
+	controls: true,
+	options: [],
 };

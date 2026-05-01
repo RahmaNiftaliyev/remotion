@@ -167,6 +167,7 @@ export const useImageInTimeline = ({
 			premountDisplay,
 			postmountDisplay,
 			controls,
+			effects: [],
 		});
 
 		return () => {
@@ -275,6 +276,7 @@ export const useMediaInTimeline = ({
 			premountDisplay,
 			postmountDisplay,
 			controls: null,
+			effects: [],
 		});
 
 		return () => {

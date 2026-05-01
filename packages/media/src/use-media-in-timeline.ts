@@ -1,5 +1,9 @@
 import {useContext, useEffect, useState} from 'react';
-import type {LoopDisplay, SequenceControls} from 'remotion';
+import type {
+	EffectDefinitionAndStack,
+	LoopDisplay,
+	SequenceControls,
+} from 'remotion';
 import {Internals, type VolumeProp} from 'remotion';
 
 export const useMediaInTimeline = ({
@@ -17,6 +21,7 @@ export const useMediaInTimeline = ({
 	trimBefore,
 	trimAfter,
 	controls,
+	_experimentalEffects,
 }: {
 	volume: VolumeProp | undefined;
 	mediaVolume: number;
@@ -32,6 +37,7 @@ export const useMediaInTimeline = ({
 	trimBefore: number | undefined;
 	trimAfter: number | undefined;
 	controls: SequenceControls | undefined;
+	_experimentalEffects: EffectDefinitionAndStack<unknown>[];
 }) => {
 	const parentSequence = useContext(Internals.SequenceContext);
 	const startsAt = Internals.useMediaStartsAt();
@@ -93,6 +99,7 @@ export const useMediaInTimeline = ({
 			premountDisplay,
 			postmountDisplay,
 			controls: controls ?? null,
+			effects: _experimentalEffects,
 		});
 
 		return () => {
@@ -121,6 +128,7 @@ export const useMediaInTimeline = ({
 		unregisterSequence,
 		volumes,
 		trimBefore,
+		_experimentalEffects,
 	]);
 
 	return {

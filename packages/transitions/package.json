@@ -86,6 +86,12 @@
 			"import": "./dist/esm/clock-wipe.mjs",
 			"require": "./dist/presentations/clock-wipe.js"
 		},
+		"./zoom-blur": {
+			"types": "./dist/presentations/zoom-blur.d.ts",
+			"module": "./dist/esm/zoom-blur.mjs",
+			"import": "./dist/esm/zoom-blur.mjs",
+			"require": "./dist/presentations/zoom-blur.js"
+		},
 		"./none": {
 			"types": "./dist/presentations/none.d.ts",
 			"module": "./dist/esm/none.mjs",
@@ -122,6 +128,9 @@
 			],
 			"iris": [
 				"dist/presentations/iris.d.ts"
+			],
+			"zoom-blur": [
+				"dist/presentations/zoom-blur.d.ts"
 			]
 		}
 	},

@@ -1,7 +1,9 @@
 import {ALL_FORMATS, Input, UrlSource} from 'mediabunny';
 import type {LogLevel, useBufferState} from 'remotion';
+import type {EffectChainState} from 'remotion';
 import {Internals} from 'remotion';
 import type {ScheduleAudioNodeResult} from 'remotion';
+import type {EffectsProp} from 'remotion';
 import {
 	audioIteratorManager,
 	type AudioIteratorManager,
@@ -68,6 +70,14 @@ export class MediaPlayer {
 	private onVideoFrameCallback: null | ((frame: CanvasImageSource) => void) =
 		null;
 
+	private getEffects: () => EffectsProp;
+	private getEffectChainState: (
+		width: number,
+		height: number,
+	) => EffectChainState | null;
+
+	private getCurrentFrame: () => number;
+
 	private initializationPromise: Promise<MediaPlayerInitResult> | null = null;
 
 	private bufferState: ReturnType<typeof useBufferState>;
@@ -98,6 +108,9 @@ export class MediaPlayer {
 		sequenceOffset,
 		credentials,
 		tagType,
+		getEffects,
+		getEffectChainState,
+		getCurrentFrame,
 	}: {
 		canvas: HTMLCanvasElement | OffscreenCanvas | null;
 		src: string;
@@ -120,6 +133,12 @@ export class MediaPlayer {
 		sequenceOffset: number;
 		credentials: RequestCredentials | undefined;
 		tagType: 'audio' | 'video';
+		getEffects: () => EffectsProp;
+		getEffectChainState: (
+			width: number,
+			height: number,
+		) => EffectChainState | null;
+		getCurrentFrame: () => number;
 	}) {
 		this.canvas = canvas ?? null;
 		this.src = src;
@@ -153,6 +172,9 @@ export class MediaPlayer {
 			formats: ALL_FORMATS,
 		});
 		this.tagType = tagType;
+		this.getEffects = getEffects;
+		this.getEffectChainState = getEffectChainState;
+		this.getCurrentFrame = getCurrentFrame;
 
 		if (canvas) {
 			const context = canvas.getContext('2d', {
@@ -311,6 +333,9 @@ export class MediaPlayer {
 						this.getLoopSegmentMediaEndTimestamp(),
 					getStartTime: () => this.getStartTime(),
 					getIsLooping: () => this.loop,
+					getEffects: this.getEffects,
+					getEffectChainState: this.getEffectChainState,
+					getCurrentFrame: this.getCurrentFrame,
 				});
 			}
 

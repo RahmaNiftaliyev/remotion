@@ -7,6 +7,7 @@ import React, {
 	useState,
 } from 'react';
 import type {
+	EffectsProp,
 	LogLevel,
 	LoopVolumeCurveBehavior,
 	SequenceControls,
@@ -41,6 +42,8 @@ const {
 	usePreload,
 	SequenceContext,
 	SequenceVisibilityToggleContext,
+	useEffectChainState,
+	useMemoizedEffects,
 } = Internals;
 
 type VideoForPreviewProps = {
@@ -68,6 +71,7 @@ type VideoForPreviewProps = {
 	readonly credentials: RequestCredentials | undefined;
 	readonly objectFit: VideoObjectFit;
 	readonly _experimentalInitiallyDrawCachedFrame: boolean;
+	readonly _experimentalEffects: EffectsProp;
 };
 
 type VideoForPreviewAssertedShowingProps = VideoForPreviewProps & {
@@ -102,6 +106,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 	controls,
 	objectFit: objectFitProp,
 	_experimentalInitiallyDrawCachedFrame,
+	_experimentalEffects,
 }) => {
 	const src = usePreload(unpreloadedSrc);
 
@@ -145,6 +150,15 @@ const VideoForPreviewAssertedShowing: React.FC<
 
 	warnAboutTooHighVolume(userPreferredVolume);
 
+	const effectChainState = useEffectChainState();
+	const experimentalEffectsRef = useRef(_experimentalEffects);
+	experimentalEffectsRef.current = _experimentalEffects;
+	const memoizedEffects = useMemoizedEffects(_experimentalEffects.flat());
+	const effectChainStateRef = useRef(effectChainState);
+	effectChainStateRef.current = effectChainState;
+	const frameRef = useRef(frame);
+	frameRef.current = frame;
+
 	const parentSequence = useContext(SequenceContext);
 	const isPremounting = Boolean(parentSequence?.premounting);
 	const isPostmounting = Boolean(parentSequence?.postmounting);
@@ -176,6 +190,7 @@ const VideoForPreviewAssertedShowing: React.FC<
 		trimAfter,
 		trimBefore,
 		controls,
+		_experimentalEffects: memoizedEffects,
 	});
 
 	const isSequenceHidden = hidden[timelineId] ?? false;
@@ -303,6 +318,10 @@ const VideoForPreviewAssertedShowing: React.FC<
 				sequenceOffset: initialSequenceOffset.current,
 				credentials,
 				tagType: 'video',
+				getEffects: () => experimentalEffectsRef.current,
+				getEffectChainState: (width, height) =>
+					effectChainStateRef.current?.get(width, height)!,
+				getCurrentFrame: () => frameRef.current,
 			});
 
 			mediaPlayerRef.current = player;

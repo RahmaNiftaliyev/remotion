@@ -1,18 +1,12 @@
 import type {SequenceNodePath} from '@remotion/studio-shared';
 import React, {useCallback, useContext, useMemo} from 'react';
-import {Internals} from 'remotion';
 import type {CanUpdateSequencePropStatus} from 'remotion';
+import {Internals} from 'remotion';
 import type {CodePosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
+import {EXPANDED_SECTION_PADDING_RIGHT} from '../../helpers/timeline-layout';
 import {callApi} from '../call-api';
-import {
-	EXPANDED_SECTION_PADDING_LEFT,
-	EXPANDED_SECTION_PADDING_RIGHT,
-} from './TimelineExpandedSection';
-import {SPACING} from './TimelineListItem';
 import {TimelineFieldValue} from './TimelineSchemaField';
-
-const FIELD_ROW_PADDING_LEFT = 24;
 
 const fieldRowBase: React.CSSProperties = {
 	display: 'flex',
@@ -39,14 +33,14 @@ export const TimelineFieldRow: React.FC<{
 	readonly field: SchemaFieldInfo;
 	readonly overrideId: string;
 	readonly validatedLocation: CodePosition | null;
-	readonly nestedDepth: number;
+	readonly paddingLeft: number;
 	readonly nodePath: SequenceNodePath | null;
 	readonly keysToObserve: string[];
 }> = ({
 	field,
 	overrideId,
 	validatedLocation,
-	nestedDepth,
+	paddingLeft,
 	nodePath,
 	keysToObserve,
 }) => {
@@ -141,12 +135,9 @@ export const TimelineFieldRow: React.FC<{
 		return {
 			...fieldRowBase,
 			height: field.rowHeight,
-			paddingLeft:
-				EXPANDED_SECTION_PADDING_LEFT +
-				FIELD_ROW_PADDING_LEFT +
-				SPACING * 3 * nestedDepth,
+			paddingLeft,
 		};
-	}, [field.rowHeight, nestedDepth]);
+	}, [field.rowHeight, paddingLeft]);
 
 	return (
 		<div style={style}>

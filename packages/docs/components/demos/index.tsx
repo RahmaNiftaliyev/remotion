@@ -5,6 +5,9 @@ import {AbsoluteFill} from 'remotion';
 import {Control} from './control';
 import type {DemoType} from './types';
 import {
+	htmlInCanvasDemo2DBlur,
+	htmlInCanvasDemoWebGL,
+	htmlInCanvasDemoWebGPU,
 	animationMathDemo,
 	arrowDemo,
 	circleDemo,
@@ -53,6 +56,9 @@ const container: React.CSSProperties = {
 };
 
 const demos: DemoType[] = [
+	htmlInCanvasDemo2DBlur,
+	htmlInCanvasDemoWebGL,
+	htmlInCanvasDemoWebGPU,
 	noiseDemo,
 	arrowDemo,
 	triangleDemo,
@@ -175,6 +181,7 @@ export const Demo: React.FC<{
 				inputProps={{...state, darkMode: colorMode === 'dark'}}
 				autoPlay={demo.autoPlay}
 				controls={demo.controls}
+				initiallyMuted
 				loop
 			/>
 			<div className={styles.containerrow}>

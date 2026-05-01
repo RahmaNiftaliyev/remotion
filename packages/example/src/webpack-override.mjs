@@ -35,6 +35,9 @@ const aliases = {
 	'@remotion/transitions/clock-wipe': resolveCwd(
 		'@remotion/transitions/clock-wipe',
 	),
+	'@remotion/transitions/zoom-blur': resolveCwd(
+		'@remotion/transitions/zoom-blur',
+	),
 	'@remotion/transitions/wipe': resolveCwd('@remotion/transitions/wipe'),
 	'@remotion/transitions/iris': resolveCwd('@remotion/transitions/iris'),
 	'@remotion/transitions/none': resolveCwd('@remotion/transitions/none'),

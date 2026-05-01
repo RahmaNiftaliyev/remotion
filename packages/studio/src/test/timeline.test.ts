@@ -26,6 +26,7 @@ test('Should calculate a basic timeline', () => {
 				postmountDisplay: null,
 				controls: null,
 				loopDisplay: undefined,
+				effects: [],
 			},
 		],
 	});
@@ -47,6 +48,7 @@ test('Should calculate a basic timeline', () => {
 				stack: null,
 				type: 'sequence',
 				nonce: [[0, 0]],
+				effects: [],
 			},
 			hash: '-Audio-100-0-sequence----0',
 		},
@@ -71,6 +73,7 @@ test('Should follow order of nesting', () => {
 				postmountDisplay: null,
 				controls: null,
 				loopDisplay: undefined,
+				effects: [],
 			},
 			{
 				displayName: 'Audio',
@@ -87,6 +90,7 @@ test('Should follow order of nesting', () => {
 				type: 'sequence',
 				nonce: [[0, 0]],
 				stack: null,
+				effects: [],
 			},
 		],
 	});
@@ -107,6 +111,7 @@ test('Should follow order of nesting', () => {
 				type: 'sequence',
 				nonce: [[0, 0]],
 				stack: null,
+				effects: [],
 			},
 			depth: 0,
 			hash: '-Audio-100-0-sequence----0',
@@ -127,6 +132,7 @@ test('Should follow order of nesting', () => {
 				postmountDisplay: null,
 				controls: null,
 				loopDisplay: undefined,
+				effects: [],
 			},
 			depth: 1,
 			hash: '-Audio-100-0-sequence----0-Audio-100-0-sequence----0',
@@ -138,6 +144,7 @@ test('Should inherit loop display from parent for media tracks', () => {
 	const calculated = calculateTimeline({
 		sequences: [
 			{
+				effects: [],
 				displayName: 'Loop',
 				duration: 100,
 				from: 50,
@@ -177,6 +184,7 @@ test('Should inherit loop display from parent for media tracks', () => {
 				doesVolumeChange: false,
 				startMediaFrom: 0,
 				playbackRate: 1,
+				effects: [],
 			},
 		],
 	});

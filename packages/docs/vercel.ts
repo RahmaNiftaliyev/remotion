@@ -316,5 +316,8 @@ export const config: VercelConfig = {
 		routes.redirect('/privacy', 'https://remotion.pro/privacy', {
 			permanent: false,
 		}),
+		routes.redirect('/docs/ai/claude-code', '/docs/ai/coding-agents', {
+			permanent: false,
+		}),
 	],
 };

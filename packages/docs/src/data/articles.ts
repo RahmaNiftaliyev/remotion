@@ -108,13 +108,13 @@ export const articles = [
 		slug: 'ai/chatbot',
 	},
 	{
-		id: 'ai/claude-code',
-		title: 'Prompting videos with Claude Code',
-		relativePath: 'docs/ai/claude-code.mdx',
-		compId: 'articles-docs-ai-claude-code',
+		id: 'ai/coding-agents',
+		title: 'Prompting videos with coding agents',
+		relativePath: 'docs/ai/coding-agents.mdx',
+		compId: 'articles-docs-ai-coding-agents',
 		crumb: 'AI',
 		noAi: false,
-		slug: 'ai/claude-code',
+		slug: 'ai/coding-agents',
 	},
 	{
 		id: 'ai/dynamic-compilation',

@@ -1272,7 +1272,7 @@ const sidebars: SidebarsConfig = {
 				id: 'ai/index',
 			},
 			items: [
-				'ai/claude-code',
+				'ai/coding-agents',
 				'ai/bolt',
 				'ai/chatbot',
 				'ai/generate',

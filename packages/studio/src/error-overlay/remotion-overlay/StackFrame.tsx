@@ -57,6 +57,7 @@ export const StackElement: React.FC<{
 		}
 
 		openInEditor(s).catch((err: unknown) => {
+			// eslint-disable-next-line no-console
 			console.log('Could not open in editor', err);
 		});
 	}, [canOpenFileLocation, s]);

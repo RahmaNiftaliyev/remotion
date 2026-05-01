@@ -7,10 +7,18 @@ slug: /
 crumb: "Let's begin!"
 ---
 
-## Quick start
+## Coding Agent Prompt
+
+Paste into a coding agent, such as Claude Code, Codex or OpenCode:
+
+> Ensure Node.js is installed.  
+> Install Remotion Skills: `npx -y skills@latest add remotion-dev/skills -g -y`  
+> Then use them to create a video.
+
+## From the command line
 
 ```sh
-npx create-video --yes --blank my-video
+npx create-video@latest --yes --blank my-video
 cd my-video
 npm i
 npx remotion skills add
@@ -25,7 +33,9 @@ Click [here](/docs/ai/coding-agents) for more detailed beginner instructions.
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-## Scaffolding a new project
+## Wizard
+
+Customize the creation of a Remotion project by selecting a specific [template](/templates), enable or disable Tailwind and Agent Skills.
 
 <Tabs
 defaultValue="npm"
@@ -72,7 +82,7 @@ Bun as a runtime is mostly supported. [Read more here](/docs/bun).
   </TabItem>
 </Tabs>
 
-Choose the template that is most suitable for you.  
+Choose the [template](/templates) that is most suitable for you.  
 For your first project, we recommend the [Hello World](/templates/hello-world) template.
 
 <Tabs

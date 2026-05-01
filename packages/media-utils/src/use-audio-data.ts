@@ -1,11 +1,15 @@
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {cancelRender, useDelayRender} from 'remotion';
 import {getAudioData} from './get-audio-data';
-import {serializeRequestInit} from './serialize-request-init';
 import type {MediaUtilsAudioData} from './types';
 
 type UseAudioDataOptions = {
 	sampleRate?: number;
+	/**
+	 * Captured only from the first render and passed to `fetch()`.
+	 * Updates after mount are ignored so hooks do not depend on a new object
+	 * identity every render (e.g. inline `{credentials: 'include'}`).
+	 */
 	requestInit?: RequestInit;
 };
 
@@ -34,40 +38,29 @@ export const useAudioData = (
 	const [metadata, setMetadata] = useState<MediaUtilsAudioData | null>(null);
 	const {delayRender, continueRender} = useDelayRender();
 	const sampleRate = options?.sampleRate;
-	const requestInit = options?.requestInit;
-	const requestInitKey = serializeRequestInit(requestInit);
-	const requestInitRef = useRef(requestInit);
-	requestInitRef.current = requestInit;
+	const [initialRequestInit] = useState(options?.requestInit);
 
-	const fetchMetadata = useCallback(
-		async () => {
-			const handle = delayRender(
-				`Waiting for audio metadata with src="${src}" to be loaded`,
+	const fetchMetadata = useCallback(async () => {
+		const handle = delayRender(
+			`Waiting for audio metadata with src="${src}" to be loaded`,
+		);
+
+		try {
+			const data = await getAudioData(
+				src,
+				sampleRate === undefined && initialRequestInit === undefined
+					? undefined
+					: {sampleRate, requestInit: initialRequestInit},
 			);
-
-			try {
-				const data = await getAudioData(
-					src,
-					sampleRate === undefined && requestInitRef.current === undefined
-						? undefined
-						: {sampleRate, requestInit: requestInitRef.current},
-				);
-				if (mountState.current.isMounted) {
-					setMetadata(data);
-				}
-			} catch (err) {
-				cancelRender(err);
+			if (mountState.current.isMounted) {
+				setMetadata(data);
 			}
+		} catch (err) {
+			cancelRender(err);
+		}
 
-			continueRender(handle);
-		},
-		// requestInitKey is included so the callback re-runs when the
-		// serialized requestInit changes; the value itself is read via
-		// requestInitRef.current to avoid recreating the callback on every
-		// render when an inline object is passed.
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[src, sampleRate, requestInitKey, delayRender, continueRender],
-	);
+		continueRender(handle);
+	}, [src, sampleRate, initialRequestInit, delayRender, continueRender]);
 
 	useLayoutEffect(() => {
 		fetchMetadata();

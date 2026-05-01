@@ -19,7 +19,6 @@ import {cancelRender, Internals, useDelayRender} from 'remotion';
 import {combineFloat32Arrays} from './combine-float32-arrays';
 import {getPartialAudioData} from './get-partial-audio-data';
 import {isRemoteAsset} from './is-remote-asset';
-import {serializeRequestInit} from './serialize-request-init';
 import type {MediaUtilsAudioData} from './types';
 
 type WaveformMap = Record<number, Float32Array>;
@@ -32,6 +31,11 @@ export type UseWindowedAudioDataOptions = {
 	fps: number;
 	windowInSeconds: number;
 	channelIndex?: number;
+	/**
+	 * Captured only from the first render and passed to Mediabunny `UrlSource`.
+	 * Updates after mount are ignored so hooks do not depend on a new object
+	 * identity every render (e.g. inline `{credentials: 'include'}`).
+	 */
 	requestInit?: RequestInit;
 };
 
@@ -66,9 +70,7 @@ export const useWindowedAudioData = ({
 	const [waveFormMap, setWaveformMap] = useState({} as WaveformMap);
 	const requests = useRef<Record<string, AbortController | null>>({});
 	const [initialWindowInSeconds] = useState(windowInSeconds);
-	const requestInitKey = serializeRequestInit(requestInit);
-	const requestInitRef = useRef(requestInit);
-	requestInitRef.current = requestInit;
+	const [initialRequestInit] = useState(requestInit);
 
 	if (windowInSeconds !== initialWindowInSeconds) {
 		throw new Error('windowInSeconds cannot be changed dynamically');
@@ -112,9 +114,7 @@ export const useWindowedAudioData = ({
 				formats: ALL_FORMATS,
 				source: new UrlSource(
 					src,
-					requestInitRef.current
-						? {requestInit: requestInitRef.current}
-						: undefined,
+					initialRequestInit ? {requestInit: initialRequestInit} : undefined,
 				),
 			});
 
@@ -177,12 +177,7 @@ export const useWindowedAudioData = ({
 				signal.removeEventListener('abort', onAbort);
 			}
 		},
-		// requestInitKey is included so the callback re-runs when the
-		// serialized requestInit changes; the value itself is read via
-		// requestInitRef.current to avoid recreating the callback on every
-		// render when an inline object is passed.
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[src, delayRender, continueRender, channelIndex, requestInitKey],
+		[src, delayRender, continueRender, channelIndex, initialRequestInit],
 	);
 
 	useLayoutEffect(() => {

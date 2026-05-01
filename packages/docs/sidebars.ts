@@ -1260,6 +1260,7 @@ const sidebars: SidebarsConfig = {
 				'mediabunny/extract-frames',
 				'mediabunny/can-decode',
 				'mediabunny/formats',
+				'mediabunny/webcodecs-bugs',
 				'mediabunny/version',
 			],
 		},

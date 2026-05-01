@@ -22,11 +22,11 @@ export const HtmlInCanvasDocsVideoFallback: React.FC<{
 			<Video
 				loop
 				muted
+				objectFit="contain"
 				src={staticFile(relativeSrc)}
 				style={{
 					width: '100%',
 					height: '100%',
-					objectFit: 'contain',
 				}}
 			/>
 			<div

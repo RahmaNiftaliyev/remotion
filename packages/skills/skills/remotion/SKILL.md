@@ -328,7 +328,8 @@ See [rules/parameters.md](rules/parameters.md) for making a composition parametr
 
 ## Maps
 
-See [rules/maps.md](rules/maps.md) for adding a map using Mapbox and animating it.
+For simple maps with little flyovers, consider just using a static images for maps.
+For complex maps with many flyovers, consider using Mapbox and animating it. Instructions: [rules/mapbox.md](rules/mapbox.md)
 
 ## Voiceover
 

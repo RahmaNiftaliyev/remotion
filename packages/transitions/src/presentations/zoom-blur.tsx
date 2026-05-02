@@ -5,18 +5,6 @@ export type ZoomBlurProps = {
 	rotation?: number;
 };
 
-type GLState = {
-	gl: WebGL2RenderingContext;
-	program: WebGLProgram;
-	prevTex: WebGLTexture;
-	nextTex: WebGLTexture;
-	uTime: WebGLUniformLocation | null;
-	uPrev: WebGLUniformLocation | null;
-	uNext: WebGLUniformLocation | null;
-	uAspect: WebGLUniformLocation | null;
-	uMaxAngle: WebGLUniformLocation | null;
-};
-
 const VERTEX_SHADER = `#version 300 es
 in vec2 a_pos;
 out vec2 v_uv;
@@ -149,70 +137,51 @@ const createTexture = (gl: WebGL2RenderingContext): WebGLTexture => {
 	return tex;
 };
 
-export const zoomBlurShader = (): HtmlInCanvasShader<ZoomBlurProps> => {
-	let state: GLState | null = null;
+export const zoomBlurShader = (
+	canvas: OffscreenCanvas,
+): ReturnType<HtmlInCanvasShader<ZoomBlurProps>> => {
+	const gl = canvas.getContext('webgl2', {premultipliedAlpha: true});
+	if (!gl) {
+		throw new Error('Failed to create WebGL2 context');
+	}
 
-	const init: HtmlInCanvasShader<ZoomBlurProps>['init'] = (canvas) => {
-		const gl = canvas.getContext('webgl2', {premultipliedAlpha: true});
-		if (!gl) {
-			return () => {};
-		}
+	const program = createProgram(gl);
+	const prevTex = createTexture(gl);
+	const nextTex = createTexture(gl);
 
-		const program = createProgram(gl);
-		const prevTex = createTexture(gl);
-		const nextTex = createTexture(gl);
+	const vao = gl.createVertexArray();
+	gl.bindVertexArray(vao);
+	const buffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+	gl.bufferData(
+		gl.ARRAY_BUFFER,
+		new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+		gl.STATIC_DRAW,
+	);
+	const aPos = gl.getAttribLocation(program, 'a_pos');
+	gl.enableVertexAttribArray(aPos);
+	gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
 
-		const vao = gl.createVertexArray();
-		gl.bindVertexArray(vao);
-		const buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-		gl.bufferData(
-			gl.ARRAY_BUFFER,
-			new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
-			gl.STATIC_DRAW,
-		);
-		const aPos = gl.getAttribLocation(program, 'a_pos');
-		gl.enableVertexAttribArray(aPos);
-		gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+	const uTime = gl.getUniformLocation(program, 'u_time');
+	const uPrev = gl.getUniformLocation(program, 'u_prev');
+	const uNext = gl.getUniformLocation(program, 'u_next');
+	const uAspect = gl.getUniformLocation(program, 'u_aspect');
+	const uMaxAngle = gl.getUniformLocation(program, 'u_max_angle');
 
-		state = {
-			gl,
-			program,
-			prevTex,
-			nextTex,
-			uTime: gl.getUniformLocation(program, 'u_time'),
-			uPrev: gl.getUniformLocation(program, 'u_prev'),
-			uNext: gl.getUniformLocation(program, 'u_next'),
-			uAspect: gl.getUniformLocation(program, 'u_aspect'),
-			uMaxAngle: gl.getUniformLocation(program, 'u_max_angle'),
-		};
-
-		return () => {};
-	};
-
-	const cleanup: HtmlInCanvasShader<ZoomBlurProps>['cleanup'] = () => {
-		if (!state) {
-			throw new Error('Zoom blur state not initialized');
-		}
-
-		const {gl, program, prevTex, nextTex} = state;
+	const cleanup: ReturnType<
+		HtmlInCanvasShader<ZoomBlurProps>
+	>['cleanup'] = () => {
 		gl.deleteProgram(program);
 		gl.deleteTexture(prevTex);
 		gl.deleteTexture(nextTex);
-		state = null;
 	};
 
-	const clear: HtmlInCanvasShader<ZoomBlurProps>['clear'] = () => {
-		if (!state) {
-			throw new Error('Zoom blur state not initialized');
-		}
-
-		const {gl} = state;
+	const clear: ReturnType<HtmlInCanvasShader<ZoomBlurProps>>['clear'] = () => {
 		gl.clearColor(0, 0, 0, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 	};
 
-	const draw: HtmlInCanvasShader<ZoomBlurProps>['draw'] = ({
+	const draw: ReturnType<HtmlInCanvasShader<ZoomBlurProps>>['draw'] = ({
 		prevImage,
 		nextImage,
 		width,
@@ -220,23 +189,7 @@ export const zoomBlurShader = (): HtmlInCanvasShader<ZoomBlurProps> => {
 		time,
 		passedProps,
 	}) => {
-		if (!state) {
-			throw new Error('Zoom blur state not initialized');
-		}
-
 		const {rotation = Math.PI / 6} = passedProps;
-
-		const {
-			gl,
-			program,
-			prevTex,
-			nextTex,
-			uTime,
-			uPrev,
-			uNext,
-			uAspect,
-			uMaxAngle,
-		} = state;
 
 		if (!prevImage && !nextImage) {
 			return;
@@ -298,10 +251,9 @@ export const zoomBlurShader = (): HtmlInCanvasShader<ZoomBlurProps> => {
 	};
 
 	return {
-		init,
 		clear,
-		draw,
 		cleanup,
+		draw,
 	};
 };
 

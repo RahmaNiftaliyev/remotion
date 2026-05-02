@@ -20,7 +20,7 @@ export const HtmlInCanvasPresentation = <
 	passedProps,
 	bothEnteringAndExiting,
 }: TransitionPresentationComponentProps<TPassedProps> & {
-	readonly shader: () => HtmlInCanvasShader<TPassedProps>;
+	readonly shader: HtmlInCanvasShader<TPassedProps>;
 	readonly _experimentalEffects?: EffectsProp;
 }) => {
 	if (!HtmlInCanvas.isHtmlInCanvasSupported()) {
@@ -54,11 +54,9 @@ export const HtmlInCanvasPresentation = <
 	const effectsRef = useRef(_experimentalEffects);
 	effectsRef.current = _experimentalEffects;
 
-	const [instance] = useState(() => shader());
+	const [instance] = useState(() => shader(offscreenCanvas));
 
 	useLayoutEffect(() => {
-		instance.init(offscreenCanvas);
-
 		return () => {
 			instance.cleanup();
 		};
@@ -203,24 +201,23 @@ export const HtmlInCanvasPresentation = <
 	);
 };
 
-export type HtmlInCanvasShader<TPassedProps> = {
-	init: (canvas: OffscreenCanvas) => void;
+export type HtmlInCanvasShader<Props> = (canvas: OffscreenCanvas) => {
 	clear: () => void;
+	cleanup: () => void;
 	draw: (params: {
 		prevImage: ElementImage | null;
 		nextImage: ElementImage | null;
 		width: number;
 		height: number;
 		time: number;
-		passedProps: TPassedProps;
+		passedProps: Props;
 	}) => void;
-	cleanup: () => void;
 };
 
 export const makeHtmlInCanvasPresentation = <
 	TPassedProps extends Record<string, unknown>,
 >(
-	shader: () => HtmlInCanvasShader<TPassedProps>,
+	shader: HtmlInCanvasShader<TPassedProps>,
 ) => {
 	type AugmentedProps = TPassedProps & {_experimentalEffects?: EffectsProp};
 	const CompWithShader: React.FC<

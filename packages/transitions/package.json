@@ -92,6 +92,12 @@
 			"import": "./dist/esm/zoom-blur.mjs",
 			"require": "./dist/presentations/zoom-blur.js"
 		},
+		"./zoom-in-out": {
+			"types": "./dist/presentations/zoom-in-out.d.ts",
+			"module": "./dist/esm/zoom-in-out.mjs",
+			"import": "./dist/esm/zoom-in-out.mjs",
+			"require": "./dist/presentations/zoom-in-out.js"
+		},
 		"./none": {
 			"types": "./dist/presentations/none.d.ts",
 			"module": "./dist/esm/none.mjs",
@@ -131,6 +137,9 @@
 			],
 			"zoom-blur": [
 				"dist/presentations/zoom-blur.d.ts"
+			],
+			"zoom-in-out": [
+				"dist/presentations/zoom-in-out.d.ts"
 			]
 		}
 	},

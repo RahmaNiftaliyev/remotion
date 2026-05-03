@@ -57,6 +57,7 @@ import {
 	HtmlInCanvasPrivacy,
 	HtmlInCanvasReactSvg,
 	ZoomBlurTransitionDoc,
+	ZoomBlurTransitionDocThumb,
 } from './HtmlInCanvas';
 import {HugeImage} from './HugeImage';
 import {HugePayload, hugePayloadSchema} from './HugePayload';
@@ -967,11 +968,11 @@ export const Index: React.FC = () => {
 					/>
 					<Composition
 						id="zoom-blur-transition-doc-thumb"
-						component={ZoomBlurTransitionDoc}
+						component={ZoomBlurTransitionDocThumb}
 						fps={30}
 						height={280}
 						width={540}
-						durationInFrames={90}
+						durationInFrames={60}
 					/>
 					<Composition
 						id="html-in-canvas-complex-text"

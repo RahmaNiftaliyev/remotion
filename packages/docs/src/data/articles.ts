@@ -6412,6 +6412,15 @@ export const articles = [
 		slug: 'transitions/presentations/wipe',
 	},
 	{
+		id: 'transitions/presentations/zoom-blur',
+		title: 'zoomBlur()',
+		relativePath: 'docs/transitions/presentations/zoom-blur.mdx',
+		compId: 'articles-docs-transitions-presentations-zoom-blur',
+		crumb: '@remotion/transitions - Presentations',
+		noAi: false,
+		slug: 'transitions/presentations/zoom-blur',
+	},
+	{
 		id: 'transitions/timings/custom',
 		title: 'Custom timings',
 		relativePath: 'docs/transitions/timings/custom.mdx',

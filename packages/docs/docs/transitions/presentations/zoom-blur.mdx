@@ -11,7 +11,7 @@ A presentation where the outgoing scene zooms out and rotates while the incoming
 <Demo type="zoom-blur" />
 
 :::warning
-This presentation is built on top of the experimental [HTML-in-canvas](/docs/client-side-rendering/html-in-canvas) feature and currently requires [Chrome Canary](https://www.google.com/chrome/canary/) with `chrome://flags/#canvas-draw-element` enabled. It does not work in Firefox or Safari.
+This presentation is built with [HTML-in-canvas](/docs/remotion/html-in-canvas) and currently requires [Chrome Canary](https://www.google.com/chrome/canary/) with `chrome://flags/#canvas-draw-element` enabled. It does not work in Firefox or Safari.
 :::
 
 ## Example
@@ -85,7 +85,7 @@ Defaults to `Math.PI / 6` (30°).
   studio
 />
 
-Because this presentation relies on [HTML-in-canvas](/docs/client-side-rendering/html-in-canvas), it only runs in Chromium builds that ship the experimental `drawElementImage` and `canvas.requestPaint()` APIs. In a desktop browser or the Studio, this means [Chrome Canary](https://www.google.com/chrome/canary/) with the `chrome://flags/#canvas-draw-element` flag enabled. For server-side renders pass `--allow-html-in-canvas` (or [`Config.setAllowHtmlInCanvasEnabled(true)`](/docs/config#setallowhtmlincanvasenabled)); Remotion's bundled Chromium for Lambda already includes the required APIs, and locally you can point at a Chrome Canary executable.
+For Preview, Chrome Canary with the `chrome://flags/#canvas-draw-element` flag enabled is required.
 
 ## See also
 

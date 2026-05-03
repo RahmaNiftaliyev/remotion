@@ -31,8 +31,6 @@ import { Config } from "@remotion/cli/config";
 Config.setChromiumOpenGlRenderer("angle");
 ```
 
-See https://remotion.dev/docs/config#setchromiumopenglrenderer
-
 ## Basic usage
 
 By default, draws to canvas with no effect applied:

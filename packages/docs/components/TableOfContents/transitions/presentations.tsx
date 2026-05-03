@@ -8,6 +8,7 @@ import {slide} from '@remotion/transitions/slide';
 import {wipe} from '@remotion/transitions/wipe';
 import React from 'react';
 import {PresentationPreview} from '../../transitions/previews';
+import {ZoomBlurTocPreview} from '../../transitions/zoom-blur-toc-preview';
 import {Grid} from '../Grid';
 import {ProLabel} from '../pro-label';
 import {TOCItem} from '../TOCItem';
@@ -113,6 +114,17 @@ export const Presentations: React.FC<{
 							<code>{'iris()'}</code>
 						</strong>
 						<div>Reveal the scene through a circular mask from center</div>
+					</div>
+				</div>
+			</TOCItem>
+			<TOCItem link="/docs/transitions/presentations/zoom-blur">
+				<div style={row}>
+					<ZoomBlurTocPreview />
+					<div style={{flex: 1, marginLeft: 10}}>
+						<strong>
+							<code>{'zoomBlur()'}</code>
+						</strong>
+						<div>Zoom and rotate scenes with a radial blur</div>
 					</div>
 				</div>
 			</TOCItem>

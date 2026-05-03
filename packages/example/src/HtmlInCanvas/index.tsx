@@ -13,3 +13,4 @@ export {
 export {HtmlInCanvasPrivacy} from './privacy';
 export {HtmlInCanvasReactSvg} from './react-svg';
 export {HtmlInCanvasScene} from './scene';
+export {ZoomBlurTransitionDoc} from './zoom-blur-doc';

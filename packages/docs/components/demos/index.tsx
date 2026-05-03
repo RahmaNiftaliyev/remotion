@@ -44,6 +44,7 @@ import {
 	translateDemo,
 	triangleDemo,
 	wipePresentationDemo,
+	zoomBlurPresentationDemo,
 } from './types';
 import styles from './styles.module.css';
 
@@ -95,6 +96,7 @@ const demos: DemoType[] = [
 	transitionSeriesTransitionDemo,
 	transitionSeriesOverlayDemo,
 	transitionSeriesEnterExitDemo,
+	zoomBlurPresentationDemo,
 ];
 
 export const Demo: React.FC<{

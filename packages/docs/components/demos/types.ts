@@ -18,6 +18,7 @@ import {HeartDemo} from './Heart';
 import {HtmlInCanvasDocsDemo2DBlur} from './HtmlInCanvasDocsDemo2DBlur';
 import {HtmlInCanvasDocsDemoWebGL} from './HtmlInCanvasDocsDemoWebGL';
 import {HtmlInCanvasDocsDemoWebGPU} from './HtmlInCanvasDocsDemoWebGPU';
+import {ZoomBlurDocsDemo} from './ZoomBlurDemo';
 import {LightLeakDemoComp} from './LightLeakDemo';
 import {NoiseComp} from './NoiseDemo';
 import {PieDemo} from './Pie';
@@ -890,6 +891,18 @@ export const cubePresentationDemo: DemoType = {
 			values: ['from-left', 'from-top', 'from-right', 'from-bottom'],
 		},
 	],
+};
+
+export const zoomBlurPresentationDemo: DemoType = {
+	comp: ZoomBlurDocsDemo,
+	compHeight: 1080,
+	compWidth: 1920,
+	durationInFrames: 90,
+	fps: 30,
+	id: 'zoom-blur',
+	autoPlay: true,
+	controls: false,
+	options: [],
 };
 
 export const customPresentationDemo: DemoType = {

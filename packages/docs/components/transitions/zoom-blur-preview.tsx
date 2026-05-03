@@ -57,3 +57,22 @@ export const ZoomBlurTransitionPreview: React.FC = () => {
 		</AbsoluteFill>
 	);
 };
+
+export const ZoomBlurTransitionPreviewThumb: React.FC = () => {
+	return (
+		<AbsoluteFill style={{containerType: 'size'}}>
+			<TransitionSeries>
+				<TransitionSeries.Sequence durationInFrames={30}>
+					<SceneA />
+				</TransitionSeries.Sequence>
+				<TransitionSeries.Transition
+					presentation={zoomBlur({})}
+					timing={linearTiming({durationInFrames: 30})}
+				/>
+				<TransitionSeries.Sequence durationInFrames={60}>
+					<SceneB />
+				</TransitionSeries.Sequence>
+			</TransitionSeries>
+		</AbsoluteFill>
+	);
+};

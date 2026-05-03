@@ -18,10 +18,10 @@ If this is your first contribution, see the [main instructions](/docs/contributi
 <Step>3</Step> In the <code>bundle.ts</code>, add your presentation to the <code>presentations array</code>.<br />
 
 ```tsx
-  const presentations = ['slide', 'flip', 'wipe', 'fade', ..., 'yourPresentation'];
+const presentations = ['slide', 'flip', 'wipe', 'fade', ..., 'yourPresentation'];
 ```
 
-<Step>4</Step> Add your presentation to the <code>exports</code> of the <code>package.json</code> at <code>packages/transition/package.json</code> as well as to the <code>typesVersions</code>, so it can be correctly imported in other remotion projects.
+<Step>4</Step> Add your presentation to the <code>exports</code> of the <code>package.json</code> at <a href="https://github.com/remotion-dev/remotion/blob/main/packages/transitions/package.json"><code>packages/transitions/package.json</code></a> as well as to the <code>typesVersions</code>, so it can be correctly imported in other remotion projects.
 
 ```json
 "exports": {

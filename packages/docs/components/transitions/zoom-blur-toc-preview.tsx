@@ -9,17 +9,17 @@ import {
 } from '../TableOfContents/transitions/presentations';
 import {ZoomBlurTransitionPreview} from './zoom-blur-preview';
 
-const sharedStyle: React.CSSProperties = {
-	height: 60,
-	aspectRatio: `${presentationCompositionWidth} / ${presentationCompositionHeight}`,
-	borderRadius: 6,
-	display: 'block',
-	objectFit: 'cover',
-};
-
 export const ZoomBlurTocPreview: React.FC = () => {
 	const branch = useHtmlInCanvasDocsDemoBranch();
 	const ref = useRef<PlayerRef>(null);
+
+	const sharedStyle: React.CSSProperties = {
+		height: 60,
+		aspectRatio: `${presentationCompositionWidth} / ${presentationCompositionHeight}`,
+		borderRadius: 6,
+		display: 'block',
+		objectFit: 'cover',
+	};
 
 	useEffect(() => {
 		const {current} = ref;

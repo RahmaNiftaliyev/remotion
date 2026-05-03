@@ -201,17 +201,23 @@ export const HtmlInCanvasPresentation = <
 	);
 };
 
+export type HtmlInCanvasShaderDrawParams<Props> = {
+	prevImage: ElementImage | null;
+	nextImage: ElementImage | null;
+	width: number;
+	height: number;
+	time: number;
+	passedProps: Props;
+};
+
+export type HtmlInCanvasShaderDraw<Props> = (
+	params: HtmlInCanvasShaderDrawParams<Props>,
+) => void;
+
 export type HtmlInCanvasShader<Props> = (canvas: OffscreenCanvas) => {
 	clear: () => void;
 	cleanup: () => void;
-	draw: (params: {
-		prevImage: ElementImage | null;
-		nextImage: ElementImage | null;
-		width: number;
-		height: number;
-		time: number;
-		passedProps: Props;
-	}) => void;
+	draw: HtmlInCanvasShaderDraw<Props>;
 };
 
 export const makeHtmlInCanvasPresentation = <

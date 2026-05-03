@@ -721,6 +721,7 @@ const sidebars: SidebarsConfig = {
 			items: [
 				'transitions/transitionseries',
 				'transitions/use-transition-progress',
+				'transitions/make-html-in-canvas-presentation',
 				{
 					type: 'category',
 					label: 'Timings',
@@ -748,6 +749,8 @@ const sidebars: SidebarsConfig = {
 						'transitions/presentations/flip',
 						'transitions/presentations/clock-wipe',
 						'transitions/presentations/iris',
+						'transitions/presentations/zoom-blur',
+						'transitions/presentations/zoom-in-out',
 						'transitions/presentations/none',
 						{
 							type: 'doc',
@@ -755,6 +758,7 @@ const sidebars: SidebarsConfig = {
 							className: 'pro-item',
 						},
 						'transitions/presentations/custom',
+						'transitions/presentations/custom-html-in-canvas',
 						'transitions/audio-transitions',
 					],
 				},

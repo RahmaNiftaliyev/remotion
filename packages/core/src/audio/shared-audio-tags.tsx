@@ -317,14 +317,22 @@ export const SharedAudioContextProvider: React.FC<{
 		}
 
 		audioContextIsPlayingEventually.current = true;
-		isResuming.current = waitUntilActuallyResumed(
-			ctxAndGain.audioContext,
-			logLevel,
-		)
-			.then(() => {})
-			.finally(() => {
-				isResuming.current = null;
+
+		const resumePromise = ctxAndGain.audioContext.resume();
+
+		isResuming.current = new Promise<void>((resolve) => {
+			waitUntilActuallyResumed(ctxAndGain.audioContext, logLevel).then(resolve);
+			resumePromise.catch((err) => {
+				Log.warn(
+					{logLevel, tag: 'audio'},
+					'AudioContext resume rejected, continuing without audio sync',
+					err,
+				);
+				resolve();
 			});
+		}).finally(() => {
+			isResuming.current = null;
+		});
 
 		ctxAndGain.gainNode.gain.cancelScheduledValues(
 			ctxAndGain.audioContext.currentTime,
@@ -338,12 +346,17 @@ export const SharedAudioContextProvider: React.FC<{
 			ctxAndGain.audioContext.currentTime + 0.03,
 		);
 
-		return ctxAndGain.audioContext.resume().then(() => {
-			nodesToResume.current.forEach((r, node) =>
-				node.start(r.scheduledTime, r.offset, r.duration),
-			);
-			nodesToResume.current.clear();
-		});
+		return resumePromise
+			.then(() => {
+				nodesToResume.current.forEach((r, node) =>
+					node.start(r.scheduledTime, r.offset, r.duration),
+				);
+				nodesToResume.current.clear();
+			})
+			.catch(() => {
+				// Already logged above; swallow to avoid unhandled rejection
+				// since callers (e.g. use-playback.ts) do not await this.
+			});
 	}, [ctxAndGain, logLevel]);
 
 	const getIsResumingAudioContext = useCallback(() => {

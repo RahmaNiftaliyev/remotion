@@ -90,7 +90,10 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 	>,
 	schema: S,
 ): React.ComponentType<Props> => {
-	if (!process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED) {
+	if (
+		typeof process === 'undefined' ||
+		!process.env?.EXPERIMENTAL_VISUAL_MODE_ENABLED
+	) {
 		return Component as unknown as React.ComponentType<Props>;
 	}
 

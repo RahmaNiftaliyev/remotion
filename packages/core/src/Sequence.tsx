@@ -133,15 +133,8 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 		);
 	}
 
-	if (
-		layout === 'none' &&
-		// @ts-expect-error
-		typeof other.style !== 'undefined' &&
-		// TODO: In visual mode, we inject a schema, but that adds an undefined style.
-		// @ts-expect-error
-		Object.values(other.style).filter((f) => f !== undefined && f !== null)
-			.length > 0
-	) {
+	// @ts-expect-error
+	if (layout === 'none' && typeof other.style !== 'undefined') {
 		throw new TypeError(
 			'If layout="none", you may not pass a style. Passed: ' +
 				// @ts-expect-error

@@ -174,14 +174,7 @@ export const ExperimentalControlsShowcase: React.FC = () => {
 					</div>
 				</Tile>
 				<Tile title="Sequence layout='none'">
-					<Sequence
-						name="layout='none'"
-						style={{
-							translate: '0px 59px',
-							scale: 1.41,
-						}}
-						layout={'none'}
-					>
+					<Sequence name="layout='none'" layout={'none'}>
 						hi
 					</Sequence>
 				</Tile>

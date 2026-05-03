@@ -11,7 +11,7 @@ A presentation where the outgoing scene zooms out and rotates while the incoming
 <Demo type="zoom-blur" />
 
 :::warning
-This presentation is built on top of the experimental [HTML-in-canvas](/docs/client-side-rendering/html-in-canvas) feature and currently requires [Chrome Canary](https://www.google.com/chrome/canary/) with `chrome://flags/#canvas-draw-element` enabled. It does not work in Firefox or Safari, and it cannot be rendered server-side.
+This presentation is built on top of the experimental [HTML-in-canvas](/docs/client-side-rendering/html-in-canvas) feature and currently requires [Chrome Canary](https://www.google.com/chrome/canary/) with `chrome://flags/#canvas-draw-element` enabled. It does not work in Firefox or Safari.
 :::
 
 ## Example
@@ -76,14 +76,13 @@ Defaults to `Math.PI / 6` (30°).
   chrome
   firefox={false}
   safari={false}
-  hideServers
   clientSideRendering
-  serverSideRendering={false}
+  serverSideRendering
   player
   studio
 />
 
-Because this presentation relies on [HTML-in-canvas](/docs/client-side-rendering/html-in-canvas), it only runs in Chromium-based browsers that ship the experimental `drawElementImage` and `canvas.requestPaint()` APIs. As of writing, this means [Chrome Canary](https://www.google.com/chrome/canary/) with the `chrome://flags/#canvas-draw-element` flag enabled.
+Because this presentation relies on [HTML-in-canvas](/docs/client-side-rendering/html-in-canvas), it only runs in Chromium-based browsers that ship the experimental `drawElementImage` and `canvas.requestPaint()` APIs. As of writing, this means [Chrome Canary](https://www.google.com/chrome/canary/) with the `chrome://flags/#canvas-draw-element` flag enabled. Server-side renders work the same way — pass `--allow-html-in-canvas` (or [`Config.setAllowHtmlInCanvasEnabled(true)`](/docs/config#setallowhtmlincanvasenabled)) and a Chrome Canary executable.
 
 ## See also
 

@@ -124,6 +124,7 @@ const myPresentation = makeHtmlInCanvasPresentation(myShader);
 ```ts twoslash title="Minimal crossfade shader"
 // @noErrors
 import 'remotion';
+// ---cut---
 import {makeHtmlInCanvasPresentation, type HtmlInCanvasShader} from '@remotion/transitions';
 
 const VERTEX = `#version 300 es
@@ -239,35 +240,44 @@ HTML-in-canvas requires [Chrome Canary](https://www.google.com/chrome/canary/) w
 
 ### `shader`
 
-A function of type `HtmlInCanvasShader<Props>`. Called once per transition mount with a shared `OffscreenCanvas`. Must return an object with three callbacks: `clear`, `cleanup` and `draw`.
+A function of type `HtmlInCanvasShader<Props>`.  
+Must return an object with three callbacks: `clear`, `cleanup` and `draw`.
 
 ```ts twoslash
-import type {HtmlInCanvasShader} from '@remotion/transitions';
-//                ^?
+import type {
+  HtmlInCanvasShader,
+  // ^?
+} from '@remotion/transitions';
 ```
 
 #### `clear()`
 
-Called when there is nothing to draw (both scenes are unmounted). Typically clears the WebGL color buffer.
+Called when there is nothing to draw (both scenes are unmounted).  
+Typically clears the WebGL color buffer.
 
 #### `cleanup()`
 
-Called once when the transition unmounts. Release any GL resources you allocated (programs, textures, buffers, VAOs).
+Called once when the transition unmounts.  
+Release any GL resources you allocated.
 
 #### `draw()`
 
 Called every frame the transition is active. Has the type `HtmlInCanvasShaderDraw<Props>`:
 
 ```ts twoslash
-import type {HtmlInCanvasShaderDraw} from '@remotion/transitions';
-//                ^?
+import type {
+  HtmlInCanvasShaderDraw,
+  // ^?
+} from '@remotion/transitions';
 ```
 
 The argument has the type `HtmlInCanvasShaderDrawParams<Props>`:
 
 ```ts twoslash
-import type {HtmlInCanvasShaderDrawParams} from '@remotion/transitions';
-//                ^?
+import type {
+  HtmlInCanvasShaderDrawParams,
+  // ^?
+} from '@remotion/transitions';
 ```
 
 ##### `prevImage`
@@ -292,11 +302,11 @@ When one image is missing, treat it as the boundary case: if `!prevImage`, force
 
 ##### `passedProps`
 
-Whatever you typed your `Props` as. Use this for runtime knobs like `rotation`, `intensity`, `direction`, etc.
+Whatever you typed your `Props` as.
 
 ## Return value
 
-A function `(props: Props) => TransitionPresentation<Props>` that you call with your runtime props and pass to `presentation` on a `<TransitionSeries.Transition>`.
+A `presentation` that you can pass to a [`<TransitionSeries.Transition>`](/docs/transitions/transitionseries#transitionseriestransition).
 
 ## See also
 

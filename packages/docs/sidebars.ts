@@ -757,6 +757,7 @@ const sidebars: SidebarsConfig = {
 							className: 'pro-item',
 						},
 						'transitions/presentations/custom',
+						'transitions/presentations/custom-html-in-canvas',
 						'transitions/audio-transitions',
 					],
 				},

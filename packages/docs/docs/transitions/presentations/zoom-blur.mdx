@@ -78,14 +78,14 @@ Defaults to `Math.PI / 6` (30°).
   safari={false}
   nodejs
   bun
-  serverlessFunctions={false}
+  serverlessFunctions
   clientSideRendering
   serverSideRendering
   player
   studio
 />
 
-Because this presentation relies on [HTML-in-canvas](/docs/client-side-rendering/html-in-canvas), it only runs in Chromium-based browsers that ship the experimental `drawElementImage` and `canvas.requestPaint()` APIs. As of writing, this means [Chrome Canary](https://www.google.com/chrome/canary/) with the `chrome://flags/#canvas-draw-element` flag enabled. Server-side renders work the same way — pass `--allow-html-in-canvas` (or [`Config.setAllowHtmlInCanvasEnabled(true)`](/docs/config#setallowhtmlincanvasenabled)) and a Chrome Canary executable.
+Because this presentation relies on [HTML-in-canvas](/docs/client-side-rendering/html-in-canvas), it only runs in Chromium builds that ship the experimental `drawElementImage` and `canvas.requestPaint()` APIs. In a desktop browser or the Studio, this means [Chrome Canary](https://www.google.com/chrome/canary/) with the `chrome://flags/#canvas-draw-element` flag enabled. For server-side renders pass `--allow-html-in-canvas` (or [`Config.setAllowHtmlInCanvasEnabled(true)`](/docs/config#setallowhtmlincanvasenabled)); Remotion's bundled Chromium for Lambda already includes the required APIs, and locally you can point at a Chrome Canary executable.
 
 ## See also
 

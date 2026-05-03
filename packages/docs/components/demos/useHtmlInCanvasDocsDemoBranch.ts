@@ -10,9 +10,7 @@ export const useHtmlInCanvasDocsDemoBranch = (): HtmlInCanvasDocsDemoBranch => {
 	const [branch, setBranch] = useState<HtmlInCanvasDocsDemoBranch>('pending');
 
 	useEffect(() => {
-		setBranch(
-			HtmlInCanvas.isHtmlInCanvasSupported() ? 'live' : 'fallback',
-		);
+		setBranch(HtmlInCanvas.isSupported() ? 'live' : 'fallback');
 	}, []);
 
 	return branch;

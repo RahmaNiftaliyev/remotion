@@ -56,6 +56,9 @@ export const config: VercelConfig = {
 			{permanent: false},
 		),
 		routes.redirect('/timeout', '/docs/timeout', {permanent: false}),
+		routes.redirect('/html-in-canvas', '/docs/html-in-canvas', {
+			permanent: false,
+		}),
 		routes.redirect('/acknowledgements', '/docs/acknowledgements', {
 			permanent: false,
 		}),

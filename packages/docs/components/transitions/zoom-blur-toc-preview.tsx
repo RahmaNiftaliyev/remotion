@@ -59,12 +59,16 @@ export const ZoomBlurTocPreview: React.FC = () => {
 	if (branch === 'fallback') {
 		return (
 			<video
-				autoPlay
-				loop
 				muted
 				playsInline
+				preload="auto"
 				src={staticFile('img/zoom-blur-transition-thumb.mp4')}
 				style={sharedStyle}
+				onPointerEnter={(event) => {
+					const video = event.currentTarget;
+					video.currentTime = 0;
+					void video.play();
+				}}
 			/>
 		);
 	}

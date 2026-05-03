@@ -14,7 +14,7 @@ import type {EffectsProp} from './effects/effect-types.js';
 import {runEffectChain} from './effects/run-effect-chain.js';
 import {useEffectChainState} from './effects/use-effect-chain-state.js';
 import {addSequenceStackTraces} from './enable-sequence-stack-traces.js';
-import type {SequenceSchema} from './sequence-field-schema.js';
+import {sequenceSchema} from './sequence-field-schema.js';
 import type {
 	AbsoluteFillLayout,
 	LayoutAndStyle,
@@ -264,37 +264,6 @@ export type HtmlInCanvasProps = Omit<
 /* eslint-enable react/require-default-props */
 
 const HtmlInCanvasAncestorContext = createContext(false);
-
-const htmlInCanvasSchema = {
-	'style.translate': {
-		type: 'translate',
-		step: 1,
-		default: '0px 0px',
-		description: 'Position',
-	},
-	'style.scale': {
-		type: 'number',
-		min: 0.05,
-		max: 100,
-		step: 0.01,
-		default: 1,
-		description: 'Scale',
-	},
-	'style.rotate': {
-		type: 'rotation',
-		step: 1,
-		default: '0deg',
-		description: 'Rotation',
-	},
-	'style.opacity': {
-		type: 'number',
-		min: 0,
-		max: 1,
-		step: 0.01,
-		default: 1,
-		description: 'Opacity',
-	},
-} as const satisfies SequenceSchema;
 
 const HtmlInCanvasInner = forwardRef<
 	HTMLCanvasElement,
@@ -549,7 +518,7 @@ const HtmlInCanvasInner = forwardRef<
 
 HtmlInCanvasInner.displayName = 'HtmlInCanvas';
 
-const HtmlInCanvasWrapped = wrapInSchema(HtmlInCanvasInner, htmlInCanvasSchema);
+const HtmlInCanvasWrapped = wrapInSchema(HtmlInCanvasInner, sequenceSchema);
 
 export const HtmlInCanvas = Object.assign(HtmlInCanvasWrapped, {
 	isHtmlInCanvasSupported,

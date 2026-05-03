@@ -39,3 +39,34 @@ export type SchemaKeysRecord<S extends SequenceSchema> = Record<
 	keyof S,
 	unknown
 >;
+
+export const sequenceSchema = {
+	'style.translate': {
+		type: 'translate',
+		step: 1,
+		default: '0px 0px',
+		description: 'Position',
+	},
+	'style.scale': {
+		type: 'number',
+		min: 0.05,
+		max: 100,
+		step: 0.01,
+		default: 1,
+		description: 'Scale',
+	},
+	'style.rotate': {
+		type: 'rotation',
+		step: 1,
+		default: '0deg',
+		description: 'Rotation',
+	},
+	'style.opacity': {
+		type: 'number',
+		min: 0,
+		max: 1,
+		step: 0.01,
+		default: 1,
+		description: 'Opacity',
+	},
+} as const satisfies SequenceSchema;

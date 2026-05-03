@@ -66,15 +66,13 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 	schema: S,
 ): React.ComponentType<Props> => {
 	const schemaKeys = Object.keys(schema);
+	if (!process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED) {
+		return Component as unknown as React.ComponentType<Props>;
+	}
 
 	const Wrapped = forwardRef<unknown, Props>((props, ref) => {
 		const env = useRemotionEnvironment();
-		if (
-			!env.isStudio ||
-			env.isReadOnlyStudio ||
-			env.isRendering ||
-			!process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED
-		) {
+		if (!env.isStudio || env.isReadOnlyStudio || env.isRendering) {
 			return React.createElement(Component, {
 				...props,
 				_experimentalControls: null,
@@ -113,6 +111,18 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 			values as Record<string, unknown>,
 			schemaKeys,
 		);
+
+		// If the parent has passed `_experimentalControls`, we should not override it.
+		// @ts-expect-error
+		if (props._experimentalControls) {
+			return React.createElement(Component, {
+				...props,
+				ref,
+			} as unknown as Props & {
+				_experimentalControls: SequenceControls | undefined;
+				ref: typeof ref;
+			});
+		}
 
 		return React.createElement(Component, {
 			...mergedProps,

@@ -2070,6 +2070,15 @@ export const articles = [
 		slug: 'props-resolution',
 	},
 	{
+		id: 'html-in-canvas',
+		title: 'HTML-in-canvas',
+		relativePath: 'docs/html-in-canvas-guide.mdx',
+		compId: 'articles-docs-html-in-canvas-guide',
+		crumb: 'Designing visuals',
+		noAi: false,
+		slug: 'html-in-canvas',
+	},
+	{
 		id: 'html5-audio',
 		title: '<Html5Audio>',
 		relativePath: 'docs/html5-audio.mdx',

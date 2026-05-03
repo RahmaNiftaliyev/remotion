@@ -3,7 +3,7 @@ import React from 'react';
 import {AbsoluteFill, staticFile, useVideoConfig} from 'remotion';
 
 /**
- * Pre-rendered fallback when `HtmlInCanvas.isHtmlInCanvasSupported()` is false.
+ * Pre-rendered fallback when `HtmlInCanvas.isSupported()` is false.
  * `relativeSrc` is relative to the docs site static root (e.g. `img/foo.mp4`).
  *
  * Typography is sized vs. composition width so it stays legible when the Player

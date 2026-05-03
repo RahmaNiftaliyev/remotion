@@ -8,6 +8,8 @@ crumb: 'API'
 
 This component renders its children into a `<canvas>` using the browser’s [HTML-in-canvas](https://github.com/WICG/html-in-canvas) API and allows you to draw an effect using the Canvas 2D API, WebGL or WebGPU.
 
+For an overview, examples and how to enable the Chrome Canary flag, see the [HTML-in-canvas guide](/docs/html-in-canvas).
+
 HTML-in-canvas is only available in Chrome 149 and later and if the `chrome://flags/#canvas-draw-element` flag is enabled.
 
 ```tsx twoslash title="MyComp.tsx"
@@ -22,18 +24,18 @@ export const MyComp: React.FC = () => {
 };
 ```
 
-## `HtmlInCanvas.isHtmlInCanvasSupported()`
+## `HtmlInCanvas.isSupported()`
 
 Return value: _boolean_
 
 If HTML-in-canvas is not available, the component throws a fatal error.  
-Use `HtmlInCanvas.isHtmlInCanvasSupported()` to check if HTML-in-canvas is supported.  
+Use `HtmlInCanvas.isSupported()` to check if HTML-in-canvas is supported.  
 Buggy implementations such as the one in Chrome 147 are not considered supported.
 
 ```ts twoslash title="Check if HTML-in-canvas is supported"
 import {HtmlInCanvas} from 'remotion';
 
-if (HtmlInCanvas.isHtmlInCanvasSupported()) {
+if (HtmlInCanvas.isSupported()) {
   console.log('HTML-in-canvas is supported');
 } else {
   console.log('HTML-in-canvas is not supported');
@@ -796,6 +798,7 @@ Only works in Chrome 149 and later with the flag enabled, as mentioned on the to
 
 ## See also
 
+- [HTML-in-canvas guide](/docs/html-in-canvas)
 - [HTML-in-canvas (client-side rendering)](/docs/client-side-rendering/html-in-canvas)
 - [`<Sequence>`](/docs/sequence)
 - [Source code for this component](https://github.com/remotion-dev/remotion/blob/main/packages/core/src/HtmlInCanvas.tsx)

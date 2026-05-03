@@ -17,5 +17,7 @@ export {
 // HTML-in-canvas
 export {
 	HtmlInCanvasShader,
+	HtmlInCanvasShaderDraw,
+	HtmlInCanvasShaderDrawParams,
 	makeHtmlInCanvasPresentation,
 } from './html-in-canvas-presentation.js';

@@ -6,7 +6,7 @@ title: 'Custom HTML-in-canvas presentations'
 
 # Custom HTML-in-canvas presentations<AvailableFrom v="4.0.456" />
 
-Build a presentation that runs the entering and exiting scenes through a WebGL2 fragment shader using the experimental [HTML-in-canvas](/docs/client-side-rendering/html-in-canvas) APIs. This is the path used by [`zoomBlur()`](/docs/transitions/presentations/zoom-blur) and [`zoomInOut()`](/docs/transitions/presentations/zoom-in-out).
+Build a presentation that runs the entering and exiting scenes through a WebGL2 fragment shader using the experimental [HTML-in-canvas](https://github.com/WICG/html-in-canvas) APIs.
 
 :::warning
 HTML-in-canvas requires [Chrome Canary](https://www.google.com/chrome/canary/) with `chrome://flags/#canvas-draw-element` enabled in the browser. For server-side renders, pass `--allow-html-in-canvas` (or [`Config.setAllowHtmlInCanvasEnabled(true)`](/docs/config#setallowhtmlincanvasenabled)). It does not work in Firefox or Safari.
@@ -25,7 +25,7 @@ If a CSS `clip-path`, `transform`, `filter` or `mask` can express the effect, pr
 
 Remotion captures both scenes via `drawElementImage()` and passes them to your shader as two `ElementImage` textures (`prevImage` and `nextImage`) along with the transition `time` (`0` → `1`). Your shader writes the blended result to an offscreen WebGL2 canvas, which Remotion then composites into the frame.
 
-You implement a single function — `HtmlInCanvasShader<Props>` — and pass it to `makeHtmlInCanvasPresentation()` to get back a `TransitionPresentation` constructor.
+You implement a single function — `HtmlInCanvasShader<Props>` — and pass it to [`makeHtmlInCanvasPresentation()`](/docs/transitions/make-html-in-canvas-presentation) to get back a `TransitionPresentation` constructor.
 
 ## Boilerplate
 
@@ -119,77 +119,30 @@ export const MyComp: React.FC = () => {
 };
 ```
 
-## API
+## API reference
 
-### `makeHtmlInCanvasPresentation(shader)`
-
-Wraps a shader factory and returns a `(props) => TransitionPresentation<Props>` function.
-
-### `HtmlInCanvasShader<Props>`
-
-A factory called once per transition mount with a shared `OffscreenCanvas`. It must return three callbacks:
-
-#### `clear()`
-
-Called when there is nothing to draw (both scenes are unmounted). Typically clears the WebGL color buffer.
-
-#### `cleanup()`
-
-Called once when the transition unmounts. Release any GL resources you allocated (programs, textures, buffers, VAOs).
-
-#### `draw({prevImage, nextImage, width, height, time, passedProps})`
-
-Called every frame the transition is active.
-
-##### `prevImage`
-
-`ElementImage | null` — the captured exiting scene. `null` while it has not yet rendered (e.g. at the very start).
-
-##### `nextImage`
-
-`ElementImage | null` — the captured entering scene. `null` after the entering scene has unmounted.
-
-##### `width` / `height`
-
-The pixel size of the canvas to draw into.
-
-##### `time`
-
-A `number` between `0` and `1`. **Note the convention**: `time = 0` means the shader should output the entering scene fully (i.e. transition end), and `time = 1` means the shader should output the exiting scene fully (i.e. transition start). This matches `mix(prev, next, 1.0 - time)`.
-
-When one image is missing, treat it as the boundary case: if `!prevImage`, force `time = 0` so the shader falls back to `nextImage` only; if `!nextImage`, force `time = 1` so the shader falls back to `prevImage` only.
-
-##### `passedProps`
-
-Whatever you typed your `Props` as. Use this for runtime knobs like `rotation`, `intensity`, `direction`, etc.
+The signature of [`makeHtmlInCanvasPresentation()`](/docs/transitions/make-html-in-canvas-presentation) and the `HtmlInCanvasShader<Props>` callback contract — `clear`, `cleanup`, `draw({prevImage, nextImage, width, height, time, passedProps})` — are documented on its own page.
 
 ## Adapting GLSL transitions from gl-transitions.com
 
-[gl-transitions.com](https://gl-transitions.com/) is a curated catalog of community-contributed fragment shaders licensed (mostly) under MIT — a great starting point. Their shader signature is:
-
-```glsl
-uniform sampler2D from;
-uniform sampler2D to;
-uniform float progress;
-vec4 transition(vec2 uv);
-```
+[gl-transitions.com](https://gl-transitions.com/) is a curated catalog of community-contributed fragment shaders licensed under MIT — a great starting point.
 
 To port one to a Remotion HTML-in-canvas presentation:
 
 <Step>1</Step> Replace `getFromColor(uv)` with `texture(u_prev, uv)` and `getToColor(uv)` with `texture(u_next, uv)`.<br />
 <Step>2</Step> Map `progress` to Remotion's reversed convention with `float progress = 1.0 - u_time;` at the top of `main()`.<br />
 <Step>3</Step> Wrap the `transition()` body inside `void main() { outColor = transition(v_uv); }` (with `out vec4 outColor;` declared).<br />
-<Step>4</Step> Credit the original author and license in a comment above the shader source — see [`zoom-in-out.tsx`](https://github.com/remotion-dev/remotion/blob/main/packages/transitions/src/presentations/zoom-in-out.tsx) for the convention used in the built-in presentations.
 
-## Source references
+## Example implementations
 
-The two built-in HTML-in-canvas presentations are good copy-paste starting points:
+See the following example implementations:
 
-- [`zoom-blur.tsx`](https://github.com/remotion-dev/remotion/blob/main/packages/transitions/src/presentations/zoom-blur.tsx) — original, with a tunable `rotation` prop
+- [`zoom-blur.tsx`](https://github.com/remotion-dev/remotion/blob/main/packages/transitions/src/presentations/zoom-blur.tsx)
 - [`zoom-in-out.tsx`](https://github.com/remotion-dev/remotion/blob/main/packages/transitions/src/presentations/zoom-in-out.tsx) — adapted from a gl-transitions shader
 
 ## See also
 
+- [`makeHtmlInCanvasPresentation()`](/docs/transitions/make-html-in-canvas-presentation) — API reference
 - [HTML-in-canvas](/docs/client-side-rendering/html-in-canvas)
 - [Custom presentations](/docs/transitions/presentations/custom) — the CSS-based path
 - [Contributing a new presentation](/docs/contributing/presentation)

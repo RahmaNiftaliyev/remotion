@@ -721,6 +721,7 @@ const sidebars: SidebarsConfig = {
 			items: [
 				'transitions/transitionseries',
 				'transitions/use-transition-progress',
+				'transitions/make-html-in-canvas-presentation',
 				{
 					type: 'category',
 					label: 'Timings',

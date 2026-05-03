@@ -1,18 +1,11 @@
-import type {PlayerRef} from '@remotion/player';
-import {Player} from '@remotion/player';
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import {staticFile} from 'remotion';
-import {useHtmlInCanvasDocsDemoBranch} from '../demos/useHtmlInCanvasDocsDemoBranch';
 import {
 	presentationCompositionHeight,
 	presentationCompositionWidth,
 } from '../TableOfContents/transitions/presentations';
-import {ZoomInOutTransitionPreviewThumb} from './zoom-in-out-preview';
 
 export const ZoomInOutTocPreview: React.FC = () => {
-	const branch = useHtmlInCanvasDocsDemoBranch();
-	const ref = useRef<PlayerRef>(null);
-
 	const tileHeight = 60;
 	const tileWidth =
 		(tileHeight * presentationCompositionWidth) / presentationCompositionHeight;
@@ -25,65 +18,18 @@ export const ZoomInOutTocPreview: React.FC = () => {
 		objectFit: 'cover',
 	};
 
-	useEffect(() => {
-		const {current} = ref;
-		if (!current) {
-			return;
-		}
-
-		const callback = () => {
-			current?.seekTo(0);
-			current?.play();
-		};
-
-		current?.getContainerNode()?.addEventListener('pointerenter', callback);
-
-		return () => {
-			current
-				?.getContainerNode()
-				?.removeEventListener('pointerenter', callback);
-		};
-	}, [branch]);
-
-	if (branch === 'pending') {
-		return (
-			<div
-				style={{
-					...sharedStyle,
-					backgroundColor: '#000',
-				}}
-			/>
-		);
-	}
-
-	if (branch === 'fallback') {
-		return (
-			<video
-				muted
-				playsInline
-				preload="auto"
-				src={staticFile('img/zoom-in-out-transition-thumb.mp4')}
-				style={sharedStyle}
-				onPointerEnter={(event) => {
-					const video = event.currentTarget;
-					video.currentTime = 0;
-					void video.play();
-				}}
-			/>
-		);
-	}
-
 	return (
-		<Player
-			ref={ref}
-			acknowledgeRemotionLicense
-			component={ZoomInOutTransitionPreviewThumb}
-			compositionHeight={presentationCompositionHeight}
-			compositionWidth={presentationCompositionWidth}
-			durationInFrames={60}
-			fps={30}
-			numberOfSharedAudioTags={0}
+		<video
+			muted
+			playsInline
+			preload="auto"
+			src={staticFile('img/zoom-in-out-transition-thumb.mp4')}
 			style={sharedStyle}
+			onPointerEnter={(event) => {
+				const video = event.currentTarget;
+				video.currentTime = 0;
+				void video.play();
+			}}
 		/>
 	);
 };

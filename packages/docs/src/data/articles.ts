@@ -6322,6 +6322,15 @@ export const articles = [
 		slug: 'transitions/index',
 	},
 	{
+		id: 'transitions/make-html-in-canvas-presentation',
+		title: 'makeHtmlInCanvasPresentation()',
+		relativePath: 'docs/transitions/make-html-in-canvas-presentation.mdx',
+		compId: 'articles-docs-transitions-make-html-in-canvas-presentation',
+		crumb: '@remotion/transitions',
+		noAi: false,
+		slug: 'transitions/make-html-in-canvas-presentation',
+	},
+	{
 		id: 'transitions/presentations/clock-wipe',
 		title: 'clockWipe()',
 		relativePath: 'docs/transitions/presentations/clock-wipe.mdx',
@@ -6338,6 +6347,15 @@ export const articles = [
 		crumb: '@remotion/transitions - Presentations',
 		noAi: false,
 		slug: 'transitions/presentations/cube',
+	},
+	{
+		id: 'transitions/presentations/custom-html-in-canvas',
+		title: 'Custom HTML-in-canvas presentations',
+		relativePath: 'docs/transitions/presentations/custom-html-in-canvas.mdx',
+		compId: 'articles-docs-transitions-presentations-custom-html-in-canvas',
+		crumb: '@remotion/transitions',
+		noAi: false,
+		slug: 'transitions/presentations/custom-html-in-canvas',
 	},
 	{
 		id: 'transitions/presentations/custom',
@@ -6419,6 +6437,15 @@ export const articles = [
 		crumb: '@remotion/transitions - Presentations',
 		noAi: false,
 		slug: 'transitions/presentations/zoom-blur',
+	},
+	{
+		id: 'transitions/presentations/zoom-in-out',
+		title: 'zoomInOut()',
+		relativePath: 'docs/transitions/presentations/zoom-in-out.mdx',
+		compId: 'articles-docs-transitions-presentations-zoom-in-out',
+		crumb: '@remotion/transitions - Presentations',
+		noAi: false,
+		slug: 'transitions/presentations/zoom-in-out',
 	},
 	{
 		id: 'transitions/timings/custom',

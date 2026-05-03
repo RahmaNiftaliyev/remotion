@@ -11,8 +11,7 @@ import {AbsoluteFill, staticFile, useVideoConfig} from 'remotion';
  */
 export const HtmlInCanvasDocsVideoFallback: React.FC<{
 	readonly relativeSrc: string;
-	readonly hideOverlay?: boolean;
-}> = ({relativeSrc, hideOverlay}) => {
+}> = ({relativeSrc}) => {
 	const {width} = useVideoConfig();
 	const fontSize = Math.round(width * 0.052);
 	const padY = Math.round(width * 0.022);
@@ -30,26 +29,24 @@ export const HtmlInCanvasDocsVideoFallback: React.FC<{
 					height: '100%',
 				}}
 			/>
-			{hideOverlay ? null : (
-				<div
-					style={{
-						position: 'absolute',
-						bottom: 0,
-						left: 0,
-						right: 0,
-						padding: `${padY}px ${padX}px`,
-						background: 'rgba(0, 0, 0, 0.78)',
-						color: '#fff',
-						fontSize,
-						lineHeight: 1.35,
-						fontWeight: 600,
-						textAlign: 'center',
-						fontFamily: 'var(--ifm-font-family-base)',
-					}}
-				>
-					HTML-in-canvas is not supported in this browser — playing video.
-				</div>
-			)}
+			<div
+				style={{
+					position: 'absolute',
+					bottom: 0,
+					left: 0,
+					right: 0,
+					padding: `${padY}px ${padX}px`,
+					background: 'rgba(0, 0, 0, 0.78)',
+					color: '#fff',
+					fontSize,
+					lineHeight: 1.35,
+					fontWeight: 600,
+					textAlign: 'center',
+					fontFamily: 'var(--ifm-font-family-base)',
+				}}
+			>
+				HTML-in-canvas is not supported in this browser — playing video.
+			</div>
 		</AbsoluteFill>
 	);
 };

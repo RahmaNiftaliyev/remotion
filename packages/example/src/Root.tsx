@@ -58,6 +58,8 @@ import {
 	HtmlInCanvasReactSvg,
 	ZoomBlurTransitionDoc,
 	ZoomBlurTransitionDocThumb,
+	ZoomInOutTransitionDoc,
+	ZoomInOutTransitionDocThumb,
 } from './HtmlInCanvas';
 import {HugeImage} from './HugeImage';
 import {HugePayload, hugePayloadSchema} from './HugePayload';
@@ -969,6 +971,22 @@ export const Index: React.FC = () => {
 					<Composition
 						id="zoom-blur-transition-doc-thumb"
 						component={ZoomBlurTransitionDocThumb}
+						fps={30}
+						height={280}
+						width={540}
+						durationInFrames={60}
+					/>
+					<Composition
+						id="zoom-in-out-transition-doc"
+						component={ZoomInOutTransitionDoc}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={90}
+					/>
+					<Composition
+						id="zoom-in-out-transition-doc-thumb"
+						component={ZoomInOutTransitionDocThumb}
 						fps={30}
 						height={280}
 						width={540}

@@ -17,3 +17,7 @@ export {
 	ZoomBlurTransitionDoc,
 	ZoomBlurTransitionDocThumb,
 } from './zoom-blur-doc';
+export {
+	ZoomInOutTransitionDoc,
+	ZoomInOutTransitionDocThumb,
+} from './zoom-in-out-doc';

@@ -749,6 +749,7 @@ const sidebars: SidebarsConfig = {
 						'transitions/presentations/clock-wipe',
 						'transitions/presentations/iris',
 						'transitions/presentations/zoom-blur',
+						'transitions/presentations/zoom-in-out',
 						'transitions/presentations/none',
 						{
 							type: 'doc',

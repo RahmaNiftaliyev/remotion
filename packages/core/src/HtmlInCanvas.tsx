@@ -522,7 +522,9 @@ const HtmlInCanvasInner = forwardRef<
 		}, [width, height, style]);
 
 		if (isInsideAncestorHtmlInCanvas) {
-			throw new Error('<HtmlInCanvas> effects cannot be nested together');
+			throw new Error(
+				'<HtmlInCanvas> effects cannot be nested together. Chrome will only display the outer effect. Consider merging the effects into one if you can.',
+			);
 		}
 
 		return (

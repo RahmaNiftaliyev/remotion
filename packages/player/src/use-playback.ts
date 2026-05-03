@@ -137,7 +137,9 @@ export const usePlayback = ({
 				return;
 			}
 
-			sharedAudioContext?.resume?.();
+			if (!muted) {
+				sharedAudioContext?.resume?.();
+			}
 
 			const time = performance.now() - startedTime;
 			const actualLastFrame = outFrame ?? config.durationInFrames - 1;
@@ -177,7 +179,7 @@ export const usePlayback = ({
 		const queueNextFrame = () => {
 			const getIsResumingAudioContext =
 				sharedAudioContext?.getIsResumingAudioContext?.() ?? null;
-			if (getIsResumingAudioContext !== null) {
+			if (getIsResumingAudioContext !== null && !muted) {
 				getIsResumingAudioContext.then(() => {
 					if (!sharedAudioContext?.audioContext) {
 						return;

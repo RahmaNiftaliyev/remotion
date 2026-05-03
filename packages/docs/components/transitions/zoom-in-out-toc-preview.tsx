@@ -28,7 +28,7 @@ export const ZoomInOutTocPreview: React.FC = () => {
 			onPointerEnter={(event) => {
 				const video = event.currentTarget;
 				video.currentTime = 0;
-				void video.play();
+				video.play();
 			}}
 		/>
 	);

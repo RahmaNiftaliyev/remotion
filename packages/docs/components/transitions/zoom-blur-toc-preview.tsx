@@ -11,6 +11,7 @@ import {ZoomBlurTransitionPreview} from './zoom-blur-preview';
 
 const sharedStyle: React.CSSProperties = {
 	height: 60,
+	aspectRatio: `${presentationCompositionWidth} / ${presentationCompositionHeight}`,
 	borderRadius: 6,
 	display: 'block',
 	objectFit: 'cover',
@@ -45,7 +46,6 @@ export const ZoomBlurTocPreview: React.FC = () => {
 			<div
 				style={{
 					...sharedStyle,
-					width: '100%',
 					backgroundColor: '#000',
 				}}
 			/>
@@ -60,10 +60,7 @@ export const ZoomBlurTocPreview: React.FC = () => {
 				muted
 				playsInline
 				src={staticFile('img/zoom-blur-transition-thumb.mp4')}
-				style={{
-					...sharedStyle,
-					width: '100%',
-				}}
+				style={sharedStyle}
 			/>
 		);
 	}

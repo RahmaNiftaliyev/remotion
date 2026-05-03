@@ -7,7 +7,7 @@ import {
 	presentationCompositionHeight,
 	presentationCompositionWidth,
 } from '../TableOfContents/transitions/presentations';
-import {ZoomBlurTransitionPreview} from './zoom-blur-preview';
+import {ZoomBlurTransitionPreviewThumb} from './zoom-blur-preview';
 
 export const ZoomBlurTocPreview: React.FC = () => {
 	const branch = useHtmlInCanvasDocsDemoBranch();

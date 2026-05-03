@@ -13,9 +13,13 @@ export const ZoomBlurTocPreview: React.FC = () => {
 	const branch = useHtmlInCanvasDocsDemoBranch();
 	const ref = useRef<PlayerRef>(null);
 
+	const tileHeight = 60;
+	const tileWidth =
+		(tileHeight * presentationCompositionWidth) / presentationCompositionHeight;
 	const sharedStyle: React.CSSProperties = {
-		height: 60,
-		aspectRatio: `${presentationCompositionWidth} / ${presentationCompositionHeight}`,
+		width: tileWidth,
+		height: tileHeight,
+		flex: 'none',
 		borderRadius: 6,
 		display: 'block',
 		objectFit: 'cover',

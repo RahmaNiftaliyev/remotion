@@ -10,6 +10,7 @@ import React from 'react';
 import {PresentationPreview} from '../../transitions/previews';
 import {ZoomBlurTocPreview} from '../../transitions/zoom-blur-toc-preview';
 import {Grid} from '../Grid';
+import {HtmlInCanvasLabel} from '../html-in-canvas-label';
 import {ProLabel} from '../pro-label';
 import {TOCItem} from '../TOCItem';
 
@@ -124,6 +125,7 @@ export const Presentations: React.FC<{
 						<strong>
 							<code>{'zoomBlur()'}</code>
 						</strong>
+						<HtmlInCanvasLabel />
 						<div>Zoom and rotate scenes with a radial blur</div>
 					</div>
 				</div>

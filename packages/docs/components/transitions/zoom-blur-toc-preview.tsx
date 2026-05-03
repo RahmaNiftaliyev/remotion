@@ -77,10 +77,10 @@ export const ZoomBlurTocPreview: React.FC = () => {
 		<Player
 			ref={ref}
 			acknowledgeRemotionLicense
-			component={ZoomBlurTransitionPreview}
+			component={ZoomBlurTransitionPreviewThumb}
 			compositionHeight={presentationCompositionHeight}
 			compositionWidth={presentationCompositionWidth}
-			durationInFrames={90}
+			durationInFrames={60}
 			fps={30}
 			numberOfSharedAudioTags={0}
 			style={sharedStyle}

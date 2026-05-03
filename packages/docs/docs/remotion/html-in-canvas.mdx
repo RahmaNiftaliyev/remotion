@@ -88,11 +88,11 @@ You should paint to this canvas.
 #### `element`
 
 The inner [`HTMLDivElement`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement) that wraps `children`.  
-You should apply the return value of `drawElementImage` to this element's `style.transform` property.
+You should apply the return value of [`drawElementImage`](https://github.com/WICG/html-in-canvas#2-drawelementimage-and-webglwebgpu-equivalents) to this element's `style.transform` property.
 
 #### `elementImage`
 
-An [`ElementImage`](https://github.com/WICG/html-in-canvas) handle for the current capture.  
+An [`ElementImage`](https://github.com/WICG/html-in-canvas#idl-changes) handle for the current capture.  
 You should paint this image to the canvas.
 
 ### `onInit?`
@@ -135,7 +135,7 @@ export const Example: React.FC = () => {
 
 ### 2D
 
-Call [`drawElementImage()`](https://github.com/WICG/html-in-canvas) on the 2D context to draw `elementImage` into the bitmap.  
+Call [`drawElementImage()`](https://github.com/WICG/html-in-canvas#2-drawelementimage-and-webglwebgpu-equivalents) on the 2D context to draw `elementImage` into the bitmap.  
 HTML-in-canvas recommends that you use the return value and assign it to `element.style.transform`, so that the original DOM element matches the transform, so that selection still works.
 
 For 2D, you usually do not need `onInit`.
@@ -204,7 +204,7 @@ export const HtmlInCanvas2DBlur: React.FC = () => {
 Do all setup in [`onInit`](#oninit) such as getting the WebGL context and compiling the shader.  
 `onInit` must return a cleanup function that destroys the resources that were created in `onInit`.
 
-Use [`texElementImage2D`](https://github.com/WICG/html-in-canvas) to turn the `elementImage` into a texture.
+Use [`texElementImage2D`](https://github.com/WICG/html-in-canvas#2-drawelementimage-and-webglwebgpu-equivalents) to turn the `elementImage` into a texture.
 
 <Demo type="html-in-canvas-webgl" />
 
@@ -398,7 +398,7 @@ export const HtmlInCanvasDocsMinimalWebGL: React.FC = () => {
 
 Use [`onInit`](#oninit) to get a WebGPU context, to request a GPU and to compile shaders.  
 `onInit` must return a cleanup function that destroys the resources that were created in `onInit`.  
-In `onPaint`, draw the `elementImage` to the canvas using `copyElementImageToTexture`.
+In `onPaint`, draw the `elementImage` to the canvas using [`copyElementImageToTexture`](https://github.com/WICG/html-in-canvas#2-drawelementimage-and-webglwebgpu-equivalents).
 
 <Demo type="html-in-canvas-webgpu" />
 

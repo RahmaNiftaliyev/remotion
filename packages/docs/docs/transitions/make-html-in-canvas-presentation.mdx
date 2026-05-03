@@ -240,15 +240,8 @@ HTML-in-canvas requires [Chrome Canary](https://www.google.com/chrome/canary/) w
 
 ### `shader`
 
-A function of type `HtmlInCanvasShader<Props>`.  
+A function of type [`HtmlInCanvasShader<Props>`](#htmlincanvasshader).  
 Must return an object with three callbacks: `clear`, `cleanup` and `draw`.
-
-```ts twoslash
-import type {
-  HtmlInCanvasShader,
-  // ^?
-} from '@remotion/transitions';
-```
 
 #### `clear()`
 
@@ -262,31 +255,16 @@ Release any GL resources you allocated.
 
 #### `draw()`
 
-Called every frame the transition is active. Has the type `HtmlInCanvasShaderDraw<Props>`:
-
-```ts twoslash
-import type {
-  HtmlInCanvasShaderDraw,
-  // ^?
-} from '@remotion/transitions';
-```
-
-The argument has the type `HtmlInCanvasShaderDrawParams<Props>`:
-
-```ts twoslash
-import type {
-  HtmlInCanvasShaderDrawParams,
-  // ^?
-} from '@remotion/transitions';
-```
+Called every frame the transition is active.  
+Has the type [`HtmlInCanvasShaderDraw<Props>`](#htmlincanvasshaderdraw); the argument has the type [`HtmlInCanvasShaderDrawParams<Props>`](#htmlincanvasshaderdrawparams).
 
 ##### `prevImage`
 
-`ElementImage | null` — the captured exiting scene. `null` while it has not yet rendered (e.g. at the very start).
+[`ElementImage`](https://github.com/WICG/html-in-canvas#idl-changes)` | null` — the captured exiting scene. `null` while it has not yet rendered (e.g. at the very start).
 
 ##### `nextImage`
 
-`ElementImage | null` — the captured entering scene. `null` after the entering scene has unmounted.
+[`ElementImage`](https://github.com/WICG/html-in-canvas#idl-changes)` | null` — the captured entering scene. `null` after the entering scene has unmounted.
 
 ##### `width` / `height`
 
@@ -307,6 +285,35 @@ Whatever you typed your `Props` as.
 ## Return value
 
 A `presentation` that you can pass to a [`<TransitionSeries.Transition>`](/docs/transitions/transitionseries#transitionseriestransition).
+
+## Types
+
+### `HtmlInCanvasShader`
+
+```ts twoslash
+import type {
+  HtmlInCanvasShader,
+  // ^?
+} from '@remotion/transitions';
+```
+
+### `HtmlInCanvasShaderDraw`
+
+```ts twoslash
+import type {
+  HtmlInCanvasShaderDraw,
+  // ^?
+} from '@remotion/transitions';
+```
+
+### `HtmlInCanvasShaderDrawParams`
+
+```ts twoslash
+import type {
+  HtmlInCanvasShaderDrawParams,
+  // ^?
+} from '@remotion/transitions';
+```
 
 ## See also
 

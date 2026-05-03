@@ -9,23 +9,19 @@ title: 'Custom HTML-in-canvas presentations'
 Build a presentation that runs the entering and exiting scenes through a WebGL2 fragment shader using the experimental [HTML-in-canvas](https://github.com/WICG/html-in-canvas) APIs.
 
 :::warning
-HTML-in-canvas requires [Chrome Canary](https://www.google.com/chrome/canary/) with `chrome://flags/#canvas-draw-element` enabled in the browser. For server-side renders, pass `--allow-html-in-canvas` (or [`Config.setAllowHtmlInCanvasEnabled(true)`](/docs/config#setallowhtmlincanvasenabled)). It does not work in Firefox or Safari.
+HTML-in-canvas requires [Chrome Canary](https://www.google.com/chrome/canary/) with `chrome://flags/#canvas-draw-element` enabled in the browser.
 :::
 
 ## When to use this
 
-Use a custom HTML-in-canvas presentation when:
-
-- Your effect needs both scenes blended pixel-by-pixel through a fragment shader (zoom blur, dissolves, displacement maps, ripple, page curl, etc.)
-- The CSS-only approach in [Custom presentations](/docs/transitions/presentations/custom) cannot express the effect
-
-If a CSS `clip-path`, `transform`, `filter` or `mask` can express the effect, prefer the [CSS-based custom presentation](/docs/transitions/presentations/custom). It works in every browser and renderer.
+Use this when you cannot implement the presentation in CSS.  
+Prefer CSS because it has wider browser support.
 
 ## Concept
 
-Remotion captures both scenes via `drawElementImage()` and passes them to your shader as two `ElementImage` textures (`prevImage` and `nextImage`) along with the transition `time` (`0` → `1`). Your shader writes the blended result to an offscreen WebGL2 canvas, which Remotion then composites into the frame.
+Remotion captures both scenes via [`captureElementImage()`](https://github.com/WICG/html-in-canvas#4-captureelementimage) and passes them to your shader as two [`ElementImage`](https://github.com/WICG/html-in-canvas#idl-changes) handles (`prevImage` and `nextImage`) along with the transition `time` (`0` → `1`). Your shader uploads them as textures via [`drawElementImage()`](https://github.com/WICG/html-in-canvas#2-drawelementimage-and-webglwebgpu-equivalents) (or its WebGL/WebGPU equivalents) and writes the blended result to an offscreen WebGL2 canvas, which Remotion then composites into the frame.
 
-You implement a single function — `HtmlInCanvasShader<Props>` — and pass it to [`makeHtmlInCanvasPresentation()`](/docs/transitions/make-html-in-canvas-presentation) to get back a `TransitionPresentation` constructor.
+You implement a single function — [`HtmlInCanvasShader<Props>`](/docs/transitions/make-html-in-canvas-presentation#htmlincanvasshader) — and pass it to [`makeHtmlInCanvasPresentation()`](/docs/transitions/make-html-in-canvas-presentation) to get back a `TransitionPresentation` constructor.
 
 ## Boilerplate
 
@@ -121,7 +117,7 @@ export const MyComp: React.FC = () => {
 
 ## API reference
 
-The signature of [`makeHtmlInCanvasPresentation()`](/docs/transitions/make-html-in-canvas-presentation) and the `HtmlInCanvasShader<Props>` callback contract — `clear`, `cleanup`, `draw({prevImage, nextImage, width, height, time, passedProps})` — are documented on its own page.
+The signature of [`makeHtmlInCanvasPresentation()`](/docs/transitions/make-html-in-canvas-presentation) and the [`HtmlInCanvasShader<Props>`](/docs/transitions/make-html-in-canvas-presentation#htmlincanvasshader) callback contract — `clear`, `cleanup`, [`draw({prevImage, nextImage, width, height, time, passedProps})`](/docs/transitions/make-html-in-canvas-presentation#draw) — are documented on its own page.
 
 ## Adapting GLSL transitions from gl-transitions.com
 

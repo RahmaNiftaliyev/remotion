@@ -1,6 +1,8 @@
 import React, {
+	createContext,
 	forwardRef,
 	useCallback,
+	useContext,
 	useLayoutEffect,
 	useMemo,
 	useRef,
@@ -261,6 +263,8 @@ export type HtmlInCanvasProps = Omit<
 	};
 /* eslint-enable react/require-default-props */
 
+const HtmlInCanvasAncestorContext = createContext(false);
+
 const htmlInCanvasSchema = {
 	'style.translate': {
 		type: 'translate',
@@ -313,6 +317,10 @@ const HtmlInCanvasInner = forwardRef<
 		},
 		ref,
 	) => {
+		const isInsideAncestorHtmlInCanvas = useContext(
+			HtmlInCanvasAncestorContext,
+		);
+
 		assertHtmlInCanvasDimensions(width, height);
 		const {continueRender, cancelRender} = useDelayRender();
 
@@ -513,6 +521,10 @@ const HtmlInCanvasInner = forwardRef<
 			};
 		}, [width, height, style]);
 
+		if (isInsideAncestorHtmlInCanvas) {
+			throw new Error('<HtmlInCanvas> effects cannot be nested together');
+		}
+
 		return (
 			<Sequence
 				durationInFrames={resolvedDuration}
@@ -521,11 +533,13 @@ const HtmlInCanvasInner = forwardRef<
 				layout="none"
 				{...sequenceProps}
 			>
-				<canvas ref={setLayoutCanvasRef} width={width} height={height}>
-					<div ref={divRef} style={innerStyle}>
-						{children}
-					</div>
-				</canvas>
+				<HtmlInCanvasAncestorContext.Provider value>
+					<canvas ref={setLayoutCanvasRef} width={width} height={height}>
+						<div ref={divRef} style={innerStyle}>
+							{children}
+						</div>
+					</canvas>
+				</HtmlInCanvasAncestorContext.Provider>
 			</Sequence>
 		);
 	},

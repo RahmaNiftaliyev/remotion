@@ -55,6 +55,12 @@ Height of the canvas and the inner layout area, in pixels. Must be a positive in
 Children to draw to the canvas.  
 Children will be wrapped in a `<div>` with the given `width` and `height`.
 
+Do not nest `<HtmlInCanvas>` inside another `<HtmlInCanvas>`. Nesting is not supported and throws:
+
+```
+<HtmlInCanvas> effects cannot be nested together
+```
+
 ### `onPaint?`
 
 Called when the children are updated and can be painted onto the canvas.  

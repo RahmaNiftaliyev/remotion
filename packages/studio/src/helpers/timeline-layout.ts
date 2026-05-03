@@ -23,6 +23,7 @@ const SUPPORTED_SCHEMA_TYPES = new Set([
 	'boolean',
 	'rotation',
 	'translate',
+	'enum',
 ]);
 
 export type SchemaFieldInfo = {

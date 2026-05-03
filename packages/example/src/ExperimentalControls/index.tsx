@@ -174,7 +174,7 @@ export const ExperimentalControlsShowcase: React.FC = () => {
 					</div>
 				</Tile>
 				<Tile title="Sequence layout='none'">
-					<Sequence name="layout='none'" layout="none">
+					<Sequence name="layout='none'" layout={'none'}>
 						hi
 					</Sequence>
 				</Tile>

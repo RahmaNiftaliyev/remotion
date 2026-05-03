@@ -19,6 +19,7 @@ export const useSchema = <
 >(
 	schema: S | null,
 	currentValue: (T & Record<Exclude<keyof T, keyof S>, never>) | null,
+	externalOverrideId?: string,
 ): {
 	controls: SequenceControls | undefined;
 	values: T;
@@ -40,7 +41,8 @@ export const useSchema = <
 	}
 
 	// Intentional conditional hook call, useRemotionEnvironment is stable.
-	const [overrideId] = useState(() => String(Math.random()));
+	const [generatedOverrideId] = useState(() => String(Math.random()));
+	const overrideId = externalOverrideId ?? generatedOverrideId;
 	const {
 		visualModeEnabled,
 		dragOverrides: overrides,

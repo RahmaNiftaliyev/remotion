@@ -31,7 +31,7 @@ const videoSchema = {
 		description: 'Playback Rate',
 	},
 	loop: {type: 'boolean', default: false, description: 'Loop'},
-	...Internals.sequenceSchema,
+	...Internals.sequenceStyleSchema,
 } as const satisfies SequenceSchema;
 
 const InnerVideo: React.FC<
@@ -263,7 +263,6 @@ const VideoInner: React.FC<
 		return null;
 	}
 
-	console.log('controls', controls);
 	return (
 		<Sequence
 			layout="none"

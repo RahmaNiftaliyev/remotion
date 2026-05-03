@@ -243,7 +243,7 @@ const lightLeakSchema = {
 		default: 0,
 		description: 'Hue Shift',
 	},
-	...Internals.sequenceSchema,
+	...Internals.sequenceStyleSchema,
 } as const satisfies SequenceSchema;
 
 const LightLeakInner: React.FC<

@@ -97,7 +97,7 @@ import type {
 	SequenceFieldSchema,
 	SequenceSchema,
 } from './sequence-field-schema.js';
-import {sequenceSchema} from './sequence-field-schema.js';
+import {sequenceSchema, sequenceStyleSchema} from './sequence-field-schema.js';
 import type {ResolvedStackLocation} from './sequence-stack-traces.js';
 import {SequenceStackTracesUpdateContext} from './sequence-stack-traces.js';
 import {SequenceContext} from './SequenceContext.js';
@@ -204,6 +204,7 @@ export const Internals = {
 	useSchema,
 	wrapInSchema,
 	sequenceSchema,
+	sequenceStyleSchema,
 	useSequenceControlOverride,
 	RemotionRootContexts,
 	CompositionManagerProvider,

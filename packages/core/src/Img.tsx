@@ -11,7 +11,7 @@ import type {SequenceControls} from './CompositionManager.js';
 import {addSequenceStackTraces} from './enable-sequence-stack-traces.js';
 import {getCrossOriginValue} from './get-cross-origin-value.js';
 import {usePreload} from './prefetch.js';
-import {sequenceSchema} from './sequence-field-schema.js';
+import {sequenceStyleSchema} from './sequence-field-schema.js';
 import {SequenceContext} from './SequenceContext.js';
 import {useBufferState} from './use-buffer-state.js';
 import {useDelayRender} from './use-delay-render.js';
@@ -313,5 +313,5 @@ const ImgInner: React.FC<
  * @description Works just like a regular HTML img tag. When you use the <Img> tag, Remotion will ensure that the image is loaded before rendering the frame.
  * @see [Documentation](https://remotion.dev/docs/img)
  */
-export const Img = wrapInSchema(ImgInner, sequenceSchema);
+export const Img = wrapInSchema(ImgInner, sequenceStyleSchema);
 addSequenceStackTraces(Img);

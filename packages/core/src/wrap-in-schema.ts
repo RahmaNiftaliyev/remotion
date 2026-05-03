@@ -1,9 +1,10 @@
-import React, {forwardRef, useMemo} from 'react';
+import React, {forwardRef, useContext, useState} from 'react';
 import type {SequenceControls} from './CompositionManager.js';
 import type {
 	SchemaKeysRecord,
 	SequenceSchema,
 } from './sequence-field-schema.js';
+import {VisualModeOverridesContext} from './SequenceManager.js';
 import {useRemotionEnvironment} from './use-remotion-environment.js';
 import {useSchema} from './use-schema.js';
 
@@ -21,6 +22,30 @@ const getNestedValue = (obj: Record<string, unknown>, key: string): unknown => {
 	}
 
 	return current;
+};
+
+type ResolveValue = (key: string) => unknown;
+
+const flattenActiveSchema = (
+	schema: SequenceSchema,
+	resolve: ResolveValue,
+): SequenceSchema => {
+	const out: SequenceSchema = {};
+	for (const key of Object.keys(schema)) {
+		const field = schema[key];
+		if (field.type === 'enum') {
+			out[key] = field;
+			const current = (resolve(key) as string | undefined) ?? field.default;
+			const variant = field.variants[current];
+			if (variant) {
+				Object.assign(out, flattenActiveSchema(variant, resolve));
+			}
+		} else {
+			out[key] = field;
+		}
+	}
+
+	return out;
 };
 
 const mergeValues = (
@@ -65,7 +90,6 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 	>,
 	schema: S,
 ): React.ComponentType<Props> => {
-	const schemaKeys = Object.keys(schema);
 	if (!process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED) {
 		return Component as unknown as React.ComponentType<Props>;
 	}
@@ -84,32 +108,46 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 		}
 
 		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const schemaInput = useMemo(
-			() => {
-				const input = {} as Record<string, unknown>;
-				for (const key of schemaKeys) {
-					input[key] = getNestedValue(props as Record<string, unknown>, key);
-				}
+		const [overrideId] = useState(() => String(Math.random()));
+		// eslint-disable-next-line react-hooks/rules-of-hooks
+		const {dragOverrides, codeValues} = useContext(VisualModeOverridesContext);
+		const dragForThis = dragOverrides[overrideId] ?? {};
+		const codeForThis = codeValues[overrideId];
 
-				return input as SchemaKeysRecord<S>;
-			},
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-			schemaKeys.map((key) =>
-				getNestedValue(props as Record<string, unknown>, key),
-			),
-		);
+		const propsRecord = props as Record<string, unknown>;
+		const resolveDiscriminator: ResolveValue = (key) => {
+			if (key in dragForThis) {
+				return dragForThis[key];
+			}
+
+			const status = codeForThis?.[key];
+			if (status && status.canUpdate) {
+				return status.codeValue;
+			}
+
+			return getNestedValue(propsRecord, key);
+		};
+
+		const activeSchema = flattenActiveSchema(schema, resolveDiscriminator);
+		const activeKeys = Object.keys(activeSchema);
+
+		const schemaInput = {} as Record<string, unknown>;
+		for (const key of activeKeys) {
+			schemaInput[key] = getNestedValue(propsRecord, key);
+		}
 
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const {controls, values} = useSchema(
-			schema,
+			activeSchema as S,
 			schemaInput as SchemaKeysRecord<S> &
 				Record<Exclude<keyof SchemaKeysRecord<S>, keyof S>, never>,
+			overrideId,
 		);
 
 		const mergedProps = mergeValues(
-			props as Record<string, unknown>,
+			propsRecord,
 			values as Record<string, unknown>,
-			schemaKeys,
+			activeKeys,
 		);
 
 		// If the parent has passed `_experimentalControls`, we should not override it.

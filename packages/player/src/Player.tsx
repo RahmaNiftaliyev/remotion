@@ -12,6 +12,7 @@ import type {
 	AnyZodObject,
 	CompProps,
 	LogLevel,
+	PlaybackRateContextValue,
 	PlayableMediaTag,
 	SetTimelineContextValue,
 	TimelineContextValue,
@@ -378,14 +379,17 @@ const PlayerFn = <
 			frame,
 			playing,
 			rootId,
-			playbackRate: currentPlaybackRate,
 			imperativePlaying,
-			setPlaybackRate: (rate) => {
-				setCurrentPlaybackRate(rate);
-			},
 			audioAndVideoTags,
 		};
-	}, [frame, currentPlaybackRate, playing, rootId]);
+	}, [frame, playing, rootId]);
+
+	const playbackRateContextValue = useMemo((): PlaybackRateContextValue => {
+		return {
+			playbackRate: currentPlaybackRate,
+			setPlaybackRate: setCurrentPlaybackRate,
+		};
+	}, [currentPlaybackRate]);
 
 	const setTimelineContextValue = useMemo((): SetTimelineContextValue => {
 		return {
@@ -422,6 +426,7 @@ const PlayerFn = <
 		<Internals.IsPlayerContextProvider>
 			<SharedPlayerContexts
 				timelineContext={timelineContextValue}
+				playbackRateContext={playbackRateContextValue}
 				component={component}
 				compositionHeight={compositionHeight}
 				compositionWidth={compositionWidth}

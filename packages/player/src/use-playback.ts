@@ -35,7 +35,6 @@ export const usePlayback = ({
 	const setFrame = Internals.Timeline.useTimelineSetFrame();
 	const sharedAudioContext = useContext(Internals.SharedAudioContext);
 	const logLevel = Internals.useLogLevel();
-	const timelineContext = Internals.useTimelineContext();
 
 	// requestAnimationFrame() does not work if the tab is not active.
 	// This means that audio will keep playing even if it has ended.
@@ -74,19 +73,13 @@ export const usePlayback = ({
 			audioContext: sharedAudioContext.audioContext,
 			audioSyncAnchor: sharedAudioContext.audioSyncAnchor,
 			absoluteTimeInSeconds: frame / config.fps,
-			globalPlaybackRate: timelineContext.playbackRate,
+			globalPlaybackRate: playbackRate,
 			logLevel,
 		});
 		if (changed) {
 			sharedAudioContext.audioSyncAnchorEmitter.dispatch('changed');
 		}
-	}, [
-		config,
-		frame,
-		logLevel,
-		sharedAudioContext,
-		timelineContext.playbackRate,
-	]);
+	}, [config, frame, logLevel, playbackRate, sharedAudioContext]);
 
 	useEffect(() => {
 		if (!config) {
@@ -197,7 +190,7 @@ export const usePlayback = ({
 						audioContext: sharedAudioContext.audioContext,
 						audioSyncAnchor: sharedAudioContext.audioSyncAnchor,
 						absoluteTimeInSeconds: getCurrentFrame() / config.fps,
-						globalPlaybackRate: timelineContext.playbackRate,
+						globalPlaybackRate: playbackRate,
 						logLevel,
 					});
 					startedTime = performance.now();
@@ -266,7 +259,6 @@ export const usePlayback = ({
 		context,
 		isPlaying,
 		sharedAudioContext,
-		timelineContext.playbackRate,
 		logLevel,
 		muted,
 	]);

@@ -182,7 +182,6 @@ export const makeInlineAudioMixing = (dir: string, sampleRate: number) => {
 			});
 			try {
 				fs.closeSync(openFiles[fileName]);
-				delete openFiles[fileName];
 			} catch {}
 
 			fs.renameSync(tmpFile, fileName);

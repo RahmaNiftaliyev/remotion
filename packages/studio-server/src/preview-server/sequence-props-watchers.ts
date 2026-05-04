@@ -29,23 +29,19 @@ const makeWatcherKey = ({
 	return `${absolutePath}:${JSON.stringify(nodePath)}`;
 };
 
-export const subscribeToSequencePropsWatchers = ({
+const getInitialResult = ({
 	fileName,
 	line,
 	column,
 	keys,
 	remotionRoot,
-	clientId,
 }: {
 	fileName: string;
 	line: number;
 	column: number;
 	keys: string[];
 	remotionRoot: string;
-	clientId: string;
 }): CanUpdateSequencePropsResponse => {
-	const absolutePath = path.resolve(remotionRoot, fileName);
-
 	// Try cached nodePath first (handles stale source maps after suppressed rebuilds)
 	const cachedNodePath = getCachedNodePath(fileName, line, column);
 	let initialResult: CanUpdateSequencePropsResponse;
@@ -77,9 +73,37 @@ export const subscribeToSequencePropsWatchers = ({
 		});
 	}
 
+	return initialResult;
+};
+
+export const subscribeToSequencePropsWatchers = ({
+	fileName,
+	line,
+	column,
+	keys,
+	remotionRoot,
+	clientId,
+}: {
+	fileName: string;
+	line: number;
+	column: number;
+	keys: string[];
+	remotionRoot: string;
+	clientId: string;
+}): CanUpdateSequencePropsResponse => {
+	const initialResult = getInitialResult({
+		fileName,
+		line,
+		column,
+		keys,
+		remotionRoot,
+	});
+
 	if (!initialResult.canUpdate) {
 		return initialResult;
 	}
+
+	const absolutePath = path.resolve(remotionRoot, fileName);
 
 	// Cache the resolved nodePath for future lookups with stale source maps
 	setCachedNodePath(fileName, line, column, initialResult.nodePath);

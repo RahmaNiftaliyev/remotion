@@ -12,18 +12,17 @@ export const Component = () => {
 `;
 
 test('Should add style.scale to a Video component and format with prettier', async () => {
-	const {output, oldValueString, formatted} = await updateSequenceProps({
+	const {output, oldValueStrings, formatted} = await updateSequenceProps({
 		input: componentInput,
 		nodePath: lineColumnToNodePath(componentInput, 6),
-		key: 'style.scale',
-		value: 2,
-		defaultValue: null,
+		updates: [{key: 'style.scale', value: 2, defaultValue: null}],
 		prettierConfigOverride: {
 			singleQuote: true,
 			bracketSpacing: false,
 			useTabs: true,
 		},
 	});
+	const oldValueString = oldValueStrings[0];
 
 	expect(oldValueString).toBe('');
 	expect(formatted).toBe(true);

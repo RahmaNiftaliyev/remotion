@@ -37,9 +37,13 @@ test('Should be able to update a discriminated union', async () => {
 	const update = await updateSequenceProps({
 		input: file,
 		nodePath,
-		key: 'layout',
-		value: 'none',
-		defaultValue: field.fieldSchema.default,
+		updates: [
+			{
+				key: 'layout',
+				value: 'none',
+				defaultValue: field.fieldSchema.default,
+			},
+		],
 	});
 
 	const expected = readFileSync(

@@ -38,14 +38,20 @@ export const saveSequencePropsHandler: ApiHandler<
 
 		const fileContents = readFileSync(absolutePath, 'utf-8');
 
-		const {output, oldValueString, formatted, logLine} =
+		const {output, oldValueStrings, formatted, logLine} =
 			await updateSequenceProps({
 				input: fileContents,
 				nodePath,
-				key,
-				value: JSON.parse(value),
-				defaultValue: defaultValue !== null ? JSON.parse(defaultValue) : null,
+				updates: [
+					{
+						key,
+						value: JSON.parse(value),
+						defaultValue:
+							defaultValue !== null ? JSON.parse(defaultValue) : null,
+					},
+				],
 			});
+		const oldValueString = oldValueStrings[0];
 
 		const newValueString = JSON.stringify(JSON.parse(value));
 		const parsedDefault =

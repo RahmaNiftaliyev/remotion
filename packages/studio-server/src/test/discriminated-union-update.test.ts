@@ -3,19 +3,20 @@ import assert from 'node:assert';
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import type {SchemaFieldInfo} from '@remotion/studio-shared';
+import {Internals} from 'remotion';
 import {parseAst} from '../codemods/parse-ast';
 import {updateSequenceProps} from '../codemods/update-sequence-props';
 import {lineColumnToNodePath} from '../preview-server/routes/can-update-sequence-props';
 
 test('Should be able to update a discriminated union', async () => {
 	const file = readFileSync(
-		path.join(__dirname, 'snapshots', 'discriminated-union.txt'),
+		path.join(__dirname, 'snapshots', 'discriminated-union.tsx'),
 		'utf-8',
 	);
 
 	const ast = parseAst(file);
 
-	const nodePath = lineColumnToNodePath(ast, 177);
+	const nodePath = lineColumnToNodePath(ast, 3);
 	assert(nodePath, 'No node path found');
 
 	const field: SchemaFieldInfo = {
@@ -29,39 +30,7 @@ test('Should be able to update a discriminated union', async () => {
 			type: 'enum',
 			default: 'absolute-fill',
 			description: 'Layout',
-			variants: {
-				'absolute-fill': {
-					'style.translate': {
-						type: 'translate',
-						step: 1,
-						default: '0px 0px',
-						description: 'Position',
-					},
-					'style.scale': {
-						type: 'number',
-						min: 0.05,
-						max: 100,
-						step: 0.01,
-						default: 1,
-						description: 'Scale',
-					},
-					'style.rotate': {
-						type: 'rotation',
-						step: 1,
-						default: '0deg',
-						description: 'Rotation',
-					},
-					'style.opacity': {
-						type: 'number',
-						min: 0,
-						max: 1,
-						step: 0.01,
-						default: 1,
-						description: 'Opacity',
-					},
-				},
-				none: {},
-			},
+			variants: Internals.sequenceSchema.layout.variants,
 		},
 	};
 
@@ -70,11 +39,11 @@ test('Should be able to update a discriminated union', async () => {
 		nodePath,
 		key: 'layout',
 		value: 'none',
-		defaultValue: 'absolute-fill',
+		defaultValue: field.fieldSchema.default,
 	});
 
 	const expected = readFileSync(
-		path.join(__dirname, 'snapshots', 'discriminated-union-expected.txt'),
+		path.join(__dirname, 'snapshots', 'discriminated-union-expected.tsx'),
 		'utf-8',
 	);
 	const actualLines = update.output.split('\n');

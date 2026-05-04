@@ -135,6 +135,10 @@ export const TimelineExpandedSection: React.FC<{
 			}
 
 			if (node.field) {
+				if (!sequence.controls) {
+					throw new Error('Sequence controls schema is not set');
+				}
+
 				return (
 					<TimelineFieldRow
 						field={node.field}
@@ -143,6 +147,7 @@ export const TimelineExpandedSection: React.FC<{
 						paddingLeft={paddingLeft}
 						nodePath={nodePath}
 						keysToObserve={keysToObserve}
+						schema={sequence.controls.schema}
 					/>
 				);
 			}
@@ -167,6 +172,7 @@ export const TimelineExpandedSection: React.FC<{
 			sequenceOffsetPx,
 			toggleTrack,
 			validatedLocation,
+			sequence.controls,
 		],
 	);
 

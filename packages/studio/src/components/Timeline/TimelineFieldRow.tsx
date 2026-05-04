@@ -1,6 +1,6 @@
 import type {SequenceNodePath} from '@remotion/studio-shared';
 import React, {useCallback, useContext, useMemo} from 'react';
-import type {CanUpdateSequencePropStatus} from 'remotion';
+import type {CanUpdateSequencePropStatus, SequenceSchema} from 'remotion';
 import {Internals} from 'remotion';
 import type {CodePosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
@@ -36,6 +36,7 @@ export const TimelineFieldRow: React.FC<{
 	readonly paddingLeft: number;
 	readonly nodePath: SequenceNodePath | null;
 	readonly keysToObserve: string[];
+	readonly schema: SequenceSchema;
 }> = ({
 	field,
 	overrideId,
@@ -43,6 +44,7 @@ export const TimelineFieldRow: React.FC<{
 	paddingLeft,
 	nodePath,
 	keysToObserve,
+	schema,
 }) => {
 	const {
 		setDragOverrides,
@@ -95,6 +97,7 @@ export const TimelineFieldRow: React.FC<{
 				value: JSON.stringify(value),
 				defaultValue,
 				observedKeys: keysToObserve,
+				schema,
 			}).then((data) => {
 				if (data.success) {
 					if (data.newStatus.canUpdate) {
@@ -117,6 +120,7 @@ export const TimelineFieldRow: React.FC<{
 			propStatuses,
 			setCodeValues,
 			validatedLocation,
+			schema,
 		],
 	);
 

@@ -221,7 +221,7 @@ export const updateSequenceProps = async ({
 	input: string;
 	nodePath: SequenceNodePath;
 	updates: SequencePropUpdate[];
-	schema?: SequenceSchema;
+	schema: SequenceSchema;
 	prettierConfigOverride?: Record<string, unknown> | null;
 }): Promise<{
 	output: string;

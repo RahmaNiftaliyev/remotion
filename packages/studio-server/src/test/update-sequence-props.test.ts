@@ -1,4 +1,5 @@
 import {expect, test} from 'bun:test';
+import {Internals} from 'remotion';
 import {updateSequenceProps} from '../codemods/update-sequence-props';
 import {lineColumnToNodePath} from './test-utils';
 
@@ -21,6 +22,7 @@ test('updateSequenceProps should update a number value', async () => {
 		input: lightLeakInput,
 		nodePath: lineColumnToNodePath(lightLeakInput, 8),
 		updates: [{key: 'hueShift', value: 90, defaultValue: null}],
+		schema: Internals.sequenceSchema,
 	});
 	const oldValueString = oldValueStrings[0];
 
@@ -35,6 +37,7 @@ test('updateSequenceProps should update durationInFrames', async () => {
 		input: lightLeakInput,
 		nodePath: lineColumnToNodePath(lightLeakInput, 9),
 		updates: [{key: 'durationInFrames', value: 120, defaultValue: null}],
+		schema: Internals.sequenceSchema,
 	});
 	const oldValueString = oldValueStrings[0];
 
@@ -49,6 +52,7 @@ test('updateSequenceProps should add a new attribute', async () => {
 		input: lightLeakInput,
 		nodePath: lineColumnToNodePath(lightLeakInput, 9),
 		updates: [{key: 'speed', value: 2, defaultValue: null}],
+		schema: Internals.sequenceSchema,
 	});
 	const oldValueString = oldValueStrings[0];
 
@@ -61,6 +65,7 @@ test('updateSequenceProps should remove attribute when value equals default', as
 		input: lightLeakInput,
 		nodePath: lineColumnToNodePath(lightLeakInput, 9),
 		updates: [{key: 'hueShift', value: 0, defaultValue: 0}],
+		schema: Internals.sequenceSchema,
 	});
 	const oldValueString = oldValueStrings[0];
 
@@ -75,6 +80,7 @@ test('updateSequenceProps should set boolean true as shorthand', async () => {
 		input: lightLeakInput,
 		nodePath: lineColumnToNodePath(lightLeakInput, 8),
 		updates: [{key: 'loop', value: true, defaultValue: false}],
+		schema: Internals.sequenceSchema,
 	});
 
 	// true booleans become shorthand: `loop` not `loop={true}`
@@ -87,6 +93,7 @@ test('updateSequenceProps should report oldValueString for computed expressions'
 		input: lightLeakInput,
 		nodePath: lineColumnToNodePath(lightLeakInput, 8),
 		updates: [{key: 'seed', value: 5, defaultValue: null}],
+		schema: Internals.sequenceSchema,
 	});
 	const oldValueString = oldValueStrings[0];
 
@@ -98,6 +105,7 @@ test('updateSequenceProps should report default as oldValueString for missing at
 		input: lightLeakInput,
 		nodePath: lineColumnToNodePath(lightLeakInput, 8),
 		updates: [{key: 'speed', value: 2, defaultValue: 1}],
+		schema: Internals.sequenceSchema,
 	});
 	const oldValueString = oldValueStrings[0];
 
@@ -110,6 +118,7 @@ test('updateSequenceProps should throw for non-existent nodePath', async () => {
 			input: lightLeakInput,
 			nodePath: ['program', 'body', 999],
 			updates: [{key: 'hueShift', value: 90, defaultValue: null}],
+			schema: Internals.sequenceSchema,
 		}),
 	).rejects.toThrow(
 		'Could not find a JSX element at the specified line to update',

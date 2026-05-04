@@ -23,7 +23,7 @@ export const HtmlInCanvasPresentation = <
 	readonly shader: HtmlInCanvasShader<TPassedProps>;
 	readonly _experimentalEffects?: EffectsProp;
 }) => {
-	if (!HtmlInCanvas.isHtmlInCanvasSupported()) {
+	if (!HtmlInCanvas.isSupported()) {
 		throw new Error(
 			'HTML in Canvas is not supported. Open this page in Chrome Canary with chrome://flags/#canvas-draw-element enabled.',
 		);

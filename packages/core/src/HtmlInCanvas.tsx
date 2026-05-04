@@ -524,11 +524,11 @@ const HtmlInCanvasWrapped = wrapInSchema(
 );
 
 export const HtmlInCanvas = Object.assign(HtmlInCanvasWrapped, {
-	isHtmlInCanvasSupported,
+	isSupported: isHtmlInCanvasSupported,
 }) as React.ForwardRefExoticComponent<
 	HtmlInCanvasProps & React.RefAttributes<HTMLCanvasElement>
 > & {
-	readonly isHtmlInCanvasSupported: typeof isHtmlInCanvasSupported;
+	readonly isSupported: typeof isHtmlInCanvasSupported;
 };
 
 HtmlInCanvas.displayName = 'HtmlInCanvas';

@@ -1,6 +1,6 @@
 {
 	"name": "cloud-run-render",
-	"version": "4.0.456",
+	"version": "4.0.457",
 	"description": "Render media and stills on GCP Cloud Run",
 	"main": "dist/index.js",
 	"scripts": {

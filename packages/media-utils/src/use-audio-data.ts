@@ -3,7 +3,7 @@ import {cancelRender, useDelayRender} from 'remotion';
 import {getAudioData} from './get-audio-data';
 import type {MediaUtilsAudioData} from './types';
 
-type UseAudioDataOptions = {
+export type UseAudioDataOptions = {
 	sampleRate?: number;
 	/**
 	 * Captured only from the first render and passed to `fetch()`.

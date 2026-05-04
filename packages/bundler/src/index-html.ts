@@ -66,11 +66,6 @@ export const indexHtml = ({
 				: ''
 		}
 		<title>${title}</title>
-		${
-			mode === 'dev'
-				? '<script crossOrigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js"></script>'
-				: ''
-		}
 	</head>
 	<body>
 		<script>window.remotion_numberOfAudioTags = ${numberOfAudioTags};</script>

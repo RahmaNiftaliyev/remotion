@@ -33,7 +33,8 @@ export const turnSvgIntoDrawable = (svg: SVGSVGElement) => {
 
 	return new Promise<HTMLImageElement>((resolve, reject) => {
 		const image = new Image();
-		const url = `data:image/svg+xml;base64,${btoa(svgData)}`;
+		// btoa() only accepts Latin1; serialized SVG can include non-Latin text (e.g. Lottie / CJK).
+		const url = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgData)}`;
 
 		image.onload = function () {
 			resolve(image);

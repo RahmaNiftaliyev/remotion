@@ -8,7 +8,7 @@ import {waitForLiveEventsListener} from './live-events';
 import {getCachedNodePath, setCachedNodePath} from './node-path-cache';
 import {
 	computeSequencePropsStatusFromContent,
-	computeSequencePropsStatusByLine,
+	computeSequencePropsStatusFromFilenameByLine,
 	computeSequencePropsStatus,
 } from './routes/can-update-sequence-props';
 
@@ -29,7 +29,7 @@ const makeWatcherKey = ({
 	return `${absolutePath}:${JSON.stringify(nodePath)}`;
 };
 
-const getInitialResult = ({
+const getSequencePropsStatus = ({
 	fileName,
 	line,
 	column,
@@ -45,27 +45,20 @@ const getInitialResult = ({
 	// Try cached nodePath first (handles stale source maps after suppressed rebuilds)
 	const cachedNodePath = getCachedNodePath(fileName, line, column);
 
-	if (!cachedNodePath) {
-		return computeSequencePropsStatusByLine({
+	if (cachedNodePath) {
+		const cachedResult = computeSequencePropsStatus({
 			fileName,
-			line,
+			nodePath: cachedNodePath,
 			keys,
 			remotionRoot,
 		});
+
+		if (cachedResult.canUpdate) {
+			return cachedResult;
+		}
 	}
 
-	const cachedResult = computeSequencePropsStatus({
-		fileName,
-		nodePath: cachedNodePath,
-		keys,
-		remotionRoot,
-	});
-
-	if (cachedResult.canUpdate) {
-		return cachedResult;
-	}
-
-	return computeSequencePropsStatusByLine({
+	return computeSequencePropsStatusFromFilenameByLine({
 		fileName,
 		line,
 		keys,
@@ -88,7 +81,7 @@ export const subscribeToSequencePropsWatchers = ({
 	remotionRoot: string;
 	clientId: string;
 }): CanUpdateSequencePropsResponse => {
-	const initialResult = getInitialResult({
+	const initialResult = getSequencePropsStatus({
 		fileName,
 		line,
 		column,

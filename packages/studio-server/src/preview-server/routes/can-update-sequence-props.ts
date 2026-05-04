@@ -368,7 +368,7 @@ export const computeSequencePropsStatus = ({
 	}
 };
 
-export const computeSequencePropsStatusByLine = ({
+export const computeSequencePropsStatusFromFilenameByLine = ({
 	fileName,
 	line,
 	keys,

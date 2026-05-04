@@ -28,7 +28,6 @@ const layerInfo: HostedLayers = {
 	'eu-north-1': [],
 	'eu-south-1': [],
 	'eu-west-3': [],
-	'me-south-1': [],
 	'sa-east-1': [],
 	'us-west-1': [],
 	'ap-southeast-4': [],

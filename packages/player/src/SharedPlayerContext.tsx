@@ -29,6 +29,7 @@ export const SharedPlayerContexts: React.FC<{
 	readonly logLevel: LogLevel;
 	readonly audioLatencyHint: AudioContextLatencyCategory;
 	readonly volumePersistenceKey?: string;
+	readonly initialVolume?: number;
 	readonly inputProps: Record<string, unknown>;
 	readonly audioEnabled: boolean;
 }> = ({
@@ -44,9 +45,11 @@ export const SharedPlayerContexts: React.FC<{
 	logLevel,
 	audioLatencyHint,
 	volumePersistenceKey,
+	initialVolume,
 	inputProps,
 	audioEnabled,
 }) => {
+	const persistVolumeToStorage = initialVolume === undefined;
 	const compositionManagerContext: CompositionManagerContext = useMemo(() => {
 		const context: CompositionManagerContext = {
 			compositions: [
@@ -95,7 +98,9 @@ export const SharedPlayerContexts: React.FC<{
 
 	const [mediaMuted, setMediaMuted] = useState<boolean>(() => initiallyMuted);
 	const [mediaVolume, setMediaVolume] = useState<number>(() =>
-		getPreferredVolume(volumePersistenceKey ?? null),
+		persistVolumeToStorage
+			? getPreferredVolume(volumePersistenceKey ?? null)
+			: initialVolume,
 	);
 
 	const mediaVolumeContextValue = useMemo((): MediaVolumeContextValue => {
@@ -108,9 +113,11 @@ export const SharedPlayerContexts: React.FC<{
 	const setMediaVolumeAndPersist = useCallback(
 		(vol: number) => {
 			setMediaVolume(vol);
-			persistVolume(vol, logLevel, volumePersistenceKey ?? null);
+			if (persistVolumeToStorage) {
+				persistVolume(vol, logLevel, volumePersistenceKey ?? null);
+			}
 		},
-		[logLevel, volumePersistenceKey],
+		[persistVolumeToStorage, logLevel, volumePersistenceKey],
 	);
 
 	const setMediaVolumeContextValue = useMemo((): SetMediaVolumeContextValue => {

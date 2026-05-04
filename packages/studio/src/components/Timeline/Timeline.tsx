@@ -92,7 +92,7 @@ const TimelineInner: React.FC = () => {
 						getTimelineLayerHeight(track.sequence.type) +
 						Number(TIMELINE_ITEM_BORDER_BOTTOM) +
 						(isExpanded
-							? getExpandedTrackHeight(track.sequence.controls) +
+							? getExpandedTrackHeight(track.sequence, expandedTracks) +
 								TIMELINE_ITEM_BORDER_BOTTOM
 							: 0)
 					);

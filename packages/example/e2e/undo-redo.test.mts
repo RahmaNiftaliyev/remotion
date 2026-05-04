@@ -36,11 +36,20 @@ test.describe('undo redo', () => {
 		});
 
 		// 2. Click the expand arrow on the Video track
-		const expandButton = page.locator('button[aria-label="Expand track"]');
-		await expect(expandButton).toBeVisible({timeout: 15_000});
-		await expandButton.click();
+		const expandTrackButton = page.locator(
+			'button[aria-label="Expand track properties"]:not([disabled])',
+		);
+		await expect(expandTrackButton).toBeVisible({timeout: 15_000});
+		await expandTrackButton.click();
 
-		// 3. Click the Playback Rate input dragger
+		// 3. Expand the Controls section to reveal the schema fields
+		const expandControlsButton = page.locator(
+			'button[aria-label="Expand Controls section"]:not([disabled])',
+		);
+		await expect(expandControlsButton).toBeVisible({timeout: 10_000});
+		await expandControlsButton.click();
+
+		// 4. Click the Playback Rate input dragger
 		const playbackRateLabel = page.getByText('Playback Rate', {exact: true});
 		await expect(playbackRateLabel).toBeVisible({timeout: 10_000});
 

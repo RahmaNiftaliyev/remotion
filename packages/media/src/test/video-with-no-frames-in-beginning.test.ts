@@ -22,7 +22,7 @@ test('in preview, should properly buffer and draw frames', async (t) => {
 		throw new Error('No video track found');
 	}
 
-	const manager = videoIteratorManager({
+	const manager = await videoIteratorManager({
 		getIsLooping: () => false,
 		getLoopSegmentMediaEndTimestamp: () => {
 			throw new Error('not implemented');
@@ -40,6 +40,9 @@ test('in preview, should properly buffer and draw frames', async (t) => {
 		drawDebugOverlay: () => {},
 		logLevel: 'info',
 		getOnVideoFrameCallback: () => null,
+		getEffects: () => [],
+		getEffectChainState: () => null,
+		getCurrentFrame: () => 0,
 	});
 
 	const nonceManager = makeNonceManager();

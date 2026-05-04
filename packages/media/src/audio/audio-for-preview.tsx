@@ -1,10 +1,5 @@
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
-import type {
-	LogLevel,
-	LoopVolumeCurveBehavior,
-	SequenceControls,
-	VolumeProp,
-} from 'remotion';
+import type {LogLevel, LoopVolumeCurveBehavior, VolumeProp} from 'remotion';
 import {
 	Internals,
 	Audio as RemotionAudio,
@@ -15,9 +10,7 @@ import {
 import {getTimeInSeconds} from '../get-time-in-seconds';
 import {MediaPlayer} from '../media-player';
 import {type MediaOnError, callOnErrorAndResolve} from '../on-error';
-import {useLoopDisplay} from '../show-in-timeline';
 import {useCommonEffects} from '../use-common-effects';
-import {useMediaInTimeline} from '../use-media-in-timeline';
 import type {FallbackHtml5AudioProps} from './props';
 
 const {
@@ -52,15 +45,10 @@ type NewAudioForPreviewProps = {
 	readonly fallbackHtml5AudioProps: FallbackHtml5AudioProps | undefined;
 	readonly onError: MediaOnError | undefined;
 	readonly credentials: RequestCredentials | undefined;
+	readonly setMediaDurationInSeconds: (durationInSeconds: number) => void;
 };
 
-type AudioForPreviewAssertedShowingProps = NewAudioForPreviewProps & {
-	readonly controls: SequenceControls | undefined;
-};
-
-const AudioForPreviewAssertedShowing: React.FC<
-	AudioForPreviewAssertedShowingProps
-> = ({
+const AudioForPreviewAssertedShowing: React.FC<NewAudioForPreviewProps> = ({
 	src,
 	playbackRate,
 	logLevel,
@@ -79,7 +67,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 	fallbackHtml5AudioProps,
 	onError,
 	credentials,
-	controls,
+	setMediaDurationInSeconds,
 }) => {
 	const videoConfig = useUnsafeVideoConfig();
 	const frame = useCurrentFrame();
@@ -99,9 +87,6 @@ const AudioForPreviewAssertedShowing: React.FC<
 
 	const [mediaMuted] = useMediaMutedState();
 	const [mediaVolume] = useMediaVolumeState();
-	const [mediaDurationInSeconds, setMediaDurationInSeconds] = useState<
-		number | null
-	>(null);
 
 	const volumePropFrame = useFrameForVolumeProp(
 		loopVolumeCurveBehavior ?? 'repeat',
@@ -137,31 +122,6 @@ const AudioForPreviewAssertedShowing: React.FC<
 		((parentSequence?.cumulatedFrom ?? 0) +
 			(parentSequence?.relativeFrom ?? 0)) /
 		videoConfig.fps;
-
-	const loopDisplay = useLoopDisplay({
-		loop,
-		mediaDurationInSeconds,
-		playbackRate,
-		trimAfter,
-		trimBefore,
-	});
-
-	useMediaInTimeline({
-		volume,
-		mediaVolume,
-		mediaType: 'audio',
-		src,
-		playbackRate,
-		displayName: name ?? null,
-		stack,
-		showInTimeline,
-		premountDisplay: parentSequence?.premountDisplay ?? null,
-		postmountDisplay: parentSequence?.postmountDisplay ?? null,
-		loopDisplay,
-		trimAfter,
-		trimBefore,
-		controls,
-	});
 
 	const bufferingContext = useContext(Internals.BufferingContextReact);
 
@@ -240,7 +200,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 				fps: videoConfig.fps,
 				canvas: null,
 				playbackRate: initialPlaybackRate.current,
-				audioStreamIndex: audioStreamIndex ?? 0,
+				audioStreamIndex: audioStreamIndex ?? null,
 				debugOverlay: false,
 				bufferState: buffer,
 				isPostmounting: initialIsPostmounting.current,
@@ -252,6 +212,9 @@ const AudioForPreviewAssertedShowing: React.FC<
 				sequenceOffset: initialSequenceOffset.current,
 				credentials,
 				tagType: 'audio',
+				getEffects: () => [],
+				getEffectChainState: () => null,
+				getCurrentFrame: () => 0,
 			});
 
 			mediaPlayerRef.current = player;
@@ -387,6 +350,7 @@ const AudioForPreviewAssertedShowing: React.FC<
 		buffer,
 		onError,
 		credentials,
+		setMediaDurationInSeconds,
 	]);
 
 	if (shouldFallbackToNativeAudio && !disallowFallbackToHtml5Audio) {
@@ -441,13 +405,10 @@ type InnerAudioProps = {
 	readonly fallbackHtml5AudioProps?: FallbackHtml5AudioProps;
 	readonly onError?: MediaOnError;
 	readonly credentials?: RequestCredentials;
+	readonly setMediaDurationInSeconds?: (durationInSeconds: number) => void;
 };
 
-export const AudioForPreview: React.FC<
-	InnerAudioProps & {
-		readonly controls: SequenceControls | undefined;
-	}
-> = ({
+export const AudioForPreview: React.FC<InnerAudioProps> = ({
 	loop = false,
 	src,
 	logLevel,
@@ -466,7 +427,7 @@ export const AudioForPreview: React.FC<
 	fallbackHtml5AudioProps,
 	onError,
 	credentials,
-	controls,
+	setMediaDurationInSeconds,
 }) => {
 	const preloadedSrc = usePreload(src);
 
@@ -503,9 +464,13 @@ export const AudioForPreview: React.FC<
 		return null;
 	}
 
+	if (!setMediaDurationInSeconds) {
+		throw new Error('setMediaDurationInSeconds is required');
+	}
+
 	return (
 		<AudioForPreviewAssertedShowing
-			audioStreamIndex={audioStreamIndex ?? 0}
+			audioStreamIndex={audioStreamIndex}
 			src={preloadedSrc}
 			playbackRate={playbackRate}
 			logLevel={logLevel ?? defaultLogLevel}
@@ -523,7 +488,7 @@ export const AudioForPreview: React.FC<
 			onError={onError}
 			credentials={credentials}
 			fallbackHtml5AudioProps={fallbackHtml5AudioProps}
-			controls={controls}
+			setMediaDurationInSeconds={setMediaDurationInSeconds}
 		/>
 	);
 };

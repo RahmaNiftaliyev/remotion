@@ -1,5 +1,5 @@
 import React, {useContext, useMemo} from 'react';
-import type {SequenceControls} from 'remotion';
+import type {TSequence} from 'remotion';
 import {StudioServerConnectionCtx} from '../../helpers/client-id';
 import type {TrackWithHash} from '../../helpers/get-timeline-sequence-sort-key';
 import {
@@ -25,9 +25,12 @@ const timelineContent: React.CSSProperties = {
 };
 
 const getExpandedPlaceholderStyle = (
-	controls: SequenceControls | null,
+	sequence: TSequence,
+	expandedTracks: Record<string, boolean>,
 ): React.CSSProperties => ({
-	height: getExpandedTrackHeight(controls) + TIMELINE_ITEM_BORDER_BOTTOM,
+	height:
+		getExpandedTrackHeight(sequence, expandedTracks) +
+		TIMELINE_ITEM_BORDER_BOTTOM,
 });
 
 export const TimelineTracks: React.FC<{
@@ -71,7 +74,10 @@ export const TimelineTracks: React.FC<{
 							</div>
 							{visualModeEnabled && isExpanded ? (
 								<div
-									style={getExpandedPlaceholderStyle(track.sequence.controls)}
+									style={getExpandedPlaceholderStyle(
+										track.sequence,
+										expandedTracks,
+									)}
 								/>
 							) : null}
 						</div>

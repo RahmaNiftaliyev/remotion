@@ -45,6 +45,10 @@ import {
 	EditorPropsProvider,
 	timeValueRef,
 } from './EditorProps.js';
+import {createDescriptor, defineEffect} from './effects/define-effect.js';
+import {runEffectChain} from './effects/run-effect-chain.js';
+import {useEffectChainState} from './effects/use-effect-chain-state.js';
+import {useMemoizedEffects} from './effects/use-memoized-effects.js';
 import {
 	addSequenceStackTraces,
 	getComponentsToAddStacksTo,
@@ -166,6 +170,7 @@ import {
 	RemotionContextProvider,
 	useRemotionContexts,
 } from './wrap-remotion-context.js';
+export type {EffectChainState} from './effects/run-effect-chain.js';
 
 // needs to be in core package so gets deduplicated in studio
 const compositionSelectorRef = createRef<{
@@ -283,6 +288,11 @@ export const Internals = {
 	RenderAssetManagerProvider,
 	getEffectiveVisualModeValue,
 	CompositionRenderErrorContext,
+	useEffectChainState,
+	runEffectChain,
+	useMemoizedEffects,
+	defineEffect,
+	createDescriptor,
 } as const;
 
 export type {

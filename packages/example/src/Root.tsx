@@ -31,6 +31,7 @@ import {
 import {DynamicDuration, dynamicDurationSchema} from './DynamicDuration';
 import {EmojiTestbed} from './Emoji';
 import {ErrorOnFrame10} from './ErrorOnFrame10';
+import {ExperimentalControlsShowcase} from './ExperimentalControls';
 import {Expert} from './Expert';
 import {FontDemo} from './Fonts';
 import {Framer} from './Framer';
@@ -38,7 +39,28 @@ import {FreezeExample} from './Freeze/FreezeExample';
 import {FreezePortion} from './FreezePortion/FreezePortion';
 import {Green} from './Green';
 import {HlsDemo} from './Hls/HlsDemo';
-import {HtmlInCanvasDemo} from './HtmlInCanvas';
+import {
+	HlsMediaVideo,
+	HlsMediaVideoMuted,
+	HlsMediaVideoTrimmed,
+} from './Hls/HlsMediaVideo';
+import {
+	HtmlInCanvasComplexText,
+	HtmlInCanvasComposeAsyncBitmap,
+	HtmlInCanvasComposeWebGL,
+	HtmlInCanvasComposeWebGLCrt,
+	HtmlInCanvasComposeWebGPU,
+	HtmlInCanvasDocsMinimalWebGL,
+	HtmlInCanvasDocsMinimalWebGPU,
+	HtmlInCanvasDocsDemo2DBlur,
+	HtmlInCanvasDemo,
+	HtmlInCanvasPrivacy,
+	HtmlInCanvasReactSvg,
+	ZoomBlurTransitionDoc,
+	ZoomBlurTransitionDocThumb,
+	ZoomInOutTransitionDoc,
+	ZoomInOutTransitionDocThumb,
+} from './HtmlInCanvas';
 import {HugeImage} from './HugeImage';
 import {HugePayload, hugePayloadSchema} from './HugePayload';
 import {Layers} from './Layers';
@@ -164,6 +186,7 @@ import {Seek} from './StudioApis/Seek';
 import {TikTokTextBoxPlayground} from './TikTokTextbox/TikTokTextBox';
 import {FitTextOnNLines, fitTextOnNLinesSchema} from './Title/FitTextOnNLines';
 import {TransitionRounding} from './TransitionRounding';
+import {WebGlTransition} from './Transitions/WebGlTransition';
 import {
 	OverlayAndTransitionMixed,
 	OverlayBasic,
@@ -809,6 +832,30 @@ export const Index: React.FC = () => {
 					fps={30}
 				/>
 				<Composition
+					id="hls-media-video"
+					component={HlsMediaVideo}
+					width={1920}
+					height={1080}
+					durationInFrames={300}
+					fps={30}
+				/>
+				<Composition
+					id="hls-media-video-trimmed"
+					component={HlsMediaVideoTrimmed}
+					width={1920}
+					height={1080}
+					durationInFrames={90}
+					fps={30}
+				/>
+				<Composition
+					id="hls-media-video-muted"
+					component={HlsMediaVideoMuted}
+					width={1920}
+					height={1080}
+					durationInFrames={150}
+					fps={30}
+				/>
+				<Composition
 					id="video-testing-mp4"
 					component={VideoTesting}
 					width={1080}
@@ -848,14 +895,131 @@ export const Index: React.FC = () => {
 					width={1080}
 					durationInFrames={100}
 				/>
-				<Composition
-					id="html-in-canvas"
-					component={HtmlInCanvasDemo}
-					fps={30}
-					height={1080}
-					width={1920}
-					durationInFrames={120}
-				/>
+				<Folder name="html-in-canvas">
+					<Composition
+						id="html-in-canvas-changing-size"
+						component={HtmlInCanvasDemo}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-async-bitmap"
+						component={HtmlInCanvasComposeAsyncBitmap}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-webgl"
+						component={HtmlInCanvasComposeWebGL}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-webgl-crt"
+						component={HtmlInCanvasComposeWebGLCrt}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-compose-webgpu"
+						component={HtmlInCanvasComposeWebGPU}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-docs-minimal-webgl"
+						component={HtmlInCanvasDocsMinimalWebGL}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-docs-minimal-webgpu"
+						component={HtmlInCanvasDocsMinimalWebGPU}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="html-in-canvas-docs-demo-2d-blur"
+						component={HtmlInCanvasDocsDemo2DBlur}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={120}
+					/>
+					<Composition
+						id="zoom-blur-transition-doc"
+						component={ZoomBlurTransitionDoc}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={90}
+					/>
+					<Composition
+						id="zoom-blur-transition-doc-thumb"
+						component={ZoomBlurTransitionDocThumb}
+						fps={30}
+						height={280}
+						width={540}
+						durationInFrames={60}
+					/>
+					<Composition
+						id="zoom-in-out-transition-doc"
+						component={ZoomInOutTransitionDoc}
+						fps={30}
+						height={1080}
+						width={1920}
+						durationInFrames={90}
+					/>
+					<Composition
+						id="zoom-in-out-transition-doc-thumb"
+						component={ZoomInOutTransitionDocThumb}
+						fps={30}
+						height={280}
+						width={540}
+						durationInFrames={60}
+					/>
+					<Composition
+						id="html-in-canvas-complex-text"
+						component={HtmlInCanvasComplexText}
+						fps={30}
+						height={720}
+						width={1280}
+						durationInFrames={60}
+					/>
+					<Composition
+						id="html-in-canvas-privacy"
+						component={HtmlInCanvasPrivacy}
+						fps={30}
+						height={900}
+						width={1400}
+						durationInFrames={60}
+					/>
+					<Composition
+						id="html-in-canvas-react-svg"
+						component={HtmlInCanvasReactSvg}
+						width={1920}
+						height={1080}
+						fps={60}
+						durationInFrames={300}
+						defaultProps={{
+							transparent: true,
+						}}
+					/>
+				</Folder>
 				<Composition
 					id="video-testing-webm"
 					component={VideoTesting}
@@ -1513,6 +1677,14 @@ export const Index: React.FC = () => {
 					width={1920}
 				/>
 				<Composition
+					id="webgl-transition"
+					component={WebGlTransition}
+					fps={30}
+					height={1080}
+					durationInFrames={300}
+					width={1920}
+				/>
+				<Composition
 					id="audio-transition"
 					component={AudioTransition}
 					fps={30}
@@ -1912,6 +2084,14 @@ export const Index: React.FC = () => {
 					durationInFrames={90}
 				/>
 			</Folder>
+			<Composition
+				id="experimental-controls-showcase"
+				component={ExperimentalControlsShowcase}
+				width={1920}
+				height={1080}
+				fps={30}
+				durationInFrames={120}
+			/>
 			<Composition
 				id="sfx"
 				component={SfxExample}

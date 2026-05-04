@@ -650,4 +650,30 @@ export const experts: Expert[] = [
 			</div>
 		),
 	},
+	{
+		slug: 'ashok-reddy',
+		name: 'Ashok Reddy',
+		image: '/img/freelancers/ashok.png',
+		website: null,
+		x: 'indieashok',
+		github: 'ashokDevs',
+		linkedin: 'in/ashok-reddy-kakumanu-8a3078247/',
+		email: 'ashok17748@gmail.com',
+		videocall: null,
+		since: new Date('2026-04-30').getTime(),
+		description: (
+			<div>
+				I built many trending templates at{' '}
+				<a target={'_blank'} href="https://vubo.ai">
+					Vubo
+				</a>
+				, along with automations and AI-generated media pipelines using
+				Remotion. I specialize in creating custom video templates,
+				AI-powered video generation workflows, and integrations with
+				existing infrastructure.
+				<br />
+				Available for hourly and project/milestone-based engagements.
+			</div>
+		),
+	},
 ];

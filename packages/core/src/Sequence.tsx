@@ -8,6 +8,9 @@ import React, {
 } from 'react';
 import {AbsoluteFill} from './AbsoluteFill.js';
 import type {LoopDisplay, SequenceControls} from './CompositionManager.js';
+import {flattenEffects} from './effects/effect-internals.js';
+import type {EffectsProp} from './effects/effect-types.js';
+import {useMemoizedEffects} from './effects/use-memoized-effects.js';
 import {Freeze} from './freeze.js';
 import {useNonce} from './nonce.js';
 import {PremountContext} from './PremountContext.js';
@@ -22,6 +25,7 @@ import {
 	useTimelinePosition,
 } from './timeline-position-state.js';
 import {useCurrentFrame} from './use-current-frame';
+import type {BasicMediaInTimelineReturnType} from './use-media-in-timeline.js';
 import {useRemotionEnvironment} from './use-remotion-environment.js';
 import {useVideoConfig} from './use-video-config.js';
 import {ENABLE_V5_BREAKING_CHANGES} from './v5-flag.js';
@@ -49,7 +53,8 @@ export type SequencePropsWithoutDuration = {
 	readonly from?: number;
 	readonly name?: string;
 	readonly showInTimeline?: boolean;
-	readonly controls?: SequenceControls;
+	readonly _experimentalControls?: SequenceControls;
+	readonly _experimentalEffects?: EffectsProp;
 	/**
 	 * @deprecated For internal use only.
 	 */
@@ -74,6 +79,13 @@ export type SequencePropsWithoutDuration = {
 	 * @deprecated For internal use only.
 	 */
 	readonly _remotionInternalIsPostmounting?: boolean;
+	/**
+	 * @deprecated For internal use only.
+	 */
+	readonly _remotionInternalIsMedia?: {
+		type: 'video' | 'audio';
+		data: BasicMediaInTimelineReturnType;
+	};
 } & LayoutAndStyle;
 
 export type SequenceProps = {
@@ -92,11 +104,13 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 		height,
 		width,
 		showInTimeline = true,
-		controls,
+		_experimentalControls: controls,
+		_experimentalEffects,
 		_remotionInternalLoopDisplay: loopDisplay,
 		_remotionInternalStack: stack,
 		_remotionInternalPremountDisplay: premountDisplay,
 		_remotionInternalPostmountDisplay: postmountDisplay,
+		_remotionInternalIsMedia: isMedia,
 		...other
 	},
 	ref,
@@ -211,9 +225,41 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 
 	const inheritedStack = (other as any)?.stack ?? null;
 
+	const memoizedEffects = useMemoizedEffects(
+		flattenEffects(_experimentalEffects ?? []),
+	);
+
 	useEffect(() => {
 		if (!env.isStudio) {
 			return;
+		}
+
+		if (isMedia) {
+			registerSequence({
+				type: isMedia.type,
+				controls: controls ?? null,
+				effects: memoizedEffects,
+				displayName: timelineClipName,
+				doesVolumeChange: isMedia.data.doesVolumeChange,
+				duration: actualDurationInFrames,
+				from,
+				id,
+				loopDisplay,
+				nonce: nonce.get(),
+				parent: parentSequence?.id ?? null,
+				playbackRate: isMedia.data.playbackRate,
+				postmountDisplay: postmountDisplay ?? null,
+				premountDisplay: premountDisplay ?? null,
+				rootId,
+				showInTimeline,
+				src: isMedia.data.src,
+				stack: stack ?? inheritedStack,
+				startMediaFrom: isMedia.data.startMediaFrom,
+				volume: isMedia.data.volumes,
+			});
+			return () => {
+				unregisterSequence(id);
+			};
 		}
 
 		registerSequence({
@@ -231,6 +277,7 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 			premountDisplay: premountDisplay ?? null,
 			postmountDisplay: postmountDisplay ?? null,
 			controls: controls ?? null,
+			effects: memoizedEffects,
 		});
 		return () => {
 			unregisterSequence(id);
@@ -255,6 +302,8 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 		env.isStudio,
 		inheritedStack,
 		controls,
+		memoizedEffects,
+		isMedia,
 	]);
 
 	// Ceil to support floats

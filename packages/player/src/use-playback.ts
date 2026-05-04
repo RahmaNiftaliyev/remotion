@@ -18,6 +18,7 @@ export const usePlayback = ({
 	outFrame,
 	browserMediaControlsBehavior,
 	getCurrentFrame,
+	muted,
 }: {
 	loop: boolean;
 	playbackRate: number;
@@ -26,6 +27,7 @@ export const usePlayback = ({
 	outFrame: number | null;
 	browserMediaControlsBehavior: BrowserMediaControlsBehavior;
 	getCurrentFrame: GetCurrentFrame;
+	muted: boolean;
 }) => {
 	const config = Internals.useUnsafeVideoConfig();
 	const frame = Internals.Timeline.useTimelinePosition();
@@ -135,7 +137,9 @@ export const usePlayback = ({
 				return;
 			}
 
-			sharedAudioContext?.resume?.();
+			if (!muted) {
+				sharedAudioContext?.resume?.();
+			}
 
 			const time = performance.now() - startedTime;
 			const actualLastFrame = outFrame ?? config.durationInFrames - 1;
@@ -175,7 +179,7 @@ export const usePlayback = ({
 		const queueNextFrame = () => {
 			const getIsResumingAudioContext =
 				sharedAudioContext?.getIsResumingAudioContext?.() ?? null;
-			if (getIsResumingAudioContext !== null) {
+			if (getIsResumingAudioContext !== null && !muted) {
 				getIsResumingAudioContext.then(() => {
 					if (!sharedAudioContext?.audioContext) {
 						return;
@@ -204,7 +208,7 @@ export const usePlayback = ({
 				return;
 			}
 
-			if (context.buffering.current) {
+			if (context.buffering.current && !muted) {
 				sharedAudioContext?.suspend?.();
 				const stopListening = context.listenForResume(() => {
 					stopListening.remove();
@@ -264,6 +268,7 @@ export const usePlayback = ({
 		sharedAudioContext,
 		timelineContext.playbackRate,
 		logLevel,
+		muted,
 	]);
 
 	useEffect(() => {

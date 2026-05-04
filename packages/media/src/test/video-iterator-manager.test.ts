@@ -22,7 +22,7 @@ test('seek should not cause overlapping block/unblock cycles', async () => {
 	let activeBlocks = 0;
 	let maxConcurrentBlocks = 0;
 
-	const manager = videoIteratorManager({
+	const manager = await videoIteratorManager({
 		videoTrack,
 		delayPlaybackHandleIfNotPremounting: () => {
 			activeBlocks++;
@@ -48,6 +48,9 @@ test('seek should not cause overlapping block/unblock cycles', async () => {
 			throw new Error('not implemented');
 		},
 		getIsLooping: () => false,
+		getEffects: () => [],
+		getEffectChainState: () => null,
+		getCurrentFrame: () => 0,
 	});
 
 	const nonceManager = makeNonceManager();
@@ -73,7 +76,7 @@ test('rapid sequential seeks should not cause overlapping blocks', async () => {
 	let activeBlocks = 0;
 	let maxConcurrentBlocks = 0;
 
-	const manager = videoIteratorManager({
+	const manager = await videoIteratorManager({
 		videoTrack,
 		delayPlaybackHandleIfNotPremounting: () => {
 			activeBlocks++;
@@ -99,6 +102,9 @@ test('rapid sequential seeks should not cause overlapping blocks', async () => {
 			throw new Error('not implemented');
 		},
 		getIsLooping: () => false,
+		getEffects: () => [],
+		getEffectChainState: () => null,
+		getCurrentFrame: () => 0,
 	});
 
 	const nonceManager = makeNonceManager();

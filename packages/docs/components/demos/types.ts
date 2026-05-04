@@ -15,6 +15,11 @@ import {ArrowDemo} from './Arrow';
 import {CircleDemo} from './Circle';
 import {EllipseDemo} from './Ellipse';
 import {HeartDemo} from './Heart';
+import {HtmlInCanvasDocsDemo2DBlur} from './HtmlInCanvasDocsDemo2DBlur';
+import {HtmlInCanvasDocsDemoWebGL} from './HtmlInCanvasDocsDemoWebGL';
+import {HtmlInCanvasDocsDemoWebGPU} from './HtmlInCanvasDocsDemoWebGPU';
+import {ZoomBlurDocsDemo} from './ZoomBlurDemo';
+import {ZoomInOutDocsDemo} from './ZoomInOutDemo';
 import {LightLeakDemoComp} from './LightLeakDemo';
 import {NoiseComp} from './NoiseDemo';
 import {PieDemo} from './Pie';
@@ -889,6 +894,30 @@ export const cubePresentationDemo: DemoType = {
 	],
 };
 
+export const zoomBlurPresentationDemo: DemoType = {
+	comp: ZoomBlurDocsDemo,
+	compHeight: 1080,
+	compWidth: 1920,
+	durationInFrames: 90,
+	fps: 30,
+	id: 'zoom-blur',
+	autoPlay: true,
+	controls: false,
+	options: [],
+};
+
+export const zoomInOutPresentationDemo: DemoType = {
+	comp: ZoomInOutDocsDemo,
+	compHeight: 1080,
+	compWidth: 1920,
+	durationInFrames: 90,
+	fps: 30,
+	id: 'zoom-in-out',
+	autoPlay: true,
+	controls: false,
+	options: [],
+};
+
 export const customPresentationDemo: DemoType = {
 	comp: CustomTransitionDemo,
 	compHeight: 280,
@@ -1196,4 +1225,40 @@ export const transitionSeriesEnterExitDemo: DemoType = {
 			optional: 'no',
 		},
 	],
+};
+
+export const htmlInCanvasDemo2DBlur: DemoType = {
+	comp: HtmlInCanvasDocsDemo2DBlur,
+	compHeight: 1080,
+	compWidth: 1920,
+	durationInFrames: 120,
+	fps: 30,
+	id: 'html-in-canvas-2d-blur',
+	autoPlay: true,
+	controls: true,
+	options: [],
+};
+
+export const htmlInCanvasDemoWebGL: DemoType = {
+	comp: HtmlInCanvasDocsDemoWebGL,
+	compHeight: 1080,
+	compWidth: 1920,
+	durationInFrames: 120,
+	fps: 30,
+	id: 'html-in-canvas-webgl',
+	autoPlay: true,
+	controls: true,
+	options: [],
+};
+
+export const htmlInCanvasDemoWebGPU: DemoType = {
+	comp: HtmlInCanvasDocsDemoWebGPU,
+	compHeight: 1080,
+	compWidth: 1920,
+	durationInFrames: 120,
+	fps: 30,
+	id: 'html-in-canvas-webgpu',
+	autoPlay: true,
+	controls: true,
+	options: [],
 };

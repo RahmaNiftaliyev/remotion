@@ -1,12 +1,24 @@
-import {test} from 'bun:test';
+import {expect, test} from 'bun:test';
 import assert from 'node:assert';
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import type {SchemaFieldInfo} from '@remotion/studio-shared';
+import {getSchemaFields} from '@remotion/studio-shared';
 import {Internals} from 'remotion';
 import {parseAst} from '../codemods/parse-ast';
 import {updateSequenceProps} from '../codemods/update-sequence-props';
 import {lineColumnToNodePath} from '../preview-server/routes/can-update-sequence-props';
+
+test('Should correctly separate discriminated union for layout', () => {
+	const schemaFields = getSchemaFields({
+		schema: Internals.sequenceSchema,
+		currentValue: {
+			layout: 'none',
+		},
+		overrideId: '0.7123890564498035',
+	});
+	expect(schemaFields?.map((s) => s.key)).toEqual(['layout']);
+});
 
 test('Should be able to update a discriminated union', async () => {
 	const file = readFileSync(

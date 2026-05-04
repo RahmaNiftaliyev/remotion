@@ -1,11 +1,16 @@
-import type {SchemaFieldInfo} from '@remotion/studio-shared';
-import type {
-	EffectDefinitionAndStack,
-	SequenceControls,
-	TSequence,
-} from 'remotion';
+import {
+	getSchemaFields,
+	type SchemaFieldInfo,
+	type SequenceControls,
+} from '@remotion/studio-shared';
+import type {EffectDefinitionAndStack, TSequence} from 'remotion';
 
-export type {SchemaFieldInfo};
+export type {SchemaFieldInfo, SequenceControls};
+export {
+	SCHEMA_FIELD_ROW_HEIGHT,
+	UNSUPPORTED_FIELD_ROW_HEIGHT,
+	getSchemaFields,
+} from '@remotion/studio-shared';
 
 export const TIMELINE_PADDING = 16;
 export const TIMELINE_BORDER = 1;
@@ -13,44 +18,10 @@ export const TIMELINE_ITEM_BORDER_BOTTOM = 1;
 
 export const TIMELINE_TRACK_EXPANDED_HEIGHT = 100;
 
-export const SCHEMA_FIELD_ROW_HEIGHT = 22;
-export const UNSUPPORTED_FIELD_ROW_HEIGHT = 22;
 export const TREE_GROUP_ROW_HEIGHT = 22;
 export const TREE_INDENT_PER_LEVEL = 16;
 export const EXPANDED_SECTION_PADDING_LEFT = 28;
 export const EXPANDED_SECTION_PADDING_RIGHT = 10;
-
-const SUPPORTED_SCHEMA_TYPES = new Set([
-	'number',
-	'boolean',
-	'rotation',
-	'translate',
-	'enum',
-]);
-
-export const getSchemaFields = (
-	controls: SequenceControls | null,
-): SchemaFieldInfo[] | null => {
-	if (!controls) {
-		return null;
-	}
-
-	return Object.entries(controls.schema).map(([key, fieldSchema]) => {
-		const typeName = fieldSchema.type;
-		const supported = SUPPORTED_SCHEMA_TYPES.has(typeName);
-		return {
-			key,
-			description: fieldSchema.description,
-			typeName,
-			supported,
-			rowHeight: supported
-				? SCHEMA_FIELD_ROW_HEIGHT
-				: UNSUPPORTED_FIELD_ROW_HEIGHT,
-			currentValue: controls.currentValue[key],
-			fieldSchema,
-		};
-	});
-};
 
 export type EffectSchemaFieldLabel = {
 	key: string;
@@ -112,6 +83,7 @@ export const buildTimelineTree = (sequence: TSequence): TimelineTreeNode[] => {
 	}
 
 	const controlFields = getSchemaFields(sequence.controls);
+
 	if (controlFields && controlFields.length > 0) {
 		roots.push({
 			kind: 'group',

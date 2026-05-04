@@ -380,9 +380,7 @@ const PlayerFn = <
 			rootId,
 			playbackRate: currentPlaybackRate,
 			imperativePlaying,
-			setPlaybackRate: (rate) => {
-				setCurrentPlaybackRate(rate);
-			},
+			setPlaybackRate: setCurrentPlaybackRate,
 			audioAndVideoTags,
 		};
 	}, [frame, currentPlaybackRate, playing, rootId]);

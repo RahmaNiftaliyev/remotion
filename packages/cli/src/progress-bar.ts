@@ -29,7 +29,7 @@ export const LABEL_WIDTH = 20;
 
 const shouldSuppressCliProgressOutput = (options: {
 	quiet: boolean;
-	logLevel?: LogLevel;
+	logLevel: LogLevel;
 }): boolean => {
 	// When --log=error, only error lines may be printed; progress is not an error.
 	return options.quiet || options.logLevel === 'error';
@@ -40,7 +40,7 @@ export const createOverwriteableCliOutput = (options: {
 	cancelSignal: CancelSignal | null;
 	updatesDontOverwrite: boolean;
 	indent: boolean;
-	logLevel?: LogLevel;
+	logLevel: LogLevel;
 }): OverwriteableCliOutput => {
 	if (shouldSuppressCliProgressOutput(options)) {
 		return {

@@ -109,13 +109,16 @@ import {setupEnvVariables} from './setup-env-variables.js';
 import * as TimelinePosition from './timeline-position-state.js';
 import {
 	persistCurrentFrame,
+	usePlaybackRate,
 	useTimelineContext,
 	useTimelineSetFrame,
 } from './timeline-position-state.js';
 import {
 	AbsoluteTimeContext,
+	PlaybackRateContext,
 	SetTimelineContext,
 	TimelineContext,
+	type PlaybackRateContextValue,
 	type SetTimelineContextValue,
 	type TimelineContextValue,
 } from './TimelineContext.js';
@@ -251,6 +254,7 @@ export const Internals = {
 	REMOTION_STUDIO_CONTAINER_ELEMENT,
 	RenderAssetManager,
 	persistCurrentFrame,
+	usePlaybackRate,
 	useTimelineContext,
 	useTimelineSetFrame,
 	isIosSafari,
@@ -284,6 +288,7 @@ export const Internals = {
 	TimelinePosition,
 	DelayRenderContextType,
 	TimelineContext,
+	PlaybackRateContext,
 	AbsoluteTimeContext,
 	RenderAssetManagerProvider,
 	getEffectiveVisualModeValue,
@@ -307,6 +312,7 @@ export type {
 	SerializedJSONWithCustomFields,
 	SetMediaVolumeContextValue,
 	SetTimelineContextValue,
+	PlaybackRateContextValue,
 	TCompMetadata,
 	TComposition,
 	TimelineContextValue,

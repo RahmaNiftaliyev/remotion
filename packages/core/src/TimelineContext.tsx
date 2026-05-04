@@ -23,6 +23,11 @@ export type TimelineContextValue = {
 	audioAndVideoTags: MutableRefObject<PlayableMediaTag[]>;
 };
 
+export type PlaybackRateContextValue = {
+	playbackRate: number;
+	setPlaybackRate: (u: React.SetStateAction<number>) => void;
+};
+
 export type SetTimelineContextValue = {
 	setFrame: (u: React.SetStateAction<Record<string, number>>) => void;
 	setPlaying: (u: React.SetStateAction<boolean>) => void;
@@ -38,6 +43,9 @@ export const SetTimelineContext = createContext<SetTimelineContextValue>({
 });
 
 export const TimelineContext = createContext<TimelineContextValue | null>(null);
+
+export const PlaybackRateContext =
+	createContext<PlaybackRateContextValue | null>(null);
 
 export const AbsoluteTimeContext = createContext<TimelineContextValue | null>(
 	null,
@@ -108,6 +116,13 @@ export const TimelineContextProvider: React.FC<{
 		};
 	}, [frame, playbackRate, playing, remotionRootId]);
 
+	const playbackRateContextValue = useMemo((): PlaybackRateContextValue => {
+		return {
+			playbackRate,
+			setPlaybackRate,
+		};
+	}, [playbackRate]);
+
 	const setTimelineContextValue = useMemo((): SetTimelineContextValue => {
 		return {
 			setFrame,
@@ -117,11 +132,13 @@ export const TimelineContextProvider: React.FC<{
 
 	return (
 		<AbsoluteTimeContext.Provider value={timelineContextValue}>
-			<TimelineContext.Provider value={timelineContextValue}>
-				<SetTimelineContext.Provider value={setTimelineContextValue}>
-					{children}
-				</SetTimelineContext.Provider>
-			</TimelineContext.Provider>
+			<PlaybackRateContext.Provider value={playbackRateContextValue}>
+				<TimelineContext.Provider value={timelineContextValue}>
+					<SetTimelineContext.Provider value={setTimelineContextValue}>
+						{children}
+					</SetTimelineContext.Provider>
+				</TimelineContext.Provider>
+			</PlaybackRateContext.Provider>
 		</AbsoluteTimeContext.Provider>
 	);
 };

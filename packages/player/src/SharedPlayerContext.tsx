@@ -144,41 +144,50 @@ export const SharedPlayerContexts: React.FC<{
 		};
 	}, []);
 
+	const playbackRateContext = useMemo(() => {
+		return {
+			playbackRate: timelineContext.playbackRate,
+			setPlaybackRate: timelineContext.setPlaybackRate,
+		};
+	}, [timelineContext.playbackRate, timelineContext.setPlaybackRate]);
+
 	return (
 		<Internals.RemotionEnvironmentContext.Provider value={env}>
 			<Internals.LogLevelContext.Provider value={logLevelContext}>
 				<Internals.CanUseRemotionHooksProvider>
 					<Internals.AbsoluteTimeContext.Provider value={timelineContext}>
-						<Internals.TimelineContext.Provider value={timelineContext}>
-							<Internals.CompositionManager.Provider
-								value={compositionManagerContext}
-							>
-								<Internals.PrefetchProvider>
-									<Internals.DurationsContextProvider>
-										<Internals.MediaVolumeContext.Provider
-											value={mediaVolumeContextValue}
-										>
-											<Internals.SetMediaVolumeContext.Provider
-												value={setMediaVolumeContextValue}
+						<Internals.PlaybackRateContext.Provider value={playbackRateContext}>
+							<Internals.TimelineContext.Provider value={timelineContext}>
+								<Internals.CompositionManager.Provider
+									value={compositionManagerContext}
+								>
+									<Internals.PrefetchProvider>
+										<Internals.DurationsContextProvider>
+											<Internals.MediaVolumeContext.Provider
+												value={mediaVolumeContextValue}
 											>
-												<Internals.BufferingProvider>
-													<Internals.SharedAudioContextProvider
-														audioLatencyHint={audioLatencyHint}
-														audioEnabled={audioEnabled}
-													>
-														<Internals.SharedAudioTagsContextProvider
-															numberOfAudioTags={numberOfSharedAudioTags}
+												<Internals.SetMediaVolumeContext.Provider
+													value={setMediaVolumeContextValue}
+												>
+													<Internals.BufferingProvider>
+														<Internals.SharedAudioContextProvider
+															audioLatencyHint={audioLatencyHint}
+															audioEnabled={audioEnabled}
 														>
-															{children}
-														</Internals.SharedAudioTagsContextProvider>
-													</Internals.SharedAudioContextProvider>
-												</Internals.BufferingProvider>
-											</Internals.SetMediaVolumeContext.Provider>
-										</Internals.MediaVolumeContext.Provider>
-									</Internals.DurationsContextProvider>
-								</Internals.PrefetchProvider>
-							</Internals.CompositionManager.Provider>
-						</Internals.TimelineContext.Provider>
+															<Internals.SharedAudioTagsContextProvider
+																numberOfAudioTags={numberOfSharedAudioTags}
+															>
+																{children}
+															</Internals.SharedAudioTagsContextProvider>
+														</Internals.SharedAudioContextProvider>
+													</Internals.BufferingProvider>
+												</Internals.SetMediaVolumeContext.Provider>
+											</Internals.MediaVolumeContext.Provider>
+										</Internals.DurationsContextProvider>
+									</Internals.PrefetchProvider>
+								</Internals.CompositionManager.Provider>
+							</Internals.TimelineContext.Provider>
+						</Internals.PlaybackRateContext.Provider>
 					</Internals.AbsoluteTimeContext.Provider>
 				</Internals.CanUseRemotionHooksProvider>
 			</Internals.LogLevelContext.Provider>

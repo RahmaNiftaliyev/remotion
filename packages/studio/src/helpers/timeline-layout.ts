@@ -1,9 +1,11 @@
+import type {SchemaFieldInfo} from '@remotion/studio-shared';
 import type {
 	EffectDefinitionAndStack,
 	SequenceControls,
-	SequenceFieldSchema,
 	TSequence,
 } from 'remotion';
+
+export type {SchemaFieldInfo};
 
 export const TIMELINE_PADDING = 16;
 export const TIMELINE_BORDER = 1;
@@ -25,16 +27,6 @@ const SUPPORTED_SCHEMA_TYPES = new Set([
 	'translate',
 	'enum',
 ]);
-
-export type SchemaFieldInfo = {
-	key: string;
-	description: string | undefined;
-	typeName: string;
-	supported: boolean;
-	rowHeight: number;
-	currentValue: unknown;
-	fieldSchema: SequenceFieldSchema;
-};
 
 export const getSchemaFields = (
 	controls: SequenceControls | null,

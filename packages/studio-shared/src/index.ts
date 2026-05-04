@@ -95,6 +95,7 @@ export {
 	UiOpenGlOptions,
 } from './render-job';
 export type {CompletedClientRender} from './render-job';
+export type {SchemaFieldInfo} from './schema-field-info';
 export {SOURCE_MAP_ENDPOINT} from './source-map-endpoint';
 export {
 	ScriptLine,

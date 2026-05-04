@@ -6,7 +6,7 @@ import type {SchemaFieldInfo} from '@remotion/studio-shared';
 import {getSchemaFields} from '@remotion/studio-shared';
 import {Internals} from 'remotion';
 import {parseAst} from '../codemods/parse-ast';
-import {updateSequenceProps} from '../codemods/update-sequence-props';
+import {updateSequencePropsAst} from '../codemods/update-sequence-props';
 import {lineColumnToNodePath} from '../preview-server/routes/can-update-sequence-props';
 
 test('Should correctly separate discriminated union for layout', () => {
@@ -46,7 +46,7 @@ test('Should be able to update a discriminated union', async () => {
 		},
 	};
 
-	const update = await updateSequenceProps({
+	const update = updateSequencePropsAst({
 		input: file,
 		nodePath,
 		updates: [
@@ -62,12 +62,12 @@ test('Should be able to update a discriminated union', async () => {
 		path.join(__dirname, 'snapshots', 'discriminated-union-expected.tsx'),
 		'utf-8',
 	);
-	const actualLines = update.output.split('\n');
+	const actualLines = update.serialized.split('\n');
 	const expectedLines = expected.split('\n');
 	const maxLines = Math.max(actualLines.length, expectedLines.length);
 	for (let i = 0; i < maxLines; i++) {
 		if (actualLines[i] !== expectedLines[i]) {
-			console.log(update.output);
+			console.log(update);
 			console.log(actualLines[i], expectedLines[i]);
 			throw new Error(
 				`Line ${i + 1} differs ${actualLines[i]} ${expectedLines[i]}`,

@@ -21,22 +21,19 @@ export type SequencePropUpdate = {
 	defaultValue: unknown | null;
 };
 
-export const updateSequenceProps = async ({
+export const updateSequencePropsAst = ({
 	input,
 	nodePath,
 	updates,
-	prettierConfigOverride,
 }: {
 	input: string;
 	nodePath: SequenceNodePath;
 	updates: SequencePropUpdate[];
-	prettierConfigOverride?: Record<string, unknown> | null;
-}): Promise<{
-	output: string;
+}): {
+	serialized: string;
 	oldValueStrings: string[];
-	formatted: boolean;
 	logLine: number;
-}> => {
+} => {
 	const ast = parseAst(input);
 
 	const node = findJsxElementAtNodePath(ast, nodePath);
@@ -136,9 +133,37 @@ export const updateSequenceProps = async ({
 		oldValueStrings.push(oldValueString);
 	}
 
-	const finalFile = serializeAst(ast);
+	return {
+		serialized: serializeAst(ast),
+		oldValueStrings,
+		logLine,
+	};
+};
+
+export const updateSequenceProps = async ({
+	input,
+	nodePath,
+	updates,
+	prettierConfigOverride,
+}: {
+	input: string;
+	nodePath: SequenceNodePath;
+	updates: SequencePropUpdate[];
+	prettierConfigOverride?: Record<string, unknown> | null;
+}): Promise<{
+	output: string;
+	oldValueStrings: string[];
+	formatted: boolean;
+	logLine: number;
+}> => {
+	const {serialized, oldValueStrings, logLine} = updateSequencePropsAst({
+		input,
+		nodePath,
+		updates,
+	});
+
 	const {output, formatted} = await formatFileContent({
-		input: finalFile,
+		input: serialized,
 		prettierConfigOverride,
 	});
 

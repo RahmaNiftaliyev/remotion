@@ -7,6 +7,7 @@ import type {
 	LoggingContextValue,
 	LogLevel,
 	MediaVolumeContextValue,
+	PlaybackRateContextValue,
 	RemotionEnvironment,
 	SetMediaVolumeContextValue,
 	TimelineContextValue,
@@ -19,6 +20,7 @@ export const PLAYER_COMP_ID = 'player-comp';
 export const SharedPlayerContexts: React.FC<{
 	readonly children: React.ReactNode;
 	readonly timelineContext: TimelineContextValue;
+	readonly playbackRateContext: PlaybackRateContextValue;
 	readonly fps: number;
 	readonly compositionWidth: number;
 	readonly compositionHeight: number;
@@ -35,6 +37,7 @@ export const SharedPlayerContexts: React.FC<{
 }> = ({
 	children,
 	timelineContext,
+	playbackRateContext,
 	fps,
 	compositionHeight,
 	compositionWidth,
@@ -143,13 +146,6 @@ export const SharedPlayerContexts: React.FC<{
 			isReadOnlyStudio: false,
 		};
 	}, []);
-
-	const playbackRateContext = useMemo(() => {
-		return {
-			playbackRate: timelineContext.playbackRate,
-			setPlaybackRate: timelineContext.setPlaybackRate,
-		};
-	}, [timelineContext.playbackRate, timelineContext.setPlaybackRate]);
 
 	return (
 		<Internals.RemotionEnvironmentContext.Provider value={env}>

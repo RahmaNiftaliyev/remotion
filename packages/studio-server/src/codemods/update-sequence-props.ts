@@ -8,6 +8,7 @@ import type {
 } from '@babel/types';
 import type {SequenceNodePath} from '@remotion/studio-shared';
 import * as recast from 'recast';
+import type {SequenceSchema} from 'remotion';
 import {findJsxElementAtNodePath} from '../preview-server/routes/can-update-sequence-props';
 import {formatFileContent} from './format-file-content';
 import {parseAst, serializeAst} from './parse-ast';
@@ -21,14 +22,52 @@ export type SequencePropUpdate = {
 	defaultValue: unknown | null;
 };
 
+const removeVariantKey = ({
+	node,
+	variantKey,
+}: {
+	node: JSXOpeningElementLike;
+	variantKey: string;
+}) => {
+	const dotIndex = variantKey.indexOf('.');
+	if (dotIndex === -1) {
+		const idx = node.attributes?.findIndex(
+			(a) =>
+				a.type === 'JSXAttribute' &&
+				a.name.type === 'JSXIdentifier' &&
+				a.name.name === variantKey,
+		);
+		if (idx !== undefined && idx !== -1 && node.attributes) {
+			node.attributes.splice(idx, 1);
+		}
+
+		return;
+	}
+
+	updateNestedProp({
+		node,
+		parentKey: variantKey.slice(0, dotIndex),
+		childKey: variantKey.slice(dotIndex + 1),
+		value: undefined,
+		defaultValue: null,
+		isDefault: true,
+	});
+};
+
+type JSXOpeningElementLike = NonNullable<
+	ReturnType<typeof findJsxElementAtNodePath>
+>;
+
 export const updateSequencePropsAst = ({
 	input,
 	nodePath,
 	updates,
+	schema,
 }: {
 	input: string;
 	nodePath: SequenceNodePath;
 	updates: SequencePropUpdate[];
+	schema?: SequenceSchema;
 }): {
 	serialized: string;
 	oldValueStrings: string[];
@@ -131,6 +170,38 @@ export const updateSequencePropsAst = ({
 		}
 
 		oldValueStrings.push(oldValueString);
+
+		if (schema && !isNested) {
+			const fieldSchema = schema[key];
+			if (fieldSchema && fieldSchema.type === 'enum') {
+				let oldRawValue: unknown;
+				try {
+					oldRawValue = JSON.parse(oldValueString);
+				} catch {
+					oldRawValue = oldValueString;
+				}
+
+				if (oldRawValue !== value) {
+					const oldVariant =
+						typeof oldRawValue === 'string'
+							? fieldSchema.variants[oldRawValue]
+							: undefined;
+					const newVariant =
+						typeof value === 'string' ? fieldSchema.variants[value] : undefined;
+
+					if (oldVariant) {
+						const newKeys = new Set(newVariant ? Object.keys(newVariant) : []);
+						for (const variantKey of Object.keys(oldVariant)) {
+							if (newKeys.has(variantKey)) {
+								continue;
+							}
+
+							removeVariantKey({node, variantKey});
+						}
+					}
+				}
+			}
+		}
 	}
 
 	return {
@@ -144,11 +215,13 @@ export const updateSequenceProps = async ({
 	input,
 	nodePath,
 	updates,
+	schema,
 	prettierConfigOverride,
 }: {
 	input: string;
 	nodePath: SequenceNodePath;
 	updates: SequencePropUpdate[];
+	schema?: SequenceSchema;
 	prettierConfigOverride?: Record<string, unknown> | null;
 }): Promise<{
 	output: string;
@@ -160,6 +233,7 @@ export const updateSequenceProps = async ({
 		input,
 		nodePath,
 		updates,
+		schema,
 	});
 
 	const {output, formatted} = await formatFileContent({

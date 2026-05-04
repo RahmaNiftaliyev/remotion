@@ -2,7 +2,6 @@ import {expect, test} from 'bun:test';
 import assert from 'node:assert';
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
-import type {SchemaFieldInfo} from '@remotion/studio-shared';
 import {getSchemaFields} from '@remotion/studio-shared';
 import {Internals} from 'remotion';
 import {parseAst} from '../codemods/parse-ast';
@@ -20,7 +19,7 @@ test('Should correctly separate discriminated union for layout', () => {
 	expect(schemaFields?.map((s) => s.key)).toEqual(['layout']);
 });
 
-test('Should be able to update a discriminated union', async () => {
+test('Should be able to update a discriminated union', () => {
 	const file = readFileSync(
 		path.join(__dirname, 'snapshots', 'discriminated-union.tsx'),
 		'utf-8',
@@ -31,20 +30,46 @@ test('Should be able to update a discriminated union', async () => {
 	const nodePath = lineColumnToNodePath(ast, 3);
 	assert(nodePath, 'No node path found');
 
-	const field: SchemaFieldInfo = {
-		key: 'layout',
-		description: 'Layout',
-		typeName: 'enum',
-		supported: true,
-		rowHeight: 22,
-		currentValue: 'none',
-		fieldSchema: {
-			type: 'enum',
-			default: 'absolute-fill',
-			description: 'Layout',
-			variants: Internals.sequenceSchema.layout.variants,
-		},
-	};
+	const update = updateSequencePropsAst({
+		input: file,
+		nodePath,
+		updates: [
+			{
+				key: 'layout',
+				value: 'none',
+				defaultValue: Internals.sequenceSchema.layout.default,
+			},
+		],
+	});
+
+	const expected = readFileSync(
+		path.join(__dirname, 'snapshots', 'discriminated-union-expected.tsx'),
+		'utf-8',
+	);
+	const actualLines = update.serialized.split('\n');
+	const expectedLines = expected.split('\n');
+	const maxLines = Math.max(actualLines.length, expectedLines.length);
+	for (let i = 0; i < maxLines; i++) {
+		if (actualLines[i] !== expectedLines[i]) {
+			console.log(update);
+			console.log(actualLines[i], expectedLines[i]);
+			throw new Error(
+				`Line ${i + 1} differs ${actualLines[i]} ${expectedLines[i]}`,
+			);
+		}
+	}
+});
+
+test('Should remove variant-specific props when switching enum value', () => {
+	const file = readFileSync(
+		path.join(__dirname, 'snapshots', 'discriminated-union-with-style.tsx'),
+		'utf-8',
+	);
+
+	const ast = parseAst(file);
+
+	const nodePath = lineColumnToNodePath(ast, 3);
+	assert(nodePath, 'No node path found');
 
 	const update = updateSequencePropsAst({
 		input: file,
@@ -53,13 +78,20 @@ test('Should be able to update a discriminated union', async () => {
 			{
 				key: 'layout',
 				value: 'none',
-				defaultValue: field.fieldSchema.default,
+				defaultValue: Internals.sequenceSchema.layout.default,
 			},
 		],
+		schema: Internals.sequenceSchema,
 	});
 
+	console.log(update.serialized);
+
 	const expected = readFileSync(
-		path.join(__dirname, 'snapshots', 'discriminated-union-expected.tsx'),
+		path.join(
+			__dirname,
+			'snapshots',
+			'discriminated-union-with-style-expected.tsx',
+		),
 		'utf-8',
 	);
 	const actualLines = update.serialized.split('\n');

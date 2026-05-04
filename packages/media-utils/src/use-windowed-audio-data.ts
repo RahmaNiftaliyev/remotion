@@ -31,6 +31,12 @@ export type UseWindowedAudioDataOptions = {
 	fps: number;
 	windowInSeconds: number;
 	channelIndex?: number;
+	/**
+	 * Captured only from the first render and passed to Mediabunny `UrlSource`.
+	 * Updates after mount are ignored so hooks do not depend on a new object
+	 * identity every render (e.g. inline `{credentials: 'include'}`).
+	 */
+	requestInit?: RequestInit;
 };
 
 export type UseWindowedAudioDataReturnValue = {
@@ -57,12 +63,14 @@ export const useWindowedAudioData = ({
 	fps,
 	windowInSeconds,
 	channelIndex = 0,
+	requestInit,
 }: UseWindowedAudioDataOptions): UseWindowedAudioDataReturnValue => {
 	const isMounted = useRef(true);
 	const [audioUtils, setAudioUtils] = useState<AudioUtils | null>(null);
 	const [waveFormMap, setWaveformMap] = useState({} as WaveformMap);
 	const requests = useRef<Record<string, AbortController | null>>({});
 	const [initialWindowInSeconds] = useState(windowInSeconds);
+	const [initialRequestInit] = useState(requestInit);
 
 	if (windowInSeconds !== initialWindowInSeconds) {
 		throw new Error('windowInSeconds cannot be changed dynamically');
@@ -104,7 +112,10 @@ export const useWindowedAudioData = ({
 
 			const input = new Input({
 				formats: ALL_FORMATS,
-				source: new UrlSource(src),
+				source: new UrlSource(
+					src,
+					initialRequestInit ? {requestInit: initialRequestInit} : undefined,
+				),
 			});
 
 			const onAbort = () => {
@@ -181,7 +192,7 @@ export const useWindowedAudioData = ({
 				signal.removeEventListener('abort', onAbort);
 			}
 		},
-		[src, delayRender, continueRender, channelIndex],
+		[src, delayRender, continueRender, channelIndex, initialRequestInit],
 	);
 
 	useLayoutEffect(() => {

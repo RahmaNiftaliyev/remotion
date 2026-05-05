@@ -53,10 +53,7 @@ export const TimelineFieldRow: React.FC<{
 		codeValues: allPropStatuses,
 	} = useContext(Internals.VisualModeOverridesContext);
 
-	const propStatuses = (allPropStatuses[overrideId] ?? null) as Record<
-		string,
-		CanUpdateSequencePropStatus
-	> | null;
+	const propStatuses = allPropStatuses[overrideId] ?? null;
 
 	const propStatus = propStatuses?.[field.key] ?? null;
 

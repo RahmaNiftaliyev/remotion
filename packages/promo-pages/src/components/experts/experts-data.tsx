@@ -29,7 +29,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/sterv/',
 		email: 'stephen@middy.com',
 		videocall: null,
-		discord: null,
+		discord: {
+			username: 'stervdotcom',
+			userId: '613828260534550719',
+		},
 		since: new Date('2022-08-15').getTime(),
 		description: (
 			<div>
@@ -51,7 +54,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/just-moh-it/',
 		email: 'yo@mohitya.dev',
 		videocall: null,
-		discord: null,
+		discord: {
+			username: 'justmohit',
+			userId: '616199379530940426',
+		},
 		since: new Date('2022-08-15').getTime(),
 		description: (
 			<div>
@@ -76,7 +82,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/satelllte/',
 		email: 'lunaerxs@gmail.com',
 		videocall: null,
-		discord: null,
+		discord: {
+			username: 'satelllte',
+			userId: '564382615105306634',
+		},
 		since: new Date('2022-09-16').getTime(),
 
 		description: (
@@ -108,7 +117,10 @@ export const experts: Expert[] = [
 		linkedin: null,
 		email: 'ben@captok.ai',
 		videocall: null,
-		discord: null,
+		discord: {
+			username: 'ben201000',
+			userId: '833862694372245515',
+		},
 		since: new Date('2022-11-03').getTime(),
 		description: (
 			<div>
@@ -162,7 +174,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/alex-f-17a5bb56/',
 		email: 'alex.frndz@gmail.com',
 		videocall: 'https://cal.com/remotion-expert-alex-fernandez',
-		discord: null,
+		discord: {
+			username: 'alex12345670000',
+			userId: '1046357837976182894',
+		},
 		since: new Date('2022-12-02').getTime(),
 		description: (
 			<div>
@@ -181,7 +196,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/matthew-mcgillivray-68295a55',
 		email: 'mm@mattm9y.com',
 		videocall: 'https://cal.com/remotion-expert-matt-mcgillivray',
-		discord: null,
+		discord: {
+			username: 'umungobungo',
+			userId: '225141342894948352',
+		},
 		since: new Date('2023-01-30').getTime(),
 		description: (
 			<div>
@@ -245,7 +263,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/raymond-lotmar/',
 		email: 'ray@blocklab.ch',
 		videocall: 'https://cal.com/remotion-expert-ray-lotmar',
-		discord: null,
+		discord: {
+			username: 'ray_block',
+			userId: '402806969980944384',
+		},
 		since: new Date('2023-01-30').getTime(),
 		description: (
 			<div>
@@ -269,7 +290,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/lorenzobertolini/',
 		email: 'ciao@lorenzobertolini.com',
 		videocall: null,
-		discord: null,
+		discord: {
+			username: 'lorenzobertolini',
+			userId: '933408520789950516',
+		},
 		since: new Date('2023-03-14').getTime(),
 		description: (
 			<div>
@@ -301,7 +325,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/antoine-caron-slash/',
 		email: 'antoine395.caron+remotion@gmail.com',
 		videocall: null,
-		discord: null,
+		discord: {
+			username: 'antoinecaron.',
+			userId: '199566011849113600',
+		},
 		since: new Date('2023-03-17').getTime(),
 		description: (
 			<div>
@@ -355,7 +382,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/pranavk7/',
 		email: 'hey@pranava.dev',
 		videocall: null,
-		discord: null,
+		discord: {
+			username: 'thecmdrunner',
+			userId: '768013898385063936',
+		},
 		since: new Date('2023-07-03').getTime(),
 		description: (
 			<div>
@@ -409,7 +439,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/pramod-kumar-1a135b74/',
 		email: 'pramodkumar.damam73@gmail.com',
 		videocall: 'https://cal.com/remotion-expert-pramod-kumar',
-		discord: null,
+		discord: {
+			username: 'pskd73',
+			userId: '517057574483525655',
+		},
 		since: new Date('2024-03-10').getTime(),
 		description: (
 			<div>
@@ -446,7 +479,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/ayushsoni1001/',
 		email: 'hi@ayushsoni.com',
 		videocall: 'https://cal.com/remotion-expert-ayush-soni',
-		discord: null,
+		discord: {
+			username: 'ayushsoni',
+			userId: '624968675916513310',
+		},
 		since: new Date('2024-03-17').getTime(),
 		description: (
 			<div>
@@ -471,7 +507,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/andrei-terteci-935331151/',
 		email: 'hello@andreiterteci.com',
 		videocall: 'https://cal.com/remotion-expert-andrei-terteci',
-		discord: null,
+		discord: {
+			username: 'andreiterteci',
+			userId: '710924274361172078',
+		},
 		since: new Date('2024-03-17').getTime(),
 		description: (
 			<div>
@@ -497,7 +536,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/sambowenhughes/',
 		email: 'sam@reactvideoeditor.com',
 		videocall: 'https://calendly.com/reactvideoeditor/30min',
-		discord: null,
+		discord: {
+			username: '.samelliott',
+			userId: '862593906972688385',
+		},
 		since: new Date('2025-06-03').getTime(),
 		description: (
 			<div>
@@ -553,7 +595,10 @@ export const experts: Expert[] = [
 		email: 'shankhadeepdey99@gmail.com',
 		slug: 'iamshankhadeep',
 		videocall: 'https://cal.com/iamshankhadeep',
-		discord: null,
+		discord: {
+			username: 'iamshankhadeep',
+			userId: '441576588937527306',
+		},
 		since: new Date('2021-02-13').getTime(),
 		description: (
 			<div>
@@ -575,7 +620,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/amirtadrisi/',
 		email: 'amir@cubite.io',
 		videocall: null,
-		discord: null,
+		discord: {
+			username: 'aioppsos1565',
+			userId: '709545234882756711',
+		},
 		since: new Date('2025-01-01').getTime(),
 		description: (
 			<div>
@@ -625,7 +673,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/pablito-jean-pool-silva-inca-735a03192/',
 		email: 'pablito.silvainca@gmail.com',
 		videocall: null,
-		discord: null,
+		discord: {
+			username: 'pablituuu',
+			userId: '513743221109555206',
+		},
 		since: new Date('2026-02-13').getTime(),
 		description: (
 			<div>
@@ -651,7 +702,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/haingt-dev/',
 		email: 'hai@haingt.dev',
 		videocall: null,
-		discord: null,
+		discord: {
+			username: 'haingt.dev',
+			userId: '384392709902827522',
+		},
 		since: new Date('2026-04-02').getTime(),
 		description: (
 			<div>
@@ -711,7 +765,10 @@ export const experts: Expert[] = [
 		linkedin: null,
 		email: 'zz41354899@gmail.com',
 		videocall: null,
-		discord: null,
+		discord: {
+			username: 'zz41354899',
+			userId: '444852671191580672',
+		},
 		since: new Date('2026-05-05').getTime(),
 		description: (
 			<div>

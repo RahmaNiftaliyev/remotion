@@ -1,26 +1,19 @@
 import type {SequenceNodePath} from '@remotion/studio-shared';
-import React, {useCallback, useContext, useMemo} from 'react';
+import React, {useContext, useMemo} from 'react';
 import {Internals, type TSequence} from 'remotion';
 import type {
 	CodePosition,
 	OriginalPosition,
 } from '../../error-overlay/react-overlay/utils/get-source-map';
 import {TIMELINE_TRACK_SEPARATOR} from '../../helpers/colors';
-import type {TimelineTreeNode} from '../../helpers/timeline-layout';
 import {
 	buildTimelineTree,
-	EXPANDED_SECTION_PADDING_LEFT,
-	EXPANDED_SECTION_PADDING_RIGHT,
 	flattenVisibleTreeNodes,
 	getExpandedTrackHeight,
-	getTreeRowHeight,
-	TREE_GROUP_ROW_HEIGHT,
-	TREE_INDENT_PER_LEVEL,
 } from '../../helpers/timeline-layout';
 import {ExpandedTracksContext} from '../ExpandedTracksProvider';
-import {TimelineExpandArrowButton} from './TimelineExpandArrowButton';
-import {TimelineFieldRow} from './TimelineFieldRow';
-import {SPACING} from './TimelineListItem';
+import {TimelineExpandedRow} from './TimelineExpandedRow';
+import {INDENT} from './TimelineListItem';
 
 const expandedSectionBase: React.CSSProperties = {
 	color: 'white',
@@ -34,25 +27,6 @@ const expandedSectionBase: React.CSSProperties = {
 const separator: React.CSSProperties = {
 	height: 1,
 	backgroundColor: TIMELINE_TRACK_SEPARATOR,
-};
-
-const groupRowBase: React.CSSProperties = {
-	height: TREE_GROUP_ROW_HEIGHT,
-	display: 'flex',
-	alignItems: 'center',
-	paddingRight: EXPANDED_SECTION_PADDING_RIGHT,
-};
-
-const rowLabel: React.CSSProperties = {
-	fontSize: 12,
-	color: 'rgba(255, 255, 255, 0.8)',
-	userSelect: 'none',
-};
-
-const labelOnlyRowBase: React.CSSProperties = {
-	display: 'flex',
-	alignItems: 'center',
-	paddingRight: EXPANDED_SECTION_PADDING_RIGHT,
 };
 
 export const TimelineExpandedSection: React.FC<{
@@ -105,7 +79,7 @@ export const TimelineExpandedSection: React.FC<{
 		[sequence, expandedTracks, dragOverrides, codeValues],
 	);
 
-	const sequenceOffsetPx = SPACING * 3 * nestedDepth;
+	const sequenceOffsetPx = INDENT * nestedDepth;
 
 	const style = useMemo(() => {
 		return {
@@ -115,64 +89,6 @@ export const TimelineExpandedSection: React.FC<{
 	}, [expandedHeight]);
 
 	const {schema} = sequence.controls!;
-
-	const renderRow = useCallback(
-		(node: TimelineTreeNode, depth: number) => {
-			const paddingLeft =
-				EXPANDED_SECTION_PADDING_LEFT +
-				depth * TREE_INDENT_PER_LEVEL +
-				sequenceOffsetPx;
-
-			if (node.kind === 'group') {
-				const isExpanded = expandedTracks[node.id] ?? false;
-				return (
-					<div style={{...groupRowBase, paddingLeft}}>
-						<TimelineExpandArrowButton
-							isExpanded={isExpanded}
-							onClick={() => toggleTrack(node.id)}
-							label={`${node.label} section`}
-							hasExpandableContent
-						/>
-						<span style={rowLabel}>{node.label}</span>
-					</div>
-				);
-			}
-
-			if (node.field) {
-				return (
-					<TimelineFieldRow
-						field={node.field}
-						overrideId={overrideId}
-						validatedLocation={validatedLocation}
-						paddingLeft={paddingLeft}
-						nodePath={nodePath}
-						schema={schema}
-					/>
-				);
-			}
-
-			return (
-				<div
-					style={{
-						...labelOnlyRowBase,
-						height: getTreeRowHeight(node),
-						paddingLeft,
-					}}
-				>
-					<span style={rowLabel}>{node.label}</span>
-				</div>
-			);
-		},
-		[
-			expandedTracks,
-			nodePath,
-			overrideId,
-			schema,
-			sequenceOffsetPx,
-			toggleTrack,
-			validatedLocation,
-		],
-	);
 
 	if (flat.length === 0) {
 		return <div style={style}>No schema</div>;
@@ -184,7 +100,17 @@ export const TimelineExpandedSection: React.FC<{
 				return (
 					<React.Fragment key={node.id}>
 						{i > 0 ? <div style={separator} /> : null}
-						{renderRow(node, depth)}
+						<TimelineExpandedRow
+							node={node}
+							depth={depth}
+							sequenceOffsetPx={sequenceOffsetPx}
+							expandedTracks={expandedTracks}
+							toggleTrack={toggleTrack}
+							overrideId={overrideId}
+							validatedLocation={validatedLocation}
+							nodePath={nodePath}
+							schema={schema}
+						/>
 					</React.Fragment>
 				);
 			})}

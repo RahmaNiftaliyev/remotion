@@ -20,12 +20,7 @@ import {TimelineStack} from './TimelineStack';
 import {useResolvedStack} from './use-resolved-stack';
 import {useSequencePropsSubscription} from './use-sequence-props-subscription';
 
-export const SPACING = 5;
-
-const space: React.CSSProperties = {
-	width: SPACING,
-	flexShrink: 0,
-};
+export const INDENT = 10;
 
 export const TimelineListItem: React.FC<{
 	readonly sequence: TSequence;
@@ -183,7 +178,7 @@ export const TimelineListItem: React.FC<{
 
 	const padder = useMemo((): React.CSSProperties => {
 		return {
-			width: Number(SPACING) * nestedDepth,
+			width: Number(INDENT) * nestedDepth,
 			flexShrink: 0,
 		};
 	}, [nestedDepth]);
@@ -223,7 +218,7 @@ export const TimelineListItem: React.FC<{
 			alignItems: 'center',
 			wordBreak: 'break-all',
 			textAlign: 'left',
-			paddingLeft: SPACING,
+			paddingLeft: 5,
 		};
 	}, []);
 
@@ -239,7 +234,6 @@ export const TimelineListItem: React.FC<{
 					onInvoked={onToggleVisibility}
 				/>
 				<div style={padder} />
-				{sequence.parent && nestedDepth > 0 ? <div style={space} /> : null}
 				{visualModeActive ? (
 					<TimelineExpandArrowButton
 						isExpanded={isExpanded}

@@ -72,7 +72,9 @@ test('Should be able to update a discriminated union', () => {
 	const maxLines = Math.max(actualLines.length, expectedLines.length);
 	for (let i = 0; i < maxLines; i++) {
 		if (actualLines[i] !== expectedLines[i]) {
+			// eslint-disable-next-line no-console
 			console.log(update);
+			// eslint-disable-next-line no-console
 			console.log(actualLines[i], expectedLines[i]);
 			throw new Error(
 				`Line ${i + 1} differs ${actualLines[i]} ${expectedLines[i]}`,
@@ -105,8 +107,6 @@ test('Should remove variant-specific props when switching enum value', () => {
 		schema: Internals.sequenceSchema,
 	});
 
-	console.log(update.serialized);
-
 	const expected = readFileSync(
 		path.join(
 			__dirname,
@@ -120,7 +120,9 @@ test('Should remove variant-specific props when switching enum value', () => {
 	const maxLines = Math.max(actualLines.length, expectedLines.length);
 	for (let i = 0; i < maxLines; i++) {
 		if (actualLines[i] !== expectedLines[i]) {
+			// eslint-disable-next-line no-console
 			console.log(update);
+			// eslint-disable-next-line no-console
 			console.log(actualLines[i], expectedLines[i]);
 			throw new Error(
 				`Line ${i + 1} differs ${actualLines[i]} ${expectedLines[i]}`,

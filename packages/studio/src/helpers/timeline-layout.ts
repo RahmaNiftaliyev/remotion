@@ -101,19 +101,14 @@ export const buildTimelineTree = ({
 	});
 
 	if (controlFields && controlFields.length > 0) {
-		roots.push({
-			kind: 'group',
-			id: `${sequence.id}::controls`,
-			label: 'Controls',
-			children: controlFields.map(
-				(f): TimelineTreeNode => ({
-					kind: 'field',
-					id: `${sequence.id}::controls::${f.key}`,
-					label: f.description ?? f.key,
-					field: f,
-				}),
-			),
-		});
+		for (const f of controlFields) {
+			roots.push({
+				kind: 'field',
+				id: `${sequence.id}::controls::${f.key}`,
+				label: f.description ?? f.key,
+				field: f,
+			});
+		}
 	}
 
 	return roots;

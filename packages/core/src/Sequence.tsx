@@ -14,6 +14,7 @@ import {useMemoizedEffects} from './effects/use-memoized-effects.js';
 import {Freeze} from './freeze.js';
 import {useNonce} from './nonce.js';
 import {PremountContext} from './PremountContext.js';
+import {sequenceSchema} from './sequence-field-schema.js';
 import type {SequenceContextType} from './SequenceContext.js';
 import {SequenceContext} from './SequenceContext.js';
 import {
@@ -29,6 +30,7 @@ import type {BasicMediaInTimelineReturnType} from './use-media-in-timeline.js';
 import {useRemotionEnvironment} from './use-remotion-environment.js';
 import {useVideoConfig} from './use-video-config.js';
 import {ENABLE_V5_BREAKING_CHANGES} from './v5-flag.js';
+import {wrapInSchema} from './wrap-in-schema.js';
 
 export type AbsoluteFillLayout = {
 	layout?: 'absolute-fill';
@@ -133,7 +135,11 @@ const RegularSequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 
 	// @ts-expect-error
 	if (layout === 'none' && typeof other.style !== 'undefined') {
-		throw new TypeError('If layout="none", you may not pass a style.');
+		throw new TypeError(
+			'If layout="none", you may not pass a style. Passed: ' +
+				// @ts-expect-error
+				JSON.stringify(other.style),
+		);
 	}
 
 	if (typeof durationInFrames !== 'number') {
@@ -417,7 +423,7 @@ const PremountedPostmountedSequenceRefForwardingFunction: React.ForwardRefRender
 
 	return (
 		<Freeze frame={freezeFrame} active={isFreezingActive}>
-			<Sequence
+			<SequenceInner
 				ref={ref}
 				from={from}
 				durationInFrames={durationInFrames}
@@ -460,8 +466,10 @@ const SequenceRefForwardingFunction: React.ForwardRefRenderFunction<
 	return <RegularSequence {...props} ref={ref} />;
 };
 
+const SequenceInner = forwardRef(SequenceRefForwardingFunction);
+
 /*
  * @description A component that time-shifts its children and wraps them in an absolutely positioned <div>.
  * @see [Documentation](https://www.remotion.dev/docs/sequence)
  */
-export const Sequence = forwardRef(SequenceRefForwardingFunction);
+export const Sequence = wrapInSchema(SequenceInner, sequenceSchema);

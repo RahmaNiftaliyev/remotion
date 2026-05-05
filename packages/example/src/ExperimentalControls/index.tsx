@@ -61,12 +61,19 @@ export const ExperimentalControlsShowcase: React.FC = () => {
 							maxWidth: '100%',
 							maxHeight: '100%',
 							translate: '0px 93px',
-							scale: 1.65,
+							scale: 1.98,
 						}}
 					/>
 				</Tile>
 				<Tile title="Sequence">
-					<Sequence durationInFrames={120} name="inner-sequence">
+					<Sequence
+						durationInFrames={120}
+						name="inner-sequence"
+						style={{
+							translate: '0px 66px',
+							scale: 2.05,
+						}}
+					>
 						<AbsoluteFill
 							style={{
 								backgroundColor: '#3344ff',
@@ -86,8 +93,8 @@ export const ExperimentalControlsShowcase: React.FC = () => {
 						width={400}
 						height={300}
 						style={{
-							translate: '0px -110px',
-							scale: 0.78,
+							translate: '0px -124px',
+							scale: 2.06,
 							rotate: '48deg',
 						}}
 					>
@@ -165,6 +172,11 @@ export const ExperimentalControlsShowcase: React.FC = () => {
 						Audio (no visual)
 						<Audio src={staticFile('music.mp3')} volume={1.29} />
 					</div>
+				</Tile>
+				<Tile title="Sequence layout='none'">
+					<Sequence name="layout='none'" layout={'none'}>
+						hi
+					</Sequence>
 				</Tile>
 			</div>
 		</AbsoluteFill>

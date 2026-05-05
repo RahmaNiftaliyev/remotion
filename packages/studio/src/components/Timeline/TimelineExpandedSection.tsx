@@ -1,6 +1,6 @@
 import type {SequenceNodePath} from '@remotion/studio-shared';
 import React, {useCallback, useContext, useMemo} from 'react';
-import type {TSequence} from 'remotion';
+import {Internals, type TSequence} from 'remotion';
 import type {
 	CodePosition,
 	OriginalPosition,
@@ -13,7 +13,6 @@ import {
 	EXPANDED_SECTION_PADDING_RIGHT,
 	flattenVisibleTreeNodes,
 	getExpandedTrackHeight,
-	getSchemaFields,
 	getTreeRowHeight,
 	TREE_GROUP_ROW_HEIGHT,
 	TREE_INDENT_PER_LEVEL,
@@ -63,8 +62,11 @@ export const TimelineExpandedSection: React.FC<{
 	readonly nodePath: SequenceNodePath | null;
 }> = ({sequence, originalLocation, nestedDepth, nodePath}) => {
 	const {expandedTracks, toggleTrack} = useContext(ExpandedTracksContext);
+	const {dragOverrides, codeValues} = useContext(
+		Internals.VisualModeOverridesContext,
+	);
 
-	const overrideId = sequence.controls?.overrideId ?? sequence.id;
+	const {overrideId} = sequence.controls!;
 
 	const validatedLocation: CodePosition | null = useMemo(() => {
 		if (
@@ -82,28 +84,28 @@ export const TimelineExpandedSection: React.FC<{
 		};
 	}, [originalLocation]);
 
-	const tree = useMemo(() => buildTimelineTree(sequence), [sequence]);
+	const tree = useMemo(
+		() => buildTimelineTree({sequence, dragOverrides, codeValues}),
+		[sequence, dragOverrides, codeValues],
+	);
 
 	const flat = useMemo(
-		() => flattenVisibleTreeNodes(tree, expandedTracks),
+		() => flattenVisibleTreeNodes({nodes: tree, expandedTracks}),
 		[tree, expandedTracks],
 	);
 
 	const expandedHeight = useMemo(
-		() => getExpandedTrackHeight(sequence, expandedTracks),
-		[sequence, expandedTracks],
+		() =>
+			getExpandedTrackHeight(
+				sequence,
+				expandedTracks,
+				dragOverrides,
+				codeValues,
+			),
+		[sequence, expandedTracks, dragOverrides, codeValues],
 	);
 
 	const sequenceOffsetPx = SPACING * 3 * nestedDepth;
-
-	const keysToObserve = useMemo(() => {
-		const fields = getSchemaFields(sequence.controls);
-		if (!fields) {
-			return [];
-		}
-
-		return fields.map((f) => f.key);
-	}, [sequence.controls]);
 
 	const style = useMemo(() => {
 		return {
@@ -111,6 +113,8 @@ export const TimelineExpandedSection: React.FC<{
 			height: expandedHeight,
 		};
 	}, [expandedHeight]);
+
+	const {schema} = sequence.controls!;
 
 	const renderRow = useCallback(
 		(node: TimelineTreeNode, depth: number) => {
@@ -142,7 +146,7 @@ export const TimelineExpandedSection: React.FC<{
 						validatedLocation={validatedLocation}
 						paddingLeft={paddingLeft}
 						nodePath={nodePath}
-						keysToObserve={keysToObserve}
+						schema={schema}
 					/>
 				);
 			}
@@ -161,9 +165,9 @@ export const TimelineExpandedSection: React.FC<{
 		},
 		[
 			expandedTracks,
-			keysToObserve,
 			nodePath,
 			overrideId,
+			schema,
 			sequenceOffsetPx,
 			toggleTrack,
 			validatedLocation,

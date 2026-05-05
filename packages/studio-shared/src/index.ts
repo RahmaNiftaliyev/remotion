@@ -95,6 +95,17 @@ export {
 	UiOpenGlOptions,
 } from './render-job';
 export type {CompletedClientRender} from './render-job';
+export {
+	SCHEMA_FIELD_ROW_HEIGHT,
+	UNSUPPORTED_FIELD_ROW_HEIGHT,
+	getFieldsToShow,
+} from './schema-field-info';
+export type {
+	CodeValues,
+	DragOverrides,
+	SchemaFieldInfo,
+	SequenceControls,
+} from './schema-field-info';
 export {SOURCE_MAP_ENDPOINT} from './source-map-endpoint';
 export {
 	ScriptLine,

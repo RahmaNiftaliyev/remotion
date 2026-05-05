@@ -53,6 +53,10 @@ import {
 	addSequenceStackTraces,
 	getComponentsToAddStacksTo,
 } from './enable-sequence-stack-traces.js';
+import {
+	flattenActiveSchema,
+	getFlatSchemaWithAllKeys,
+} from './flatten-schema.js';
 import {getEffectiveVisualModeValue} from './get-effective-visual-mode-value.js';
 import {
 	getPreviewDomElement,
@@ -97,6 +101,7 @@ import type {
 	SequenceFieldSchema,
 	SequenceSchema,
 } from './sequence-field-schema.js';
+import {sequenceSchema, sequenceStyleSchema} from './sequence-field-schema.js';
 import type {ResolvedStackLocation} from './sequence-stack-traces.js';
 import {SequenceStackTracesUpdateContext} from './sequence-stack-traces.js';
 import {SequenceContext} from './SequenceContext.js';
@@ -135,8 +140,12 @@ import {
 	useBasicMediaInTimeline,
 	useMediaInTimeline,
 } from './use-media-in-timeline.js';
-import type {CanUpdateSequencePropStatus} from './use-schema.js';
-import {useSchema} from './use-schema.js';
+import {
+	computeEffectiveSchemaValuesDotNotation,
+	type CanUpdateSequencePropStatus,
+	type CodeValues,
+	type DragOverrides,
+} from './use-schema.js';
 import {useSequenceControlOverride} from './use-sequence-control-override.js';
 import {useUnsafeVideoConfig} from './use-unsafe-video-config.js';
 import {useVideo} from './use-video.js';
@@ -203,8 +212,11 @@ export const Internals = {
 	SequenceManager,
 	SequenceStackTracesUpdateContext,
 	SequenceVisibilityToggleContext,
-	useSchema,
 	wrapInSchema,
+	sequenceSchema,
+	sequenceStyleSchema,
+	flattenActiveSchema,
+	getFlatSchemaWithAllKeys,
 	useSequenceControlOverride,
 	RemotionRootContexts,
 	CompositionManagerProvider,
@@ -298,6 +310,7 @@ export const Internals = {
 	useMemoizedEffects,
 	defineEffect,
 	createDescriptor,
+	computeEffectiveSchemaValuesDotNotation,
 } as const;
 
 export type {
@@ -321,6 +334,8 @@ export type {
 	WatchRemotionStaticFilesPayload,
 	ScheduleAudioNodeOptions,
 	CanUpdateSequencePropStatus,
+	CodeValues,
+	DragOverrides,
 	ScheduleAudioNodeResult,
 	NonceHistory,
 };

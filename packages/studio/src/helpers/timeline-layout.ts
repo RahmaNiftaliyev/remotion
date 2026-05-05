@@ -1,9 +1,18 @@
-import type {
-	EffectDefinitionAndStack,
-	SequenceControls,
-	SequenceFieldSchema,
-	TSequence,
-} from 'remotion';
+import {
+	getFieldsToShow,
+	type CodeValues,
+	type DragOverrides,
+	type SchemaFieldInfo,
+	type SequenceControls,
+} from '@remotion/studio-shared';
+import type {EffectDefinitionAndStack, TSequence} from 'remotion';
+
+export type {CodeValues, DragOverrides, SchemaFieldInfo, SequenceControls};
+export {
+	SCHEMA_FIELD_ROW_HEIGHT,
+	UNSUPPORTED_FIELD_ROW_HEIGHT,
+	getFieldsToShow,
+} from '@remotion/studio-shared';
 
 export const TIMELINE_PADDING = 16;
 export const TIMELINE_BORDER = 1;
@@ -11,53 +20,10 @@ export const TIMELINE_ITEM_BORDER_BOTTOM = 1;
 
 export const TIMELINE_TRACK_EXPANDED_HEIGHT = 100;
 
-export const SCHEMA_FIELD_ROW_HEIGHT = 22;
-export const UNSUPPORTED_FIELD_ROW_HEIGHT = 22;
 export const TREE_GROUP_ROW_HEIGHT = 22;
 export const TREE_INDENT_PER_LEVEL = 16;
 export const EXPANDED_SECTION_PADDING_LEFT = 28;
 export const EXPANDED_SECTION_PADDING_RIGHT = 10;
-
-const SUPPORTED_SCHEMA_TYPES = new Set([
-	'number',
-	'boolean',
-	'rotation',
-	'translate',
-]);
-
-export type SchemaFieldInfo = {
-	key: string;
-	description: string | undefined;
-	typeName: string;
-	supported: boolean;
-	rowHeight: number;
-	currentValue: unknown;
-	fieldSchema: SequenceFieldSchema;
-};
-
-export const getSchemaFields = (
-	controls: SequenceControls | null,
-): SchemaFieldInfo[] | null => {
-	if (!controls) {
-		return null;
-	}
-
-	return Object.entries(controls.schema).map(([key, fieldSchema]) => {
-		const typeName = fieldSchema.type;
-		const supported = SUPPORTED_SCHEMA_TYPES.has(typeName);
-		return {
-			key,
-			description: fieldSchema.description,
-			typeName,
-			supported,
-			rowHeight: supported
-				? SCHEMA_FIELD_ROW_HEIGHT
-				: UNSUPPORTED_FIELD_ROW_HEIGHT,
-			currentValue: controls.currentValue[key],
-			fieldSchema,
-		};
-	});
-};
 
 export type EffectSchemaFieldLabel = {
 	key: string;
@@ -91,7 +57,15 @@ export type TimelineTreeNode =
 			readonly field: SchemaFieldInfo | null;
 	  };
 
-export const buildTimelineTree = (sequence: TSequence): TimelineTreeNode[] => {
+export const buildTimelineTree = ({
+	sequence,
+	dragOverrides,
+	codeValues,
+}: {
+	sequence: TSequence;
+	dragOverrides: DragOverrides;
+	codeValues: CodeValues;
+}): TimelineTreeNode[] => {
 	const roots: TimelineTreeNode[] = [];
 
 	if (sequence.effects.length > 0) {
@@ -118,7 +92,15 @@ export const buildTimelineTree = (sequence: TSequence): TimelineTreeNode[] => {
 		});
 	}
 
-	const controlFields = getSchemaFields(sequence.controls);
+	const controlFields = getFieldsToShow({
+		schema: sequence.controls!.schema,
+		currentRuntimeValueDotNotation:
+			sequence.controls!.currentRuntimeValueDotNotation,
+		dragOverrides,
+		codeValues,
+		overrideId: sequence.controls!.overrideId!,
+	});
+
 	if (controlFields && controlFields.length > 0) {
 		roots.push({
 			kind: 'group',
@@ -143,17 +125,25 @@ export type FlatTreeRow = {
 	readonly depth: number;
 };
 
-export const flattenVisibleTreeNodes = (
-	nodes: TimelineTreeNode[],
-	expandedTracks: Record<string, boolean>,
+export const flattenVisibleTreeNodes = ({
+	nodes,
+	expandedTracks,
 	depth = 0,
-): FlatTreeRow[] => {
+}: {
+	nodes: TimelineTreeNode[];
+	expandedTracks: Record<string, boolean>;
+	depth?: number;
+}): FlatTreeRow[] => {
 	const out: FlatTreeRow[] = [];
 	for (const node of nodes) {
 		out.push({node, depth});
 		if (node.kind === 'group' && (expandedTracks[node.id] ?? false)) {
 			out.push(
-				...flattenVisibleTreeNodes(node.children, expandedTracks, depth + 1),
+				...flattenVisibleTreeNodes({
+					nodes: node.children,
+					expandedTracks,
+					depth: depth + 1,
+				}),
 			);
 		}
 	}
@@ -172,9 +162,11 @@ export const getTreeRowHeight = (node: TimelineTreeNode): number => {
 export const getExpandedTrackHeight = (
 	sequence: TSequence,
 	expandedTracks: Record<string, boolean>,
+	dragOverrides: DragOverrides,
+	codeValues: CodeValues,
 ): number => {
-	const tree = buildTimelineTree(sequence);
-	const flat = flattenVisibleTreeNodes(tree, expandedTracks);
+	const tree = buildTimelineTree({sequence, dragOverrides, codeValues});
+	const flat = flattenVisibleTreeNodes({nodes: tree, expandedTracks});
 
 	if (flat.length === 0) {
 		return TIMELINE_TRACK_EXPANDED_HEIGHT;

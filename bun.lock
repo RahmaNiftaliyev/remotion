@@ -704,6 +704,7 @@
         "@remotion/skia": "workspace:*",
         "@remotion/starburst": "workspace:*",
         "@remotion/studio": "workspace:*",
+        "@remotion/studio-shared": "workspace:*",
         "@remotion/svg-3d-engine": "workspace:*",
         "@remotion/tailwind-v4": "workspace:*",
         "@remotion/three": "workspace:*",

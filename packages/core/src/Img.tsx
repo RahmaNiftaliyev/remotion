@@ -11,7 +11,7 @@ import type {SequenceControls} from './CompositionManager.js';
 import {addSequenceStackTraces} from './enable-sequence-stack-traces.js';
 import {getCrossOriginValue} from './get-cross-origin-value.js';
 import {usePreload} from './prefetch.js';
-import type {SequenceSchema} from './sequence-field-schema.js';
+import {sequenceStyleSchema} from './sequence-field-schema.js';
 import {SequenceContext} from './SequenceContext.js';
 import {useBufferState} from './use-buffer-state.js';
 import {useDelayRender} from './use-delay-render.js';
@@ -57,37 +57,6 @@ export type ImgProps = NativeImgProps & {
 };
 
 type Expected = Omit<NativeImgProps, 'onError' | 'src' | 'crossOrigin' | 'ref'>;
-
-const imgSchema = {
-	'style.translate': {
-		type: 'translate',
-		step: 1,
-		default: '0px 0px',
-		description: 'Position',
-	},
-	'style.scale': {
-		type: 'number',
-		min: 0.05,
-		max: 100,
-		step: 0.01,
-		default: 1,
-		description: 'Scale',
-	},
-	'style.rotate': {
-		type: 'rotation',
-		step: 1,
-		default: '0deg',
-		description: 'Rotation',
-	},
-	'style.opacity': {
-		type: 'number',
-		min: 0,
-		max: 1,
-		step: 0.01,
-		default: 1,
-		description: 'Opacity',
-	},
-} as const satisfies SequenceSchema;
 
 const ImgInner: React.FC<
 	ImgProps & {
@@ -344,5 +313,5 @@ const ImgInner: React.FC<
  * @description Works just like a regular HTML img tag. When you use the <Img> tag, Remotion will ensure that the image is loaded before rendering the frame.
  * @see [Documentation](https://remotion.dev/docs/img)
  */
-export const Img = wrapInSchema(ImgInner, imgSchema);
+export const Img = wrapInSchema(ImgInner, sequenceStyleSchema);
 addSequenceStackTraces(Img);

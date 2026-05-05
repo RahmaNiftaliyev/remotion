@@ -10,7 +10,7 @@ import type {
 	X264Preset,
 } from '@remotion/renderer';
 import type {HardwareAccelerationOption} from '@remotion/renderer/client';
-import type {_InternalTypes} from 'remotion';
+import type {_InternalTypes, SequenceSchema} from 'remotion';
 import type {CanUpdateSequencePropStatus} from 'remotion';
 import type {RecastCodemod, VisualControlChange} from './codemods';
 import type {PackageManager} from './package-manager';
@@ -214,7 +214,7 @@ export type SubscribeToSequencePropsRequest = {
 	fileName: string;
 	line: number;
 	column: number;
-	keys: string[];
+	schema: SequenceSchema;
 	clientId: string;
 };
 
@@ -245,7 +245,7 @@ export type SaveSequencePropsRequest = {
 	key: string;
 	value: string;
 	defaultValue: string | null;
-	observedKeys: string[];
+	schema: SequenceSchema;
 };
 
 export type SaveSequencePropsResponse =

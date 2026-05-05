@@ -2,6 +2,7 @@ import React from 'react';
 import type {CanUpdateSequencePropStatus} from 'remotion';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
 import {TimelineBooleanField} from './TimelineBooleanField';
+import {TimelineEnumField} from './TimelineEnumField';
 import {TimelineNumberField} from './TimelineNumberField';
 import {TimelineRotationField} from './TimelineRotationField';
 import {TimelineTranslateField} from './TimelineTranslateField';
@@ -121,6 +122,22 @@ export const TimelineFieldValue: React.FC<{
 					canUpdate={canUpdate}
 					onSave={onSave}
 					effectiveValue={effectiveValue}
+				/>
+			</span>
+		);
+	}
+
+	if (field.typeName === 'enum') {
+		return (
+			<span style={wrapperStyle}>
+				<TimelineEnumField
+					field={field}
+					codeValue={codeValue}
+					canUpdate={canUpdate}
+					onSave={onSave}
+					effectiveValue={effectiveValue}
+					onDragValueChange={onDragValueChange}
+					onDragEnd={onDragEnd}
 				/>
 			</span>
 		);

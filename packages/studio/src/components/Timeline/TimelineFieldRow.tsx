@@ -1,6 +1,6 @@
 import type {SequenceNodePath} from '@remotion/studio-shared';
 import React, {useCallback, useContext, useMemo} from 'react';
-import type {CanUpdateSequencePropStatus} from 'remotion';
+import type {SequenceSchema} from 'remotion';
 import {Internals} from 'remotion';
 import type {CodePosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
@@ -35,36 +35,28 @@ export const TimelineFieldRow: React.FC<{
 	readonly validatedLocation: CodePosition | null;
 	readonly paddingLeft: number;
 	readonly nodePath: SequenceNodePath | null;
-	readonly keysToObserve: string[];
+	readonly schema: SequenceSchema;
 }> = ({
 	field,
 	overrideId,
 	validatedLocation,
 	paddingLeft,
 	nodePath,
-	keysToObserve,
+	schema,
 }) => {
-	const {
-		setDragOverrides,
-		clearDragOverrides,
-		dragOverrides,
-		codeValues: allPropStatuses,
-	} = useContext(Internals.VisualModeOverridesContext);
+	const {setDragOverrides, clearDragOverrides, dragOverrides, codeValues} =
+		useContext(Internals.VisualModeOverridesContext);
 
-	const propStatuses = (allPropStatuses[overrideId] ?? null) as Record<
-		string,
-		CanUpdateSequencePropStatus
-	> | null;
-
-	const propStatus = propStatuses?.[field.key] ?? null;
+	const codeValuesForOverride = codeValues[overrideId] ?? null;
+	const codeValue = codeValuesForOverride?.[field.key] ?? null;
 
 	const dragOverrideValue = useMemo(() => {
 		return (dragOverrides[overrideId] ?? {})[field.key];
 	}, [dragOverrides, overrideId, field.key]);
 
 	const effectiveValue = Internals.getEffectiveVisualModeValue({
-		codeValue: propStatus,
-		runtimeValue: field.currentValue,
+		codeValue,
+		runtimeValue: field.currentRuntimeValue,
 		dragOverrideValue,
 		defaultValue: field.fieldSchema.default,
 		shouldResortToDefaultValueIfUndefined: true,
@@ -74,11 +66,11 @@ export const TimelineFieldRow: React.FC<{
 
 	const onSave = useCallback(
 		(key: string, value: unknown): Promise<void> => {
-			if (!propStatuses || !validatedLocation || !nodePath) {
+			if (!codeValuesForOverride || !validatedLocation || !nodePath) {
 				return Promise.reject(new Error('Cannot save'));
 			}
 
-			const status = propStatuses[key];
+			const status = codeValuesForOverride[key];
 			if (!status || !status.canUpdate) {
 				return Promise.reject(new Error('Cannot save'));
 			}
@@ -94,7 +86,7 @@ export const TimelineFieldRow: React.FC<{
 				key,
 				value: JSON.stringify(value),
 				defaultValue,
-				observedKeys: keysToObserve,
+				schema,
 			}).then((data) => {
 				if (data.success) {
 					if (data.newStatus.canUpdate) {
@@ -110,11 +102,11 @@ export const TimelineFieldRow: React.FC<{
 			});
 		},
 		[
+			codeValuesForOverride,
 			field.fieldSchema.default,
-			keysToObserve,
 			nodePath,
 			overrideId,
-			propStatuses,
+			schema,
 			setCodeValues,
 			validatedLocation,
 		],
@@ -146,13 +138,13 @@ export const TimelineFieldRow: React.FC<{
 			</div>
 			<TimelineFieldValue
 				field={field}
-				propStatus={propStatus}
+				propStatus={codeValue}
 				onSave={onSave}
 				onDragValueChange={onDragValueChange}
 				onDragEnd={onDragEnd}
-				canUpdate={propStatus?.canUpdate ?? false}
+				canUpdate={codeValue?.canUpdate ?? false}
 				effectiveValue={effectiveValue}
-				codeValue={propStatus}
+				codeValue={codeValue}
 			/>
 		</div>
 	);

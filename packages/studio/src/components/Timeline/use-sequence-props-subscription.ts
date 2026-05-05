@@ -11,7 +11,6 @@ import {Internals, type CanUpdateSequencePropStatus} from 'remotion';
 import type {TSequence} from 'remotion';
 import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import {StudioServerConnectionCtx} from '../../helpers/client-id';
-import {getSchemaFields} from '../../helpers/timeline-layout';
 import {callApi} from '../call-api';
 
 export const useSequencePropsSubscription = (
@@ -41,16 +40,6 @@ export const useSequencePropsSubscription = (
 	);
 	const clientId = state.type === 'connected' ? state.clientId : undefined;
 
-	const schemaFields = useMemo(
-		() => getSchemaFields(sequence.controls),
-		[sequence.controls],
-	);
-
-	const schemaKeysString = useMemo(
-		() => (schemaFields ? schemaFields.map((f) => f.key).join(',') : null),
-		[schemaFields],
-	);
-
 	const validatedLocation = useMemo(() => {
 		if (
 			!originalLocation ||
@@ -79,14 +68,19 @@ export const useSequencePropsSubscription = (
 	currentLocationColumn.current = locationColumn;
 
 	const nodePathRef = useRef<SequenceNodePath | null>(null);
-	const [nodePath, setNodePath] = useState<SequenceNodePath | null>(null);
-	const [jsxInMapCallback, setJsxInMapCallback] = useState(false);
+	const [subscriptionState, setSubscriptionState] = useState<{
+		nodePath: SequenceNodePath | null;
+		jsxInMapCallback: boolean;
+	}>({nodePath: null, jsxInMapCallback: false});
 	const isMountedRef = useRef(true);
 
-	const setNodePathBoth = useCallback((next: SequenceNodePath | null) => {
-		nodePathRef.current = next;
-		setNodePath(next);
-	}, []);
+	const updateSubscriptionState = useCallback(
+		(next: {nodePath: SequenceNodePath | null; jsxInMapCallback: boolean}) => {
+			nodePathRef.current = next.nodePath;
+			setSubscriptionState(next);
+		},
+		[],
+	);
 
 	useEffect(() => {
 		isMountedRef.current = true;
@@ -98,8 +92,7 @@ export const useSequencePropsSubscription = (
 	useEffect(() => {
 		if (!visualModeEnabled) {
 			setPropStatusesForSequence(null);
-			setNodePathBoth(null);
-			setJsxInMapCallback(false);
+			updateSubscriptionState({nodePath: null, jsxInMapCallback: false});
 			return;
 		}
 
@@ -107,22 +100,25 @@ export const useSequencePropsSubscription = (
 			!clientId ||
 			!locationSource ||
 			!locationLine ||
-			locationColumn === null ||
-			!schemaKeysString
+			locationColumn === null
 		) {
 			setPropStatusesForSequence(null);
-			setNodePathBoth(null);
-			setJsxInMapCallback(false);
+			updateSubscriptionState({nodePath: null, jsxInMapCallback: false});
 			return;
 		}
 
-		const keys = schemaKeysString.split(',');
+		const schema = sequence.controls?.schema;
+		if (!schema) {
+			setPropStatusesForSequence(null);
+			updateSubscriptionState({nodePath: null, jsxInMapCallback: false});
+			return;
+		}
 
 		callApi('/api/subscribe-to-sequence-props', {
 			fileName: locationSource,
 			line: locationLine,
 			column: locationColumn,
-			keys,
+			schema,
 			clientId,
 		})
 			.then((result) => {
@@ -135,18 +131,18 @@ export const useSequencePropsSubscription = (
 				}
 
 				if (result.canUpdate) {
-					setNodePathBoth(result.nodePath);
+					updateSubscriptionState({
+						nodePath: result.nodePath,
+						jsxInMapCallback: result.jsxInMapCallback,
+					});
 					setPropStatusesForSequence(result.props);
-					setJsxInMapCallback(result.jsxInMapCallback);
 				} else {
-					setNodePathBoth(null);
+					updateSubscriptionState({nodePath: null, jsxInMapCallback: false});
 					setPropStatusesForSequence(null);
-					setJsxInMapCallback(false);
 				}
 			})
 			.catch((err) => {
-				setNodePathBoth(null);
-				setJsxInMapCallback(false);
+				updateSubscriptionState({nodePath: null, jsxInMapCallback: false});
 				Internals.Log.error(err);
 				setPropStatusesForSequence(null);
 			});
@@ -159,8 +155,7 @@ export const useSequencePropsSubscription = (
 				setPropStatusesForSequence(null);
 			}
 
-			setNodePathBoth(null);
-			setJsxInMapCallback(false);
+			updateSubscriptionState({nodePath: null, jsxInMapCallback: false});
 			if (currentNodePath) {
 				callApi('/api/unsubscribe-from-sequence-props', {
 					fileName: locationSource,
@@ -172,14 +167,14 @@ export const useSequencePropsSubscription = (
 			}
 		};
 	}, [
-		visualModeEnabled,
 		clientId,
-		locationSource,
-		locationLine,
 		locationColumn,
-		schemaKeysString,
+		locationLine,
+		locationSource,
+		sequence.controls?.schema,
 		setPropStatusesForSequence,
-		setNodePathBoth,
+		updateSubscriptionState,
+		visualModeEnabled,
 	]);
 
 	useEffect(() => {
@@ -205,12 +200,15 @@ export const useSequencePropsSubscription = (
 			}
 
 			if (event.result.canUpdate) {
-				setPropStatusesForSequence(event.result.props);
-				setJsxInMapCallback(event.result.jsxInMapCallback);
+				const {jsxInMapCallback: nextJsxInMapCallback, props} = event.result;
+				setSubscriptionState((prev) => ({
+					nodePath: prev.nodePath,
+					jsxInMapCallback: nextJsxInMapCallback,
+				}));
+				setPropStatusesForSequence(props);
 			} else {
 				setPropStatusesForSequence(null);
-				setNodePathBoth(null);
-				setJsxInMapCallback(false);
+				updateSubscriptionState({nodePath: null, jsxInMapCallback: false});
 			}
 		};
 
@@ -225,8 +223,8 @@ export const useSequencePropsSubscription = (
 		locationColumn,
 		subscribeToEvent,
 		setPropStatusesForSequence,
-		setNodePathBoth,
+		updateSubscriptionState,
 	]);
 
-	return {nodePath, jsxInMapCallback};
+	return subscriptionState;
 };

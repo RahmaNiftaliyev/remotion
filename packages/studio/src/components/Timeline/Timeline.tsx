@@ -50,6 +50,9 @@ const TimelineInner: React.FC = () => {
 	const {sequences} = useContext(Internals.SequenceManager);
 	const {expandedTracks} = useContext(ExpandedTracksContext);
 	const {previewServerState} = useContext(StudioServerConnectionCtx);
+	const {dragOverrides, codeValues} = useContext(
+		Internals.VisualModeOverridesContext,
+	);
 	const visualModeEnabled =
 		Boolean(process.env.EXPERIMENTAL_VISUAL_MODE_ENABLED) &&
 		previewServerState.type === 'connected';
@@ -92,8 +95,12 @@ const TimelineInner: React.FC = () => {
 						getTimelineLayerHeight(track.sequence.type) +
 						Number(TIMELINE_ITEM_BORDER_BOTTOM) +
 						(isExpanded
-							? getExpandedTrackHeight(track.sequence, expandedTracks) +
-								TIMELINE_ITEM_BORDER_BOTTOM
+							? getExpandedTrackHeight(
+									track.sequence,
+									expandedTracks,
+									dragOverrides,
+									codeValues,
+								) + TIMELINE_ITEM_BORDER_BOTTOM
 							: 0)
 					);
 				}, 0) +
@@ -105,7 +112,14 @@ const TimelineInner: React.FC = () => {
 			minHeight: '100%',
 			overflowX: 'hidden',
 		};
-	}, [hasBeenCut, shown, expandedTracks, visualModeEnabled]);
+	}, [
+		hasBeenCut,
+		shown,
+		expandedTracks,
+		visualModeEnabled,
+		codeValues,
+		dragOverrides,
+	]);
 
 	return (
 		<div

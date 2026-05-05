@@ -13,7 +13,6 @@ import {
 } from '../../helpers/timeline-layout';
 import {ExpandedTracksContext} from '../ExpandedTracksProvider';
 import {TimelineExpandedRow} from './TimelineExpandedRow';
-import {INDENT} from './TimelineListItem';
 
 const expandedSectionBase: React.CSSProperties = {
 	color: 'white',
@@ -32,9 +31,9 @@ const separator: React.CSSProperties = {
 export const TimelineExpandedSection: React.FC<{
 	readonly sequence: TSequence;
 	readonly originalLocation: OriginalPosition | null;
-	readonly nestedDepth: number;
 	readonly nodePath: SequenceNodePath | null;
-}> = ({sequence, originalLocation, nestedDepth, nodePath}) => {
+	readonly nestedDepth: number;
+}> = ({sequence, originalLocation, nodePath, nestedDepth}) => {
 	const {expandedTracks, toggleTrack} = useContext(ExpandedTracksContext);
 	const {dragOverrides, codeValues} = useContext(
 		Internals.VisualModeOverridesContext,
@@ -79,8 +78,6 @@ export const TimelineExpandedSection: React.FC<{
 		[sequence, expandedTracks, dragOverrides, codeValues],
 	);
 
-	const sequenceOffsetPx = INDENT * nestedDepth;
-
 	const style = useMemo(() => {
 		return {
 			...expandedSectionBase,
@@ -103,7 +100,7 @@ export const TimelineExpandedSection: React.FC<{
 						<TimelineExpandedRow
 							node={node}
 							depth={depth}
-							sequenceOffsetPx={sequenceOffsetPx}
+							nestedDepth={nestedDepth}
 							expandedTracks={expandedTracks}
 							toggleTrack={toggleTrack}
 							overrideId={overrideId}

@@ -13,6 +13,7 @@ import {ContextMenu} from '../ContextMenu';
 import {ExpandedTracksContext} from '../ExpandedTracksProvider';
 import type {ComboboxValue} from '../NewComposition/ComboBox';
 import {showNotification} from '../Notifications/NotificationCenter';
+import {Padder} from './Padder';
 import {TimelineExpandArrowButton} from './TimelineExpandArrowButton';
 import {TimelineExpandedSection} from './TimelineExpandedSection';
 import {TimelineLayerEye} from './TimelineLayerEye';
@@ -176,13 +177,6 @@ export const TimelineListItem: React.FC<{
 		toggleTrack(sequence.id);
 	}, [sequence.id, toggleTrack]);
 
-	const padder = useMemo((): React.CSSProperties => {
-		return {
-			width: Number(INDENT) * nestedDepth,
-			flexShrink: 0,
-		};
-	}, [nestedDepth]);
-
 	const isItemHidden = useMemo(() => {
 		return hidden[sequence.id] ?? false;
 	}, [hidden, sequence.id]);
@@ -233,7 +227,7 @@ export const TimelineListItem: React.FC<{
 					hidden={isItemHidden}
 					onInvoked={onToggleVisibility}
 				/>
-				<div style={padder} />
+				<Padder depth={nestedDepth} />
 				{visualModeActive ? (
 					<TimelineExpandArrowButton
 						isExpanded={isExpanded}
@@ -262,8 +256,8 @@ export const TimelineListItem: React.FC<{
 				<TimelineExpandedSection
 					sequence={sequence}
 					originalLocation={originalLocation}
-					nestedDepth={nestedDepth}
 					nodePath={nodePath}
+					nestedDepth={nestedDepth}
 				/>
 			) : null}
 		</>

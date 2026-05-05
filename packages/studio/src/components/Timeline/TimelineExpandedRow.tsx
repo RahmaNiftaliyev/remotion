@@ -9,6 +9,7 @@ import {
 	getTreeRowHeight,
 	TREE_GROUP_ROW_HEIGHT,
 } from '../../helpers/timeline-layout';
+import {Padder} from './Padder';
 import {TimelineExpandArrowButton} from './TimelineExpandArrowButton';
 import {TimelineFieldRow} from './TimelineFieldRow';
 import {INDENT} from './TimelineListItem';
@@ -35,7 +36,7 @@ const labelOnlyRowBase: React.CSSProperties = {
 export const TimelineExpandedRow: React.FC<{
 	readonly node: TimelineTreeNode;
 	readonly depth: number;
-	readonly sequenceOffsetPx: number;
+	readonly nestedDepth: number;
 	readonly expandedTracks: Record<string, boolean>;
 	readonly toggleTrack: (id: string) => void;
 	readonly overrideId: string;
@@ -45,7 +46,7 @@ export const TimelineExpandedRow: React.FC<{
 }> = ({
 	node,
 	depth,
-	sequenceOffsetPx,
+	nestedDepth,
 	expandedTracks,
 	toggleTrack,
 	overrideId,
@@ -53,8 +54,7 @@ export const TimelineExpandedRow: React.FC<{
 	nodePath,
 	schema,
 }) => {
-	const paddingLeft =
-		EXPANDED_SECTION_PADDING_LEFT + depth * INDENT + sequenceOffsetPx;
+	const paddingLeft = EXPANDED_SECTION_PADDING_LEFT + depth * INDENT;
 
 	const groupStyle = useMemo(
 		(): React.CSSProperties => ({...groupRowBase, paddingLeft}),
@@ -74,6 +74,7 @@ export const TimelineExpandedRow: React.FC<{
 		const isExpanded = expandedTracks[node.id] ?? false;
 		return (
 			<div style={groupStyle}>
+				<Padder depth={nestedDepth + 1} />
 				<TimelineExpandArrowButton
 					isExpanded={isExpanded}
 					onClick={() => toggleTrack(node.id)}
@@ -92,6 +93,7 @@ export const TimelineExpandedRow: React.FC<{
 				overrideId={overrideId}
 				validatedLocation={validatedLocation}
 				paddingLeft={paddingLeft}
+				nestedDepth={nestedDepth}
 				nodePath={nodePath}
 				schema={schema}
 			/>
@@ -100,6 +102,7 @@ export const TimelineExpandedRow: React.FC<{
 
 	return (
 		<div style={labelOnlyStyle}>
+			<Padder depth={nestedDepth + 1} />
 			<span style={rowLabel}>{node.label}</span>
 		</div>
 	);

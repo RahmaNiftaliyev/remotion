@@ -19,7 +19,7 @@ const AUDIO_GRADIENT = 'linear-gradient(rgb(16 171 58), rgb(43 165 63) 60%)';
 const VIDEO_GRADIENT = 'linear-gradient(to top, #8e44ad, #9b59b6)';
 const IMAGE_GRADIENT = 'linear-gradient(to top, #2980b9, #3498db)';
 
-export const TimelineSequence: React.FC<{
+const TimelineSequenceFn: React.FC<{
 	readonly s: TSequence;
 }> = ({s}) => {
 	const windowWidth = useContext(TimelineWidthContext);
@@ -29,6 +29,109 @@ export const TimelineSequence: React.FC<{
 	}
 
 	return <Inner windowWidth={windowWidth} s={s} />;
+};
+
+const TimelineSequenceCurrentFrame: React.FC<{
+	readonly s: TSequence;
+	readonly displayDurationInFrames: number;
+	readonly premountWidth: number | null;
+	readonly postmountWidth: number | null;
+	readonly style: React.CSSProperties;
+	readonly children: React.ReactNode;
+}> = ({
+	s,
+	displayDurationInFrames,
+	premountWidth,
+	postmountWidth,
+	style,
+	children,
+}) => {
+	const frame = useCurrentFrame();
+	const relativeFrame = frame - s.from;
+	const relativeFrameWithPremount = relativeFrame + (s.premountDisplay ?? 0);
+	const relativeFrameWithPostmount = relativeFrame - displayDurationInFrames;
+
+	const roundedFrame = Math.round(relativeFrame * 100) / 100;
+
+	const isInRange =
+		relativeFrame >= 0 && relativeFrame < displayDurationInFrames;
+	const isPremounting =
+		relativeFrameWithPremount >= 0 &&
+		relativeFrameWithPremount < displayDurationInFrames &&
+		!isInRange;
+	const isPostmounting =
+		relativeFrameWithPostmount >= 0 &&
+		relativeFrameWithPostmount < (s.postmountDisplay ?? 0) &&
+		!isInRange;
+
+	const actualStyle: React.CSSProperties = useMemo(() => {
+		return {
+			...style,
+			opacity: isInRange ? 1 : 0.5,
+		};
+	}, [isInRange, style]);
+
+	return (
+		<div style={actualStyle} title={s.displayName}>
+			{premountWidth ? (
+				<div
+					style={{
+						width: premountWidth,
+						height: '100%',
+						background: `repeating-linear-gradient(
+							-45deg,
+							transparent,
+							transparent 2px,
+							rgba(255, 255, 255, ${isPremounting ? 0.5 : 0.2}) 2px,
+							rgba(255, 255, 255, ${isPremounting ? 0.5 : 0.2}) 4px
+						)`,
+						position: 'absolute',
+					}}
+				/>
+			) : null}
+
+			{postmountWidth ? (
+				<div
+					style={{
+						width: postmountWidth,
+						height: '100%',
+						background: `repeating-linear-gradient(
+							-45deg,
+							transparent,
+							transparent 2px,
+							rgba(255, 255, 255, ${isPostmounting ? 0.5 : 0.2}) 2px,
+							rgba(255, 255, 255, ${isPostmounting ? 0.5 : 0.2}) 4px
+						)`,
+						position: 'absolute',
+						right: 0,
+					}}
+				/>
+			) : null}
+
+			{children}
+
+			{s.type !== 'audio' &&
+			s.type !== 'video' &&
+			s.type !== 'image' &&
+			s.loopDisplay === undefined &&
+			(isInRange || isPremounting || isPostmounting) ? (
+				<div
+					style={{
+						paddingLeft: 5 + (premountWidth ?? 0),
+						height: '100%',
+						display: 'flex',
+						alignItems: 'center',
+					}}
+				>
+					<TimelineSequenceFrame
+						premounted={isPremounting}
+						postmounted={isPostmounting ? s.duration - 1 : null}
+						roundedFrame={roundedFrame}
+					/>
+				</div>
+			) : null}
+		</div>
+	);
 };
 
 const Inner: React.FC<{
@@ -48,26 +151,9 @@ const Inner: React.FC<{
 		throw new TypeError('Expected video config');
 	}
 
-	const frame = useCurrentFrame();
-	const relativeFrame = frame - s.from;
 	const displayDurationInFrames = s.loopDisplay
 		? s.loopDisplay.durationInFrames * s.loopDisplay.numberOfTimes
 		: s.duration;
-	const relativeFrameWithPremount = relativeFrame + (s.premountDisplay ?? 0);
-	const relativeFrameWithPostmount = relativeFrame - displayDurationInFrames;
-
-	const roundedFrame = Math.round(relativeFrame * 100) / 100;
-
-	const isInRange =
-		relativeFrame >= 0 && relativeFrame < displayDurationInFrames;
-	const isPremounting =
-		relativeFrameWithPremount >= 0 &&
-		relativeFrameWithPremount < displayDurationInFrames &&
-		!isInRange;
-	const isPostmounting =
-		relativeFrameWithPostmount >= 0 &&
-		relativeFrameWithPostmount < (s.postmountDisplay ?? 0) &&
-		!isInRange;
 
 	const {marginLeft, width, naturalWidth, premountWidth, postmountWidth} =
 		useMemo(() => {
@@ -108,51 +194,21 @@ const Inner: React.FC<{
 			width,
 			color: 'white',
 			overflow: 'hidden',
-			opacity: isInRange ? 1 : 0.5,
 		};
-	}, [isInRange, marginLeft, s.type, width]);
+	}, [marginLeft, s.type, width]);
 
 	if (maxMediaDuration === null && !s.loopDisplay) {
 		return null;
 	}
 
 	return (
-		<div key={s.id} style={style} title={s.displayName}>
-			{premountWidth ? (
-				<div
-					style={{
-						width: premountWidth,
-						height: '100%',
-						background: `repeating-linear-gradient(
-							-45deg,
-							transparent,
-							transparent 2px,
-							rgba(255, 255, 255, ${isPremounting ? 0.5 : 0.2}) 2px,
-							rgba(255, 255, 255, ${isPremounting ? 0.5 : 0.2}) 4px
-						)`,
-						position: 'absolute',
-					}}
-				/>
-			) : null}
-
-			{postmountWidth ? (
-				<div
-					style={{
-						width: postmountWidth,
-						height: '100%',
-						background: `repeating-linear-gradient(
-							-45deg,
-							transparent,
-							transparent 2px,
-							rgba(255, 255, 255, ${isPostmounting ? 0.5 : 0.2}) 2px,
-							rgba(255, 255, 255, ${isPostmounting ? 0.5 : 0.2}) 4px
-						)`,
-						position: 'absolute',
-						right: 0,
-					}}
-				/>
-			) : null}
-
+		<TimelineSequenceCurrentFrame
+			s={s}
+			displayDurationInFrames={displayDurationInFrames}
+			premountWidth={premountWidth}
+			postmountWidth={postmountWidth}
+			style={style}
+		>
 			{s.type === 'audio' ? (
 				<AudioWaveform
 					src={s.src}
@@ -186,27 +242,8 @@ const Inner: React.FC<{
 			{s.loopDisplay === undefined ? null : (
 				<LoopedTimelineIndicator loops={s.loopDisplay.numberOfTimes} />
 			)}
-
-			{s.type !== 'audio' &&
-			s.type !== 'video' &&
-			s.type !== 'image' &&
-			s.loopDisplay === undefined &&
-			(isInRange || isPremounting || isPostmounting) ? (
-				<div
-					style={{
-						paddingLeft: 5 + (premountWidth ?? 0),
-						height: '100%',
-						display: 'flex',
-						alignItems: 'center',
-					}}
-				>
-					<TimelineSequenceFrame
-						premounted={isPremounting}
-						postmounted={isPostmounting ? s.duration - 1 : null}
-						roundedFrame={roundedFrame}
-					/>
-				</div>
-			) : null}
-		</div>
+		</TimelineSequenceCurrentFrame>
 	);
 };
+
+export const TimelineSequence = React.memo(TimelineSequenceFn);

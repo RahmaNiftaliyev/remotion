@@ -1,7 +1,4 @@
-import {useMemo} from 'react';
-import type {SequenceControls} from './CompositionManager.js';
 import {getEffectiveVisualModeValue} from './get-effective-visual-mode-value.js';
-import type {RemotionEnvironment} from './internals.js';
 import type {
 	SequenceFieldSchema,
 	SequenceSchema,
@@ -59,71 +56,4 @@ export const computeEffectiveSchemaValuesDotNotation = ({
 	}
 
 	return merged;
-};
-
-export const useSchema = <T extends Record<string, unknown>>({
-	schema,
-	currentRuntimeValueDotNotation,
-	overrideId,
-	visualModeEnabled,
-	dragOverrides,
-	codeValues,
-}: {
-	schema: SequenceSchema | null;
-	currentRuntimeValueDotNotation: T | null;
-	overrideId: string;
-	visualModeEnabled: boolean;
-	dragOverrides: Record<string, Record<string, unknown>>;
-	codeValues: Record<string, Record<string, CanUpdateSequencePropStatus>>;
-}): {
-	controls: SequenceControls | undefined;
-	valuesDotNotation: T;
-} => {
-	const controls = useMemo(() => {
-		if (!visualModeEnabled) {
-			return undefined;
-		}
-
-		if (schema === null || currentRuntimeValueDotNotation === null) {
-			return undefined;
-		}
-
-		return {
-			schema,
-			currentRuntimeValueDotNotation,
-			overrideId,
-		};
-	}, [schema, currentRuntimeValueDotNotation, overrideId, visualModeEnabled]);
-
-	return useMemo(() => {
-		if (
-			controls === undefined ||
-			currentRuntimeValueDotNotation === null ||
-			schema === null
-		) {
-			return {
-				controls: undefined,
-				valuesDotNotation: (currentRuntimeValueDotNotation ?? {}) as T,
-			};
-		}
-
-		const valuesDotNotation = computeEffectiveSchemaValuesDotNotation({
-			schema,
-			currentValue: currentRuntimeValueDotNotation,
-			overrideValues: dragOverrides[overrideId] ?? {},
-			propStatus: codeValues[overrideId],
-		});
-
-		return {
-			controls,
-			valuesDotNotation: valuesDotNotation as T,
-		};
-	}, [
-		controls,
-		currentRuntimeValueDotNotation,
-		overrideId,
-		dragOverrides,
-		codeValues,
-		schema,
-	]);
 };

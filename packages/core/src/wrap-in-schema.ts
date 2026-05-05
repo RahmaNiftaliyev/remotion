@@ -1,4 +1,4 @@
-import React, {forwardRef, useState, useContext} from 'react';
+import React, {forwardRef, useState, useContext, useMemo} from 'react';
 import type {SequenceControls} from './CompositionManager.js';
 import {
 	flattenActiveSchema,
@@ -7,7 +7,7 @@ import {
 import type {SequenceSchema} from './sequence-field-schema.js';
 import {VisualModeOverridesContext} from './SequenceManager.js';
 import {useRemotionEnvironment} from './use-remotion-environment.js';
-import {useSchema} from './use-schema.js';
+import {computeEffectiveSchemaValuesDotNotation} from './use-schema.js';
 
 export const getNestedValue = (
 	obj: Record<string, unknown>,
@@ -102,7 +102,17 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 
 	const Wrapped = forwardRef<unknown, Props>((props, ref) => {
 		const env = useRemotionEnvironment();
-		if (!env.isStudio || env.isReadOnlyStudio || env.isRendering) {
+
+		const {visualModeEnabled, dragOverrides, codeValues} = useContext(
+			VisualModeOverridesContext,
+		);
+
+		if (
+			!env.isStudio ||
+			env.isReadOnlyStudio ||
+			env.isRendering ||
+			!visualModeEnabled
+		) {
 			return React.createElement(Component, {
 				...props,
 				_experimentalControls: null,
@@ -126,11 +136,6 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 		}
 
 		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const {visualModeEnabled, dragOverrides, codeValues} = useContext(
-			VisualModeOverridesContext,
-		);
-
-		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const [overrideId] = useState(() => String(Math.random()));
 
 		// 1. Flatten the schema to get every possible key (across all variants).
@@ -143,16 +148,25 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 			flatKeys,
 		);
 
+		// eslint-disable-next-line react-hooks/rules-of-hooks
+		const controls = useMemo(() => {
+			return {
+				schema,
+				currentRuntimeValueDotNotation,
+				overrideId,
+			};
+		}, [currentRuntimeValueDotNotation, overrideId]);
+
 		// 3. Apply drag/code overrides on top of the runtime values.
 		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const {controls, valuesDotNotation} = useSchema({
-			schema,
-			currentRuntimeValueDotNotation,
-			overrideId,
-			visualModeEnabled,
-			dragOverrides,
-			codeValues,
-		});
+		const valuesDotNotation = useMemo(() => {
+			return computeEffectiveSchemaValuesDotNotation({
+				schema,
+				currentValue: currentRuntimeValueDotNotation,
+				overrideValues: dragOverrides[overrideId] ?? {},
+				propStatus: codeValues[overrideId],
+			});
+		}, [currentRuntimeValueDotNotation, dragOverrides, overrideId, codeValues]);
 
 		// 4. Eliminate values forbidden by the resolved discriminated union.
 		const activeKeys = selectActiveKeys(schema, valuesDotNotation);

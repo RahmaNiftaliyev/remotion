@@ -141,7 +141,6 @@ import {
 	computeEffectiveSchemaValuesDotNotation,
 	type CanUpdateSequencePropStatus,
 } from './use-schema.js';
-import {useSchema} from './use-schema.js';
 import {useSequenceControlOverride} from './use-sequence-control-override.js';
 import {useUnsafeVideoConfig} from './use-unsafe-video-config.js';
 import {useVideo} from './use-video.js';
@@ -208,7 +207,6 @@ export const Internals = {
 	SequenceManager,
 	SequenceStackTracesUpdateContext,
 	SequenceVisibilityToggleContext,
-	useSchema,
 	wrapInSchema,
 	sequenceSchema,
 	sequenceStyleSchema,

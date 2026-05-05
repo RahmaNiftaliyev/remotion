@@ -100,8 +100,7 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 		return Component as unknown as React.ComponentType<Props>;
 	}
 
-	// Schema is closure-stable for the life of this wrapped component,
-	// so flatten it once instead of on every render.
+	// Schema is static for a component, so we move this outside
 	const flatSchema = getFlatSchemaWithAllKeys(schema);
 	const flatKeys = Object.keys(flatSchema);
 

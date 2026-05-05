@@ -149,7 +149,6 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 			schema,
 			currentRuntimeValueDotNotation,
 			overrideId,
-			env,
 			visualModeEnabled,
 			dragOverrides,
 			codeValues,

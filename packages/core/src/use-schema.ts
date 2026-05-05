@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import {useMemo} from 'react';
 import type {SequenceControls} from './CompositionManager.js';
 import {getEffectiveVisualModeValue} from './get-effective-visual-mode-value.js';
@@ -66,7 +65,6 @@ export const useSchema = <T extends Record<string, unknown>>({
 	schema,
 	currentRuntimeValueDotNotation,
 	overrideId,
-	env,
 	visualModeEnabled,
 	dragOverrides,
 	codeValues,
@@ -74,7 +72,6 @@ export const useSchema = <T extends Record<string, unknown>>({
 	schema: SequenceSchema | null;
 	currentRuntimeValueDotNotation: T | null;
 	overrideId: string;
-	env: RemotionEnvironment;
 	visualModeEnabled: boolean;
 	dragOverrides: Record<string, Record<string, unknown>>;
 	codeValues: Record<string, Record<string, CanUpdateSequencePropStatus>>;
@@ -82,21 +79,6 @@ export const useSchema = <T extends Record<string, unknown>>({
 	controls: SequenceControls | undefined;
 	valuesDotNotation: T;
 } => {
-	const earlyReturn = useMemo(() => {
-		if (!env.isStudio || env.isReadOnlyStudio) {
-			return {
-				controls: undefined,
-				valuesDotNotation: (currentRuntimeValueDotNotation ?? {}) as T,
-			};
-		}
-
-		return undefined;
-	}, [env.isStudio, env.isReadOnlyStudio, currentRuntimeValueDotNotation]);
-
-	if (earlyReturn) {
-		return earlyReturn;
-	}
-
 	const controls = useMemo(() => {
 		if (!visualModeEnabled) {
 			return undefined;

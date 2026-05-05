@@ -14,7 +14,10 @@ import {ExpandedTracksContext} from '../ExpandedTracksProvider';
 import type {ComboboxValue} from '../NewComposition/ComboBox';
 import {showNotification} from '../Notifications/NotificationCenter';
 import {Padder} from './Padder';
-import {TimelineExpandArrowButton} from './TimelineExpandArrowButton';
+import {
+	TimelineExpandArrowButton,
+	TimelineExpandArrowSpacer,
+} from './TimelineExpandArrowButton';
 import {TimelineExpandedSection} from './TimelineExpandedSection';
 import {TimelineLayerEye} from './TimelineLayerEye';
 import {TimelineStack} from './TimelineStack';
@@ -229,12 +232,15 @@ export const TimelineListItem: React.FC<{
 				/>
 				<Padder depth={nestedDepth} />
 				{visualModeActive ? (
-					<TimelineExpandArrowButton
-						isExpanded={isExpanded}
-						onClick={onToggleExpand}
-						label="track properties"
-						hasExpandableContent={hasExpandableContent}
-					/>
+					hasExpandableContent ? (
+						<TimelineExpandArrowButton
+							isExpanded={isExpanded}
+							onClick={onToggleExpand}
+							label="track properties"
+						/>
+					) : (
+						<TimelineExpandArrowSpacer />
+					)
 				) : null}
 				<TimelineStack
 					sequence={sequence}

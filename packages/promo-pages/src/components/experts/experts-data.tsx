@@ -355,7 +355,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/mickaelalves/',
 		email: 'alves.mckl@gmail.com',
 		videocall: null,
-		discord: null,
+		discord: {
+			username: 'cruuzazul',
+			userId: '455697698050277378',
+		},
 		since: new Date('2023-03-17').getTime(),
 		description: (
 			<div>
@@ -414,7 +417,10 @@ export const experts: Expert[] = [
 		linkedin: 'in/rahulbansalrb/',
 		email: 'bansalrahul14@gmail.com',
 		videocall: 'https://cal.com/remotion-expert-rahul-bansal',
-		discord: null,
+		discord: {
+			username: 'raxrb',
+			userId: '564805165211713536',
+		},
 		since: new Date('2023-08-04').getTime(),
 		description: (
 			<div>
@@ -766,8 +772,8 @@ export const experts: Expert[] = [
 		email: 'zz41354899@gmail.com',
 		videocall: null,
 		discord: {
-			username: 'zz41354899',
-			userId: '444852671191580672',
+			username: '.8gates',
+			userId: '668293302767845376',
 		},
 		since: new Date('2026-05-05').getTime(),
 		description: (

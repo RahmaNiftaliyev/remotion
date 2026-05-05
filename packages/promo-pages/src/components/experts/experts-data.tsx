@@ -10,6 +10,10 @@ export type Expert = {
 	linkedin: string | null;
 	email: string | null;
 	videocall: string | null;
+	discord: {
+		username: string;
+		userId: string;
+	} | null;
 	slug: string;
 	since: number;
 };
@@ -25,6 +29,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/sterv/',
 		email: 'stephen@middy.com',
 		videocall: null,
+		discord: null,
 		since: new Date('2022-08-15').getTime(),
 		description: (
 			<div>
@@ -46,6 +51,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/just-moh-it/',
 		email: 'yo@mohitya.dev',
 		videocall: null,
+		discord: null,
 		since: new Date('2022-08-15').getTime(),
 		description: (
 			<div>
@@ -70,6 +76,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/satelllte/',
 		email: 'lunaerxs@gmail.com',
 		videocall: null,
+		discord: null,
 		since: new Date('2022-09-16').getTime(),
 
 		description: (
@@ -101,6 +108,7 @@ export const experts: Expert[] = [
 		linkedin: null,
 		email: 'ben@captok.ai',
 		videocall: null,
+		discord: null,
 		since: new Date('2022-11-03').getTime(),
 		description: (
 			<div>
@@ -125,6 +133,7 @@ export const experts: Expert[] = [
 		since: new Date('2022-08-22').getTime(),
 		email: 'karel@asius.ai',
 		videocall: null,
+		discord: null,
 		description: (
 			<div>
 				I have created Remotion videos for many companies and helped them with
@@ -153,6 +162,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/alex-f-17a5bb56/',
 		email: 'alex.frndz@gmail.com',
 		videocall: 'https://cal.com/remotion-expert-alex-fernandez',
+		discord: null,
 		since: new Date('2022-12-02').getTime(),
 		description: (
 			<div>
@@ -171,6 +181,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/matthew-mcgillivray-68295a55',
 		email: 'mm@mattm9y.com',
 		videocall: 'https://cal.com/remotion-expert-matt-mcgillivray',
+		discord: null,
 		since: new Date('2023-01-30').getTime(),
 		description: (
 			<div>
@@ -234,6 +245,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/raymond-lotmar/',
 		email: 'ray@blocklab.ch',
 		videocall: 'https://cal.com/remotion-expert-ray-lotmar',
+		discord: null,
 		since: new Date('2023-01-30').getTime(),
 		description: (
 			<div>
@@ -257,6 +269,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/lorenzobertolini/',
 		email: 'ciao@lorenzobertolini.com',
 		videocall: null,
+		discord: null,
 		since: new Date('2023-03-14').getTime(),
 		description: (
 			<div>
@@ -288,6 +301,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/antoine-caron-slash/',
 		email: 'antoine395.caron+remotion@gmail.com',
 		videocall: null,
+		discord: null,
 		since: new Date('2023-03-17').getTime(),
 		description: (
 			<div>
@@ -314,6 +328,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/mickaelalves/',
 		email: 'alves.mckl@gmail.com',
 		videocall: null,
+		discord: null,
 		since: new Date('2023-03-17').getTime(),
 		description: (
 			<div>
@@ -340,6 +355,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/pranavk7/',
 		email: 'hey@pranava.dev',
 		videocall: null,
+		discord: null,
 		since: new Date('2023-07-03').getTime(),
 		description: (
 			<div>
@@ -368,6 +384,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/rahulbansalrb/',
 		email: 'bansalrahul14@gmail.com',
 		videocall: 'https://cal.com/remotion-expert-rahul-bansal',
+		discord: null,
 		since: new Date('2023-08-04').getTime(),
 		description: (
 			<div>
@@ -392,6 +409,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/pramod-kumar-1a135b74/',
 		email: 'pramodkumar.damam73@gmail.com',
 		videocall: 'https://cal.com/remotion-expert-pramod-kumar',
+		discord: null,
 		since: new Date('2024-03-10').getTime(),
 		description: (
 			<div>
@@ -428,6 +446,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/ayushsoni1001/',
 		email: 'hi@ayushsoni.com',
 		videocall: 'https://cal.com/remotion-expert-ayush-soni',
+		discord: null,
 		since: new Date('2024-03-17').getTime(),
 		description: (
 			<div>
@@ -452,6 +471,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/andrei-terteci-935331151/',
 		email: 'hello@andreiterteci.com',
 		videocall: 'https://cal.com/remotion-expert-andrei-terteci',
+		discord: null,
 		since: new Date('2024-03-17').getTime(),
 		description: (
 			<div>
@@ -477,6 +497,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/sambowenhughes/',
 		email: 'sam@reactvideoeditor.com',
 		videocall: 'https://calendly.com/reactvideoeditor/30min',
+		discord: null,
 		since: new Date('2025-06-03').getTime(),
 		description: (
 			<div>
@@ -532,6 +553,7 @@ export const experts: Expert[] = [
 		email: 'shankhadeepdey99@gmail.com',
 		slug: 'iamshankhadeep',
 		videocall: 'https://cal.com/iamshankhadeep',
+		discord: null,
 		since: new Date('2021-02-13').getTime(),
 		description: (
 			<div>
@@ -553,6 +575,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/amirtadrisi/',
 		email: 'amir@cubite.io',
 		videocall: null,
+		discord: null,
 		since: new Date('2025-01-01').getTime(),
 		description: (
 			<div>
@@ -602,6 +625,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/pablito-jean-pool-silva-inca-735a03192/',
 		email: 'pablito.silvainca@gmail.com',
 		videocall: null,
+		discord: null,
 		since: new Date('2026-02-13').getTime(),
 		description: (
 			<div>
@@ -627,6 +651,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/haingt-dev/',
 		email: 'hai@haingt.dev',
 		videocall: null,
+		discord: null,
 		since: new Date('2026-04-02').getTime(),
 		description: (
 			<div>
@@ -637,16 +662,15 @@ export const experts: Expert[] = [
 				>
 					AI video production pipeline
 				</a>{' '}
-				using Remotion 4.0 — orchestrating self-hosted TTS (viXTTS), Gemini
-				API image generation, SRT-driven subtitle timing, and Ken Burns motion
+				using Remotion 4.0 — orchestrating self-hosted TTS (viXTTS), Gemini API
+				image generation, SRT-driven subtitle timing, and Ken Burns motion
 				presets. The pipeline produces complete book-to-video content in about
 				an hour (1-person operation) with editorial design overlays,
 				cross-dissolve transitions, and audio spectrum visualization.
 				GPU-accelerated rendering on Linux.
 				<br />
-				Available for AI-powered video pipelines, multi-API media
-				orchestration, and Remotion integrations with existing backend
-				infrastructure.
+				Available for AI-powered video pipelines, multi-API media orchestration,
+				and Remotion integrations with existing backend infrastructure.
 			</div>
 		),
 	},
@@ -660,6 +684,7 @@ export const experts: Expert[] = [
 		linkedin: 'in/ashok-reddy-kakumanu-8a3078247/',
 		email: 'ashok17748@gmail.com',
 		videocall: null,
+		discord: null,
 		since: new Date('2026-04-30').getTime(),
 		description: (
 			<div>
@@ -668,38 +693,39 @@ export const experts: Expert[] = [
 					Vubo
 				</a>
 				, along with automations and AI-generated media pipelines using
-				Remotion. I specialize in creating custom video templates,
-				AI-powered video generation workflows, and integrations with
-				existing infrastructure.
+				Remotion. I specialize in creating custom video templates, AI-powered
+				video generation workflows, and integrations with existing
+				infrastructure.
 				<br />
 				Available for hourly and project/milestone-based engagements.
 			</div>
 		),
 	},
-        {
-                slug: 'huang-chi-chang',
-                name: 'Huang Chi Chang',
-                image: '/img/freelancers/huang-chi-chang.jpg',
-                website: 'https://swift-clip.vercel.app/',
-                x: null,
-                github: 'zz41354899',
-                linkedin: null,
-                email: 'zz41354899@gmail.com',
-                videocall: null,
-                since: new Date('2026-05-05').getTime(),
-                description: (
-                        <div>
-                                I&apos;m a Product Designer and Indie Hacker based in Taiwan. I
-                                specialize in using Remotion to automate video production, building
-                                dynamic templates and automated rendering pipelines.
-                                <br />
-                                My project,{' '}
-                                <a target={'_blank'} href="https://swift-clip.vercel.app/">
-                                        SwiftClip
-                                </a>
-                                , is a tool designed to streamline professional video creation
-                                through programmatic workflows.
-                        </div>
-                ),
-        },
+	{
+		slug: 'huang-chi-chang',
+		name: 'Huang Chi Chang',
+		image: '/img/freelancers/huang-chi-chang.jpg',
+		website: 'https://swift-clip.vercel.app/',
+		x: null,
+		github: 'zz41354899',
+		linkedin: null,
+		email: 'zz41354899@gmail.com',
+		videocall: null,
+		discord: null,
+		since: new Date('2026-05-05').getTime(),
+		description: (
+			<div>
+				I&apos;m a Product Designer and Indie Hacker based in Taiwan. I
+				specialize in using Remotion to automate video production, building
+				dynamic templates and automated rendering pipelines.
+				<br />
+				My project,{' '}
+				<a target={'_blank'} href="https://swift-clip.vercel.app/">
+					SwiftClip
+				</a>
+				, is a tool designed to streamline professional video creation through
+				programmatic workflows.
+			</div>
+		),
+	},
 ];

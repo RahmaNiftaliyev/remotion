@@ -6,6 +6,7 @@ import type {
 	SaveSequencePropsResponse,
 } from '@remotion/studio-shared';
 import {Internals} from 'remotion';
+import {getAllSchemaKeys} from '../../codemods/get-all-schema-keys';
 import {updateSequenceProps} from '../../codemods/update-sequence-props';
 import {writeFileAndNotifyFileWatchers} from '../../file-watcher';
 import type {ApiHandler} from '../api-types';
@@ -22,7 +23,7 @@ export const saveSequencePropsHandler: ApiHandler<
 	SaveSequencePropsRequest,
 	SaveSequencePropsResponse
 > = async ({
-	input: {fileName, nodePath, key, value, defaultValue, observedKeys},
+	input: {fileName, nodePath, key, value, defaultValue, schema},
 	remotionRoot,
 	logLevel,
 }) => {
@@ -111,7 +112,7 @@ export const saveSequencePropsHandler: ApiHandler<
 
 		const newStatus = computeSequencePropsStatus({
 			fileName,
-			keys: observedKeys,
+			keys: getAllSchemaKeys(schema),
 			nodePath,
 			remotionRoot,
 		});

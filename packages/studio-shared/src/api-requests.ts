@@ -245,7 +245,6 @@ export type SaveSequencePropsRequest = {
 	key: string;
 	value: string;
 	defaultValue: string | null;
-	observedKeys: string[];
 	schema: SequenceSchema;
 };
 

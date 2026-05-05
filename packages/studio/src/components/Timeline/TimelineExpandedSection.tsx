@@ -13,7 +13,6 @@ import {
 	EXPANDED_SECTION_PADDING_RIGHT,
 	flattenVisibleTreeNodes,
 	getExpandedTrackHeight,
-	getFieldsToShow,
 	getTreeRowHeight,
 	TREE_GROUP_ROW_HEIGHT,
 	TREE_INDENT_PER_LEVEL,
@@ -108,22 +107,6 @@ export const TimelineExpandedSection: React.FC<{
 
 	const sequenceOffsetPx = SPACING * 3 * nestedDepth;
 
-	const keysToObserve = useMemo(() => {
-		const fields = getFieldsToShow({
-			schema: sequence.controls!.schema,
-			currentRuntimeValueDotNotation:
-				sequence.controls!.currentRuntimeValueDotNotation,
-			dragOverrides,
-			codeValues,
-			overrideId,
-		});
-		if (!fields) {
-			return [];
-		}
-
-		return fields.map((f) => f.key);
-	}, [sequence.controls, dragOverrides, codeValues, overrideId]);
-
 	const style = useMemo(() => {
 		return {
 			...expandedSectionBase,
@@ -165,7 +148,6 @@ export const TimelineExpandedSection: React.FC<{
 						validatedLocation={validatedLocation}
 						paddingLeft={paddingLeft}
 						nodePath={nodePath}
-						keysToObserve={keysToObserve}
 						schema={sequence.controls.schema}
 					/>
 				);
@@ -185,13 +167,12 @@ export const TimelineExpandedSection: React.FC<{
 		},
 		[
 			expandedTracks,
-			keysToObserve,
 			nodePath,
 			overrideId,
+			sequence.controls,
 			sequenceOffsetPx,
 			toggleTrack,
 			validatedLocation,
-			sequence.controls,
 		],
 	);
 

@@ -100,6 +100,11 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 		return Component as unknown as React.ComponentType<Props>;
 	}
 
+	// Schema is closure-stable for the life of this wrapped component,
+	// so flatten it once instead of on every render.
+	const flatSchema = getFlatSchemaWithAllKeys(schema);
+	const flatKeys = Object.keys(flatSchema);
+
 	const Wrapped = forwardRef<unknown, Props>((props, ref) => {
 		const env = useRemotionEnvironment();
 
@@ -138,14 +143,18 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const [overrideId] = useState(() => String(Math.random()));
 
-		// 1. Flatten the schema to get every possible key (across all variants).
-		const flatSchema = getFlatSchemaWithAllKeys(schema);
-		const flatKeys = Object.keys(flatSchema);
-
-		// 2. Read the runtime values for every flat key from the JSX props.
-		const currentRuntimeValueDotNotation = readValuesFromProps(
-			props as Record<string, unknown>,
-			flatKeys,
+		// Read the runtime values for every flat key from the JSX props,
+		// memoized on the leaf values so the object reference is stable
+		// when nothing changed — otherwise downstream `useMemo`s churn and
+		// effects (e.g. Sequence registration) re-fire every render.
+		const runtimeValues = flatKeys.map((k) =>
+			getNestedValue(props as Record<string, unknown>, k),
+		);
+		// eslint-disable-next-line react-hooks/rules-of-hooks
+		const currentRuntimeValueDotNotation = useMemo(
+			() => readValuesFromProps(props as Record<string, unknown>, flatKeys),
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+			runtimeValues,
 		);
 
 		// eslint-disable-next-line react-hooks/rules-of-hooks

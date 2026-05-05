@@ -112,7 +112,14 @@ const TimelineInner: React.FC = () => {
 			minHeight: '100%',
 			overflowX: 'hidden',
 		};
-	}, [hasBeenCut, shown, expandedTracks, visualModeEnabled]);
+	}, [
+		hasBeenCut,
+		shown,
+		expandedTracks,
+		visualModeEnabled,
+		codeValues,
+		dragOverrides,
+	]);
 
 	return (
 		<div

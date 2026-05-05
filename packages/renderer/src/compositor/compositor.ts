@@ -104,12 +104,6 @@ export const startCompositor = <T extends keyof CompositorCommand>({
 		executablePath: bin,
 		args: [jsonArg],
 	});
-	if (launch.executablePath !== bin) {
-		Log.verbose(
-			{indent, logLevel, tag: 'compositor'},
-			'Using setpriv --pdeathsig SIGKILL so the compositor is killed if the Node parent process dies (Linux).',
-		);
-	}
 
 	const child = spawn(launch.executablePath, launch.args, {
 		cwd,

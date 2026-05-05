@@ -11,7 +11,7 @@ export type FontInfo = {
 	url: string;
 	unicodeRanges: Record<string, string>;
 	fonts: Record<string, Record<string, Record<string, string>>>;
-	subsets?: string[];
+	subsets: string[];
 };
 
 interface WithResolvers<T> {
@@ -120,7 +120,7 @@ export const loadFonts = (
 					`The font ${meta.fontFamily} does not  have a weight ${weight} in style ${style}`,
 				);
 			}
-			const requestedSubsets =
+			const requestedSubsets: string[] =
 				options?.subsets ?? Object.keys(meta.fonts[style][weight]);
 			const availableSubsetKeys = Object.keys(meta.fonts[style][weight]);
 			const subsets = [

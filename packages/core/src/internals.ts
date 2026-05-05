@@ -211,7 +211,7 @@ export const Internals = {
 	sequenceSchema,
 	sequenceStyleSchema,
 	flattenActiveSchema,
-	getFlatSchema: getFlatSchemaWithAllKeys,
+	getFlatSchemaWithAllKeys,
 	useSequenceControlOverride,
 	RemotionRootContexts,
 	CompositionManagerProvider,

@@ -3,7 +3,7 @@ import type {SequenceSchema} from 'remotion';
 import {Internals} from 'remotion';
 import {getAllSchemaKeys} from '../codemods/get-all-schema-keys';
 
-const {getFlatSchema} = Internals;
+const {getFlatSchemaWithAllKeys} = Internals;
 
 test('getAllSchemaKeys returns every key across all enum variants', () => {
 	const keys = getAllSchemaKeys(Internals.sequenceSchema);
@@ -41,7 +41,7 @@ test('getFlatSchema throws when discriminated union variants share a key', () =>
 		},
 	};
 
-	expect(() => getFlatSchema(conflictingSchema)).toThrow(
+	expect(() => getFlatSchemaWithAllKeys(conflictingSchema)).toThrow(
 		'Duplicate key "shared"',
 	);
 });

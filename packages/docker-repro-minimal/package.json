@@ -1,0 +1,20 @@
+{
+	"repository": {
+		"url": "https://github.com/remotion-dev/remotion/tree/main/packages/docker-repro-minimal"
+	},
+	"name": "@remotion/docker-repro-minimal",
+	"private": true,
+	"version": "4.0.457",
+	"license": "SEE LICENSE IN LICENSE.md",
+	"author": "Remotion",
+	"description": "Minimal Remotion project for Linux/Docker Chrome process repros",
+	"scripts": {
+		"bundle": "remotion bundle src/index.ts --out-dir ../dockerfiles/bundle"
+	},
+	"dependencies": {
+		"remotion": "workspace:*",
+		"@remotion/cli": "workspace:*",
+		"react": "catalog:",
+		"react-dom": "catalog:"
+	}
+}

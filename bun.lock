@@ -409,6 +409,16 @@
       "name": "@remotion/discord-poster",
       "version": "4.0.457",
     },
+    "packages/docker-repro-minimal": {
+      "name": "@remotion/docker-repro-minimal",
+      "version": "4.0.457",
+      "dependencies": {
+        "@remotion/cli": "workspace:*",
+        "react": "catalog:",
+        "react-dom": "catalog:",
+        "remotion": "workspace:*",
+      },
+    },
     "packages/docs": {
       "name": "docs",
       "version": "4.0.457",
@@ -3821,6 +3831,8 @@
     "@remotion/design": ["@remotion/design@workspace:packages/design"],
 
     "@remotion/discord-poster": ["@remotion/discord-poster@workspace:packages/discord-poster"],
+
+    "@remotion/docker-repro-minimal": ["@remotion/docker-repro-minimal@workspace:packages/docker-repro-minimal"],
 
     "@remotion/docusaurus-plugin": ["@remotion/docusaurus-plugin@workspace:packages/docusaurus-plugin"],
 

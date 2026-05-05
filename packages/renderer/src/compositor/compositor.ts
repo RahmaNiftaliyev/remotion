@@ -1,6 +1,7 @@
 import {spawn} from 'node:child_process';
 import path from 'node:path';
 import {makeStreamer} from '@remotion/streaming';
+import {wrapExecutableWithSetprivIfAvailable} from '../linux/wrap-with-setpriv';
 import type {LogLevel} from '../log-level';
 import {isEqualOrBelowLogLevel} from '../log-level';
 import {Log} from '../logger';
@@ -98,7 +99,19 @@ export const startCompositor = <T extends keyof CompositorCommand>({
 
 	const cwd = path.dirname(bin);
 
-	const child = spawn(bin, [JSON.stringify(fullCommand)], {
+	const jsonArg = JSON.stringify(fullCommand);
+	const launch = wrapExecutableWithSetprivIfAvailable({
+		executablePath: bin,
+		args: [jsonArg],
+	});
+	if (launch.executablePath !== bin) {
+		Log.verbose(
+			{indent, logLevel, tag: 'compositor'},
+			'Using setpriv --pdeathsig SIGKILL so the compositor is killed if the Node parent process dies (Linux).',
+		);
+	}
+
+	const child = spawn(launch.executablePath, launch.args, {
 		cwd,
 		env:
 			process.platform === 'darwin'

@@ -1,9 +1,5 @@
 import React, {useContext, useMemo} from 'react';
-import {
-	Internals,
-	type CanUpdateSequencePropStatus,
-	type TSequence,
-} from 'remotion';
+import {Internals, type TSequence} from 'remotion';
 import {StudioServerConnectionCtx} from '../../helpers/client-id';
 import type {TrackWithHash} from '../../helpers/get-timeline-sequence-sort-key';
 import {
@@ -11,6 +7,8 @@ import {
 	getTimelineLayerHeight,
 	TIMELINE_ITEM_BORDER_BOTTOM,
 	TIMELINE_PADDING,
+	type CodeValues,
+	type DragOverrides,
 } from '../../helpers/timeline-layout';
 import {ExpandedTracksContext} from '../ExpandedTracksProvider';
 import {isTrackHidden} from './is-collapsed';
@@ -31,8 +29,8 @@ const timelineContent: React.CSSProperties = {
 const getExpandedPlaceholderStyle = (
 	sequence: TSequence,
 	expandedTracks: Record<string, boolean>,
-	dragOverrides: Record<string, Record<string, unknown>>,
-	codeValues: Record<string, Record<string, CanUpdateSequencePropStatus>>,
+	dragOverrides: DragOverrides,
+	codeValues: CodeValues,
 ): React.CSSProperties => ({
 	height:
 		getExpandedTrackHeight(

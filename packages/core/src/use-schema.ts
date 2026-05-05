@@ -8,6 +8,12 @@ export type CanUpdateSequencePropStatus =
 	| {canUpdate: true; codeValue: unknown}
 	| {canUpdate: false; reason: 'computed'};
 
+export type DragOverrides = Record<string, Record<string, unknown>>;
+export type CodeValues = Record<
+	string,
+	Record<string, CanUpdateSequencePropStatus>
+>;
+
 const findFieldInSchema = (
 	schema: SequenceSchema,
 	key: string,

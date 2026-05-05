@@ -1,12 +1,13 @@
 import type {
-	CanUpdateSequencePropStatus,
+	CodeValues,
+	DragOverrides,
 	SequenceControls,
 	SequenceFieldSchema,
 	SequenceSchema,
 } from 'remotion';
 import {Internals} from 'remotion';
 
-export type {SequenceControls};
+export type {CodeValues, DragOverrides, SequenceControls};
 
 export type SchemaFieldInfo = {
 	key: string;
@@ -38,8 +39,8 @@ export const getFieldsToShow = ({
 }: {
 	schema: SequenceSchema;
 	currentRuntimeValueDotNotation: Record<string, unknown>;
-	dragOverrides: Record<string, Record<string, unknown>>;
-	codeValues: Record<string, Record<string, CanUpdateSequencePropStatus>>;
+	dragOverrides: DragOverrides;
+	codeValues: CodeValues;
 	overrideId: string;
 }): SchemaFieldInfo[] | null => {
 	const valuesDotNotation = Internals.computeEffectiveSchemaValuesDotNotation({

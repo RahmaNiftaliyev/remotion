@@ -85,12 +85,12 @@ export const TimelineExpandedSection: React.FC<{
 	}, [originalLocation]);
 
 	const tree = useMemo(
-		() => buildTimelineTree(sequence, dragOverrides, codeValues),
+		() => buildTimelineTree({sequence, dragOverrides, codeValues}),
 		[sequence, dragOverrides, codeValues],
 	);
 
 	const flat = useMemo(
-		() => flattenVisibleTreeNodes(tree, expandedTracks),
+		() => flattenVisibleTreeNodes({nodes: tree, expandedTracks}),
 		[tree, expandedTracks],
 	);
 

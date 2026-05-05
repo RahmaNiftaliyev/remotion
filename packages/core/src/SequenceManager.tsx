@@ -1,6 +1,10 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import type {TSequence} from './CompositionManager.js';
-import type {CanUpdateSequencePropStatus} from './use-schema.js';
+import type {
+	CanUpdateSequencePropStatus,
+	CodeValues,
+	DragOverrides,
+} from './use-schema.js';
 
 export type SequenceManagerContext = {
 	registerSequence: (seq: TSequence) => void;
@@ -33,10 +37,10 @@ export const SequenceVisibilityToggleContext =
 
 export type VisualModeOverrides = {
 	visualModeEnabled: boolean;
-	dragOverrides: Record<string, Record<string, unknown>>;
+	dragOverrides: DragOverrides;
 	setDragOverrides: (sequenceId: string, key: string, value: unknown) => void;
 	clearDragOverrides: (sequenceId: string) => void;
-	codeValues: Record<string, Record<string, CanUpdateSequencePropStatus>>;
+	codeValues: CodeValues;
 	setCodeValues: (
 		sequenceId: string,
 		values: Record<string, CanUpdateSequencePropStatus> | null,
@@ -65,14 +69,10 @@ export const SequenceManagerProvider: React.FC<{
 }> = ({children, visualModeEnabled}) => {
 	const [sequences, setSequences] = useState<TSequence[]>([]);
 	const [hidden, setHidden] = useState<Record<string, boolean>>({});
-	const [dragOverrides, setControlOverrides] = useState<
-		Record<string, Record<string, unknown>>
-	>({});
+	const [dragOverrides, setControlOverrides] = useState<DragOverrides>({});
 	const controlOverridesRef = useRef(dragOverrides);
 	controlOverridesRef.current = dragOverrides;
-	const [codeValues, setCodeValuesMapState] = useState<
-		Record<string, Record<string, CanUpdateSequencePropStatus>>
-	>({});
+	const [codeValues, setCodeValuesMapState] = useState<CodeValues>({});
 
 	const setDragOverrides = useCallback(
 		(sequenceId: string, key: string, value: unknown) => {

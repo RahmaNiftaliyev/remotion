@@ -140,6 +140,8 @@ import {
 import {
 	computeEffectiveSchemaValuesDotNotation,
 	type CanUpdateSequencePropStatus,
+	type CodeValues,
+	type DragOverrides,
 } from './use-schema.js';
 import {useSequenceControlOverride} from './use-sequence-control-override.js';
 import {useUnsafeVideoConfig} from './use-unsafe-video-config.js';
@@ -326,6 +328,8 @@ export type {
 	WatchRemotionStaticFilesPayload,
 	ScheduleAudioNodeOptions,
 	CanUpdateSequencePropStatus,
+	CodeValues,
+	DragOverrides,
 	ScheduleAudioNodeResult,
 	NonceHistory,
 };

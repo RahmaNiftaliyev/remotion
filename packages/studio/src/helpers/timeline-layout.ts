@@ -1,15 +1,13 @@
 import {
 	getFieldsToShow,
+	type CodeValues,
+	type DragOverrides,
 	type SchemaFieldInfo,
 	type SequenceControls,
 } from '@remotion/studio-shared';
-import type {
-	CanUpdateSequencePropStatus,
-	EffectDefinitionAndStack,
-	TSequence,
-} from 'remotion';
+import type {EffectDefinitionAndStack, TSequence} from 'remotion';
 
-export type {SchemaFieldInfo, SequenceControls};
+export type {CodeValues, DragOverrides, SchemaFieldInfo, SequenceControls};
 export {
 	SCHEMA_FIELD_ROW_HEIGHT,
 	UNSUPPORTED_FIELD_ROW_HEIGHT,
@@ -59,11 +57,15 @@ export type TimelineTreeNode =
 			readonly field: SchemaFieldInfo | null;
 	  };
 
-export const buildTimelineTree = (
-	sequence: TSequence,
-	dragOverrides: Record<string, Record<string, unknown>>,
-	codeValues: Record<string, Record<string, CanUpdateSequencePropStatus>>,
-): TimelineTreeNode[] => {
+export const buildTimelineTree = ({
+	sequence,
+	dragOverrides,
+	codeValues,
+}: {
+	sequence: TSequence;
+	dragOverrides: DragOverrides;
+	codeValues: CodeValues;
+}): TimelineTreeNode[] => {
 	const roots: TimelineTreeNode[] = [];
 
 	if (sequence.effects.length > 0) {
@@ -123,17 +125,25 @@ export type FlatTreeRow = {
 	readonly depth: number;
 };
 
-export const flattenVisibleTreeNodes = (
-	nodes: TimelineTreeNode[],
-	expandedTracks: Record<string, boolean>,
+export const flattenVisibleTreeNodes = ({
+	nodes,
+	expandedTracks,
 	depth = 0,
-): FlatTreeRow[] => {
+}: {
+	nodes: TimelineTreeNode[];
+	expandedTracks: Record<string, boolean>;
+	depth?: number;
+}): FlatTreeRow[] => {
 	const out: FlatTreeRow[] = [];
 	for (const node of nodes) {
 		out.push({node, depth});
 		if (node.kind === 'group' && (expandedTracks[node.id] ?? false)) {
 			out.push(
-				...flattenVisibleTreeNodes(node.children, expandedTracks, depth + 1),
+				...flattenVisibleTreeNodes({
+					nodes: node.children,
+					expandedTracks,
+					depth: depth + 1,
+				}),
 			);
 		}
 	}
@@ -152,11 +162,11 @@ export const getTreeRowHeight = (node: TimelineTreeNode): number => {
 export const getExpandedTrackHeight = (
 	sequence: TSequence,
 	expandedTracks: Record<string, boolean>,
-	dragOverrides: Record<string, Record<string, unknown>>,
-	codeValues: Record<string, Record<string, CanUpdateSequencePropStatus>>,
+	dragOverrides: DragOverrides,
+	codeValues: CodeValues,
 ): number => {
-	const tree = buildTimelineTree(sequence, dragOverrides, codeValues);
-	const flat = flattenVisibleTreeNodes(tree, expandedTracks);
+	const tree = buildTimelineTree({sequence, dragOverrides, codeValues});
+	const flat = flattenVisibleTreeNodes({nodes: tree, expandedTracks});
 
 	if (flat.length === 0) {
 		return TIMELINE_TRACK_EXPANDED_HEIGHT;

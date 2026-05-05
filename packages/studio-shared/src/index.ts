@@ -100,7 +100,12 @@ export {
 	UNSUPPORTED_FIELD_ROW_HEIGHT,
 	getFieldsToShow,
 } from './schema-field-info';
-export type {SchemaFieldInfo, SequenceControls} from './schema-field-info';
+export type {
+	CodeValues,
+	DragOverrides,
+	SchemaFieldInfo,
+	SequenceControls,
+} from './schema-field-info';
 export {SOURCE_MAP_ENDPOINT} from './source-map-endpoint';
 export {
 	ScriptLine,

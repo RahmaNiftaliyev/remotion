@@ -53,6 +53,10 @@ import {
 	addSequenceStackTraces,
 	getComponentsToAddStacksTo,
 } from './enable-sequence-stack-traces.js';
+import {
+	flattenActiveSchema,
+	getFlatSchemaWithAllKeys,
+} from './flatten-schema.js';
 import {getEffectiveVisualModeValue} from './get-effective-visual-mode-value.js';
 import {
 	getPreviewDomElement,
@@ -205,6 +209,8 @@ export const Internals = {
 	wrapInSchema,
 	sequenceSchema,
 	sequenceStyleSchema,
+	flattenActiveSchema,
+	getFlatSchema: getFlatSchemaWithAllKeys,
 	useSequenceControlOverride,
 	RemotionRootContexts,
 	CompositionManagerProvider,

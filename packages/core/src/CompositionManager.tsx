@@ -97,7 +97,7 @@ export type LoopDisplay = {
 
 export type SequenceControls = {
 	schema: SequenceSchema;
-	currentValue: Record<string, unknown>;
+	currentRuntimeValueDotNotation: Record<string, unknown>;
 	overrideId: string;
 };
 

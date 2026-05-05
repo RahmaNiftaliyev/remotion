@@ -1,4 +1,5 @@
 import type {SequenceControls, SequenceFieldSchema} from 'remotion';
+import {Internals} from 'remotion';
 
 export type {SequenceControls};
 
@@ -8,7 +9,7 @@ export type SchemaFieldInfo = {
 	typeName: string;
 	supported: boolean;
 	rowHeight: number;
-	currentValue: unknown;
+	currentRuntimeValue: unknown;
 	fieldSchema: SequenceFieldSchema;
 };
 
@@ -23,14 +24,19 @@ const SUPPORTED_SCHEMA_TYPES = new Set([
 	'enum',
 ]);
 
-export const getSchemaFields = (
+export const getFieldsToShow = (
 	controls: SequenceControls | null,
 ): SchemaFieldInfo[] | null => {
 	if (!controls) {
 		return null;
 	}
 
-	return Object.entries(controls.schema).map(([key, fieldSchema]) => {
+	const activeSchema = Internals.flattenActiveSchema(
+		controls.schema,
+		(key) => controls.currentRuntimeValueDotNotation[key],
+	);
+
+	return Object.entries(activeSchema).map(([key, fieldSchema]) => {
 		const typeName = fieldSchema.type;
 		const supported = SUPPORTED_SCHEMA_TYPES.has(typeName);
 		return {
@@ -41,7 +47,7 @@ export const getSchemaFields = (
 			rowHeight: supported
 				? SCHEMA_FIELD_ROW_HEIGHT
 				: UNSUPPORTED_FIELD_ROW_HEIGHT,
-			currentValue: controls.currentValue[key],
+			currentRuntimeValue: controls.currentRuntimeValueDotNotation[key],
 			fieldSchema,
 		};
 	});

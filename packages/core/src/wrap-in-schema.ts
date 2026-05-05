@@ -1,15 +1,17 @@
-import React, {forwardRef, useContext, useState} from 'react';
+import React, {forwardRef, useState} from 'react';
 import type {SequenceControls} from './CompositionManager.js';
-import {flattenActiveSchema, type ResolveValue} from './flatten-schema.js';
-import type {
-	SchemaKeysRecord,
-	SequenceSchema,
-} from './sequence-field-schema.js';
-import {VisualModeOverridesContext} from './SequenceManager.js';
+import {
+	flattenActiveSchema,
+	getFlatSchemaWithAllKeys,
+} from './flatten-schema.js';
+import type {SequenceSchema} from './sequence-field-schema.js';
 import {useRemotionEnvironment} from './use-remotion-environment.js';
 import {useSchema} from './use-schema.js';
 
-const getNestedValue = (obj: Record<string, unknown>, key: string): unknown => {
+export const getNestedValue = (
+	obj: Record<string, unknown>,
+	key: string,
+): unknown => {
 	const parts = key.split('.');
 	let current: unknown = obj;
 	for (const part of parts) {
@@ -25,15 +27,38 @@ const getNestedValue = (obj: Record<string, unknown>, key: string): unknown => {
 	return current;
 };
 
-const mergeValues = (
+export const readValuesFromProps = (
 	props: Record<string, unknown>,
-	values: Record<string, unknown>,
-	schemaKeys: string[],
+	keys: string[],
 ): Record<string, unknown> => {
+	const out: Record<string, unknown> = {};
+	for (const key of keys) {
+		out[key] = getNestedValue(props, key);
+	}
+
+	return out;
+};
+
+export const selectActiveKeys = (
+	schema: SequenceSchema,
+	values: Record<string, unknown>,
+): string[] => {
+	return Object.keys(flattenActiveSchema(schema, (key) => values[key]));
+};
+
+export const mergeValues = ({
+	props,
+	valuesDotNotation,
+	schemaKeys,
+}: {
+	props: Record<string, unknown>;
+	valuesDotNotation: Record<string, unknown>;
+	schemaKeys: string[];
+}): Record<string, unknown> => {
 	const merged = {...props};
 
 	for (const key of schemaKeys) {
-		const value = values[key];
+		const value = valuesDotNotation[key];
 		const parts = key.split('.');
 
 		if (parts.length === 1) {
@@ -87,49 +112,6 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 			});
 		}
 
-		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const [overrideId] = useState(() => String(Math.random()));
-		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const {dragOverrides, codeValues} = useContext(VisualModeOverridesContext);
-		const dragForThis = dragOverrides[overrideId] ?? {};
-		const codeForThis = codeValues[overrideId];
-
-		const propsRecord = props as Record<string, unknown>;
-		const resolveDiscriminator: ResolveValue = (key) => {
-			if (key in dragForThis) {
-				return dragForThis[key];
-			}
-
-			const status = codeForThis?.[key];
-			if (status && status.canUpdate) {
-				return status.codeValue;
-			}
-
-			return getNestedValue(propsRecord, key);
-		};
-
-		const activeSchema = flattenActiveSchema(schema, resolveDiscriminator);
-		const activeKeys = Object.keys(activeSchema);
-
-		const schemaInput = {} as Record<string, unknown>;
-		for (const key of activeKeys) {
-			schemaInput[key] = getNestedValue(propsRecord, key);
-		}
-
-		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const {controls, values} = useSchema(
-			activeSchema as S,
-			schemaInput as SchemaKeysRecord<S> &
-				Record<Exclude<keyof SchemaKeysRecord<S>, keyof S>, never>,
-			overrideId,
-		);
-
-		const mergedProps = mergeValues(
-			propsRecord,
-			values as Record<string, unknown>,
-			activeKeys,
-		);
-
 		// If the parent has passed `_experimentalControls`, we should not override it.
 		// @ts-expect-error
 		if (props._experimentalControls) {
@@ -141,6 +123,37 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 				ref: typeof ref;
 			});
 		}
+
+		// eslint-disable-next-line react-hooks/rules-of-hooks
+		const [overrideId] = useState(() => String(Math.random()));
+
+		// 1. Flatten the schema to get every possible key (across all variants).
+		const flatSchema = getFlatSchemaWithAllKeys(schema);
+		const flatKeys = Object.keys(flatSchema);
+
+		// 2. Read the runtime values for every flat key from the JSX props.
+		const currentRuntimeValueDotNotation = readValuesFromProps(
+			props as Record<string, unknown>,
+			flatKeys,
+		);
+
+		// 3. Apply drag/code overrides on top of the runtime values.
+		// eslint-disable-next-line react-hooks/rules-of-hooks
+		const {controls, valuesDotNotation} = useSchema(
+			schema,
+			currentRuntimeValueDotNotation,
+			overrideId,
+		);
+
+		// 4. Eliminate values forbidden by the resolved discriminated union.
+		const activeKeys = selectActiveKeys(schema, valuesDotNotation);
+
+		// 5. Apply the active values back onto the props.
+		const mergedProps = mergeValues({
+			props: props as Record<string, unknown>,
+			valuesDotNotation,
+			schemaKeys: activeKeys,
+		});
 
 		return React.createElement(Component, {
 			...mergedProps,

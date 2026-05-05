@@ -98,7 +98,7 @@ export type {CompletedClientRender} from './render-job';
 export {
 	SCHEMA_FIELD_ROW_HEIGHT,
 	UNSUPPORTED_FIELD_ROW_HEIGHT,
-	getSchemaFields,
+	getFieldsToShow,
 } from './schema-field-info';
 export type {SchemaFieldInfo, SequenceControls} from './schema-field-info';
 export {SOURCE_MAP_ENDPOINT} from './source-map-endpoint';

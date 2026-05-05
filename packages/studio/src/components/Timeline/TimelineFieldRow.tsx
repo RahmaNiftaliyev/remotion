@@ -1,6 +1,6 @@
 import type {SequenceNodePath} from '@remotion/studio-shared';
 import React, {useCallback, useContext, useMemo} from 'react';
-import type {CanUpdateSequencePropStatus, SequenceSchema} from 'remotion';
+import type {SequenceSchema} from 'remotion';
 import {Internals} from 'remotion';
 import type {CodePosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import type {SchemaFieldInfo} from '../../helpers/timeline-layout';
@@ -63,7 +63,7 @@ export const TimelineFieldRow: React.FC<{
 
 	const effectiveValue = Internals.getEffectiveVisualModeValue({
 		codeValue: propStatus,
-		runtimeValue: field.currentValue,
+		runtimeValue: field.currentRuntimeValue,
 		dragOverrideValue,
 		defaultValue: field.fieldSchema.default,
 		shouldResortToDefaultValueIfUndefined: true,

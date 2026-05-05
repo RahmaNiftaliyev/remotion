@@ -2,21 +2,38 @@ import {expect, test} from 'bun:test';
 import assert from 'node:assert';
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
-import {getSchemaFields} from '@remotion/studio-shared';
+import {getFieldsToShow} from '@remotion/studio-shared';
 import {Internals} from 'remotion';
 import {parseAst} from '../codemods/parse-ast';
 import {updateSequencePropsAst} from '../codemods/update-sequence-props';
 import {lineColumnToNodePath} from '../preview-server/routes/can-update-sequence-props';
 
 test('Should correctly separate discriminated union for layout', () => {
-	const schemaFields = getSchemaFields({
+	const schemaFields = getFieldsToShow({
 		schema: Internals.sequenceSchema,
-		currentValue: {
+		currentRuntimeValueDotNotation: {
 			layout: 'none',
 		},
 		overrideId: '0.7123890564498035',
 	});
 	expect(schemaFields?.map((s) => s.key)).toEqual(['layout']);
+});
+
+test('Should expose absolute-fill variant fields when active', () => {
+	const schemaFields = getFieldsToShow({
+		schema: Internals.sequenceSchema,
+		currentRuntimeValueDotNotation: {
+			layout: 'absolute-fill',
+		},
+		overrideId: '0.5636826614884479',
+	});
+	expect(schemaFields?.map((s) => s.key)).toEqual([
+		'layout',
+		'style.translate',
+		'style.scale',
+		'style.rotate',
+		'style.opacity',
+	]);
 });
 
 test('Should be able to update a discriminated union', () => {

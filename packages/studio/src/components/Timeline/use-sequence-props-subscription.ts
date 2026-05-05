@@ -11,7 +11,6 @@ import {Internals, type CanUpdateSequencePropStatus} from 'remotion';
 import type {TSequence} from 'remotion';
 import type {OriginalPosition} from '../../error-overlay/react-overlay/utils/get-source-map';
 import {StudioServerConnectionCtx} from '../../helpers/client-id';
-import {getSchemaFields} from '../../helpers/timeline-layout';
 import {callApi} from '../call-api';
 
 export const useSequencePropsSubscription = (
@@ -40,16 +39,6 @@ export const useSequencePropsSubscription = (
 		StudioServerConnectionCtx,
 	);
 	const clientId = state.type === 'connected' ? state.clientId : undefined;
-
-	const schemaFields = useMemo(
-		() => getSchemaFields(sequence.controls),
-		[sequence.controls],
-	);
-
-	const schemaKeysString = useMemo(
-		() => (schemaFields ? schemaFields.map((f) => f.key).join(',') : null),
-		[schemaFields],
-	);
 
 	const validatedLocation = useMemo(() => {
 		if (
@@ -111,21 +100,25 @@ export const useSequencePropsSubscription = (
 			!clientId ||
 			!locationSource ||
 			!locationLine ||
-			locationColumn === null ||
-			!schemaKeysString
+			locationColumn === null
 		) {
 			setPropStatusesForSequence(null);
 			updateSubscriptionState({nodePath: null, jsxInMapCallback: false});
 			return;
 		}
 
-		const keys = schemaKeysString.split(',');
+		const schema = sequence.controls?.schema;
+		if (!schema) {
+			setPropStatusesForSequence(null);
+			updateSubscriptionState({nodePath: null, jsxInMapCallback: false});
+			return;
+		}
 
 		callApi('/api/subscribe-to-sequence-props', {
 			fileName: locationSource,
 			line: locationLine,
 			column: locationColumn,
-			keys,
+			schema,
 			clientId,
 		})
 			.then((result) => {
@@ -174,14 +167,14 @@ export const useSequencePropsSubscription = (
 			}
 		};
 	}, [
-		visualModeEnabled,
 		clientId,
-		locationSource,
-		locationLine,
 		locationColumn,
-		schemaKeysString,
+		locationLine,
+		locationSource,
+		sequence.controls?.schema,
 		setPropStatusesForSequence,
 		updateSubscriptionState,
+		visualModeEnabled,
 	]);
 
 	useEffect(() => {

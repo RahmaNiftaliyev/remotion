@@ -46,15 +46,10 @@ export const TimelineFieldRow: React.FC<{
 	keysToObserve,
 	schema,
 }) => {
-	const {
-		setDragOverrides,
-		clearDragOverrides,
-		dragOverrides,
-		codeValues: allPropStatuses,
-	} = useContext(Internals.VisualModeOverridesContext);
+	const {setDragOverrides, clearDragOverrides, dragOverrides, codeValues} =
+		useContext(Internals.VisualModeOverridesContext);
 
-	const propStatuses = allPropStatuses[overrideId] ?? null;
-
+	const propStatuses = codeValues[overrideId] ?? null;
 	const propStatus = propStatuses?.[field.key] ?? null;
 
 	const dragOverrideValue = useMemo(() => {

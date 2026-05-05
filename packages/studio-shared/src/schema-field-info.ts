@@ -1,4 +1,9 @@
-import type {SequenceControls, SequenceFieldSchema} from 'remotion';
+import type {
+	CanUpdateSequencePropStatus,
+	SequenceControls,
+	SequenceFieldSchema,
+	SequenceSchema,
+} from 'remotion';
 import {Internals} from 'remotion';
 
 export type {SequenceControls};
@@ -24,16 +29,29 @@ const SUPPORTED_SCHEMA_TYPES = new Set([
 	'enum',
 ]);
 
-export const getFieldsToShow = (
-	controls: SequenceControls | null,
-): SchemaFieldInfo[] | null => {
-	if (!controls) {
-		return null;
-	}
+export const getFieldsToShow = ({
+	dragOverrides,
+	codeValues,
+	overrideId,
+	schema,
+	currentRuntimeValueDotNotation,
+}: {
+	schema: SequenceSchema;
+	currentRuntimeValueDotNotation: Record<string, unknown>;
+	dragOverrides: Record<string, Record<string, unknown>>;
+	codeValues: Record<string, Record<string, CanUpdateSequencePropStatus>>;
+	overrideId: string;
+}): SchemaFieldInfo[] | null => {
+	const valuesDotNotation = Internals.computeEffectiveSchemaValuesDotNotation({
+		schema,
+		currentValue: currentRuntimeValueDotNotation,
+		overrideValues: dragOverrides[overrideId] ?? {},
+		propStatus: codeValues[overrideId],
+	});
 
 	const activeSchema = Internals.flattenActiveSchema(
-		controls.schema,
-		(key) => controls.currentRuntimeValueDotNotation[key],
+		schema,
+		(key) => valuesDotNotation[key],
 	);
 
 	return Object.entries(activeSchema).map(([key, fieldSchema]) => {
@@ -47,7 +65,7 @@ export const getFieldsToShow = (
 			rowHeight: supported
 				? SCHEMA_FIELD_ROW_HEIGHT
 				: UNSUPPORTED_FIELD_ROW_HEIGHT,
-			currentRuntimeValue: controls.currentRuntimeValueDotNotation[key],
+			currentRuntimeValue: currentRuntimeValueDotNotation[key],
 			fieldSchema,
 		};
 	});

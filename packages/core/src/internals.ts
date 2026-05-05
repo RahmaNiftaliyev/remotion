@@ -137,7 +137,10 @@ import {
 	useBasicMediaInTimeline,
 	useMediaInTimeline,
 } from './use-media-in-timeline.js';
-import type {CanUpdateSequencePropStatus} from './use-schema.js';
+import {
+	computeEffectiveSchemaValuesDotNotation,
+	type CanUpdateSequencePropStatus,
+} from './use-schema.js';
 import {useSchema} from './use-schema.js';
 import {useSequenceControlOverride} from './use-sequence-control-override.js';
 import {useUnsafeVideoConfig} from './use-unsafe-video-config.js';
@@ -302,6 +305,7 @@ export const Internals = {
 	useMemoizedEffects,
 	defineEffect,
 	createDescriptor,
+	computeEffectiveSchemaValuesDotNotation,
 } as const;
 
 export type {

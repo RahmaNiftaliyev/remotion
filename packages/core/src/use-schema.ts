@@ -37,7 +37,7 @@ const findFieldInSchema = (
 	return undefined;
 };
 
-const computeMergedValues = ({
+export const computeEffectiveSchemaValuesDotNotation = ({
 	schema,
 	currentValue,
 	overrideValues,
@@ -87,11 +87,9 @@ export const useSchema = <T extends Record<string, unknown>>(
 		return earlyReturn;
 	}
 
-	const {
-		visualModeEnabled,
-		dragOverrides: overrides,
-		codeValues,
-	} = useContext(VisualModeOverridesContext);
+	const {visualModeEnabled, dragOverrides, codeValues} = useContext(
+		VisualModeOverridesContext,
+	);
 
 	const controls = useMemo(() => {
 		if (!visualModeEnabled) {
@@ -121,22 +119,22 @@ export const useSchema = <T extends Record<string, unknown>>(
 			};
 		}
 
-		const merged = computeMergedValues({
+		const valuesDotNotation = computeEffectiveSchemaValuesDotNotation({
 			schema,
 			currentValue: currentRuntimeValueDotNotation,
-			overrideValues: overrides[overrideId] ?? {},
+			overrideValues: dragOverrides[overrideId] ?? {},
 			propStatus: codeValues[overrideId],
 		});
 
 		return {
 			controls,
-			valuesDotNotation: merged as T,
+			valuesDotNotation: valuesDotNotation as T,
 		};
 	}, [
 		controls,
 		currentRuntimeValueDotNotation,
 		overrideId,
-		overrides,
+		dragOverrides,
 		codeValues,
 		schema,
 	]);

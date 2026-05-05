@@ -1,15 +1,19 @@
 import {
-	getSchemaFields,
+	getFieldsToShow,
 	type SchemaFieldInfo,
 	type SequenceControls,
 } from '@remotion/studio-shared';
-import type {EffectDefinitionAndStack, TSequence} from 'remotion';
+import type {
+	CanUpdateSequencePropStatus,
+	EffectDefinitionAndStack,
+	TSequence,
+} from 'remotion';
 
 export type {SchemaFieldInfo, SequenceControls};
 export {
 	SCHEMA_FIELD_ROW_HEIGHT,
 	UNSUPPORTED_FIELD_ROW_HEIGHT,
-	getSchemaFields,
+	getFieldsToShow,
 } from '@remotion/studio-shared';
 
 export const TIMELINE_PADDING = 16;
@@ -55,7 +59,11 @@ export type TimelineTreeNode =
 			readonly field: SchemaFieldInfo | null;
 	  };
 
-export const buildTimelineTree = (sequence: TSequence): TimelineTreeNode[] => {
+export const buildTimelineTree = (
+	sequence: TSequence,
+	dragOverrides: Record<string, Record<string, unknown>>,
+	codeValues: Record<string, Record<string, CanUpdateSequencePropStatus>>,
+): TimelineTreeNode[] => {
 	const roots: TimelineTreeNode[] = [];
 
 	if (sequence.effects.length > 0) {
@@ -82,7 +90,14 @@ export const buildTimelineTree = (sequence: TSequence): TimelineTreeNode[] => {
 		});
 	}
 
-	const controlFields = getSchemaFields(sequence.controls);
+	const controlFields = getFieldsToShow({
+		schema: sequence.controls!.schema,
+		currentRuntimeValueDotNotation:
+			sequence.controls!.currentRuntimeValueDotNotation,
+		dragOverrides,
+		codeValues,
+		overrideId: sequence.controls!.overrideId!,
+	});
 
 	if (controlFields && controlFields.length > 0) {
 		roots.push({
@@ -137,8 +152,10 @@ export const getTreeRowHeight = (node: TimelineTreeNode): number => {
 export const getExpandedTrackHeight = (
 	sequence: TSequence,
 	expandedTracks: Record<string, boolean>,
+	dragOverrides: Record<string, Record<string, unknown>>,
+	codeValues: Record<string, Record<string, CanUpdateSequencePropStatus>>,
 ): number => {
-	const tree = buildTimelineTree(sequence);
+	const tree = buildTimelineTree(sequence, dragOverrides, codeValues);
 	const flat = flattenVisibleTreeNodes(tree, expandedTracks);
 
 	if (flat.length === 0) {

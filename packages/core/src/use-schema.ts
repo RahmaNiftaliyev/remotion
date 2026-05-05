@@ -1,13 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import {useContext, useMemo} from 'react';
+import {useMemo} from 'react';
 import type {SequenceControls} from './CompositionManager.js';
 import {getEffectiveVisualModeValue} from './get-effective-visual-mode-value.js';
+import type {RemotionEnvironment} from './internals.js';
 import type {
 	SequenceFieldSchema,
 	SequenceSchema,
 } from './sequence-field-schema.js';
-import {VisualModeOverridesContext} from './SequenceManager.js';
-import {useRemotionEnvironment} from './use-remotion-environment.js';
 
 export type CanUpdateSequencePropStatus =
 	| {canUpdate: true; codeValue: unknown}
@@ -63,15 +62,26 @@ export const computeEffectiveSchemaValuesDotNotation = ({
 	return merged;
 };
 
-export const useSchema = <T extends Record<string, unknown>>(
-	schema: SequenceSchema | null,
-	currentRuntimeValueDotNotation: T | null,
-	overrideId: string,
-): {
+export const useSchema = <T extends Record<string, unknown>>({
+	schema,
+	currentRuntimeValueDotNotation,
+	overrideId,
+	env,
+	visualModeEnabled,
+	dragOverrides,
+	codeValues,
+}: {
+	schema: SequenceSchema | null;
+	currentRuntimeValueDotNotation: T | null;
+	overrideId: string;
+	env: RemotionEnvironment;
+	visualModeEnabled: boolean;
+	dragOverrides: Record<string, Record<string, unknown>>;
+	codeValues: Record<string, Record<string, CanUpdateSequencePropStatus>>;
+}): {
 	controls: SequenceControls | undefined;
 	valuesDotNotation: T;
 } => {
-	const env = useRemotionEnvironment();
 	const earlyReturn = useMemo(() => {
 		if (!env.isStudio || env.isReadOnlyStudio) {
 			return {
@@ -86,10 +96,6 @@ export const useSchema = <T extends Record<string, unknown>>(
 	if (earlyReturn) {
 		return earlyReturn;
 	}
-
-	const {visualModeEnabled, dragOverrides, codeValues} = useContext(
-		VisualModeOverridesContext,
-	);
 
 	const controls = useMemo(() => {
 		if (!visualModeEnabled) {

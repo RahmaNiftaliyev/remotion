@@ -1,10 +1,11 @@
-import React, {forwardRef, useState} from 'react';
+import React, {forwardRef, useState, useContext} from 'react';
 import type {SequenceControls} from './CompositionManager.js';
 import {
 	flattenActiveSchema,
 	getFlatSchemaWithAllKeys,
 } from './flatten-schema.js';
 import type {SequenceSchema} from './sequence-field-schema.js';
+import {VisualModeOverridesContext} from './SequenceManager.js';
 import {useRemotionEnvironment} from './use-remotion-environment.js';
 import {useSchema} from './use-schema.js';
 
@@ -125,6 +126,11 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 		}
 
 		// eslint-disable-next-line react-hooks/rules-of-hooks
+		const {visualModeEnabled, dragOverrides, codeValues} = useContext(
+			VisualModeOverridesContext,
+		);
+
+		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const [overrideId] = useState(() => String(Math.random()));
 
 		// 1. Flatten the schema to get every possible key (across all variants).
@@ -139,11 +145,15 @@ export const wrapInSchema = <S extends SequenceSchema, Props extends object>(
 
 		// 3. Apply drag/code overrides on top of the runtime values.
 		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const {controls, valuesDotNotation} = useSchema(
+		const {controls, valuesDotNotation} = useSchema({
 			schema,
 			currentRuntimeValueDotNotation,
 			overrideId,
-		);
+			env,
+			visualModeEnabled,
+			dragOverrides,
+			codeValues,
+		});
 
 		// 4. Eliminate values forbidden by the resolved discriminated union.
 		const activeKeys = selectActiveKeys(schema, valuesDotNotation);

@@ -486,9 +486,8 @@ const HtmlInCanvasInner = forwardRef<
 			return {
 				width,
 				height,
-				...style,
 			};
-		}, [width, height, style]);
+		}, [width, height]);
 
 		if (isInsideAncestorHtmlInCanvas) {
 			throw new Error(
@@ -505,7 +504,12 @@ const HtmlInCanvasInner = forwardRef<
 				{...sequenceProps}
 			>
 				<HtmlInCanvasAncestorContext.Provider value>
-					<canvas ref={setLayoutCanvasRef} width={width} height={height}>
+					<canvas
+						ref={setLayoutCanvasRef}
+						width={width}
+						height={height}
+						style={style}
+					>
 						<div ref={divRef} style={innerStyle}>
 							{children}
 						</div>

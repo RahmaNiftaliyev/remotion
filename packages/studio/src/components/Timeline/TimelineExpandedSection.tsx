@@ -114,6 +114,8 @@ export const TimelineExpandedSection: React.FC<{
 		};
 	}, [expandedHeight]);
 
+	const {schema} = sequence.controls!;
+
 	const renderRow = useCallback(
 		(node: TimelineTreeNode, depth: number) => {
 			const paddingLeft =
@@ -137,10 +139,6 @@ export const TimelineExpandedSection: React.FC<{
 			}
 
 			if (node.field) {
-				if (!sequence.controls) {
-					throw new Error('Sequence controls schema is not set');
-				}
-
 				return (
 					<TimelineFieldRow
 						field={node.field}
@@ -148,7 +146,7 @@ export const TimelineExpandedSection: React.FC<{
 						validatedLocation={validatedLocation}
 						paddingLeft={paddingLeft}
 						nodePath={nodePath}
-						schema={sequence.controls.schema}
+						schema={schema}
 					/>
 				);
 			}
@@ -169,7 +167,7 @@ export const TimelineExpandedSection: React.FC<{
 			expandedTracks,
 			nodePath,
 			overrideId,
-			sequence.controls,
+			schema,
 			sequenceOffsetPx,
 			toggleTrack,
 			validatedLocation,
